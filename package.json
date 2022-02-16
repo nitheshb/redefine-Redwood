@@ -29,6 +29,7 @@
     "@redwoodjs/auth": "^0.45.0",
     "autoprefixer": "^9.8.8",
     "firebase": "^9.6.6",
+    "firebase-admin": "^10.0.2",
     "postcss": "^8.0.0",
     "postcss-loader": "^6.2.1",
     "react-number-format": "^4.9.1",
