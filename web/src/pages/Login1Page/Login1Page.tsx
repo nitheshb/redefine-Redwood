@@ -40,7 +40,7 @@ try {
   })
   await isAuthenticated
   ? navigate('/new-home-page')
-  : navigate('/new-home-page')
+  : ''
 } catch (error) {
 console.log('error', error)
 }
