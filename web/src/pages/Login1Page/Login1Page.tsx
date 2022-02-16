@@ -20,7 +20,7 @@ const Login1Page = () => {
   // const { login } = useAuth()
   // const { signInWithGoogle, register, login } = useAuth()
 
-  const { loading, hasError, error, logIn } = useAuth()
+  const { loading, hasError, error, logIn, isAuthenticated } = useAuth()
 
   // useEffect(() => {
   //   logIn({
@@ -31,15 +31,21 @@ const Login1Page = () => {
   // }, [])
 
   const onSubmit = async (data) => {
-    const {Email, Password} = data;
+    const { Email, Password } = data
     console.log(data)
+try {
+  let x =  await logIn({
+    email: Email,
+    password: Password,
+  })
+  await isAuthenticated
+  ? navigate('/new-home-page')
+  : navigate('/new-home-page')
+} catch (error) {
+console.log('error', error)
+}
 
-    logIn({
 
-      email: Email,
-      password: Password,
-    })
-    navigate('/new-home-page')
 
     // const { Email, Password } = data
     // // login(Email, Password)
