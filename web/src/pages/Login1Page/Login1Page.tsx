@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { useAuth } from '@redwoodjs/auth'
@@ -15,10 +15,15 @@ import {
   FieldError,
   Submit,
 } from '@redwoodjs/forms'
+import Loader from 'src/components/Loader/Loader'
 
 const Login1Page = () => {
   // const { login } = useAuth()
   // const { signInWithGoogle, register, login } = useAuth()
+
+  const [loginError, setloginError] = useState(false)
+  const [loginErrorMsg, setloginErrorMsg] = useState('')
+  const [loader, setloader] = useState(false)
 
   const { loading, hasError, error, logIn, isAuthenticated } = useAuth()
 
@@ -31,21 +36,26 @@ const Login1Page = () => {
   // }, [])
 
   const onSubmit = async (data) => {
+    setloader(true)
+    setloginError(false)
+    setloginErrorMsg('')
     const { Email, Password } = data
     console.log(data)
-try {
-  let x =  await logIn({
-    email: Email,
-    password: Password,
-  })
-  await isAuthenticated
-  ? navigate('/new-home-page')
-  : ''
-} catch (error) {
-console.log('error', error)
-}
+    try {
+      const x = await logIn({
+        email: Email,
+        password: Password,
+      })
 
-
+      await console.log('resp', x)
+      await isAuthenticated ? navigate('/new-home-page') : ''
+      setloader(false)
+    } catch (error) {
+      console.log('error', error)
+      setloginError(true)
+      setloginErrorMsg('Invalid Username/Password')
+      setloader(false)
+    }
 
     // const { Email, Password } = data
     // // login(Email, Password)
@@ -98,7 +108,29 @@ console.log('error', error)
                 </span>
                 <hr className="w-full border-gray-400" />
               </div> */}
+
               <Form onSubmit={onSubmit} className="mt-10">
+                {loginError && (
+                  <div className="flex  items-center pt-1 mb-2 text-red-700">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-x-circle"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="15" y1="9" x2="9" y2="15"></line>
+                      <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                    <p className="text-xs ml-1">{loginErrorMsg}</p>
+                  </div>
+                )}
                 <Label
                   name="Email Address"
                   className="label font-regular text-sm"
@@ -159,9 +191,12 @@ console.log('error', error)
                 </div>
 
                 <Submit
-                  className="mt-16 w-full px-6 py-3 text-white  rounded-sm shadow-lg focus:ring-4 focus:ring-red-100 focus:outline-none"
+                  className="mt-16 w-full px-6 py-3 text-white
+                  rounded-sm shadow-lg transition ease-in-out duration-150 "
                   style={{ backgroundColor: '#091225' }}
+                  disabled=""
                 >
+                  {loader && <Loader />}
                   Log in
                 </Submit>
               </Form>

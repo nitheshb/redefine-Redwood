@@ -28,7 +28,7 @@ const Routes = () => {
       <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
       <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
       <Route path="/my-page" page={MyPagePage} name="myPage" />
-      <Route path="/" page={LoginPage} name="login" />
+      <Route path="/" page={Login1Page} name="login1" />
       <Route notfound page={NotFoundPage} />
     </Router>
   )
