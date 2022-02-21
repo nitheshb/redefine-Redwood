@@ -7,6 +7,7 @@ import { useAuth } from '@redwoodjs/auth'
 
 // import { useAuth, signup } from '../../context/AuthContext'
 // import { useAuth } from '../../context/AuthContext'
+import { addRole } from '../../context/AuthContext'
 import {
   Form,
   Label,
@@ -16,6 +17,7 @@ import {
   Submit,
 } from '@redwoodjs/forms'
 import Loader from 'src/components/Loader/Loader'
+import { admin1, firebaseClient } from 'src/App'
 
 const Login1Page = () => {
   // const { login } = useAuth()
@@ -25,7 +27,15 @@ const Login1Page = () => {
   const [loginErrorMsg, setloginErrorMsg] = useState('')
   const [loader, setloader] = useState(false)
 
-  const { loading, hasError, error, logIn, isAuthenticated } = useAuth()
+  const {
+    loading,
+    hasError,
+    error,
+    logIn,
+    isAuthenticated,
+    getToken,
+    getCurrentUser,
+  } = useAuth()
 
   // useEffect(() => {
   //   logIn({
@@ -48,8 +58,15 @@ const Login1Page = () => {
       })
 
       await console.log('resp', x)
-      await isAuthenticated ? navigate('/new-home-page') : ''
+      ;(await isAuthenticated) ? navigate('/new-home-page') : ''
       setloader(false)
+      // await firebaseClient.admin
+      // .auth()
+      // .setCustomUserClaims('0HkJo6v6zeMeIH5DEPqjiHvwL2z2', { admin: true })
+      const y = await getToken()
+      const z = await getCurrentUser()
+      addRole('0HkJo6v6zeMeIH5DEPqjiHvwL2z2')
+      await console.log('token values are', y)
     } catch (error) {
       console.log('error', error)
       setloginError(true)

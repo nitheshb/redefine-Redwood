@@ -27,6 +27,7 @@ import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
 
 import { PencilIcon, DotsVerticalIcon, EyeIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
+import SiderForm from '../SiderForm/SiderForm'
 
 const projectFeedData = [
   { k: 'Total', v: 125, pic: '' },
@@ -58,6 +59,12 @@ const aprtConfig = [
 ]
 const ProjPhaseHome = () => {
   const [showForm, setShowForm] = useState('Block Details')
+
+  const [isAddBlockOpen, setAddBlockOpen] = useState(false)
+  const handleAddBlockAction = () => setAddBlockOpen(false)
+
+  const [isAddPhaseOpen, setAddPhaseOpen] = useState(false)
+  const handleAddPhaseAction = () => setAddPhaseOpen(false)
   return (
     <div>
       <section className="py-8 mb-8 leading-7 text-gray-900 bg-white sm:py-12 md:py-16 lg:py-18 rounded-lg">
@@ -89,7 +96,23 @@ const ProjPhaseHome = () => {
 
                 <span
                   onClick={() => {
-                    setShowForm('Add Block')
+                    // setShowForm('Add Phase')
+                    setAddPhaseOpen(true)
+                  }}
+                  className={
+                    'flex ml-2  cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-full hover:bg-pink-200 hover:text-pink-800 ' +
+                    (showForm === 'Add Phase'
+                      ? 'text-pink-800 bg-pink-200 '
+                      : 'text-green-800 bg-green-200')
+                  }
+                >
+                  <PencilIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                  Add Phase
+                </span>
+                <span
+                  onClick={() => {
+                    // setShowForm('Add Block')
+                    setAddBlockOpen(true)
                   }}
                   className={
                     'flex ml-2  cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-full hover:bg-pink-200 hover:text-pink-800 ' +
@@ -225,7 +248,7 @@ const ProjPhaseHome = () => {
                 <h2 className="text-sm font-medium">FloorView of Block-D</h2>
                 <div className="bg-white rounded mt-4 shadow-lg py-6">
                   <div className="px-8">
-                    {[1, 2, 3,4,5,6].map((data, i) => {
+                    {[1, 2, 3, 4, 5, 6].map((data, i) => {
                       return (
                         <div key={i} className="grid grid-cols-12 gap-0">
                           <div className="h-36 col-span-2  border border-gray-300 content-center">
@@ -283,11 +306,7 @@ const ProjPhaseHome = () => {
                         </div>
                       )
                     })}
-
-
-
                   </div>
-
 
                   <div className="flex flex-col px-8 pt-4">
                     <button className="flex items-center justify-center bg-blue-600 text-sm font-medium w-full h-10 rounded text-blue-50 hover:bg-blue-700">
@@ -301,6 +320,17 @@ const ProjPhaseHome = () => {
               </div>
             </div>
           )}
+          <SiderForm
+            open={isAddBlockOpen}
+            setOpen={handleAddBlockAction}
+            title="Add Block"
+          />
+
+          <SiderForm
+            open={isAddPhaseOpen}
+            setOpen={setAddPhaseOpen}
+            title="Add Phase"
+          />
         </div>
       </section>
     </div>

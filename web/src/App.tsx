@@ -1,7 +1,11 @@
 import { AuthProvider } from '@redwoodjs/auth'
 import { initializeApp, getApp, getApps } from 'firebase/app'
+import { setCustom } from 'firebase/auth'
 import * as firebaseAuth from '@firebase/auth'
+import { getAuth } from 'firebase/auth'
+import * as admin from 'firebase-admin'
 
+import {} from '@firebase/util'
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 
@@ -15,7 +19,7 @@ const firebaseConfig = {
   // authDomain: process.env.FIREBASE_AUTH_DOMAIN,
 
   apiKey: 'AIzaSyDlr5xlq378B5vyetXvE_rK1r4EhPhFTt4',
-  authDomain: 'redefine-erp.firebaseapp.com'
+  authDomain: 'redefine-erp.firebaseapp.com',
 
   /** Optional config, may be needed, depending on how you use firebase
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -25,20 +29,24 @@ const firebaseConfig = {
   **/
 }
 
+const app = initializeApp(firebaseConfig)
+const auth = getAuth()
 
-const firebaseApp = ((config) => {
-  const apps = getApps()
-  if (!apps.length) {
-    initializeApp(config)
-  }
-  return getApp()
-})(firebaseConfig)
-
+// const firebaseApp = ((config) => {
+//   const apps = getApps()
+//   if (!apps.length) {
+//     initializeApp(config)
+//   }
+//   return getApp()
+// })(firebaseConfig)
+// export const admin1 = admin
+//   .auth()
+//   .setCustomUserClaims('0HkJo6v6zeMeIH5DEPqjiHvwL2z2', { admin: true })
 export const firebaseClient = {
   firebaseAuth,
-  firebaseApp, // optional
+  auth,
+  app// optional
 }
-
 const App = () => (
   <FatalErrorBoundary page={FatalErrorPage}>
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">

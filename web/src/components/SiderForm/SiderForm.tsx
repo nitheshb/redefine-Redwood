@@ -2,6 +2,8 @@ import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import DialogFormBody from '../DialogFormBody/DialogFormBody'
+import AddBlockForm from '../AddBlockForm/AddBlockForm'
+import AddPhaseForm from '../AddPhaseForm/AddPhaseForm'
 const SiderForm = ({ open, setOpen, title }) => {
   // const [open, setOpen] = useState(true)
   return (
@@ -34,7 +36,7 @@ const SiderForm = ({ open, setOpen, title }) => {
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <div className="relative w-screen max-w-lg">
+              <div className="relative w-screen max-w-2xl">
                 <Transition.Child
                   as={Fragment}
                   enter="ease-in-out duration-500"
@@ -55,7 +57,16 @@ const SiderForm = ({ open, setOpen, title }) => {
                     </button>
                   </div>
                 </Transition.Child>
-                <DialogFormBody title={title}  dialogOpen= {setOpen}/>
+
+                {title === 'Create Project' && (
+                  <DialogFormBody title={title} dialogOpen={setOpen} />
+                )}
+                {title === 'Add Phase' && (
+                  <AddPhaseForm title={title} dialogOpen={setOpen} />
+                )}
+                {title === 'Add Block' && (
+                  <AddBlockForm title={title} dialogOpen={setOpen} />
+                )}
               </div>
             </Transition.Child>
           </div>
