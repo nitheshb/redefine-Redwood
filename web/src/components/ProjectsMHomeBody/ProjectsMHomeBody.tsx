@@ -7,6 +7,7 @@ import PhaseDetailsCard from '../PhaseDetailsCard/PhaseDetailsCard'
 
 import { PencilIcon, DotsVerticalIcon, EyeIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
+import AddPhase from '../AddPhase/AddPhase'
 
 const projectFeedData = [
   { k: 'Total', v: 125, pic: '' },
@@ -257,6 +258,7 @@ const ProjectsMHomeBody = () => {
               />
             </div>
           )}
+  
         </div>
       </section>
     </div>
