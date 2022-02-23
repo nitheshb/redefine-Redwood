@@ -1,12 +1,11 @@
-import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { Fragment, useState } from 'react'
 
 import HeadNavBar from 'src/components/HeadNavBar/HeadNavBar'
 import HeadSideBar from 'src/components/HeadSideBar/HeadSideBar'
-import SiderForm from 'src/components/SiderForm/SiderForm'
 import SUserSignup from 'src/components/SUserSignup/SUserSignup'
 import UserManageTable from 'src/components/UserManageTable/UserManageTable'
+import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
 
 const UsersAdminPage = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,7 +15,7 @@ const UsersAdminPage = () => {
       <MetaTags title="UsersAdmin" description="UsersAdmin page" />
 
       <div className="flex w-screen h-screen text-gray-700">
-        <HeadSideBar pgName= {'usersAdmin'} />
+        <HeadSideBar pgName={'usersAdmin'} />
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
           <div className="flex-grow p-6 overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
@@ -25,7 +24,6 @@ const UsersAdminPage = () => {
               <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
                 Users Management
               </span>
-
 
               <button
                 onClick={() => setIsOpen(true)}
@@ -75,11 +73,17 @@ const UsersAdminPage = () => {
               title="Create Project"
             /> */}
 
+            <UserManageTable />
 
+            <div className="flex items-center flex-shrink-0 h-16 px-0  pl-0  ">
+              <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
+                Users Access Management
+              </span>
+            </div>
 
-<UserManageTable />
+            <UserAccessTable />
 
-<SUserSignup
+            <SUserSignup
               open={isOpen}
               setOpen={handleOnClose}
               title="Create User"
