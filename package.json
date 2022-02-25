@@ -8,7 +8,8 @@
     ]
   },
   "devDependencies": {
-    "@redwoodjs/core": "v0.43.0"
+    "@redwoodjs/core": "v0.43.0",
+    "redux-devtools-extension": "^2.13.9"
   },
   "eslintConfig": {
     "extends": "@redwoodjs/eslint-config",
@@ -38,10 +39,12 @@
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.0.0-rc.0",
     "@mui/styled-engine-sc": "^5.0.0-rc.0",
+    "@reduxjs/toolkit": "^1.7.2",
     "@redwoodjs/auth": "^0.45.0",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.22",
     "apexcharts": "^3.28.3",
     "autoprefixer": "^9.8.8",
     "axios": "^0.23.0",
@@ -70,10 +73,12 @@
     "react-i18next": "^11.13.0",
     "react-image-lightbox": "^5.1.4",
     "react-number-format": "^4.9.1",
+    "react-redux": "^7.2.6",
     "react-select": "^5.2.2",
     "react-select-search": "^3.0.9",
     "react-table": "^7.7.0",
     "react-use": "^17.3.2",
+    "reselect": "^4.1.5",
     "simplebar-react": "^2.3.5",
     "stylis": "^4.0.10",
     "stylis-plugin-rtl": "^2.1.0",

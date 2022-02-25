@@ -18,8 +18,6 @@ const Routes = () => {
       <Route path="/users-admin" page={UsersAdminPage} name="usersAdmin" />
       <Route path="/executive-home" page={ExecutiveHomePage} name="executiveHome" />
       <Route path="/leads-manager" page={LeadsManagerPage} name="leadsManager" />
-      <Route path="/hello-gopi" page={HelloGopiPage} name="helloGopi" />
-      <Route path="/login1" page={Login1Page} name="login1" />
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/project-edit" page={ProjectEditPage} name="projectEdit" />
       <Route path="/count" page={CountPage} name="count" />
@@ -29,7 +27,7 @@ const Routes = () => {
       <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
       <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
       <Route path="/my-page" page={MyPagePage} name="myPage" />
-      <Route path="/" page={Login1Page} name="login1" />
+      <Route path="/" page={LoginPage} name="login" />
       <Route notfound page={NotFoundPage} />
     </Router>
   )
