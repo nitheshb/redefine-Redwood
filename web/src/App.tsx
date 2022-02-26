@@ -1,36 +1,35 @@
-import { AuthProvider } from '@redwoodjs/auth'
-import { initializeApp, getApp, getApps } from 'firebase/app'
-import { setCustom } from 'firebase/auth'
-import * as firebaseAuth from '@firebase/auth'
-import { getAuth } from 'firebase/auth'
-import * as admin from 'firebase-admin'
-
-import {} from '@firebase/util'
+// import { AuthProvider } from '@redwoodjs/auth'
+// import { initializeApp } from 'firebase/app'
+// import * as firebaseAuth from '@firebase/auth'
+// import { getAuth } from 'firebase/auth'
+import { Provider as ReduxProvider } from 'react-redux'
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
-import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 
+// import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
+import AuthProvider from 'src/context/AuthContext'
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 import Routes from 'src/Routes'
+import store from 'src/state/store'
 
 import './index.css'
 
-const firebaseConfig = {
-  // apiKey: process.env.FIREBASE_API_KEY,
-  // authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+// const firebaseConfig = {
+//   // apiKey: process.env.FIREBASE_API_KEY,
+//   // authDomain: process.env.FIREBASE_AUTH_DOMAIN,
 
-  apiKey: 'AIzaSyDlr5xlq378B5vyetXvE_rK1r4EhPhFTt4',
-  authDomain: 'redefine-erp.firebaseapp.com',
+//   apiKey: 'AIzaSyDlr5xlq378B5vyetXvE_rK1r4EhPhFTt4',
+//   authDomain: 'redefine-erp.firebaseapp.com',
 
-  /** Optional config, may be needed, depending on how you use firebase
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  **/
-}
+//   /** Optional config, may be needed, depending on how you use firebase
+//   projectId: process.env.FIREBASE_PROJECT_ID,
+//   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+//   appId: process.env.FIREBASE_APP_ID,
+//   **/
+// }
 
-const app = initializeApp(firebaseConfig)
-const auth = getAuth()
+// const app = initializeApp(firebaseConfig)
+// const auth = getAuth()
 
 // const firebaseApp = ((config) => {
 //   const apps = getApps()
@@ -42,19 +41,19 @@ const auth = getAuth()
 // export const admin1 = admin
 //   .auth()
 //   .setCustomUserClaims('0HkJo6v6zeMeIH5DEPqjiHvwL2z2', { admin: true })
-export const firebaseClient = {
-  firebaseAuth,
-  auth,
-  app// optional
-}
+// export const firebaseClient = {
+//   firebaseAuth,
+//   auth,
+//   app, // optional
+// }
 const App = () => (
   <FatalErrorBoundary page={FatalErrorPage}>
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
-      <AuthProvider client={firebaseClient} type="firebase">
-        <RedwoodApolloProvider>
+      <ReduxProvider store={store}>
+        <AuthProvider>
           <Routes />
-        </RedwoodApolloProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </ReduxProvider>
     </RedwoodProvider>
   </FatalErrorBoundary>
 )
