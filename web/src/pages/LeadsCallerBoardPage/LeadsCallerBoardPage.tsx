@@ -1,6 +1,11 @@
+import { Fragment, useState } from 'react'
+
 import { Link, routes } from '@redwoodjs/router'
+import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
+import SiderForm from 'src/components/SiderForm/SiderForm'
 
 const LeadsCallerBoardPage = () => {
+  const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
   return (
     // <>
     //   {/* <MetaTags title="LeadsCallerBoard" description="LeadsCallerBoard page" />
@@ -18,6 +23,7 @@ const LeadsCallerBoardPage = () => {
 
     <>
       <div className="flex flex-col w-screen h-screen overflow-auto text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+
         <div className="flex items-center flex-shrink-0 w-full h-16 px-10 bg-white bg-opacity-75">
           <div className="ml-10">
             <Link
@@ -47,6 +53,7 @@ alt="" src="https://assets.codepen.io/5041378/internal/avatars/users/default.png
         <div className="px-10 mt-6">
           <h1 className="text-2xl font-bold">User1 Executive Board</h1>
         </div>
+        <LLeadsTableView setisImportLeadsOpen={setisImportLeadsOpen} />
         <div className="flex flex-grow px-10 mt-4 space-x-6 overflow-auto">
           <div className="flex flex-col flex-shrink-0 w-72">
             <div className="flex items-center flex-shrink-0 h-10 px-2">
@@ -1562,6 +1569,12 @@ alt="" src="https://assets.codepen.io/5041378/internal/avatars/users/default.png
             </div>
           </div>
           <div className="flex-shrink-0 w-6"></div>
+
+          <SiderForm
+            open={isImportLeadsOpen}
+            setOpen={setisImportLeadsOpen}
+            title="Import Leads"
+          />
         </div>
       </div>
     </>
