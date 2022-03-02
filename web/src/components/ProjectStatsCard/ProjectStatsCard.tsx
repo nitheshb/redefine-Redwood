@@ -4,7 +4,6 @@ const toWords = new ToWords({
   localeCode: 'en-IN',
 })
 const ProjectStatsCard = ({ kind, iconP, feedData, bg, currency }) => {
-  console.log('props data is', feedData)
   return (
     <div
       className="drop-shadow-md min-w-full z-10 flex flex-col  max-w-md p-4 mx-auto my-0 rounded-lg "
@@ -77,7 +76,6 @@ const ProjectStatsCard = ({ kind, iconP, feedData, bg, currency }) => {
                     <span className="italic">
                       {toWords.convert(data.v, { currency: currency })}
                     </span>
-
                   </span>
                   <div
                     className="w-3 h-3  -mt-2 rotate-45 bg-black"

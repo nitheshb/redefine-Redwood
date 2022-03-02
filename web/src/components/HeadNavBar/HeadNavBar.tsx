@@ -2,7 +2,7 @@
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { useDispatch } from 'react-redux'
-import { useAuth } from 'src/context/AuthContext'
+import { useAuth } from 'src/context/firebase-auth-context'
 import { logout as logoutAction } from 'src/state/actions/user'
 
 const HeadNavBar = () => {
@@ -14,11 +14,11 @@ const HeadNavBar = () => {
   const { logout } = useAuth()
   const dispatch = useDispatch()
   const handleClose = async (menuItem) => {
+    setAnchorEl(null)
     if (menuItem === 'Logout') {
       await logout()
       dispatch(logoutAction())
     }
-    setAnchorEl(null)
   }
 
   return (
