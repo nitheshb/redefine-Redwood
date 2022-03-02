@@ -4,7 +4,7 @@ import { Link, routes } from '@redwoodjs/router'
 const HeadSideBar = (props) => {
   const { pgName } = props
   return (
-    <div className="flex flex-col items-center w-16 pb-4 overflow-auto bg-white bg-opacity-75 ">
+    <div className="flex flex-col items-center w-16 min-w-[66px] pb-4 overflow-auto  bg-white bg-opacity-75 border-r">
       <a
         className="flex items-center justify-center flex-shrink-0 w-full h-16  border-b"
         href="#"
@@ -51,11 +51,10 @@ const HeadSideBar = (props) => {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
           />
         </svg>
       </Link>
-
 
       <Link
         className={
@@ -63,29 +62,6 @@ const HeadSideBar = (props) => {
           (pgName === 'leadsManager' ? 'bg-gray-300' : '')
         }
         to={routes.leadsManager()}
-
-      >
-        <svg
-          className="w-5 h-5"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-          />
-        </svg>
-      </Link>
-      <Link
-        className={
-          'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300 ' +
-          (pgName === 'executiveHome' ? 'bg-gray-300' : '')
-        }
-        to={routes.executiveHome()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -102,6 +78,7 @@ const HeadSideBar = (props) => {
           />
         </svg>
       </Link>
+
       <Link
         className="flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300"
         to={routes.leadsCallerBoard()}

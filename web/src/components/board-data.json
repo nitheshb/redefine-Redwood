@@ -5,7 +5,7 @@
           {
               "id":1,
               "priority": 0,
-              "title": "Company website redesign.",
+              "title": "Company website redesign2.",
               "chat": 1,
               "attachment": 2,
               "assignees": [
@@ -34,7 +34,7 @@
           {
               "id":3,
               "priority": 1,
-              "title": "Research and strategy for upcoming project.",
+              "title": "Research and strategy for upcoming projectx.",
               "chat": 0,
               "attachment": 3,
               "assignees": [
@@ -46,7 +46,7 @@
       ]
   },
   {
-      "name":"In Review",
+      "name":"Visit Done",
       "items": [
           {
               "id":4,

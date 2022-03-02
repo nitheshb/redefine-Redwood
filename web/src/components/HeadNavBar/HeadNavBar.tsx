@@ -26,8 +26,8 @@ const HeadNavBar = () => {
       <div className="flex items-center flex-shrink-0 h-16 px-2  pl-0 bg-white bg-opacity-75 ">
         {/* <h1 className="text-lg font-medium">redefine.</h1> */}
         <span
-          style={{ marginLeft: '-1%' }}
-          className="relative z-10 flex items-center w-auto text-2xl font-extrabold leading-none text-black select-none pl-0 ml-4"
+          style={{ marginLeft: '10px' }}
+          className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-black select-none pl-0 ml-4"
         >
           redefine.
         </span>

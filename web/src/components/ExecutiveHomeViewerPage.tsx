@@ -3,16 +3,13 @@ import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
 import { Fragment, useState, useEffect } from 'react'
-import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
-import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
-import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
-import SiderForm from '../../components/SiderForm/SiderForm'
-import CallExecutiveBoard from '../../components/CallExecutiveBoard/CallExecutiveBoard'
 import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 
 import { XIcon } from '@heroicons/react/outline'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import CardItem from '../../components/leadsCard'
+import SiderForm from './SiderForm/SiderForm'
+import CardItem from './leadsCard'
+// import CardItem from '../../components/leadsCard'
 // import BoardData from '../../components/board-data.json'
 const BoardData = [
   {
@@ -193,21 +190,16 @@ function createGuidId() {
     return v.toString(16)
   })
 }
-const ExecutiveHomePage = () => {
+const ExecutiveHomeViewerPage = () => {
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
 
   // kanban board
-  const [ready, setReady] = useState(true)
+  const [ready, setReady] = useState(false)
   const [boardData, setBoardData] = useState(BoardData)
   const [showForm, setShowForm] = useState(false)
   const [selectedBoard, setSelectedBoard] = useState(0)
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
-  useEffect(() => {
-    // if (process.browser) {
-    setReady(true)
-    // }
-  }, [])
 
   const onDragEnd = (re) => {
     if (!re.destination) return
@@ -258,10 +250,7 @@ const ExecutiveHomePage = () => {
   return (
     <>
       <div className="flex  flex-row  text-gray-700">
-        <HeadSideBar pgName={'executiveHome'} />
         <div className="flex-1 overflow-auto">
-          <HeadNavBar />
-
           <div className="flex-grow p-6 overflow-auto h-screen text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             <div className="flex items-center justify-between py-2 ">
               <div>
@@ -432,7 +421,7 @@ const ExecutiveHomePage = () => {
                 </main>
 
                 <div
-                  className={`ml-5 mt-4   bg-white w-800 min-w-[300px] max-w-[20%] rounded shadow  ${
+                  className={`ml-5 mt-4   bg-white w-800 max-w-[20%] rounded shadow  ${
                     openUserProfile ? 'hidden' : ''
                   }`}
                 >
@@ -693,4 +682,4 @@ const ExecutiveHomePage = () => {
   )
 }
 
-export default ExecutiveHomePage
+export default ExecutiveHomeViewerPage

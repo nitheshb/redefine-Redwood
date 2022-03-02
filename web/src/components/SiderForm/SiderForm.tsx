@@ -5,6 +5,7 @@ import DialogFormBody from '../DialogFormBody/DialogFormBody'
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import AddPhaseForm from '../AddPhaseForm/AddPhaseForm'
 import LeadsDropHomes from '../LeadUplodCsv/uploadHome'
+import AddLeadForm from '../AddLeadForm'
 const SiderForm = ({ open, setOpen, title }) => {
   // const [open, setOpen] = useState(true)
   return (
@@ -75,6 +76,9 @@ const SiderForm = ({ open, setOpen, title }) => {
                 )}
                 {title === 'Import Leads' && (
                   <LeadsDropHomes title={title} dialogOpen={setOpen} />
+                )}
+                {title === 'Add Lead' && (
+                  <AddLeadForm title={title} dialogOpen={setOpen} />
                 )}
               </div>
             </Transition.Child>
