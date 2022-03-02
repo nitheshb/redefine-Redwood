@@ -1,5 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
-import { AuthProvider, useAuth } from '@redwoodjs/auth'
+import { Fragment, useState } from 'react'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
 import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
@@ -9,12 +8,8 @@ import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
 import { MetaTags } from '@redwoodjs/web'
 
 const NewHomePagePage = () => {
-  const { isAuthenticated, hasRole } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const handleOnClose = () => setIsOpen(false)
-  useEffect(() => {
-    console.log('isAuthen', isAuthenticated)
-  }, [])
 
   return (
     <>

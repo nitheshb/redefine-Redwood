@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { navigate, routes } from '@redwoodjs/router'
-import { useAuth } from 'src/context/AuthContext'
+import { useAuth } from 'src/context/firebase-auth-context'
 import {
   Form,
   Label,
@@ -22,7 +22,11 @@ const LoginPage = () => {
   const [loginErrorMsg, setloginErrorMsg] = useState('')
   const [loader, setloader] = useState(false)
 
-  const { login } = useAuth()
+  const { login, isAuthenticated } = useAuth()
+
+  useEffect(() => {
+    isAuthenticated && navigate(routes.newHomePage())
+  }, [isAuthenticated])
 
   const onSubmit = async (data: UserInfo) => {
     setloader(true)
@@ -32,7 +36,7 @@ const LoginPage = () => {
     try {
       const res: any = await login(email, password)
       if (res?.user?.accessToken) {
-        navigate(routes.newHomePage())
+        navigate(routes.newHomePage(), { replace: true })
       } else {
         setloginError(true)
         setloginErrorMsg('Something went wrong')

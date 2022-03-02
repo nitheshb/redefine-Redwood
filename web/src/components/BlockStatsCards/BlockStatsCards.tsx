@@ -4,7 +4,6 @@ const toWords = new ToWords({
   localeCode: 'en-IN',
 })
 const BlockStatsCards = ({ kind, feedData, bg, currency }) => {
-  console.log('props data is', feedData)
   return (
     <div
       className="drop-shadow-md min-w-full z-10 flex flex-col  max-w-md p-4 mx-auto my-0 rounded-lg "
@@ -49,7 +48,6 @@ const BlockStatsCards = ({ kind, feedData, bg, currency }) => {
           </span>
         </div>
       </div>
-
     </div>
   )
 }
