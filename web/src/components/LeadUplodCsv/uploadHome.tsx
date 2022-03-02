@@ -1,11 +1,15 @@
 import { Dialog } from '@headlessui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Card, CardContent, Grid } from '@material-ui/core'
 import { Form, Formik } from 'formik'
 import { array, object, string } from 'yup'
 import { MultipleFileUploadField } from './MultipleFileUploadField'
+import { parse } from 'papaparse'
+import csv from 'csvtojson'
+import { addLead, getLedsData } from '../../context/dbQueryFirebase'
 
 export default function LeadsDropHomes({ title, dialogOpen }) {
+  const [existingCols, setexistingCols] = useState([])
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
       <div className="px-4 sm:px-6  z-10">
@@ -16,16 +20,78 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
       <div className="grid  gap-8 grid-cols-1">
         <div className="flex flex-col  my-10 rounded-lg  px-4 m-4 mt-12">
           <Formik
-            initialValues={{ files: [] }}
-            validationSchema={object({
-              files: array(
-                object({
-                  url: string().required(),
-                })
-              ),
-            })}
-            onSubmit={(values) => {
-              console.log('values', values)
+            initialValues={{ files: null }}
+            // validationSchema={object({
+            //   files: array(
+            //     object({
+            //       url: string().required(),
+            //     })
+            //   ),
+            // })}
+            onSubmit={async (values) => {
+              console.log('ehcek1', {
+                fileName: values.files[0].file.name,
+                type: values.files[0].type,
+                size: `${values.files[0].size} bytes`,
+              })
+              try {
+                const jsonArray = await csv().fromFile(
+                  values.files[0].file.path
+                )
+
+                await console.log('jsonArray is ', jsonArray)
+              } catch (error) {
+                console.log('error at jsonArray', error)
+              }
+
+              parse(values.files[0].file, {
+                header: true,
+                // download: true,
+                complete: async function (input) {
+                  const records = input.data
+                  await setexistingCols((existing) => [
+                    ...existing,
+                    ...input.data,
+                  ])
+                let x =   await getLedsData()
+                  // await addLead(existingCols)
+                  console.log('Finished:', x)
+                },
+              })
+              // const myFiles = Array.from(values.files)
+              // console.log('upload file values', values)
+              // console.log('vsv data is ', myFiles)
+
+              // myFiles.forEach((file) => {
+              //   console.log('filer is ', file)
+              //   try {
+              //     parse(file, {
+              //       complete: function (results) {
+              //         console.log('Finished:', results.data)
+              //       },
+              //     })
+              //   } catch (error) {
+              //     console.log('error', error)
+              //   }
+              // })
+              // const reader = new FileReader()
+              // const y = await reader.readAsText(values.files[0])
+              // await console.log('yo yo', y)
+              // Array.from(values.files)
+              //   .filter((file) => file.type === 'text/csv')
+
+              // myFiles.forEach(async (file) => {
+              //   // const text = await file.text()
+              //   console.log('ami i here')
+
+              //   const result = await parse(file, {
+              //     complete: function (results) {
+              //       console.log('Finished:', results.data)
+              //     },
+              //   })
+              //   await console.log('result is ', result)
+              // })
+
               return new Promise((res) => setTimeout(res, 2000))
             }}
           >
@@ -47,6 +113,7 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                 </Grid>
 
                 <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
+                <p>{JSON.stringify({ existingCols })}</p>
               </Form>
             )}
           </Formik>

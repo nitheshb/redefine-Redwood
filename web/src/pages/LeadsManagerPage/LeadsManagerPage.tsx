@@ -1,41 +1,43 @@
 import { Link, routes } from '@redwoodjs/router'
+import { useState } from 'react'
 import { MetaTags } from '@redwoodjs/web'
+import ExecutiveHomeViewerPage from 'src/components/ExecutiveHomeViewerPage'
+import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
+import HeadSideBar from 'src/components/HeadSideBar/HeadSideBar'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
-import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
-
 
 const LeadsManagerPage = () => {
+  const [showSideBar, setShowSideBar] = useState(true)
+
+  const showSideView1 = () => {
+    console.log('iam clicked', showSideBar)
+    setShowSideBar(!showSideBar)
+  }
   return (
     <>
-    <div className="flex w-screen h-screen text-gray-700">
-      <HeadSideBar pgName={'leadsManager'} />
-      <div className="flex flex-col flex-grow">
-        <HeadNavBar />
-        <div className="flex-grow p-6 overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
-          <div className="flex items-center flex-shrink-0 h-16 px-0  pl-0  ">
-            {/* <h1 className="text-lg font-medium">redefine.</h1> */}
-            <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
-              Projects
-            </span>
-          </div>
-          <MetaTags title="ExecutiveHome" description="ExecutiveHome page" />
+      <div className="flex w-screen h-screen text-gray-700">
+        <div className="flex flex-col flex-grow">
+          <HeadNavBar />
+          <div className="flex-grow flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+            {showSideBar && <HeadSideBar pgName={'leadsManager'} />}
+            <HeadSideBarDetailView
+              pgName={'leadsManager'}
+              sourceLink={'leadsScreen'}
+              showSideBar={showSideBar}
+              showSideView1={showSideView1}
+            />
 
-          <h1>ExecutiveHomePage</h1>
-          <p>
-            Find me in{' '}
-            <code>
-              ./web/src/pages/ExecutiveHomePage/ExecutiveHomePage.tsx
-            </code>
-          </p>
-          <p>
-            My default route is named <code>executiveHome</code>, link to me
-            with `<Link to={routes.leadsManager()}>ExecutiveHome</Link>`
-          </p>
+            <div className=" items-center  h-16 px-300  py-300  ">
+              {/* <h1 className="text-lg font-medium">redefine.</h1> */}
+              <ExecutiveHomeViewerPage />
+            </div>
+            <MetaTags title="ExecutiveHome" description="ExecutiveHome page" />
+          </div>
         </div>
       </div>
-    </div>
     </>
   )
 }
 
 export default LeadsManagerPage
+//

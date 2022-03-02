@@ -150,6 +150,7 @@ export function MultipleFileUploadField({ name }: { name: string }) {
       </div>
 
       {files.map((fileWrapper) => (
+       
         <div
           className="mt-6 p-6 bg-white border border-gray-100"
           key={fileWrapper.id}
@@ -161,20 +162,23 @@ export function MultipleFileUploadField({ name }: { name: string }) {
               onDelete={onDelete}
             />
           ) : (
-            <SingleFileUploadWithProgress
-              onDelete={onDelete}
-              onUpload={onUpload}
-              file={fileWrapper.file}
-            />
+            <section>
+              <SingleFileUploadWithProgress
+                onDelete={onDelete}
+                onUpload={onUpload}
+                file={fileWrapper.file}
+              />
+              <div className="mt-2 p-6 bg-white border border-gray-100">
+                <LfileUploadTableHome />
+              </div>
+            </section>
           )}
         </div>
       ))}
+
       <div className="mt-4 text-bold text-lg">or</div>
       <div className="mt-2 p-6 bg-white border border-gray-100">
         <LAddLeadTable />
-      </div>
-      <div className="mt-2 p-6 bg-white border border-gray-100">
-        <LfileUploadTableHome />
       </div>
     </React.Fragment>
   )
