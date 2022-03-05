@@ -70,9 +70,6 @@ const AuthContext = createContext<AuthContextValue>({
   resetPassword: () => Promise.resolve(),
 })
 
-// export const addRole = (uId) => {
-//   return auth.setCustomUserClaims(uId, { admin: true })
-// }
 const handlers = {
   AUTH_STATE_CHANGED: (state: State, action: Action): State => {
     const { isAuthenticated, user } = action.payload
@@ -104,6 +101,7 @@ export default function AuthContextProvider({ children }) {
         displayName: currentUser.displayName,
         phone: currentUser.phoneNumber,
         token: currentUser.uid,
+        role: 'admin',
       }
       dispatch({
         type: 'AUTH_STATE_CHANGED',
@@ -160,6 +158,7 @@ export default function AuthContextProvider({ children }) {
   }
 
   function logout() {
+    deAuthenticate()
     navigate(routes.login(), { replace: true })
     return signOut(auth)
   }
