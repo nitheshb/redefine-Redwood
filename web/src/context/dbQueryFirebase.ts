@@ -23,7 +23,7 @@ export const getLedsData = async () => {
   }
 }
 
-export const createUser = async (data) => {
+export const createUser = async (data: any) => {
   try {
     const userRef = doc(db, 'users', data.uid)
     const docSnap = await getDoc(userRef)
@@ -39,7 +39,7 @@ export const createUser = async (data) => {
   }
 }
 
-export const getUser = async ({ uid }) => {
+export const getUser = async (uid: string) => {
   try {
     const userRef = doc(db, 'users', uid)
     const docSnap = await getDoc(userRef)

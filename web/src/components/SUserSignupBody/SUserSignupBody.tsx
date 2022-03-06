@@ -66,7 +66,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
       if (response?.user?.uid) {
         const user = response?.user
         await createUser({
-          data,
+          ...data,
           uid: user.uid,
           roles: [data.roles],
         })
