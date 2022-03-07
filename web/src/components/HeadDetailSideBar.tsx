@@ -1,27 +1,24 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { checkActionCode } from '@firebase/auth'
-import { UserGroupIcon } from '@heroicons/react/outline'
-import { Link, routes } from '@redwoodjs/router'
-const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
-  // projectsScreen leadsScreen
+import { Link } from '@redwoodjs/router'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { USER_ROLES } from 'src/constants/userRoles'
 
-  // const showSideView = () => {
-  //   console.log('iam clicked', showSideBar)
-  //   setShowSideBar1()
-  // }
+const HeadSideBarDetailView = ({ pgName, sourceLink }) => {
+  const { user } = useAuth()
+
+  if (!user?.role?.includes(USER_ROLES.ADMIN)) {
+    return null
+  }
   return (
     <div className="flex flex-col items-left w-16 min-w-[266px] pb-4 overflow-auto  bg-white bg-opacity-75 ">
       <div className="pl-6 mt-4 mr-6">
         <ul>
           <li className="relative">
-            <span
+            <div
               className={
                 'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                 (pgName === 'home' ? 'bg-gray-300' : '')
               }
-              onClick={() => {
-                showSideView1()
-              }}
             >
               <span className="flex items-center">
                 <span style={{ color: '#058527' }}>
@@ -45,7 +42,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                   27
                 </span>
               </span>
-            </span>
+            </div>
           </li>
           <li className="relative">
             <Link
@@ -53,7 +50,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                 'flex items-center text-sm py-1 h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                 (pgName === 'home' ? 'bg-gray-300' : '')
               }
-              to={routes.newHomePage()}
+              to="#"
             >
               <span className="flex items-center">
                 <span style={{ color: '#058527' }}>
@@ -99,7 +96,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                 'flex items-center text-sm py-1  h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                 (pgName === 'home' ? 'bg-gray-300' : '')
               }
-              to={routes.newHomePage()}
+              to="#"
             >
               <span className="flex items-center">
                 <span style={{ color: '#692fc2' }}>
@@ -134,7 +131,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                 'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                 (pgName === 'home' ? 'bg-gray-300' : '')
               }
-              to={routes.newHomePage()}
+              to="#"
             >
               <span className="flex items-center ml-1">
                 <span style={{ color: '#692fc2' }}>
@@ -161,7 +158,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                     'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.newHomePage()}
+                  to="#"
                 >
                   <span className="flex items-center">
                     <span style={{ color: '#058527' }}>
@@ -195,7 +192,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                     'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.newHomePage()}
+                  to="#"
                 >
                   <span className="flex items-center">
                     <span style={{ color: '#058527' }}>
@@ -230,7 +227,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                   'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                   (pgName === 'home' ? 'bg-gray-300' : '')
                 }
-                to={routes.newHomePage()}
+                to="#"
               >
                 <span className="flex items-center ml-1">
                   <span style={{ color: '#692fc2' }}>
@@ -265,7 +262,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                         'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                         (pgName === 'home' ? 'bg-gray-300' : '')
                       }
-                      to={routes.newHomePage()}
+                      to="#"
                     >
                       <span className="flex items-center">
                         <span style={{ color: '#058527' }}>
@@ -302,7 +299,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                   'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                   (pgName === 'home' ? 'bg-gray-300' : '')
                 }
-                to={routes.newHomePage()}
+                to="#"
               >
                 <span className="flex items-center ml-1">
                   <span style={{ color: '#692fc2' }}>
@@ -330,7 +327,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                         'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                         (pgName === 'home' ? 'bg-gray-300' : '')
                       }
-                      to={routes.newHomePage()}
+                      to="#"
                     >
                       <span className="flex items-center">
                         <span style={{ color: '#058527' }}>
@@ -358,7 +355,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                 'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                 (pgName === 'home' ? 'bg-gray-300' : '')
               }
-              to={routes.newHomePage()}
+              to="#"
             >
               <span className="flex items-center ml-1">
                 <span style={{ color: '#692fc2' }}>
@@ -399,7 +396,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                     'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.newHomePage()}
+                  to="#"
                 >
                   <span className="flex items-center">
                     <span style={{ color: '#058527' }}>
@@ -423,7 +420,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                     'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.newHomePage()}
+                  to="#"
                 >
                   <span className="flex items-center">
                     <span style={{ color: '#058527' }}>
@@ -450,7 +447,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                   'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                   (pgName === 'home' ? 'bg-gray-300' : '')
                 }
-                to={routes.newHomePage()}
+                to="#"
               >
                 <span className="flex items-center ml-1">
                   <span style={{ color: '#eb8909' }}>
@@ -492,7 +489,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                       'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                       (pgName === 'home' ? 'bg-gray-300' : '')
                     }
-                    to={routes.newHomePage()}
+                    to="#"
                   >
                     <span className="flex items-center">
                       <span style={{ color: '#058527' }}>
@@ -524,7 +521,7 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
                       'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                       (pgName === 'home' ? 'bg-gray-300' : '')
                     }
-                    to={routes.newHomePage()}
+                    to="#"
                   >
                     <span className="flex items-center">
                       <span style={{ color: '#058527' }}>
@@ -560,6 +557,3 @@ const HeadSideBarDetailView = ({ pgName, sourceLink, showSideView1 }) => {
 }
 
 export default HeadSideBarDetailView
-
-// ExecutiveHomePage
-//  <HeadSideBar pgName={'executiveHome'} />

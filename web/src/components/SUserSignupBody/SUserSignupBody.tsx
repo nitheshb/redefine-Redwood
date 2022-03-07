@@ -8,20 +8,13 @@ import {
   Form,
   Label,
   InputField,
-  // TextAreaField,
-  // TextField,
-  // EmailField,
-  // PasswordField,
   SelectField,
   FieldError,
-  // Submit,
 } from '@redwoodjs/forms'
+import { useForm } from 'react-hook-form'
 import { createUser } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
-import { useForm } from 'react-hook-form'
-
-// import Select from 'react-select'
-// import SelectSearch from 'react-select-search'
+import { ROLES_LIST } from 'src/constants/userRoles'
 
 const SUserSignupBody = ({ title, dialogOpen }) => {
   const { register } = useAuth()
@@ -30,36 +23,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
     color: 'green',
     message: '',
   })
-  const roles = [
-    { label: 'Select the role', value: '' },
-    { label: 'Sales manager', value: 'sales-manager' },
-    { label: 'Sales executive', value: 'sales-executive' },
-    { label: 'Legal manager', value: 'legal-manager' },
-    { label: 'Legal executive', value: 'legal-executive' },
-    { label: 'CRM manager', value: 'crm-manager' },
-    { label: 'CRM executive', value: 'crm-executive' },
-    { label: 'HR manager', value: 'hr-manager' },
-    { label: 'Support manager', value: 'support-manager' },
-    { label: 'Support executive', value: 'support-executive' },
-    { label: 'Helper manager', value: 'helper-manager' },
-    { label: 'Helper executive', value: 'helper-executive' },
-    { label: 'Admin', value: 'admin' },
-  ]
 
-  // const cityList = [
-  //   { label: 'Bangalore,KA', value: 'Bangalore,KA' },
-  //   { label: 'Cochin,KL', value: 'Cochin,KL' },
-  //   { label: 'Mumbai,MH', value: 'Mumbai,MH' },
-  // ]
-
-  // const plans = []
-  // const [selected, setSelected] = useState(plans[1])
-
-  // const typeSel = async (sel) => {
-  //   await console.log('value is', selected)
-  //   await setSelected(sel)
-  //   await console.log('thsi si sel type', sel, selected)
-  // }
   const onSubmit = async (data) => {
     try {
       const response: any = await register(data.email, 'redefine@123')
@@ -212,7 +176,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                       validation={{ required: true }}
                       placeholder="Select Role"
                     >
-                      {roles.map((role) => (
+                      {ROLES_LIST.map((role) => (
                         <option key={role.value} value={role.value}>
                           {role.label}
                         </option>
