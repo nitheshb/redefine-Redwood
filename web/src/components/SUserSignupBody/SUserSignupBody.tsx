@@ -1,54 +1,88 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState } from 'react'
 import { Dialog } from '@headlessui/react'
-import { useState } from 'react'
-import { RadioGroup } from '@headlessui/react'
+// import { RadioGroup } from '@headlessui/react'
 import {
   Form,
   Label,
   InputField,
-  TextAreaField,
-  TextField,
-  EmailField,
-  PasswordField,
+  // TextAreaField,
+  // TextField,
+  // EmailField,
+  // PasswordField,
+  SelectField,
   FieldError,
-  Submit,
+  // Submit,
 } from '@redwoodjs/forms'
-import Select from 'react-select'
+import { createUser } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { useForm } from 'react-hook-form'
 
-import SelectSearch from 'react-select-search'
+// import Select from 'react-select'
+// import SelectSearch from 'react-select-search'
 
 const SUserSignupBody = ({ title, dialogOpen }) => {
-  const aquaticCreatures = [
-    { label: 'Arunachal Pradesh', value: 'Arunachal Pradesh' },
-    { label: 'Andhra Pradesh', value: 'Andhra Pradesh' },
-    { label: 'Karnataka', value: 'Karnataka' },
+  const { register } = useAuth()
+  const formMethods = useForm()
+  const [formMessage, setFormMessage] = useState({
+    color: 'green',
+    message: '',
+  })
+  const roles = [
+    { label: 'Select the role', value: '' },
+    { label: 'Sales manager', value: 'sales-manager' },
+    { label: 'Sales executive', value: 'sales-executive' },
+    { label: 'Legal manager', value: 'legal-manager' },
+    { label: 'Legal executive', value: 'legal-executive' },
+    { label: 'CRM manager', value: 'crm-manager' },
+    { label: 'CRM executive', value: 'crm-executive' },
+    { label: 'HR manager', value: 'hr-manager' },
+    { label: 'Support manager', value: 'support-manager' },
+    { label: 'Support executive', value: 'support-executive' },
+    { label: 'Helper manager', value: 'helper-manager' },
+    { label: 'Helper executive', value: 'helper-executive' },
+    { label: 'Admin', value: 'admin' },
   ]
 
-  const cityList = [
-    { label: 'Bangalore,KA', value: 'Bangalore,KA' },
-    { label: 'Cochin,KL', value: 'Cochin,KL' },
-    { label: 'Mumbai,MH', value: 'Mumbai,MH' },
-  ]
+  // const cityList = [
+  //   { label: 'Bangalore,KA', value: 'Bangalore,KA' },
+  //   { label: 'Cochin,KL', value: 'Cochin,KL' },
+  //   { label: 'Mumbai,MH', value: 'Mumbai,MH' },
+  // ]
 
-  const plans = []
-  const [selected, setSelected] = useState(plans[1])
+  // const plans = []
+  // const [selected, setSelected] = useState(plans[1])
 
-  const typeSel = async (sel) => {
-    await console.log('value is', selected)
-    await setSelected(sel)
-    await console.log('thsi si sel type', sel, selected)
-  }
+  // const typeSel = async (sel) => {
+  //   await console.log('value is', selected)
+  //   await setSelected(sel)
+  //   await console.log('thsi si sel type', sel, selected)
+  // }
   const onSubmit = async (data) => {
-    console.log(data)
-
-    navigate('/new-home-page')
-
-    // const { Email, Password } = data
-    // // login(Email, Password)
-    // login(Email, Password,)
-    // register(Email, Password)
+    try {
+      const response: any = await register(data.email, 'redefine@123')
+      if (response?.user?.uid) {
+        const user = response?.user
+        await createUser({
+          ...data,
+          uid: user.uid,
+          roles: [data.roles],
+        })
+        formMethods.reset()
+        setFormMessage({
+          color: 'green',
+          message: `Email ${data.email} is created Successfully`,
+        })
+      }
+    } catch (e) {
+      console.log(e)
+      setFormMessage({
+        color: 'red',
+        message: e.message,
+      })
+    }
   }
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
@@ -57,8 +91,12 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
           {title}
         </Dialog.Title>
       </div>
-
-      <div className="grid  gap-8 grid-cols-1 m-10">
+      {formMessage.message && (
+        <p className={`text-lg text-${formMessage.color}-500 text-center my-3`}>
+          {formMessage.message}
+        </p>
+      )}
+      <div className="grid gap-8 grid-cols-1 mx-10">
         <div className="flex flex-col ">
           {/* <div className="flex flex-col sm:flex-row items-center">
             <h2 className="font-semibold text-lg mr-auto">Project Details</h2>
@@ -66,7 +104,11 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
           </div> */}
 
           <div className="mt-0">
-            <Form onSubmit={onSubmit} className="mt-8">
+            <Form
+              formMethods={formMethods}
+              onSubmit={onSubmit}
+              className="mt-8"
+            >
               <div className="form">
                 <div className="md:flex flex-row md:space-x-4 w-full text-xs">
                   <div className="mb-3 space-y-2 w-full text-xs">
@@ -77,15 +119,13 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     />
                     <InputField
                       name="name"
-                      required
                       placeholder="User Name"
-                      className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4"
-                      errorClassName="input error"
+                      className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4"
                       validation={{ required: true }}
                     />
                     <FieldError
                       name="name"
-                      className="error-message text-red-700 text-xs"
+                      className="error-message text-red-700 text-xs px-2"
                     />
                   </div>
                   <div className="mb-3 space-y-2 w-full text-xs">
@@ -96,20 +136,18 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     />
                     <InputField
                       name="email"
-                      required
                       placeholder="Email Id"
-                      className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4"
-                      errorClassName="input error"
+                      className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4"
                       validation={{ required: true }}
                     />
                     <FieldError
                       name="email"
-                      className="error-message text-red-700 text-xs"
+                      className="error-message text-red-700 text-xs px-2"
                     />
                   </div>
                 </div>
 
-                <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
+                {/* <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
                   <div className="w-full flex flex-col mb-3">
                     <Label
                       name="Aadhar No*"
@@ -148,17 +186,16 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                       className="error-message text-red-700 text-xs"
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
                   <div className="w-full flex flex-col mb-3">
                     <label className="font-semibold text-gray-600 py-2">
                       Dept<abbr title="required">*</abbr>
                     </label>
-                    <Select
-                      //  className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
-
+                    <SelectField
+                      name="department"
+                      className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
                       placeholder="Select Dept"
-                      options={aquaticCreatures}
                     />
 
                     <p className="text-sm text-red-500 hidden mt-3" id="error">
@@ -169,40 +206,43 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     <label className="font-semibold text-gray-600 py-2">
                       Role<abbr title="required">*</abbr>
                     </label>
-                    <Select
-                      //  className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
-
+                    <SelectField
+                      className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-2 md:w-full "
+                      name="roles"
+                      validation={{ required: true }}
                       placeholder="Select Role"
-                      options={aquaticCreatures}
+                    >
+                      {roles.map((role) => (
+                        <option key={role.value} value={role.value}>
+                          {role.label}
+                        </option>
+                      ))}
+                    </SelectField>
+                    <FieldError
+                      name="roles"
+                      className="error-message text-red-700 text-xs px-2"
                     />
-
-                    <p className="text-sm text-red-500 hidden mt-3" id="error">
-                      Please fill out this field.
-                    </p>
                   </div>
                 </div>
-                <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
+                {/* <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
                   <div className="w-full flex flex-col mb-3">
                     <label className="font-semibold text-gray-600 py-2">
                       Reporting<abbr title="required">*</abbr>
                     </label>
-                    <Select
+                    <SelectField
                       //  className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
-
+                      name="reporting"
                       placeholder="Reporting To"
-                      options={cityList}
                     />
 
                     <p className="text-sm text-red-500 hidden mt-3" id="error">
                       Please fill out this field.
                     </p>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="">
-           
+                {/* <div className="">
                   <div className="bg-white rounded mt-2 ">
-
                     <div className="">
                       <div className="flex items-center py-5">
                         <input
@@ -256,9 +296,9 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="flex-auto w-full mb-1 text-xs space-y-2">
+                {/* <div className="flex-auto w-full mb-1 text-xs space-y-2">
                   <Label
                     name="Description"
                     className="font-semibold text-gray-600 py-2"
@@ -276,10 +316,10 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     className="error-message text-red-700 text-xs"
                   />
 
-                  {/* <p className="text-xs text-gray-400 text-left my-3">
+                  <p className="text-xs text-gray-400 text-left my-3">
                     You inserted 0 characters
-                  </p> */}
-                </div>
+                  </p>
+                </div> */}
                 <p className="text-xs text-red-500 text-right my-3">
                   Required fields are marked with an asterisk{' '}
                   <abbr title="Required field">*</abbr>

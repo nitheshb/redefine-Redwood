@@ -1,8 +1,16 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { UserGroupIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
+import { useAuth } from 'src/context/firebase-auth-context'
+
 const HeadSideBar = (props) => {
   const { pgName } = props
+  const { user } = useAuth()
+
+  if (user?.role !== 'admin') {
+    return null
+  }
+
   return (
     <div className="flex flex-col items-center w-16 min-w-[66px] pb-4 overflow-auto  bg-white bg-opacity-75 border-r">
       <a

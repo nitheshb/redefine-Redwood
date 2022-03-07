@@ -2,7 +2,7 @@ import { Edit } from '@mui/icons-material'
 import { IconButton } from '@mui/material'
 import UkoAvatar from '../../components/GenUkoAvatar'
 import { useState } from 'react'
-import AddEmployeeModal from './AddEmployeeModal'
+// import AddEmployeeModal from './AddEmployeeModal'
 const columnShape = [
   {
     Header: 'Avatar',
@@ -46,12 +46,12 @@ const columnShape = [
             />
           </IconButton>
 
-          <AddEmployeeModal
+          {/* <AddEmployeeModal
             edit
             open={open}
             data={row.original}
             onClose={() => setOpen(false)}
-          />
+          /> */}
         </>
       )
     },
