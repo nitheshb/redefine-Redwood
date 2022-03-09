@@ -15,8 +15,9 @@ const ProjectModulePage = () => {
                 />
               </a> */}
 
-              <span className="relative z-10 flex items-center w-auto text-2xl font-extrabold leading-none text-black select-none">redefine.</span>
-
+              <span className="relative z-10 flex items-center w-auto text-2xl font-extrabold leading-none text-black select-none">
+                redefine.
+              </span>
             </div>
             <div className="block">
               <div className="ml-4 flex items-center md:ml-6">
@@ -171,7 +172,7 @@ const ProjectModulePage = () => {
                     </Link>
                   </li>
                   <li className="my-12 text-center">
-                    <Link to={routes.newHomePage()}>
+                    <Link to="#">
                       <span className="h-6 w-6 text-gray-500 dark:text-gray-300 mx-auto hover:text-gray-800 dark:hover:text-white transition-colors duration-200">
                         <svg
                           width="20"

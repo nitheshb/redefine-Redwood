@@ -9,6 +9,7 @@ import {
   FieldError,
   Submit,
 } from '@redwoodjs/forms'
+import { navigate, routes } from '@redwoodjs/router'
 import Loader from 'src/components/Loader/Loader'
 import { navigateBasedOnUser } from 'src/util/userflow'
 interface UserInfo {
@@ -24,7 +25,7 @@ const LoginPage = () => {
   const { login, isAuthenticated } = useAuth()
 
   useEffect(() => {
-    // isAuthenticated && navigate(routes.newHomePage())
+    isAuthenticated && navigate(routes.home())
   }, [isAuthenticated])
 
   const onSubmit = async (data: UserInfo) => {
@@ -35,11 +36,7 @@ const LoginPage = () => {
     try {
       const res: any = await login(email, password)
       if (res?.user?.accessToken) {
-        const isSuccess = await navigateBasedOnUser(res.user.uid)
-        if (!isSuccess) {
-          setloginError(true)
-          setloginErrorMsg("User doesn't exist")
-        }
+        await navigateBasedOnUser(res.user.uid)
       } else {
         setloginError(true)
         setloginErrorMsg('Something went wrong')

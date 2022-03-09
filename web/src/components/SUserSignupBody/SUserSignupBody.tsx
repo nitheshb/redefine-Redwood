@@ -104,6 +104,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
     setLoading(true)
     const { email, myRole, deptVal, name } = data
 
+
     const dataBoxy = JSON.stringify({
       email: email,
       name: name,
@@ -136,7 +137,6 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
               txt: `${email} as ${myRole}`,
             })
           }
-
           formMethods.reset()
           setFormMessage({
             color: success ? 'green' : 'red',

@@ -1,0 +1,32 @@
+export const USER_ROLES = {
+  SALES_MANAGER: 'sales-manager',
+  SALES_EXECUTIVE: 'sales-executive',
+  LEGAL_MANAGER: 'legal-manager',
+  LEGAL_EXECUTIVE: 'legal-executive',
+  CRM_MANAGER: 'crm-manager',
+  CRM_EXECUTIVE: 'crm-executive',
+  HR_MANAGER: 'hr-manager',
+  HR_EXECUTIVE: 'hr_executive',
+  SUPPORT_MANAGER: 'support-manager',
+  SUPPORT_EXECUTIVE: 'support-executive',
+  HELPER_MANAGER: 'helper-manager',
+  HELPER_EXECUTIVE: 'helper-executive',
+  ADMIN: 'admin',
+}
+
+export const ROLES_LIST = [
+  { label: 'Select the role', value: '' },
+  { label: 'Sales manager', value: USER_ROLES.SALES_MANAGER },
+  { label: 'Sales executive', value: USER_ROLES.SALES_EXECUTIVE },
+  { label: 'Legal manager', value: USER_ROLES.LEGAL_MANAGER },
+  { label: 'Legal executive', value: USER_ROLES.LEGAL_EXECUTIVE },
+  { label: 'CRM manager', value: USER_ROLES.CRM_MANAGER },
+  { label: 'CRM executive', value: USER_ROLES.CRM_EXECUTIVE },
+  { label: 'HR manager', value: USER_ROLES.HR_MANAGER },
+  { label: 'HR executive', value: USER_ROLES.HR_EXECUTIVE },
+  { label: 'Support manager', value: USER_ROLES.SUPPORT_MANAGER },
+  { label: 'Support executive', value: USER_ROLES.SUPPORT_EXECUTIVE },
+  { label: 'Helper manager', value: USER_ROLES.HELPER_MANAGER },
+  { label: 'Helper executive', value: USER_ROLES.HELPER_EXECUTIVE },
+  { label: 'Admin', value: USER_ROLES.ADMIN },
+]

@@ -2,12 +2,13 @@
 import { UserGroupIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import { useAuth } from 'src/context/firebase-auth-context'
+import { USER_ROLES } from 'src/constants/userRoles'
 
 const HeadSideBar = (props) => {
   const { pgName } = props
   const { user } = useAuth()
 
-  if (user?.role !== 'admin') {
+  if (!user?.role?.includes(USER_ROLES.ADMIN)) {
     return null
   }
 
@@ -40,7 +41,7 @@ const HeadSideBar = (props) => {
           'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300 ' +
           (pgName === 'home' ? 'bg-gray-300' : '')
         }
-        to={routes.newHomePage()}
+        to={routes.home()}
       >
         <svg
           className="w-5 h-5"

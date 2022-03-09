@@ -9,6 +9,8 @@ import { XIcon } from '@heroicons/react/outline'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import SiderForm from './SiderForm/SiderForm'
 import CardItem from './leadsCard'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { USER_ROLES } from 'src/constants/userRoles'
 // import CardItem from '../../components/leadsCard'
 // import BoardData from '../../components/board-data.json'
 const BoardData = [
@@ -191,6 +193,10 @@ function createGuidId() {
   })
 }
 const ExecutiveHomeViewerPage = () => {
+  const { user } = useAuth()
+  const isSalesManager =
+    user?.role?.includes(USER_ROLES.ADMIN) ||
+    user?.role?.includes(USER_ROLES.SALES_MANAGER)
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
 
   // kanban board
@@ -306,49 +312,53 @@ const ExecutiveHomeViewerPage = () => {
                     </svg>
                   </button>
                 </span>
-                <button
-                  onClick={() => fSetLeadsType('Add Lead')}
-                  className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
+                {isSalesManager && (
+                  <>
+                    <button
+                      onClick={() => fSetLeadsType('Add Lead')}
+                      className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
 
-                  <span className="ml-1">Add lead</span>
-                </button>
+                      <span className="ml-1">Add lead</span>
+                    </button>
 
-                <button
-                  onClick={() => fSetLeadsType('Import Leads')}
-                  className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
+                    <button
+                      onClick={() => fSetLeadsType('Import Leads')}
+                      className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
 
-                  <span className="ml-1">Import Leads</span>
-                </button>
+                      <span className="ml-1">Import Leads</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 

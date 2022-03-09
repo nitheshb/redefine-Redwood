@@ -19,6 +19,7 @@ import {
 import { useDispatch } from 'react-redux'
 import { navigate, routes } from '@redwoodjs/router'
 import { getUserSuccess } from 'src/state/actions/user'
+import { getUser } from './dbQueryFirebase'
 
 export interface User {
   uid: string
@@ -26,7 +27,7 @@ export interface User {
   email: string
   displayName: string
 
-  [key: string]: unknown
+  [key: string]: any
 }
 
 interface State {
@@ -93,7 +94,9 @@ export default function AuthContextProvider({ children }) {
   const dispatchToStore = useDispatch()
 
   const authenticate = useCallback(
-    (currentUser) => {
+    async (currentUser) => {
+      const additionalUserInfo = await getUser(currentUser.uid)
+      console.log('------', additionalUserInfo)
       const user = {
         uid: currentUser.uid,
         avatar: currentUser.photoURL,
@@ -101,7 +104,7 @@ export default function AuthContextProvider({ children }) {
         displayName: currentUser.displayName,
         phone: currentUser.phoneNumber,
         token: currentUser.uid,
-        role: 'admin',
+        role: additionalUserInfo.roles,
       }
       dispatch({
         type: 'AUTH_STATE_CHANGED',
@@ -128,6 +131,7 @@ export default function AuthContextProvider({ children }) {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
       // Here you should extract the complete user profile to make it available in your entire app.
       // The auth state only provides basic information.
+      console.log('----current---', currentUser)
       if (currentUser) {
         authenticate(currentUser)
       } else {
