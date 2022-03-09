@@ -2,7 +2,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, initializeFirestore } from 'firebase/firestore'
 // import { initializeApp } from 'firebase-admin/app'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -19,11 +19,18 @@ const firebaseConfig = {
   measurementId: 'G-C2BJ3N02SQ',
 }
 
+const settings = {
+  experimentalForceLongPolling: true,
+}
 // Initialize Firebase
+
 const app = initializeApp(firebaseConfig)
+initializeFirestore(app, settings)
+
+// firebase.firestore().settings({ experimentalForceLongPolling: true });
 const db = getFirestore(app)
 // export const auth = app.auth()
 const auth = getAuth()
 const analytics = getAnalytics(app)
 
-export { auth, db, analytics }
+export { auth, db }

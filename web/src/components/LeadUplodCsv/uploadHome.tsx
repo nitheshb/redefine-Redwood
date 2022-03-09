@@ -10,6 +10,31 @@ import { addLead, getLedsData } from '../../context/dbQueryFirebase'
 
 export default function LeadsDropHomes({ title, dialogOpen }) {
   const [existingCols, setexistingCols] = useState([])
+
+  const parseExcel = async (values) => {
+    if (values.files) {
+      let x
+      try {
+        x = values.files[0].file
+      } catch (error) {
+        console.log('error ', error)
+      }
+
+      parse(x, {
+        header: true,
+        // download: true,
+        complete: async function (input) {
+          // const records = input.data
+          await setexistingCols((existing) => [...existing, ...input.data])
+          // let x =   await getLedsData()
+          // await addLead(existingCols)
+          console.log('Finished:', existingCols)
+        },
+      })
+    }else{
+      'hello'
+    }
+  }
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
       <div className="px-4 sm:px-6  z-10">
@@ -53,9 +78,9 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                     ...existing,
                     ...input.data,
                   ])
-                let x =   await getLedsData()
+                  // let x =   await getLedsData()
                   // await addLead(existingCols)
-                  console.log('Finished:', x)
+                  console.log('Finished:', existingCols)
                 },
               })
               // const myFiles = Array.from(values.files)
@@ -95,7 +120,8 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
               return new Promise((res) => setTimeout(res, 2000))
             }}
           >
-            {({ values, errors, isValid, isSubmitting }) => (
+            {({ values, errors, isValid, isSubmitting, validateOnChange }) => (
+              // {parseExcel(values)}
               <Form>
                 <Grid container spacing={2} direction="column">
                   <MultipleFileUploadField name="files" />
@@ -111,7 +137,7 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                     </Button>
                   </Grid>
                 </Grid>
-
+                {/* <pre>hello{parseExcel(values)}</pre> */}
                 <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
                 <p>{JSON.stringify({ existingCols })}</p>
               </Form>

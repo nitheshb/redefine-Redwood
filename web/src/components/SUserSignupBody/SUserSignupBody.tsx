@@ -3,9 +3,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react'
 import { Dialog } from '@headlessui/react'
+import * as Yup from 'yup'
 // import { RadioGroup } from '@headlessui/react'
 import {
-  Form,
   Label,
   InputField,
   // TextAreaField,
@@ -16,9 +16,17 @@ import {
   FieldError,
   // Submit,
 } from '@redwoodjs/forms'
-import { createUser } from 'src/context/dbQueryFirebase'
+import { addLead, addUserLog, createUser } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { Form, Formik } from 'formik'
+import { TextField } from 'src/util/formFields/TextField'
+import { CustomSelect } from 'src/util/formFields/selectBoxField'
+import axios from 'axios'
+import { constants } from 'os'
+import { env } from 'process'
+import Loader from '../Loader/Loader'
 
 // import Select from 'react-select'
 // import SelectSearch from 'react-select-search'
@@ -30,20 +38,40 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
     color: 'green',
     message: '',
   })
-  const roles = [
-    { label: 'Select the role', value: '' },
-    { label: 'Sales manager', value: 'sales-manager' },
-    { label: 'Sales executive', value: 'sales-executive' },
-    { label: 'Legal manager', value: 'legal-manager' },
-    { label: 'Legal executive', value: 'legal-executive' },
-    { label: 'CRM manager', value: 'crm-manager' },
-    { label: 'CRM executive', value: 'crm-executive' },
-    { label: 'HR manager', value: 'hr-manager' },
-    { label: 'Support manager', value: 'support-manager' },
-    { label: 'Support executive', value: 'support-executive' },
-    { label: 'Helper manager', value: 'helper-manager' },
-    { label: 'Helper executive', value: 'helper-executive' },
+  const [roles, setroles] = useState([])
+  const [deptIs, setdeptIs] = useState('')
+  const [isdeptEmpty, setisdeptEmpty] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const dept = [
+    { label: 'Select the Dept', value: '' },
     { label: 'Admin', value: 'admin' },
+    { label: 'CRM', value: 'crm' },
+    { label: 'Extra', value: 'extra' },
+    { label: 'Helper', value: 'helper' },
+    { label: 'HR', value: 'hr' },
+    { label: 'Legal', value: 'legal' },
+    { label: 'project', value: 'project' },
+    { label: 'Support', value: 'support' },
+    { label: 'Sales', value: 'sales' },
+  ]
+  const rolesList = [
+    { label: 'Select the role', value: '' },
+    { label: 'Sales manager', value: 'sales-manager', dept: 'sales' },
+    { label: 'Sales executive', value: 'sales-executive', dept: 'sales' },
+    { label: 'Legal manager', value: 'legal-manager', dept: 'legal' },
+    { label: 'Legal executive', value: 'legal-executive', dept: 'legal' },
+    { label: 'CRM manager', value: 'crm-manager', dept: 'crm' },
+    { label: 'CRM executive', value: 'crm-executive', dept: 'crm' },
+    { label: 'HR manager', value: 'hr-manager', dept: 'hr' },
+    { label: 'HR Executive', value: 'hr-executive', dept: 'hr' },
+    { label: 'Support manager', value: 'support-manager', dept: 'support' },
+    { label: 'Support executive', value: 'support-executive', dept: 'support' },
+    { label: 'Helper manager', value: 'helper-manager', dept: 'helper' },
+    { label: 'Helper executive', value: 'helper-executive', dept: 'helper' },
+    { label: 'Admin', value: 'admin', dept: 'admin' },
+    { label: 'project head', value: 'admin', dept: 'project' },
+    { label: 'project manager', value: 'admin', dept: 'project' },
   ]
 
   // const cityList = [
@@ -60,30 +88,118 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
   //   await setSelected(sel)
   //   await console.log('thsi si sel type', sel, selected)
   // }
-  const onSubmit = async (data) => {
-    try {
-      const response: any = await register(data.email, 'redefine@123')
-      if (response?.user?.uid) {
-        const user = response?.user
-        await createUser({
-          ...data,
-          uid: user.uid,
-          roles: [data.roles],
-        })
-        formMethods.reset()
-        setFormMessage({
-          color: 'green',
-          message: `Email ${data.email} is created Successfully`,
-        })
-      }
-    } catch (e) {
-      console.log(e)
-      setFormMessage({
-        color: 'red',
-        message: e.message,
-      })
+  const changed = async (data) => {
+    console.log('i was changed', data, data)
+
+    setdeptIs(data.value)
+    if (data.value != '') {
+      setisdeptEmpty(false)
     }
+
+    const filRoles = rolesList.filter((item) => item.dept === data.value)
+    setroles(filRoles)
   }
+  const onSubmit = async (data) => {
+    console.log('check fo this ', data)
+    setLoading(true)
+    const { email, myRole, deptVal, name } = data
+
+    const dataBoxy = JSON.stringify({
+      email: email,
+      name: name,
+      password: 'redefine@123',
+      dept: deptVal,
+      role: myRole,
+      orgName: 'spark',
+    })
+
+    const config = {
+      method: 'post',
+      url: 'https://redefine-functions.azurewebsites.net/api/Redefine_addUser?code=Ojuk8KF6kkxJMoOF4/XZf2kh8WHN5aMtOMlv0bbveJYZrCbRU1C9CA==',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      data: dataBoxy,
+    }
+
+    axios(config)
+      .then(function (response) {
+        if (response.data) {
+          setLoading(false)
+          const { success, msg, payload } = response['data']
+
+          if (success) {
+            addLead({
+              s: 's',
+              type: 'addUser',
+              subtype: 'addUser',
+              txt: `${email} as ${myRole}`,
+            })
+          }
+
+          formMethods.reset()
+          setFormMessage({
+            color: success ? 'green' : 'red',
+            message: success
+              ? `Email ${email} is added Successfully`
+              : `${email} already in Use`,
+          })
+        }
+      })
+      .catch(function (error) {
+        console.log('error is ', error)
+        setLoading(false)
+        setFormMessage({
+          color: 'red',
+          message: error.msg,
+        })
+      })
+    // try {
+    //   const response: any = await register(data.email, 'redefine@123')
+    //   if (response?.user?.uid) {
+    //     const user = response?.user
+    //     await createUser({
+    //       ...data,
+    //       uid: user.uid,
+    //       namespace: 'spark',
+    //       roles: [data.roles],
+    //     })
+    //     formMethods.reset()
+    //     setFormMessage({
+    //       color: 'green',
+    //       message: `Email ${data.email} is added Successfully`,
+    //     })
+    //   }
+    // } catch (e) {
+    //   console.log(e)
+    //   setFormMessage({
+    //     color: 'red',
+    //     message: e.message,
+    //   })
+    // }
+  }
+
+  const validate = Yup.object({
+    name: Yup.string()
+      .max(15, 'Must be 15 characters or less')
+      .required('Required'),
+    // lastName: Yup.string()
+    //   .max(20, 'Must be 20 characters or less')
+    //   .required('Required'),
+    email: Yup.string().email('Email is invalid').required('Email is required'),
+    // password: Yup.string()
+    //   .min(6, 'Password must be at least 6 charaters')
+    //   .required('Password is required'),
+    // confirmPassword: Yup.string()
+    //   .oneOf([Yup.ref('password'), null], 'Password must match')
+    //   .required('Confirm password is required'),
+    deptVal: Yup.string()
+      // .oneOf(['Admin', 'CRM'], 'Required Dept')
+      .required('Req Dept'),
+    myRole: Yup.string()
+      //  .oneOf(['Admin', 'CRM'], 'DEPT IS REQ')
+      .required('Required Role'),
+  })
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
       <div className="px-4 sm:px-6">
@@ -96,12 +212,101 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
           {formMessage.message}
         </p>
       )}
-      <div className="grid gap-8 grid-cols-1 mx-10">
+
+      <div className="grid gap-8 grid-cols-1 mx-10 flex flex-col">
+        <Formik
+          initialValues={{
+            name: '',
+            email: '',
+            deptVal: '',
+            myRole: '',
+          }}
+          validationSchema={validate}
+          onSubmit={(values) => {
+            console.log('ami submitted', values)
+            onSubmit(values)
+          }}
+        >
+          {(formik) => (
+            <div className="mt-16">
+              <Form>
+                <TextField label="User Name*" name="name" type="text" />
+                <TextField label="Email Id*" name="email" type="email" />
+                <CustomSelect
+                  name="deptName"
+                  label="Department"
+                  className="input mt-3"
+                  onChange={(value) => {
+                    changed(value)
+                    formik.setFieldValue('deptVal', value.value)
+                    formik.setFieldValue('myRole', '')
+                  }}
+                  value={formik.values.deptVal}
+                  options={dept}
+                />
+                {formik.errors.deptVal ? (
+                  <div className="error-message text-red-700 text-xs p-2">
+                    {formik.errors.deptVal}
+                  </div>
+                ) : null}
+                <CustomSelect
+                  name="roleName"
+                  label="Role"
+                  className="input mt-3"
+                  onChange={(value) =>
+                    formik.setFieldValue('myRole', value.value)
+                  }
+                  value={formik.values.myRole || ''}
+                  options={roles}
+                />
+                {formik.errors.myRole ? (
+                  <div className="error-message text-red-700 text-xs p-2">
+                    {formik.errors.myRole}
+                    {formik.values.myRole}
+                  </div>
+                ) : null}
+                {/* <TextField label="password" name="password" type="password" />
+                <TextField
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type="password"
+                /> */}
+
+                <p className="text-xs text-red-500 text-right my-3">
+                  Required fields are marked with an asterisk{' '}
+                  <abbr title="Required field">*</abbr>
+                </p>
+                <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse">
+                  {/* <span
+                    onClick={() => dialogOpen(false)}
+                    className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100"
+                  >
+                    {' '}
+                    Cancel{' '}
+                  </span> */}
+                  <button
+                    className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
+                    type="reset"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading && <Loader />}
+                    Add User
+                  </button>
+                </div>
+              </Form>
+            </div>
+          )}
+        </Formik>
+      </div>
+
+      {/* <div className="grid gap-8 grid-cols-1 mx-10">
         <div className="flex flex-col ">
-          {/* <div className="flex flex-col sm:flex-row items-center">
-            <h2 className="font-semibold text-lg mr-auto">Project Details</h2>
-            <div className="w-full sm:w-auto sm:ml-auto mt-3 sm:mt-0"></div>
-          </div> */}
 
           <div className="mt-0">
             <Form
@@ -147,7 +352,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                   </div>
                 </div>
 
-                {/* <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
+                <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
                   <div className="w-full flex flex-col mb-3">
                     <Label
                       name="Aadhar No*"
@@ -186,21 +391,54 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                       className="error-message text-red-700 text-xs"
                     />
                   </div>
-                </div> */}
+                </div>
+                <div className="w-full flex flex-col mb-3">
+                  <label className="font-semibold text-gray-600 py-2">
+                    State {isdeptEmpty}
+                    <abbr title="required">*</abbr>
+                  </label>
+                  <Select
+                    //  className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
+                    name="dept"
+                    placeholder="Select Department"
+                    onChange={changed}
+                    options={dept}
+                  />
+                  <FieldError
+                    name="dept"
+                    className="error-message text-red-700 text-xs px-2"
+                  />
+                  <p
+                    className={`text-sm text-red-500  mt-3 ${
+                      !isdeptEmpty ? 'hidden' : ''
+                    }`}
+                    id="error"
+                  >
+                    Please fill out this field. {isdeptEmpty.toString()}
+                  </p>
+                </div>
                 <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
                   <div className="w-full flex flex-col mb-3">
                     <label className="font-semibold text-gray-600 py-2">
                       Dept<abbr title="required">*</abbr>
                     </label>
                     <SelectField
-                      name="department"
-                      className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4 md:w-full "
+                      className=" "
+                      name="dept"
+                      validation={{ required: true }}
                       placeholder="Select Dept"
+                      onChange={changed}
+                    >
+                      {dept.map((role) => (
+                        <option key={role.value} value={role.value}>
+                          {role.label}
+                        </option>
+                      ))}
+                    </SelectField>
+                    <FieldError
+                      name="dept"
+                      className="error-message text-red-700 text-xs px-2"
                     />
-
-                    <p className="text-sm text-red-500 hidden mt-3" id="error">
-                      Please fill out this field.
-                    </p>
                   </div>
                   <div className="w-full flex flex-col mb-3">
                     <label className="font-semibold text-gray-600 py-2">
@@ -224,7 +462,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     />
                   </div>
                 </div>
-                {/* <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
+                <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
                   <div className="w-full flex flex-col mb-3">
                     <label className="font-semibold text-gray-600 py-2">
                       Reporting<abbr title="required">*</abbr>
@@ -239,9 +477,9 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                       Please fill out this field.
                     </p>
                   </div>
-                </div> */}
+                </div>
 
-                {/* <div className="">
+                <div className="">
                   <div className="bg-white rounded mt-2 ">
                     <div className="">
                       <div className="flex items-center py-5">
@@ -296,9 +534,9 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div>
 
-                {/* <div className="flex-auto w-full mb-1 text-xs space-y-2">
+                <div className="flex-auto w-full mb-1 text-xs space-y-2">
                   <Label
                     name="Description"
                     className="font-semibold text-gray-600 py-2"
@@ -319,7 +557,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                   <p className="text-xs text-gray-400 text-left my-3">
                     You inserted 0 characters
                   </p>
-                </div> */}
+                </div>
                 <p className="text-xs text-red-500 text-right my-3">
                   Required fields are marked with an asterisk{' '}
                   <abbr title="Required field">*</abbr>
@@ -340,7 +578,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
             </Form>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

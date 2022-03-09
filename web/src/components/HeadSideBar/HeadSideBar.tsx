@@ -12,13 +12,13 @@ const HeadSideBar = (props) => {
   }
 
   return (
-    <div className="flex flex-col items-center w-16 min-w-[66px] pb-4 overflow-auto  bg-white bg-opacity-75 border-r">
+    <div className="flex flex-col items-center w-16 min-w-[66px] pb-4 overflow-auto  bg-white bg-opacity-75 border-l bg-[#f0f3ff] ">
       <a
         className="flex items-center justify-center flex-shrink-0 w-full h-16  border-b"
         href="#"
       >
         {/* bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200 */}
-        <svg
+        {/* <svg
           className="w-8 h-8 to-indigo-600 "
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -32,13 +32,7 @@ const HeadSideBar = (props) => {
             strokeWidth="2"
             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
           />
-        </svg>
-
-        {/* <img
-                        className="h-8 w-auto inline"
-                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                        alt=""
-                      /> */}
+        </svg> */}
       </a>
 
       <Link

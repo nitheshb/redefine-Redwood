@@ -139,7 +139,7 @@ const rowsParent = [
     '23-01-20221',
     'myName 1',
     '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
+    'Jessicanewmannhz@Yahoo1.Com',
     'Google',
     'Arun',
     'new',
@@ -526,11 +526,13 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
   },
 }))
 
-const LfileUploadTableHome = () => {
+const LfileUploadTableHome = ({ fileRecords }) => {
   // change navbar title
   // useTitle('Data Table V1')
   const { t } = useTranslation()
   const [value, setValue] = useState('validR')
+  const [validRows, setValidRows] = useState([])
+  const [dupRows, setdupRows] = useState([])
   const [tableData, setTableData] = useState([])
   const [openModal, setOpenModal] = useState(false)
 
@@ -543,6 +545,16 @@ const LfileUploadTableHome = () => {
     console.log('table data is ', tableData2)
     setTableData(tableData2)
   }, [])
+
+  useEffect(() => {
+    console.log('table data is ', tableData2)
+    const validMode = fileRecords.filter((rw) => rw['mode'] === 'valid')
+    const dupMode = fileRecords.filter((rw) => rw['mode'] === 'duplicate')
+
+    setValidRows(validMode)
+    setdupRows(dupMode)
+    // setTableData(tableData2)
+  }, [fileRecords])
 
   return (
     <Box pt={2} pb={4}>
@@ -560,7 +572,25 @@ const LfileUploadTableHome = () => {
                 data-tabs-toggle="#myTabContent"
                 role="tablist"
               >
-
+                <li className="mr-2" role="presentation">
+                  <button
+                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
+                      value === 'all'
+                        ? 'border-blue-600 text-gray-800'
+                        : 'border-transparent'
+                    }`}
+                    type="button"
+                    role="tab"
+                    onClick={() => setValue('all')}
+                  >
+                    {`All `}
+                    <div className="  px-2 mt-1  text-[8px] text-black rounded-full">
+                      <span className="bg-gray-100 px-2 py-1 rounded-full">
+                        {fileRecords.length}
+                      </span>
+                    </div>
+                  </button>
+                </li>
                 <li className="mr-2" role="presentation">
                   <button
                     className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
@@ -576,7 +606,7 @@ const LfileUploadTableHome = () => {
 
                     <div className="px-2 mt-1 text-[8px] text-black  rounded-full">
                       <span className="bg-gray-100 px-2 py-1 rounded-full">
-                        {rowsParent.length}
+                        {validRows.length}
                       </span>
                     </div>
                   </button>
@@ -596,26 +626,7 @@ const LfileUploadTableHome = () => {
 
                     <div className="px-2 mt-1  text-[8px] text-black  rounded-full">
                       <span className="bg-gray-100 px-2 py-1 rounded-full">
-                        {dupeDatais.length}
-                      </span>
-                    </div>
-                  </button>
-                </li>
-                <li className="mr-2" role="presentation">
-                  <button
-                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
-                      value === 'all'
-                        ? 'border-blue-600 text-gray-800'
-                        : 'border-transparent'
-                    }`}
-                    type="button"
-                    role="tab"
-                    onClick={() => setValue('all')}
-                  >
-                    {`All `}
-                    <div className="  px-2 mt-1  text-[8px] text-black rounded-full">
-                      <span className="bg-gray-100 px-2 py-1 rounded-full">
-                        {rowsParent.length}
+                        {dupRows.length}
                       </span>
                     </div>
                   </button>
@@ -624,10 +635,17 @@ const LfileUploadTableHome = () => {
             </div>
 
             {/*  Data Table */}
+            {value === 'all' && (
+              <LfileuploadTableTemplate
+                selStatus={'all'}
+                rowsParent={fileRecords}
+                sourceTab={value}
+              />
+            )}
             {value === 'validR' && (
               <LfileuploadTableTemplate
                 selStatus={'all'}
-                rowsParent={rowsParent}
+                rowsParent={validRows}
                 sourceTab={value}
               />
             )}
@@ -640,13 +658,6 @@ const LfileUploadTableHome = () => {
                   sourceTab={value}
                 />
               ))}
-            {value === 'all' && (
-              <LfileuploadTableTemplate
-                selStatus={'all'}
-                rowsParent={rowsParent}
-                sourceTab={value}
-              />
-            )}
 
             {/* <LLeadsTableBody
               data={filterTable}

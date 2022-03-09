@@ -15,38 +15,80 @@ import ScrollBar from 'simplebar-react' // styled components
 const settings = [
   {
     id: 1,
-    type: 'New for you',
-    email: true,
-    browser: false,
-    app: false,
+    type: 'Admin',
+    cat: 'admin',
+    access: [
+      'manage_project',
+      'update_unit_status',
+      'view_project',
+      'view_leads',
+      'update_leads',
+      'manage_leads',
+      'manage_users',
+      'view_users',
+      'view_crm',
+      'update_crm',
+      'manage_crm',
+      'view_roles',
+      'update_roles',
+    ],
   },
   {
     id: 2,
-    type: 'Account activity',
-    email: true,
-    browser: true,
-    app: true,
+    cat: 'CRM',
+    type: 'CRM Manager',
+    access: ['view_crm', 'update_crm', 'manage_crm'],
   },
   {
     id: 3,
-    type: 'A new browser used to sign in',
-    email: true,
-    browser: true,
-    app: true,
+    cat: 'CRM',
+    type: 'CRM Executive',
+    access: ['update_crm', 'manage_crm'],
   },
   {
     id: 4,
-    type: 'A new device is linked',
-    email: false,
-    browser: true,
-    app: false,
+    cat: 'HR',
+    type: 'HR Manager',
+    access: ['manage_users', 'view_users', 'view_roles', 'update_roles'],
   },
   {
     id: 5,
-    type: 'A new device connected',
-    email: true,
-    browser: false,
-    app: false,
+    cat: 'HR',
+    type: 'HR Executive',
+    access: ['view_users', 'view_roles'],
+  },
+  {
+    id: 6,
+    cat: 'LEGAL',
+    type: 'Legal Manager',
+  },
+  {
+    id: 7,
+    cat: 'LEGAL',
+    type: 'Legal Executive',
+  },
+  {
+    id: 8,
+    cat: 'SALES',
+    type: 'Sales Manager',
+    access: [
+      'view_project',
+      'view_leads',
+      'update_leads',
+      'manage_leads',
+      'update_unit_status',
+    ],
+  },
+  {
+    id: 9,
+    cat: 'SALES',
+    type: 'Sales Executive',
+    access: [
+      'view_project',
+      'view_leads',
+      'update_leads',
+      'update_unit_status',
+    ],
   },
 ]
 
@@ -87,9 +129,17 @@ const UserAccessTable = () => {
           <TableHead>
             <TableRow>
               <StyledTableCell>Type</StyledTableCell>
-              <StyledTableCell>Email</StyledTableCell>
-              <StyledTableCell>Browser</StyledTableCell>
-              <StyledTableCell>App</StyledTableCell>
+              <StyledTableCell>Manage Poject</StyledTableCell>
+              <StyledTableCell>View Projects</StyledTableCell>
+              <StyledTableCell>Update Unit Status</StyledTableCell>
+              <StyledTableCell>View Leads</StyledTableCell>
+              <StyledTableCell>update_leads</StyledTableCell>
+
+              <StyledTableCell>Manage Leads</StyledTableCell>
+              <StyledTableCell>Manage Users</StyledTableCell>
+              <StyledTableCell>View Users</StyledTableCell>
+              <StyledTableCell>View Roles</StyledTableCell>
+              <StyledTableCell>Change User Roles</StyledTableCell>
             </TableRow>
           </TableHead>
 
@@ -98,19 +148,63 @@ const UserAccessTable = () => {
               <TableRow key={item.id} onClick={onTableRowClicked}>
                 <StyledTableCell
                   sx={{
-                    fontWeight: 600,
+                    fontWeight: 500,
+                    letterSpacing: 0.5,
                   }}
                 >
                   {item.type}
                 </StyledTableCell>
                 <StyledTableCell>
-                  <StyledCheckBox defaultChecked={item.email} />
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('manage_project')}
+                  />
                 </StyledTableCell>
                 <StyledTableCell>
-                  <StyledCheckBox defaultChecked={item.browser} />
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('view_project')}
+                  />
                 </StyledTableCell>
                 <StyledTableCell>
-                  <StyledCheckBox defaultChecked={item.app} />
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes(
+                      'update_unit_status'
+                    )}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('view_leads')}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('update_leads')}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('manage_leads')}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('manage_users')}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('view_users')}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('view_roles')}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <StyledCheckBox
+                    defaultChecked={item?.access?.includes('update_roles')}
+                  />
                 </StyledTableCell>
               </TableRow>
             ))}

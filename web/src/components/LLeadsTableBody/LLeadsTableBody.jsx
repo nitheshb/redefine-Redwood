@@ -206,7 +206,7 @@ const EnhancedTableToolbar = (props) => {
         console.log('ami here')
         return item
       } else if (
-        item.Assignedto.toLowerCase().includes(searchString.toLowerCase()) ||
+        // item.Assignedto.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Date.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Email.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Mobile.toLowerCase().includes(searchString.toLowerCase()) ||
@@ -279,7 +279,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
       <span style={{ display: 'flex' }}>
-      <Tooltip title={`Download ${rowsAfterSearchKey.length} Rows`}>
+        <Tooltip title={`Download ${rowsAfterSearchKey.length} Rows`}>
           {/* <IconButton>
             <FileDownloadIcon />
             <CSVDownloader />
@@ -305,7 +305,6 @@ const EnhancedTableToolbar = (props) => {
             <CSVDownloader className="mr-6" downloadRows={rowsAfterSearchKey} />
           </Tooltip>
         )}
-
       </span>
     </Toolbar>
   )
@@ -343,6 +342,7 @@ export default function LLeadsTableBody({ selStatus, rowsParent }) {
   const [searchKey, setSearchKey] = React.useState('')
 
   React.useEffect(() => {
+    console.log('send values is', rowsParent)
     filterStuff(rowsParent)
     // let x = rowsParent.filter((item) => {
     //   if (selStatus === 'all') {
@@ -363,7 +363,7 @@ export default function LLeadsTableBody({ selStatus, rowsParent }) {
     // return () => {
     //   second
     // }
-  }, [selStatus])
+  }, [selStatus, rowsParent])
 
   React.useEffect(() => {
     console.log('search on is', searchKey)
@@ -380,7 +380,7 @@ export default function LLeadsTableBody({ selStatus, rowsParent }) {
       }
     })
     await setRows(x)
-    await console.log('xo', x)
+    await console.log('xo', x, parent, selStatus)
   }
   const filterSearchString = async (parent) => {
     return
@@ -493,14 +493,15 @@ Project: "Nakshatra Township"
 Source: "Google"
 Status: "new"
 id: "1" */}
+
+            {/* item.Assignedto.toLowerCase().includes(
+                    searchKey.toLowerCase()
+                  ) || */}
             {rows
               .filter((item) => {
                 if (searchKey == '' || !searchKey) {
                   return item
                 } else if (
-                  item.Assignedto.toLowerCase().includes(
-                    searchKey.toLowerCase()
-                  ) ||
                   item.Date.toLowerCase().includes(searchKey.toLowerCase()) ||
                   item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
                   item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
@@ -570,10 +571,11 @@ id: "1" */}
                       </section>
                     </TableCell>
                     <TableCell align="left">
-                      <HighlighterStyle
+                      {/* <HighlighterStyle
                         searchKey={searchKey}
-                        source={row.Assignedto.toString()}
-                      />
+                        source={row.Assignedto}
+                      /> */}
+                      {row.Assignedto}
                     </TableCell>
                     <TableCell align="left">
                       <HighlighterStyle

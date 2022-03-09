@@ -2,12 +2,13 @@ import { Grid, makeStyles } from '@material-ui/core'
 import { useField } from 'formik'
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { DocumentAddIcon } from '@heroicons/react/outline'
-
+import { parse } from 'papaparse'
 import { FileError, FileRejection, useDropzone } from 'react-dropzone'
 import { SingleFileUploadWithProgress } from './SingleFileUploadWithProgress'
 import { UploadError } from './UploadError'
 import { LAddLeadTable } from '../LAddLeadTable'
 import LfileUploadTableHome from '../LfileUploadTableHome'
+import { checkIfLeadAlreadyExists } from 'src/context/dbQueryFirebase'
 
 let currentId = 0
 
@@ -81,6 +82,7 @@ export function MultipleFileUploadField({ name }: { name: string }) {
   const classes = useStyles()
 
   const [files, setFiles] = useState<UploadableFile[]>([])
+  const [fileRecords, setfileRecords] = useState([])
   const onDrop = useCallback((accFiles: File[], rejFiles: FileRejection[]) => {
     const mappedAcc = accFiles.map((file) => ({
       file,
@@ -97,6 +99,37 @@ export function MultipleFileUploadField({ name }: { name: string }) {
   }, [files])
 
   function onUpload(file: File, url: string) {
+    console.log('field uploaded successfully', file)
+
+    parse(file, {
+      header: true,
+      // download: true,
+      complete: async function (input) {
+        const records = input.data
+        // await setfileRecords((existing) => [...existing, ...input.data])
+        // set All records
+        const clean1 = records.filter((row) => row['Date'] != '')
+
+        // set duplicate & valid records
+        // check in db if record exists with matched phone Number & email
+        const serialData = await Promise.all(
+          clean1.map(async (dRow) => {
+            const foundLength = await checkIfLeadAlreadyExists(
+              "spark_leads",
+              dRow['Mobile']
+            )
+            dRow['mode'] = await makeMode(foundLength)
+            await console.log('foundLength is', foundLength, dRow,foundLength, dRow['Mobile'])
+            return await dRow
+          })
+        )
+
+        await setfileRecords(serialData)
+        // let x =   await getLedsData()
+        // await addLead(existingCols)
+        await console.log('Finished: records', serialData, fileRecords)
+      },
+    })
     setFiles((curr) =>
       curr.map((fw) => {
         if (fw.file === file) {
@@ -105,6 +138,15 @@ export function MultipleFileUploadField({ name }: { name: string }) {
         return fw
       })
     )
+  }
+
+  function makeMode(foundLength) {
+    if (foundLength == undefined) {
+      console.log('foundLength is==> ', foundLength)
+      return 'valid'
+    } else {
+      return 'duplicate'
+    }
   }
 
   function onDelete(file: File) {
@@ -149,12 +191,8 @@ export function MultipleFileUploadField({ name }: { name: string }) {
         </p>
       </div>
 
-      {files.map((fileWrapper) => (
-       
-        <div
-          className="mt-6 p-6 bg-white border border-gray-100"
-          key={fileWrapper.id}
-        >
+      {files.map((fileWrapper, inx) => (
+        <div className="mt-6 p-6 bg-white border border-gray-100" key={inx}>
           {fileWrapper.errors.length ? (
             <UploadError
               file={fileWrapper.file}
@@ -169,7 +207,7 @@ export function MultipleFileUploadField({ name }: { name: string }) {
                 file={fileWrapper.file}
               />
               <div className="mt-2 p-6 bg-white border border-gray-100">
-                <LfileUploadTableHome />
+                <LfileUploadTableHome fileRecords={fileRecords} />
               </div>
             </section>
           )}

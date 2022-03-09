@@ -16,23 +16,17 @@ const LeadsManagerPage = () => {
   return (
     <>
       <div className="flex w-screen h-screen text-gray-700">
+        {showSideBar && <HeadSideBar pgName={'leadsManager'} />}
+        <HeadSideBarDetailView
+          pgName={'leadsManager'}
+          sourceLink={'leadsScreen'}
+          showSideBar={showSideBar}
+          showSideView1={showSideView1}
+        />
+
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
-          <div className="flex-grow flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
-            {showSideBar && <HeadSideBar pgName={'leadsManager'} />}
-            <HeadSideBarDetailView
-              pgName={'leadsManager'}
-              sourceLink={'leadsScreen'}
-              showSideBar={showSideBar}
-              showSideView1={showSideView1}
-            />
-
-            <div className=" items-center  h-16 px-300  py-300  ">
-              {/* <h1 className="text-lg font-medium">redefine.</h1> */}
-              <ExecutiveHomeViewerPage />
-            </div>
-            <MetaTags title="ExecutiveHome" description="ExecutiveHome page" />
-          </div>
+          <ExecutiveHomeViewerPage />
         </div>
       </div>
     </>

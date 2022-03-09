@@ -29,7 +29,7 @@ const HeadNavBar = () => {
           style={{ marginLeft: '10px' }}
           className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-black select-none pl-0 ml-4"
         >
-          redefine.
+          
         </span>
         <button className="flex items-center justify-center h-10 px-4 ml-auto "></button>
         <button className="flex items-center justify-center h-10 text-sm font-medium "></button>

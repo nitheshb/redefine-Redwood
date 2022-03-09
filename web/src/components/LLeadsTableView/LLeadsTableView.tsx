@@ -4,6 +4,7 @@ import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
 import uniqueId from '../../util/generatedId'
+import { getLedsData1 } from 'src/context/dbQueryFirebase'
 
 const tableData2 = [
   {
@@ -436,6 +437,7 @@ const LLeadsTableView = ({ setisImportLeadsOpen }) => {
   const { t } = useTranslation()
   const [value, setValue] = useState('new')
   const [tableData, setTableData] = useState([])
+  const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [openModal, setOpenModal] = useState(false)
 
   const handleChange = (_, newValue) => {
@@ -457,6 +459,14 @@ const LLeadsTableView = ({ setisImportLeadsOpen }) => {
     //   })
   }, [])
 
+  useEffect(() => {
+    getLeadsDataFun()
+  }, [])
+  const getLeadsDataFun = async () => {
+    const leadsData = await getLedsData1()
+    setLeadsFetchedData(leadsData)
+    await console.log('leadsData', leadsData)
+  }
   const handleDelete = async (ids) => {
     const { data } = await axios.post('/api/tableData1/delete', {
       ids,
@@ -514,7 +524,7 @@ const LLeadsTableView = ({ setisImportLeadsOpen }) => {
                         <div className="px-2 mt-1 text-[9px] text-black  rounded-full">
                           <span className="bg-gray-100 px-2 py-1 rounded-full">
                             {/* {rowsParent.length} */}
-                            {rowsCounter(rowsParent, d.val).length}
+                            {rowsCounter(leadsFetchedData, d.val).length}
                           </span>
                         </div>
                       </button>
@@ -528,7 +538,7 @@ const LLeadsTableView = ({ setisImportLeadsOpen }) => {
               data={filterTable}
               handleDelete={handleDelete}
               selStatus={value}
-              rowsParent={rowsParent}
+              rowsParent={leadsFetchedData}
             />
           </Grid>
         </Grid>

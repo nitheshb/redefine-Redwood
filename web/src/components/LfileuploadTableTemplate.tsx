@@ -26,6 +26,7 @@ import CSVDownloader from '../util/csvDownload'
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone'
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
+import { addLead, getLedsData1 } from 'src/context/dbQueryFirebase'
 
 // function createData(
 //   Date,
@@ -190,7 +191,14 @@ EnhancedTableHead.propTypes = {
 }
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selStatus, filteredData, setSearchKey, rows } = props
+  const {
+    numSelected,
+    selStatus,
+    filteredData,
+    setSearchKey,
+    rows,
+    sourceTab,
+  } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
 
@@ -222,6 +230,16 @@ const EnhancedTableToolbar = (props) => {
     })
     setRowsAfterSearchKey(rowsR)
     // setRows(rowsR)
+  }
+  const addLeadsToDB = async (records) => {
+    getLedsData1()
+    const mappedArry = await Promise.all(
+      records.map(async (data) => {
+        return await addLead(data)
+        console.log('am inside addLeadstoDB')
+      })
+    )
+    console.log('mappedArry', mappedArry)
   }
   return (
     <Toolbar
@@ -287,11 +305,11 @@ const EnhancedTableToolbar = (props) => {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-      ) : (
+      ) : sourceTab != 'all' ? (
         <span style={{ display: 'flex' }}>
           <IconButton
             aria-label="done"
-            onClick={() => onToggleEditMode(row.id)}
+            onClick={() => addLeadsToDB(rowsAfterSearchKey)}
           >
             <DoneIcon />
           </IconButton>
@@ -302,6 +320,8 @@ const EnhancedTableToolbar = (props) => {
             <RevertIcon></RevertIcon>
           </IconButton>
         </span>
+      ) : (
+        <span></span>
       )}
     </Toolbar>
   )
@@ -402,7 +422,7 @@ export default function LfileuploadTableTemplate({
     // return () => {
     //   second
     // }
-  }, [selStatus])
+  }, [selStatus, rowsParent])
 
   React.useEffect(() => {
     console.log('search on is', searchKey)
@@ -502,6 +522,7 @@ export default function LfileuploadTableTemplate({
           filteredData={rows}
           searchKey={searchKey}
           setSearchKey={setSearchKey}
+          sourceTab={sourceTab}
           rows={rows}
         />
         <TableContainer sx={{ maxHeight: 640 }}>
@@ -514,9 +535,10 @@ export default function LfileuploadTableTemplate({
           >
             <TableHead>
               <TableRow>
-                {columns.map((column) => (
+                <TableCell>sNO</TableCell>
+                {columns.map((column, ind) => (
                   <TableCell
-                    key={column.id}
+                    key={ind}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
                   >
@@ -568,14 +590,16 @@ export default function LfileuploadTableTemplate({
                       hover
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.code}
+                      key={index}
                       style={{
                         background:
-                          (index == 0 && sourceTab === 'duplicateR') || (sourceTab=== 'validR')
+                          (index == 0 && sourceTab === 'duplicateR') ||
+                          sourceTab === 'validR'
                             ? '#e8fde8'
                             : '',
                       }}
                     >
+                      <TableCell>{index + 1}</TableCell>
                       {columns.map((column) => {
                         const value = row[column.id]
                         return (
