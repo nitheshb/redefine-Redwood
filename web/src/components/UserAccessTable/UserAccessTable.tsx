@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Button,
   Card,
@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@mui/material'
 import ScrollBar from 'simplebar-react' // styled components
+import { EyeIcon } from '@heroicons/react/outline'
 
 const settings = [
   {
@@ -108,108 +109,265 @@ const StyledCheckBox = styled(Checkbox)(() => ({
 }))
 
 const UserAccessTable = () => {
+  const [selDept, showOnlyDept] = useState('all')
   const onTableRowClicked = (event) => {
     console.log('-------', event)
   }
   return (
-    <Card
+    <section
+      className="bg-white"
       sx={{
         padding: 3,
       }}
     >
       <ScrollBar>
-        <Table
-          sx={{
-            '& th': {
-              paddingBottom: 0,
-              fontWeight: 600,
-            },
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Type</StyledTableCell>
-              <StyledTableCell>Manage Poject</StyledTableCell>
-              <StyledTableCell>View Projects</StyledTableCell>
-              <StyledTableCell>Update Unit Status</StyledTableCell>
-              <StyledTableCell>View Leads</StyledTableCell>
-              <StyledTableCell>update_leads</StyledTableCell>
+        <section className="flex ml-auto  mb-[0.5px] bg-white  rounded-md  py-4 border-b">
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'all'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('all')}
+          >
+            <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+            All
+          </span>
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'admin'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('admin')}
+          >
+            ADMIN
+          </span>
 
-              <StyledTableCell>Manage Leads</StyledTableCell>
-              <StyledTableCell>Manage Users</StyledTableCell>
-              <StyledTableCell>View Users</StyledTableCell>
-              <StyledTableCell>View Roles</StyledTableCell>
-              <StyledTableCell>Change User Roles</StyledTableCell>
-            </TableRow>
-          </TableHead>
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'crm'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('crm')}
+          >
+            CRM
+          </span>
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'HR'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('HR')}
+          >
+            HR
+          </span>
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'legal'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('legal')}
+          >
+            LEGAL
+          </span>
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'project'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('project')}
+          >
+            PROJECT
+          </span>
+          <span
+            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+              selDept === 'sales'
+                ? 'text-pink-800 bg-pink-200 border-pink-200'
+                : 'border border-pink-400 text-pink-500'
+            } `}
+            onClick={() => showOnlyDept('sales')}
+          >
+            SALES
+          </span>
+        </section>
+        <section className="px-4">
+          <Table
+            sx={{
+              '& th': {
+                paddingBottom: 0,
+                fontWeight: 600,
+              },
+            }}
+          >
+            <TableHead style={{ backgroundColor: '#F9FAFB' }}>
+              <TableRow>
 
-          <TableBody>
-            {settings.map((item) => (
-              <TableRow key={item.id} onClick={onTableRowClicked}>
                 <StyledTableCell
                   sx={{
                     fontWeight: 500,
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.8,
+                    lineHeight: '1rem',
                   }}
                 >
-                  {item.type}
+                  Type
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('manage_project')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  Manage Poject
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('view_project')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  View Projects
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes(
-                      'update_unit_status'
-                    )}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  Update Unit Status
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('view_leads')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  View Leads
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('update_leads')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  update_leads
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('manage_leads')}
-                  />
+
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  Manage Leads
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('manage_users')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  Manage Users
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('view_users')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  View Users
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('view_roles')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  View Roles
                 </StyledTableCell>
-                <StyledTableCell>
-                  <StyledCheckBox
-                    defaultChecked={item?.access?.includes('update_roles')}
-                  />
+                <StyledTableCell
+                  sx={{
+                    fontWeight: 500,
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  Change User Roles
                 </StyledTableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+
+            <TableBody>
+              {settings.map((item) => (
+                <TableRow key={item.id} onClick={onTableRowClicked}>
+                  <StyledTableCell
+                    sx={{
+                      fontWeight: 500,
+                      letterSpacing: 0.5,
+                    }}
+                  >
+                    {item.type}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('manage_project')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('view_project')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes(
+                        'update_unit_status'
+                      )}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('view_leads')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('update_leads')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('manage_leads')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('manage_users')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('view_users')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('view_roles')}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledCheckBox
+                      defaultChecked={item?.access?.includes('update_roles')}
+                    />
+                  </StyledTableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </section>
       </ScrollBar>
 
       <Button
@@ -220,7 +378,7 @@ const UserAccessTable = () => {
       >
         Save Changes
       </Button>
-    </Card>
+    </section>
   )
 }
 

@@ -7,11 +7,18 @@ import SUserSignup from 'src/components/SUserSignup/SUserSignup'
 import UserManageTable from 'src/components/UserManageTable/UserManageTable'
 import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
+import MyActivityHome from 'src/components/MyActivityHome/MyActivityHome'
 
 const UsersAdminPage = () => {
   const [isOpen, setIsOpen] = useState(false)
   const handleOnClose = () => setIsOpen(false)
   const [viewable, setViewable] = useState('User Management')
+  const [empData, setEmpData] = useState({})
+
+  const editEmployeeFun = (empData) => {
+    setEmpData(empData)
+    setIsOpen(true)
+  }
   return (
     <>
       <MetaTags title="UsersAdmin" description="UsersAdmin page" />
@@ -34,7 +41,7 @@ const UsersAdminPage = () => {
               </span>
 
               <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => editEmployeeFun({})}
                 className="flex items-center justify-center h-10 px-4  bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
               >
                 <svg
@@ -51,11 +58,13 @@ const UsersAdminPage = () => {
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                <span className="ml-1 leading-none">Add User</span>
+                <span className="ml-1 leading-none">Add Employee</span>
               </button>
             </div>
 
-            {viewable === 'User Management' && <UserManageTable />}
+            {viewable === 'User Management' && (
+              <UserManageTable editEmployeeFun={editEmployeeFun} />
+            )}
 
             {viewable === 'Roles Management' && (
               <>
@@ -63,10 +72,23 @@ const UsersAdminPage = () => {
               </>
             )}
 
+            {viewable === 'My Activity' && (
+              <>
+                <MyActivityHome source={'individual'} />
+              </>
+            )}
+
+            {viewable === 'Team Activity' && (
+              <>
+                <MyActivityHome source={'team'} />
+              </>
+            )}
+
             <SUserSignup
               open={isOpen}
               setOpen={handleOnClose}
               title="Create User"
+              empData={empData}
             />
           </div>
         </div>

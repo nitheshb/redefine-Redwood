@@ -4,7 +4,7 @@ import { XIcon } from '@heroicons/react/outline'
 import DialogFormBody from '../DialogFormBody/DialogFormBody'
 import SUserSignupBody from '../SUserSignupBody/SUserSignupBody'
 
-const SUserSignup = ({ open, setOpen, title }) => {
+const SUserSignup = ({ open, setOpen, title, empData }) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -56,7 +56,11 @@ const SUserSignup = ({ open, setOpen, title }) => {
                     </button>
                   </div>
                 </Transition.Child>
-                <SUserSignupBody title={title} dialogOpen={setOpen} />
+                <SUserSignupBody
+                  title={title}
+                  dialogOpen={setOpen}
+                  empData={empData}
+                />
               </div>
             </Transition.Child>
           </div>

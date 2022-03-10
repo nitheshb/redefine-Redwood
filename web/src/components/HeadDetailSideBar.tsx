@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { checkActionCode } from '@firebase/auth'
 import { UserGroupIcon } from '@heroicons/react/outline'
@@ -530,12 +532,12 @@ const HeadSideBarDetailView = ({
               <ul className="px-1">
                 {' '}
                 <li className="relative">
-                  <Link
+                  <span
                     className={
                       'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                       (pgName === 'home' ? 'bg-gray-300' : '')
                     }
-                    to={routes.home()}
+                    onClick={() => setViewable('My Activity')}
                   >
                     <span className="flex items-center">
                       <span style={{ color: '#058527' }}>
@@ -551,15 +553,15 @@ const HeadSideBarDetailView = ({
                       </span>
                       <span className="text-sm pl-[4px]">My Report</span>
                     </span>
-                  </Link>
+                  </span>
                 </li>
                 <li className="relative">
-                  <Link
+                  <span
                     className={
                       'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                       (pgName === 'home' ? 'bg-gray-300' : '')
                     }
-                    to={routes.home()}
+                    onClick={() => setViewable('Team Activity')}
                   >
                     <span className="flex items-center">
                       <span style={{ color: '#058527' }}>
@@ -575,7 +577,7 @@ const HeadSideBarDetailView = ({
                       </span>
                       <span className="text-sm pl-[4px]">Team Report</span>
                     </span>
-                  </Link>
+                  </span>
                 </li>
               </ul>
             </li>

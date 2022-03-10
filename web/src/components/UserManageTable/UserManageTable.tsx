@@ -2,10 +2,12 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
+  deleteUser,
   getLedsData1,
   getUsersList,
   steamUsersList,
 } from 'src/context/dbQueryFirebase'
+import { TrashIcon } from '@heroicons/react/outline'
 
 const people = [
   {
@@ -30,7 +32,7 @@ const people = [
   },
   // More people...
 ]
-const UserManageTable = () => {
+const UserManageTable = ({ editEmployeeFun }) => {
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [filterData, setFilterData] = useState([])
   const [selDept, setSelDept] = useState('')
@@ -81,7 +83,7 @@ const UserManageTable = () => {
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <section className="flex ml-auto my-[18px]">
+          <section className="flex ml-auto mt-[18px]  bg-white   py-4">
             <span
               className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
                 selDept === 'all'
@@ -155,7 +157,7 @@ const UserManageTable = () => {
               SALES
             </span>
           </section>
-          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <div className="shadow overflow-hidden border-b border-gray-200 ">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -190,7 +192,7 @@ const UserManageTable = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filterData.map((person) => (
-                  <motion.tr  key={person.email}>
+                  <motion.tr key={person.email}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
@@ -230,12 +232,34 @@ const UserManageTable = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a
+                      {/* <a
                         href="#"
                         className="text-indigo-600 hover:text-indigo-900"
                       >
                         Edit
-                      </a>
+                      </a> */}
+
+                      <PencilIcon
+                        className="w-5 h-5 ml-[6px] mb-[4px] inline cursor-pointer"
+                        onClick={() => editEmployeeFun(person)}
+                      />
+                      {/* <a
+                        href="#"
+                        className="text-indigo-600 hover:text-indigo-900"
+                      >
+                        Del
+                      </a> */}
+                      <TrashIcon
+                        className="w-5 h-5 ml-[18px] mb-[4px] inline cursor-pointer"
+                        onClick={() =>
+                          deleteUser(
+                            person?.uid,
+                            'nithe.nithesh@gmail.com',
+                            person?.email,
+                            person?.roles
+                          )
+                        }
+                      />
                     </td>
                   </motion.tr>
                 ))}

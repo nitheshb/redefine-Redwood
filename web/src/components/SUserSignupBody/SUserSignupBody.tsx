@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import * as Yup from 'yup'
 // import { RadioGroup } from '@headlessui/react'
@@ -16,7 +16,12 @@ import {
   FieldError,
   // Submit,
 } from '@redwoodjs/forms'
-import { addLead, addUserLog, createUser } from 'src/context/dbQueryFirebase'
+import {
+  addLead,
+  addUserLog,
+  createUser,
+  updateUserRole,
+} from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { useForm } from 'react-hook-form'
 import Select from 'react-select'
@@ -31,7 +36,7 @@ import Loader from '../Loader/Loader'
 // import Select from 'react-select'
 // import SelectSearch from 'react-select-search'
 
-const SUserSignupBody = ({ title, dialogOpen }) => {
+const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const { register } = useAuth()
   const formMethods = useForm()
   const [formMessage, setFormMessage] = useState({
@@ -39,11 +44,13 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
     message: '',
   })
   const [roles, setroles] = useState([])
+  const [editMode, seteditMode] = useState(false)
   const [deptIs, setdeptIs] = useState('')
   const [isdeptEmpty, setisdeptEmpty] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  const dept = [
+  const { name, email, department, uid } = empData
+  console.log('empData is ', empData)
+  const deptList = [
     { label: 'Select the Dept', value: '' },
     { label: 'Admin', value: 'admin' },
     { label: 'CRM', value: 'crm' },
@@ -74,6 +81,12 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
     { label: 'project manager', value: 'admin', dept: 'project' },
   ]
 
+  useEffect(() => {
+    if (name) {
+      seteditMode(true)
+    }
+  }, [])
+
   // const cityList = [
   //   { label: 'Bangalore,KA', value: 'Bangalore,KA' },
   //   { label: 'Cochin,KL', value: 'Cochin,KL' },
@@ -88,6 +101,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
   //   await setSelected(sel)
   //   await console.log('thsi si sel type', sel, selected)
   // }
+
   const changed = async (data) => {
     console.log('i was changed', data, data)
 
@@ -104,79 +118,78 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
     setLoading(true)
     const { email, myRole, deptVal, name } = data
 
+    if (editMode) {
+      updateUserRole(
+        uid,
+        deptVal,
+        myRole,
+        email,
+        'nitheshreddy.email@gmail.com'
+      )
+      setLoading(false)
+      addUserLog({
+        s: 's',
+        type: 'updateRole',
+        subtype: 'updateRole',
+        txt: `${email} as ${myRole}`,
+        by: 'nitheshreddy.email@gmail.com',
+      })
+      setFormMessage({
+        color: 'green',
+        message: `Role is updated Successfully`,
+      })
+    } else {
+      const dataBoxy = JSON.stringify({
+        email: email,
+        name: name,
+        password: 'redefine@123',
+        dept: deptVal,
+        role: myRole,
+        orgName: 'spark',
+      })
 
-    const dataBoxy = JSON.stringify({
-      email: email,
-      name: name,
-      password: 'redefine@123',
-      dept: deptVal,
-      role: myRole,
-      orgName: 'spark',
-    })
+      const config = {
+        method: 'post',
+        url: 'https://redefine-functions.azurewebsites.net/api/Redefine_addUser?code=Ojuk8KF6kkxJMoOF4/XZf2kh8WHN5aMtOMlv0bbveJYZrCbRU1C9CA==',
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        data: dataBoxy,
+      }
 
-    const config = {
-      method: 'post',
-      url: 'https://redefine-functions.azurewebsites.net/api/Redefine_addUser?code=Ojuk8KF6kkxJMoOF4/XZf2kh8WHN5aMtOMlv0bbveJYZrCbRU1C9CA==',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      data: dataBoxy,
-    }
+      axios(config)
+        .then(function (response) {
+          if (response.data) {
+            setLoading(false)
+            const { success, msg, payload } = response['data']
 
-    axios(config)
-      .then(function (response) {
-        if (response.data) {
-          setLoading(false)
-          const { success, msg, payload } = response['data']
-
-          if (success) {
-            addLead({
-              s: 's',
-              type: 'addUser',
-              subtype: 'addUser',
-              txt: `${email} as ${myRole}`,
+            if (success) {
+              addUserLog({
+                s: 's',
+                type: 'addUser',
+                subtype: 'addUser',
+                txt: `${email} as ${myRole}`,
+                by: 'nitheshreddy.email@gmail.com',
+              })
+            }
+            formMethods.reset()
+            setFormMessage({
+              color: success ? 'green' : 'red',
+              message: success
+                ? `Email ${email} is added Successfully`
+                : `${email} already in Use`,
             })
           }
-          formMethods.reset()
-          setFormMessage({
-            color: success ? 'green' : 'red',
-            message: success
-              ? `Email ${email} is added Successfully`
-              : `${email} already in Use`,
-          })
-        }
-      })
-      .catch(function (error) {
-        console.log('error is ', error)
-        setLoading(false)
-        setFormMessage({
-          color: 'red',
-          message: error.msg,
         })
-      })
-    // try {
-    //   const response: any = await register(data.email, 'redefine@123')
-    //   if (response?.user?.uid) {
-    //     const user = response?.user
-    //     await createUser({
-    //       ...data,
-    //       uid: user.uid,
-    //       namespace: 'spark',
-    //       roles: [data.roles],
-    //     })
-    //     formMethods.reset()
-    //     setFormMessage({
-    //       color: 'green',
-    //       message: `Email ${data.email} is added Successfully`,
-    //     })
-    //   }
-    // } catch (e) {
-    //   console.log(e)
-    //   setFormMessage({
-    //     color: 'red',
-    //     message: e.message,
-    //   })
-    // }
+        .catch(function (error) {
+          console.log('error is ', error)
+          setLoading(false)
+          setFormMessage({
+            color: 'red',
+            message: error.msg,
+          })
+        })
+    }
   }
 
   const validate = Yup.object({
@@ -216,9 +229,9 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
       <div className="grid gap-8 grid-cols-1 mx-10 flex flex-col">
         <Formik
           initialValues={{
-            name: '',
-            email: '',
-            deptVal: '',
+            name: name,
+            email: email,
+            deptVal: department,
             myRole: '',
           }}
           validationSchema={validate}
@@ -230,8 +243,18 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
           {(formik) => (
             <div className="mt-16">
               <Form>
-                <TextField label="User Name*" name="name" type="text" />
-                <TextField label="Email Id*" name="email" type="email" />
+                <TextField
+                  label="User Name*"
+                  name="name"
+                  type="text"
+                  disabled={editMode}
+                />
+                <TextField
+                  label="Email Id*"
+                  name="email"
+                  type="email"
+                  disabled={editMode}
+                />
                 <CustomSelect
                   name="deptName"
                   label="Department"
@@ -242,7 +265,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     formik.setFieldValue('myRole', '')
                   }}
                   value={formik.values.deptVal}
-                  options={dept}
+                  options={deptList}
                 />
                 {formik.errors.deptVal ? (
                   <div className="error-message text-red-700 text-xs p-2">
@@ -296,7 +319,7 @@ const SUserSignupBody = ({ title, dialogOpen }) => {
                     disabled={loading}
                   >
                     {loading && <Loader />}
-                    Add User
+                    Add Employee
                   </button>
                 </div>
               </Form>

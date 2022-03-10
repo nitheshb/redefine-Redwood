@@ -13,8 +13,9 @@ import {
   where,
   Timestamp,
   FieldValue,
+  updateDoc,
+  deleteDoc,
 } from 'firebase/firestore'
-
 
 // getF
 // addF
@@ -29,6 +30,10 @@ import {
 
 export const steamUsersList = (snapshot, error) => {
   const itemsQuery = query(collection(db, 'users'))
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+export const steamUsersActivityLog = (snapshot, error) => {
+  const itemsQuery = query(collection(db, 'spark_user_log'))
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
@@ -137,4 +142,36 @@ export const addUserLog = (data) => {
 export const addLeadLog = (data) => {
   const userRef = doc(db, 'spark_leads')
   setDoc(userRef, data)
+}
+
+// **********************************************
+// upateF
+// **********************************************
+export const updateUserRole = async (uid, dept, role, email, by) => {
+  await updateDoc(doc(db, 'users', uid), {
+    department: [dept],
+    roles: [role],
+  })
+  return await addUserLog({
+    s: 's',
+    type: 'updateRole',
+    subtype: 'updateRole',
+    txt: `${email} is updated with ${role}`,
+    by,
+  })
+}
+
+// **********************************************
+// deleteF
+// **********************************************
+
+export const deleteUser = async (uid, by, email, myRole) => {
+  await deleteDoc(doc(db, 'users', uid))
+  return await addUserLog({
+    s: 's',
+    type: 'deleteRole',
+    subtype: 'deleteRole',
+    txt: `Employee ${email} as ${myRole} is deleted`,
+    by,
+  })
 }
