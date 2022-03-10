@@ -104,6 +104,28 @@ export const checkIfLeadAlreadyExists = async (cName, matchVal) => {
   // db.collection('spark_leads').add(data)
 }
 
+export const getAllRoleAccess = async () => {
+  // userAccessRoles.forEach(async (element) => {
+  //   const r = 'A' + Math.random() * 100000000000000000 + 'Z'
+  //   const updated = {
+  //     ...element,
+  //     uid: r,
+  //   }
+  //   const ref = doc(db, 'spark_roles_access', r)
+  //   await setDoc(ref, updated, { merge: true })
+  // })
+  const records = []
+  const getAllRolesQueryById = await query(
+    collection(db, 'spark_roles_access'),
+    orderBy('id')
+  )
+  const querySnapshot = await getDocs(getAllRolesQueryById)
+  querySnapshot.forEach((doc) => {
+    records.push(doc.data())
+  })
+  return records
+}
+
 // **********************************************
 // addF
 // **********************************************
@@ -158,6 +180,19 @@ export const updateUserRole = async (uid, dept, role, email, by) => {
     subtype: 'updateRole',
     txt: `${email} is updated with ${role}`,
     by,
+  })
+}
+
+export const updateAccessRoles = async (data, currentUser) => {
+  data.forEach(async (d) => {
+    await updateDoc(doc(db, 'spark_roles_access', d.uid), d)
+  })
+  return await addUserLog({
+    s: 's',
+    type: 'updateRoleAccess',
+    subtype: 'updateAccessForPages',
+    txt: `${currentUser.email} is updated the user access roles`,
+    by: currentUser.email,
   })
 }
 
