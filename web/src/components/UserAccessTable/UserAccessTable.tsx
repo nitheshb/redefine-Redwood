@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   Box,
-  Button,
   Checkbox,
   styled,
   Table,
@@ -10,6 +9,7 @@ import {
   TableRow,
 } from '@mui/material'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import { useSnackbar } from 'notistack'
 import { EyeIcon } from '@heroicons/react/outline'
 import {
   getAllRoleAccess,
@@ -59,6 +59,7 @@ const UserAccessTable = () => {
   const [settings, setSettings] = useState([])
   const [filterData, setFilterData] = useState([])
   const { user } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
 
   const getAllRoleAccessDocs = async () => {
     const data = await getAllRoleAccess()
@@ -80,10 +81,11 @@ const UserAccessTable = () => {
     }
   }, [category, settings])
 
-  const onRoleChangeListener = (docId, element) => {
-    const newSettings = filterData.map((item) => {
-      if (item.uid === docId) {
-        const newAccess = item.access.map((accessRole) => {
+  const onRoleChangeListener = async (role, element) => {
+    let newAccess = {}
+    filterData.forEach((item) => {
+      if (item.uid === role.uid) {
+        newAccess = item.access.map((accessRole) => {
           if (accessRole.key === element.key) {
             return {
               ...accessRole,
@@ -92,18 +94,9 @@ const UserAccessTable = () => {
           }
           return accessRole
         })
-        item.access = newAccess
-        return item
       }
-      return item
     })
-    setFilterData(newSettings)
-  }
-
-  const handleOnSave = async () => {
-    if (filterData.length) {
-      await updateAccessRoles(filterData, user)
-    }
+    await updateAccessRoles(role, newAccess, user, enqueueSnackbar, element)
   }
   return (
     <Box className="bg-white pb-4">
@@ -193,14 +186,14 @@ const UserAccessTable = () => {
           </StyledTableHead>
 
           <TableBody>
-            {filterData.map((item) => (
-              <StyledTableRow key={item.uid}>
-                <StyledTableCell>{item.type}</StyledTableCell>
+            {filterData?.map((item) => (
+              <StyledTableRow key={item?.uid}>
+                <StyledTableCell>{item?.type}</StyledTableCell>
                 {item?.access?.map((element) => (
                   <StyledTableCell key={element.key}>
                     <StyledCheckBox
-                      checked={element.checked}
-                      onChange={() => onRoleChangeListener(item.uid, element)}
+                      defaultChecked={element.checked}
+                      onChange={() => onRoleChangeListener(item, element)}
                     />
                   </StyledTableCell>
                 ))}
@@ -208,17 +201,6 @@ const UserAccessTable = () => {
             ))}
           </TableBody>
         </Table>
-      </Box>
-      <Box display="flex" justifyContent="center">
-        <Button
-          variant="contained"
-          sx={{
-            mt: 4,
-          }}
-          onClick={handleOnSave}
-        >
-          Save Changes
-        </Button>
       </Box>
     </Box>
   )

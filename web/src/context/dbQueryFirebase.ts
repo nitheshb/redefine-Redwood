@@ -4,7 +4,7 @@ import {
   doc,
   orderBy,
   addDoc,
-  getFirestore,
+  // getFirestore,
   onSnapshot,
   collection,
   getDoc,
@@ -12,10 +12,11 @@ import {
   query,
   where,
   Timestamp,
-  FieldValue,
+  // FieldValue,
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore'
+// import { userAccessRoles } from 'src/constants/userAccess'
 
 // getF
 // addF
@@ -42,7 +43,7 @@ export const getLedsData1 = async () => {
     console.log('inside getLeadsData1')
     const citiesCol = collection(db, 'spark_leads')
     const citySnapshot = await getDocs(citiesCol)
-    const cityList = await citySnapshot.docs.map((doc) => doc.data())
+    await citySnapshot.docs.map((doc) => doc.data())
     await console.log(
       'inside getLeadsData1 length',
       'sparkleads',
@@ -98,8 +99,8 @@ export const checkIfLeadAlreadyExists = async (cName, matchVal) => {
 
   return parentDocs
 
-  await console.log('length is ', q.length)
-  return await q.length
+  // await console.log('length is ', q.length)
+  // return await q.length
 
   // db.collection('spark_leads').add(data)
 }
@@ -183,17 +184,37 @@ export const updateUserRole = async (uid, dept, role, email, by) => {
   })
 }
 
-export const updateAccessRoles = async (data, currentUser) => {
-  data.forEach(async (d) => {
-    await updateDoc(doc(db, 'spark_roles_access', d.uid), d)
-  })
-  return await addUserLog({
-    s: 's',
-    type: 'updateRoleAccess',
-    subtype: 'updateAccessForPages',
-    txt: `${currentUser.email} is updated the user access roles`,
-    by: currentUser.email,
-  })
+export const updateAccessRoles = async (
+  role,
+  accessRoles,
+  currentUser,
+  enqueueSnackbar,
+  currentPage
+) => {
+  // data.forEach(async (d) => {
+  //   await updateDoc(doc(db, 'spark_roles_access', d.uid), d)
+  // })
+  try {
+    await updateDoc(doc(db, 'spark_roles_access', role.uid), {
+      access: accessRoles,
+    })
+    await addUserLog({
+      s: 's',
+      type: 'updateRoleAccess',
+      subtype: 'updateAccessForPages',
+      txt: `${currentUser.email} is updated the user access roles`,
+      by: currentUser.email,
+    })
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(
+      `User roles for ${role.type} & ${currentPage.name} updated successfully`,
+      {
+        variant: 'success',
+      }
+    )
+  } catch (e) {
+    return enqueueSnackbar(e.message, { variant: 'error' })
+  }
 }
 
 // **********************************************

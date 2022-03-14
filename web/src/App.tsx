@@ -10,7 +10,7 @@ import AuthProvider from 'src/context/firebase-auth-context'
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 import Routes from 'src/Routes'
 import store from 'src/state/store'
-
+import { SnackbarProvider } from 'notistack'
 import './index.css'
 
 // const firebaseConfig = {
@@ -50,9 +50,18 @@ const App = () => (
   <FatalErrorBoundary page={FatalErrorPage}>
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
       <ReduxProvider store={store}>
-        <AuthProvider>
-          <Routes />
-        </AuthProvider>
+        <SnackbarProvider
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          autoHideDuration={3000}
+          maxSnack={3}
+        >
+          <AuthProvider>
+            <Routes />
+          </AuthProvider>
+        </SnackbarProvider>
       </ReduxProvider>
     </RedwoodProvider>
   </FatalErrorBoundary>
