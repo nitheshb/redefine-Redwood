@@ -34,10 +34,29 @@ const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.body}`]: {
     fontSize: 12,
     textAlign: 'center',
+    borderBottom: 0,
     '&:first-child': {
       textAlign: 'left',
     },
   },
+}))
+
+const StickyTableCell = styled(TableCell)(({ theme }) => ({
+  minWidth: '50px',
+  left: 0,
+  position: 'sticky',
+  zIndex: theme.zIndex.appBar + 1,
+  borderBottom: 0,
+  backgroundColor: '#F5F5F5',
+}))
+
+const StickyHeaderCell = styled(TableCell)(({ theme }) => ({
+  minWidth: '50px',
+  left: 0,
+  position: 'sticky',
+  zIndex: theme.zIndex.appBar + 2,
+  borderBottom: 0,
+  backgroundColor: '#F5F5F5',
 }))
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -47,6 +66,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
+    backgroundColor: '#F5F5F5',
   },
 }))
 
@@ -174,11 +194,21 @@ const UserAccessTable = () => {
           SALES
         </span>
       </Box>
-      <Box>
-        <Table>
+      <Box
+        sx={{
+          width: (2 / 3) * window.innerWidth,
+          height: (2 / 3) * window.innerHeight,
+          overflowX: 'auto',
+        }}
+      >
+        <Table stickyHeader>
           <StyledTableHead>
             <StyledTableRow>
-              {filterData?.[0] && <StyledTableCell>Type</StyledTableCell>}
+              {filterData?.[0] && (
+                <StickyHeaderCell>
+                  <StyledTableCell>Type</StyledTableCell>
+                </StickyHeaderCell>
+              )}
               {filterData?.[0]?.access?.map(({ name, key }) => (
                 <StyledTableCell key={key}>{name}</StyledTableCell>
               ))}
@@ -188,7 +218,10 @@ const UserAccessTable = () => {
           <TableBody>
             {filterData?.map((item) => (
               <StyledTableRow key={item?.uid}>
-                <StyledTableCell>{item?.type}</StyledTableCell>
+                <StickyTableCell>
+                  <StyledTableCell>{item?.type}</StyledTableCell>
+                </StickyTableCell>
+
                 {item?.access?.map((element) => (
                   <StyledTableCell key={element.key}>
                     <StyledCheckBox
