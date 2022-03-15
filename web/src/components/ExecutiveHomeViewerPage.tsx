@@ -440,7 +440,7 @@ const ExecutiveHomeViewerPage = () => {
                   <div className="border-b">
                     <div className="p-3 flex justify-between">
                       <span className="text-md font-semibold">
-                        User Profile
+                        1
                       </span>
                       <XIcon className="w-5 h-5 mt-[2px]" />
                     </div>
