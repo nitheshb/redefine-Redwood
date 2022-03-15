@@ -1,10 +1,13 @@
 import { TabList } from '@mui/lab'
 import { Box, Card, Grid, styled } from '@mui/material'
-import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
+// import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
-import uniqueId from '../../util/generatedId'
+// import uniqueId from '../../util/generatedId'
 import { getLedsData1 } from 'src/context/dbQueryFirebase'
+import uniqueId from 'src/util/generatedId'
+import LLeadsTableBody from './LLeadsTableBody/LLeadsTableBody'
+import TodayLeadsActivitySearchView from './TodayLeadsActivitySearchView'
 
 const tableData2 = [
   {
@@ -431,7 +434,10 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
   },
 }))
 
-const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
+const TodayLeadsActivityListHomeView = ({
+  setisImportLeadsOpen,
+  selUserProfileF,
+}) => {
   // change navbar title
   // useTitle('Data Table V1')
   const { t } = useTranslation()
@@ -448,15 +454,6 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
   useEffect(() => {
     console.log('table data is ', tableData2)
     setTableData(tableData2)
-    // axios
-    //   .get('/api/tableData1/all')
-    //   .then(({ data }) => {
-    //     setTableData(tableData1)
-    //   })
-    //   .catch((error) => {
-    //     // setTableData(tableData1)
-    //     console.log(error)
-    //   })
   }, [])
 
   useEffect(() => {
@@ -478,76 +475,14 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
     value !== '' ? item.role.toLowerCase() === value : item.role
   )
   return (
-    <Box pt={2} pb={4}>
-      <Card
-        sx={{
-          boxShadow: 4,
-        }}
-      >
-        <Grid container>
-          <Grid item xs={12}>
-            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-              <ul
-                className="flex flex-wrap -mb-px"
-                id="myTab"
-                data-tabs-toggle="#myTabContent"
-                role="tablist"
-              >
-                {[
-                  { lab: 'All', val: 'all' },
-                  { lab: 'New', val: 'new' },
-                  { lab: 'In Progress', val: 'inprogress' },
-                  { lab: 'Follow Up', val: 'followup' },
-                  { lab: 'Visit Fixed', val: 'visitfixed' },
-                  { lab: 'Visit Done', val: 'visitdone' },
-                  { lab: 'Negotiation', val: 'negotitation' },
-                  { lab: 'Reassign', val: 'reassign' },
-                  { lab: 'RNR', val: 'RNR' },
-                  { lab: 'Booked', val: 'booked' },
-                  { lab: 'Not Interested', val: 'notinterested' },
-                  { lab: 'Dead', val: 'dead' },
-                ].map((d, i) => {
-                  return (
-                    <li key={i} className="mr-2" role="presentation">
-                      <button
-                        className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
-                          value === d.val
-                            ? 'border-blue-600 text-gray-800'
-                            : 'border-transparent'
-                        }`}
-                        type="button"
-                        role="tab"
-                        onClick={() => setValue(d.val)}
-                      >
-                        {`${d.lab} `}
-                        <span className="bg-gray-100 px-2 py-1 rounded-full">
-                          {rowsCounter(leadsFetchedData, d.val).length}
-                        </span>
-                        {/*
-                        <div className="px-2 mt-1 text-[9px] text-black  rounded-full">
-                          <span className="bg-gray-100 px-2 py-1 rounded-full">
-                            {rowsCounter(leadsFetchedData, d.val).length}
-                          </span>
-                        </div> */}
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-            {/*  Data Table */}
-            <LLeadsTableBody
-              data={filterTable}
-              handleDelete={handleDelete}
-              selStatus={value}
-              rowsParent={leadsFetchedData}
-              selUserProfileF={selUserProfileF}
-            />
-          </Grid>
-        </Grid>
-      </Card>
-    </Box>
+    <TodayLeadsActivitySearchView
+      data={filterTable}
+      handleDelete={handleDelete}
+      selStatus={value}
+      rowsParent={leadsFetchedData}
+      selUserProfileF={selUserProfileF}
+    />
   )
 }
 
-export default LLeadsTableView
+export default TodayLeadsActivityListHomeView

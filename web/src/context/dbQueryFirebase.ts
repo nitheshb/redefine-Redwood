@@ -28,12 +28,27 @@ import {
 // getF
 // **********************************************
 
+// get users list
 export const steamUsersList = (snapshot, error) => {
   const itemsQuery = query(collection(db, 'users'))
   return onSnapshot(itemsQuery, snapshot, error)
 }
+
+//  get users activity list
 export const steamUsersActivityLog = (snapshot, error) => {
-  const itemsQuery = query(collection(db, 'spark_user_log'))
+  const itemsQuery = query(
+    collection(db, 'spark_user_log'),
+    orderBy('time', 'desc')
+  )
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+
+// get users activity of user list
+export const steamUsersActivityOfUser = (snapshot, error) => {
+  const itemsQuery = query(
+    collection(db, 'spark_user_log'),
+    where('by', '==', 'nithe.nithesh@gmail.com')
+  )
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
@@ -126,8 +141,9 @@ export const createUser = async (data: any) => {
 export const addLead = (data) => {
   // type === bulkAddLead || updateLead || deleteLead
 
-  const userRef = doc(db, 'spark_leads')
-  setDoc(userRef, data)
+  // const userRef = doc(db, 'spark_leads')
+  // setDoc(userRef, data)
+  addDoc(collection(db, 'spark_leads'), data)
 }
 
 export const addUserLog = (data) => {

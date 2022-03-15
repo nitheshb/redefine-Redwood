@@ -6,7 +6,7 @@ import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import AddPhaseForm from '../AddPhaseForm/AddPhaseForm'
 import LeadsDropHomes from '../LeadUplodCsv/uploadHome'
 import AddLeadForm from '../AddLeadForm'
-const SiderForm = ({ open, setOpen, title }) => {
+const SiderForm = ({ open, setOpen, title, selUserProfile }) => {
   // const [open, setOpen] = useState(true)
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -78,6 +78,9 @@ const SiderForm = ({ open, setOpen, title }) => {
                   <LeadsDropHomes title={title} dialogOpen={setOpen} />
                 )}
                 {title === 'Add Lead' && (
+                  <AddLeadForm title={title} dialogOpen={setOpen} />
+                )}
+                {title === 'User Profile' && (
                   <AddLeadForm title={title} dialogOpen={setOpen} />
                 )}
               </div>

@@ -1,8 +1,9 @@
 import { ErrorMessage } from 'formik'
 import React from 'react'
+import NumberFormat from 'react-number-format'
 import Select from 'react-select'
 
-export const CustomSelect = ({
+export const PhoneNoField = ({
   onChange,
   options,
   value,
@@ -10,23 +11,19 @@ export const CustomSelect = ({
   label,
   className,
 }) => {
-  const defaultValue = (options, value) => {
-    return (
-      (options ? options.find((option) => option.value === value) : '') || ''
-    )
-  }
-
   return (
     <div className={className}>
       <label className="label font-regular text-sm mb-2">{label}</label>
-      <Select
-        name={name}
-        value={defaultValue(options, value)}
-        onChange={(value) => {
+      <NumberFormat
+        // label="Mobile No*"
+        className=" w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-4 mt-1"
+        name="mobileNo"
+        value={value}
+        onValueChange={(value) => {
           onChange(value)
         }}
-        options={options}
-        className="text-sm  mt-1"
+        format="###-###-####"
+        mask=""
       />
       {/* <ErrorMessage
         component="div"

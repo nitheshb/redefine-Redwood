@@ -115,11 +115,17 @@ export function MultipleFileUploadField({ name }: { name: string }) {
         const serialData = await Promise.all(
           clean1.map(async (dRow) => {
             const foundLength = await checkIfLeadAlreadyExists(
-              "spark_leads",
+              'spark_leads',
               dRow['Mobile']
             )
             dRow['mode'] = await makeMode(foundLength)
-            await console.log('foundLength is', foundLength, dRow,foundLength, dRow['Mobile'])
+            await console.log(
+              'foundLength is',
+              foundLength,
+              dRow,
+              foundLength,
+              dRow['Mobile']
+            )
             return await dRow
           })
         )
@@ -141,7 +147,8 @@ export function MultipleFileUploadField({ name }: { name: string }) {
   }
 
   function makeMode(foundLength) {
-    if (foundLength == undefined) {
+    console.log('foundder is ', foundLength)
+    if (foundLength == undefined || foundLength?.length === 0) {
       console.log('foundLength is==> ', foundLength)
       return 'valid'
     } else {

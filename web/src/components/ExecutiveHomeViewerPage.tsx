@@ -206,6 +206,7 @@ const ExecutiveHomeViewerPage = () => {
   const [selectedBoard, setSelectedBoard] = useState(0)
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
+  const [selUserProfile, setSelUserProfile] = useState({})
 
   const onDragEnd = (re) => {
     if (!re.destination) return
@@ -253,6 +254,10 @@ const ExecutiveHomeViewerPage = () => {
     setAddLeadsTypes(type)
     setisImportLeadsOpen(true)
   }
+  const selUserProfileF = (title, data) => {
+    setAddLeadsTypes(title)
+    setisImportLeadsOpen(true)
+  }
   return (
     <>
       <div className="flex  flex-row  text-gray-700">
@@ -266,9 +271,6 @@ const ExecutiveHomeViewerPage = () => {
               </div>
               <div className="flex">
                 <span className="inline-flex p-1 border bg-gray-200 rounded-md">
-                  {/* ${
-                    ready ? 'bg-white shadow' : ''
-                  } */}
                   <button
                     className={`px-2 py-1  rounded ${
                       ready ? 'bg-white shadow' : ''
@@ -678,7 +680,10 @@ const ExecutiveHomeViewerPage = () => {
             )}
 
             {!ready && (
-              <LLeadsTableView setisImportLeadsOpen={setisImportLeadsOpen} />
+              <LLeadsTableView
+                setisImportLeadsOpen={setisImportLeadsOpen}
+                selUserProfileF={selUserProfileF}
+              />
             )}
           </div>
         </div>
@@ -687,6 +692,7 @@ const ExecutiveHomeViewerPage = () => {
         open={isImportLeadsOpen}
         setOpen={setisImportLeadsOpen}
         title={addLeadsTypes}
+        userProfileInput={selUserProfile}
       />
     </>
   )

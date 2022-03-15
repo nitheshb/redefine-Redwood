@@ -4,6 +4,7 @@
 import { checkActionCode } from '@firebase/auth'
 import { UserGroupIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
+import { spawnSync } from 'child_process'
 const HeadSideBarDetailView = ({
   pgName,
   sourceLink,
@@ -84,12 +85,12 @@ const HeadSideBarDetailView = ({
               </span>
             </li>
             <li className="relative">
-              <Link
+              <span
                 className={
                   'flex items-center text-sm py-1 h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                   (pgName === 'home' ? 'bg-gray-300' : '')
                 }
-                to={routes.home()}
+                onClick={() => setViewable('Today1')}
               >
                 <span className="flex items-center">
                   <span style={{ color: '#058527' }}>
@@ -127,7 +128,7 @@ const HeadSideBarDetailView = ({
                     8
                   </span>
                 </span>
-              </Link>
+              </span>
             </li>
             <li className="relative">
               <Link

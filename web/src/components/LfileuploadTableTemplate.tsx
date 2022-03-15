@@ -235,7 +235,11 @@ const EnhancedTableToolbar = (props) => {
     getLedsData1()
     const mappedArry = await Promise.all(
       records.map(async (data) => {
-        return await addLead(data)
+        const newData = data
+        newData['intype'] = 'bulk'
+        newData['by'] = 'bulk'
+        console.log('am inside addLeadstoDB', newData)
+        return await addLead(newData)
         console.log('am inside addLeadstoDB')
       })
     )

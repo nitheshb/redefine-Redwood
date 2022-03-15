@@ -6,17 +6,6 @@ import { Dialog } from '@headlessui/react'
 import * as Yup from 'yup'
 // import { RadioGroup } from '@headlessui/react'
 import {
-  Label,
-  InputField,
-  // TextAreaField,
-  // TextField,
-  // EmailField,
-  // PasswordField,
-  SelectField,
-  FieldError,
-  // Submit,
-} from '@redwoodjs/forms'
-import {
   addLead,
   addUserLog,
   createUser,
@@ -225,7 +214,6 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
           {formMessage.message}
         </p>
       )}
-
       <div className="grid gap-8 grid-cols-1 mx-10 flex flex-col">
         <Formik
           initialValues={{
@@ -288,25 +276,11 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                     {formik.values.myRole}
                   </div>
                 ) : null}
-                {/* <TextField label="password" name="password" type="password" />
-                <TextField
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type="password"
-                /> */}
-
                 <p className="text-xs text-red-500 text-right my-3">
                   Required fields are marked with an asterisk{' '}
                   <abbr title="Required field">*</abbr>
                 </p>
                 <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse">
-                  {/* <span
-                    onClick={() => dialogOpen(false)}
-                    className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100"
-                  >
-                    {' '}
-                    Cancel{' '}
-                  </span> */}
                   <button
                     className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
                     type="reset"

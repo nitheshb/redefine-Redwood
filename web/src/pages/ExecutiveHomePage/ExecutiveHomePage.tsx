@@ -336,7 +336,7 @@ const ExecutiveHomePage = () => {
                     />
                   </svg>
 
-                  <span className="ml-1">Add lead</span>
+                  <span className="ml-1">Add Lead</span>
                 </button>
 
                 <button
@@ -679,7 +679,10 @@ const ExecutiveHomePage = () => {
             )}
 
             {!ready && (
-              <LLeadsTableView setisImportLeadsOpen={setisImportLeadsOpen} />
+              <LLeadsTableView
+                setisImportLeadsOpen={setisImportLeadsOpen}
+                fSetLeadsType={fSetLeadsType}
+              />
             )}
           </div>
         </div>

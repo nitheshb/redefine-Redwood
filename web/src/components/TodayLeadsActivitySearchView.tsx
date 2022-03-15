@@ -22,9 +22,10 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import { visuallyHidden } from '@mui/utils'
 import Highlighter from 'react-highlight-words'
-import CSVDownloader from '../../util/csvDownload'
+
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
+import CSVDownloader from 'src/util/csvDownload'
 
 // function createData(
 //   Date,
@@ -132,7 +133,6 @@ function EnhancedTableHead(props) {
     rowCount,
     onRequestSort,
     searchKey,
-
   } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
@@ -200,9 +200,9 @@ const EnhancedTableToolbar = (props) => {
   const searchKeyField = (e) => {
     // console.log('searched values is ', e.target.value)
     setSearchKey(e.target.value)
-    let searchString = e.target.value
+    const searchString = e.target.value
 
-    let rowsR = rows.filter((item) => {
+    const rowsR = rows.filter((item) => {
       if (searchString == '' || !searchString) {
         console.log('ami here')
         return item
@@ -332,7 +332,7 @@ const HighlighterStyle = (props) => {
     />
   )
 }
-export default function LLeadsTableBody({
+export default function TodayLeadsActivitySearchView({
   selStatus,
   rowsParent,
   selUserProfileF,
@@ -376,7 +376,7 @@ export default function LLeadsTableBody({
   }, [searchKey])
 
   const filterStuff = async (parent) => {
-    let x = await parent.filter((item) => {
+    const x = await parent.filter((item) => {
       if (selStatus === 'all') {
         return item
       } else if (item.Status.toLowerCase() === selStatus.toLowerCase()) {
@@ -389,7 +389,7 @@ export default function LLeadsTableBody({
   }
   const filterSearchString = async (parent) => {
     return
-    let x = await parent.filter((item) => {
+    const x = await parent.filter((item) => {
       if (item.Source.toLowerCase().includes(selStatus.toLowerCase())) {
         return item
       }
@@ -420,7 +420,7 @@ export default function LLeadsTableBody({
 
   const handleClick = (event, row) => {
     // const selectedIndex = selected.indexOf(name)
-    let newSelected = []
+    const newSelected = []
 
     // if (selectedIndex === -1) {
     //   newSelected = newSelected.concat(selected, name)
@@ -453,166 +453,251 @@ export default function LLeadsTableBody({
     setDense(event.target.checked)
   }
 
+  function handleClick1(skill) {
+    // filter_f(skill)
+  }
+
   const isSelected = (name) => selected.indexOf(name) !== -1
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
+  //  this is helpful
+
+  // const rules = `bg-white ${
+  //   listing.featured ? 'featured-item' : ''
+  // } max-w-4xl mb-10 shadow-lg p-4 flex justify-center items-center`
+
+  const Skills = ({ skill }) => (
+    <div className="tag rounded-md p-1 px-2 m-2">
+      <button onClick={() => handleClick1(skill)}>{skill}</button>
+    </div>
+  )
+  const languages = ['HTML', 'CSS', 'JavaScript']
+  const tools = ['React', 'Sass']
+  const listings = [
+    {
+      id: 1,
+      company: 'Photosnap',
+      logo: './images/photosnap.svg',
+      new: true,
+      featured: true,
+      position: 'Senior Frontend Developer',
+      role: 'Frontend',
+      level: 'Senior',
+      postedAt: '1d ago',
+      contract: 'Full Time',
+      location: 'USA Only',
+      languages: ['HTML', 'CSS', 'JavaScript'],
+      tools: [],
+    },
+    {
+      id: 2,
+      company: 'Manage',
+      logo: './images/manage.svg',
+      new: true,
+      featured: true,
+      position: 'Fullstack Developer',
+      role: 'Fullstack',
+      level: 'Midweight',
+      postedAt: '1d ago',
+      contract: 'Part Time',
+      location: 'Remote',
+      languages: ['Python'],
+      tools: ['React'],
+    },
+    {
+      id: 3,
+      company: 'Account',
+      logo: './images/account.svg',
+      new: true,
+      featured: false,
+      position: 'Junior Frontend Developer',
+      role: 'Frontend',
+      level: 'Junior',
+      postedAt: '2d ago',
+      contract: 'Part Time',
+      location: 'USA Only',
+      languages: ['JavaScript'],
+      tools: ['React', 'Sass'],
+    },
+    {
+      id: 4,
+      company: 'MyHome',
+      logo: './images/myhome.svg',
+      new: false,
+      featured: false,
+      position: 'Junior Frontend Developer',
+      role: 'Frontend',
+      level: 'Junior',
+      postedAt: '5d ago',
+      contract: 'Contract',
+      location: 'USA Only',
+      languages: ['CSS', 'JavaScript'],
+      tools: [],
+    },
+    {
+      id: 5,
+      company: 'Loop Studios',
+      logo: './images/loop-studios.svg',
+      new: false,
+      featured: false,
+      position: 'Software Engineer',
+      role: 'FullStack',
+      level: 'Midweight',
+      postedAt: '1w ago',
+      contract: 'Full Time',
+      location: 'Worldwide',
+      languages: ['JavaScript'],
+      tools: ['Ruby', 'Sass'],
+    },
+    {
+      id: 6,
+      company: 'FaceIt',
+      logo: './images/faceit.svg',
+      new: false,
+      featured: false,
+      position: 'Junior Backend Developer',
+      role: 'Backend',
+      level: 'Junior',
+      postedAt: '2w ago',
+      contract: 'Full Time',
+      location: 'UK Only',
+      languages: ['Ruby'],
+      tools: ['RoR'],
+    },
+    {
+      id: 7,
+      company: 'Shortly',
+      logo: './images/shortly.svg',
+      new: false,
+      featured: false,
+      position: 'Junior Developer',
+      role: 'Frontend',
+      level: 'Junior',
+      postedAt: '2w ago',
+      contract: 'Full Time',
+      location: 'Worldwide',
+      languages: ['HTML', 'JavaScript'],
+      tools: ['Sass'],
+    },
+    {
+      id: 8,
+      company: 'Insure',
+      logo: './images/insure.svg',
+      new: false,
+      featured: false,
+      position: 'Junior Frontend Developer',
+      role: 'Frontend',
+      level: 'Junior',
+      postedAt: '2w ago',
+      contract: 'Full Time',
+      location: 'USA Only',
+      languages: ['JavaScript'],
+      tools: ['Vue', 'Sass'],
+    },
+    {
+      id: 9,
+      company: 'Eyecam Co.',
+      logo: './images/eyecam-co.svg',
+      new: false,
+      featured: false,
+      position: 'Full Stack Engineer',
+      role: 'Fullstack',
+      level: 'Midweight',
+      postedAt: '3w ago',
+      contract: 'Full Time',
+      location: 'Worldwide',
+      languages: ['JavaScript', 'Python'],
+      tools: ['Django'],
+    },
+    {
+      id: 10,
+      company: 'The Air Filter Company',
+      logo: './images/the-air-filter-company.svg',
+      new: false,
+      featured: false,
+      position: 'Front-end Dev',
+      role: 'Frontend',
+      level: 'Junior',
+      postedAt: '1mo ago',
+      contract: 'Part Time',
+      location: 'Worldwide',
+      languages: ['JavaScript'],
+      tools: ['React', 'Sass'],
+    },
+  ]
   return (
-    <Box sx={{ width: '100%' }} style={{ border: 'none' }}>
-      <EnhancedTableToolbar
-        numSelected={selected.length}
-        selStatus={selStatus}
-        filteredData={rows}
-        searchKey={searchKey}
-        setSearchKey={setSearchKey}
-        rows={rows}
-      />
-      <TableContainer sx={{ maxHeight: 640 }}>
-        <Table
-          sx={{ minWidth: 750 }}
-          aria-labelledby="tableTitle"
-          size={dense ? 'small' : 'medium'}
-          stickyHeader
-          aria-label="sticky table"
-        >
-          <EnhancedTableHead
+    <>
+      <div>
+        {/* <Header /> */}
+        <div className="flex justify-center items-center text-gray-900 h-12"></div>
+        <div className=" p-16 justify-center items-center text-gray-900">
+          {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
+          <EnhancedTableToolbar
             numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-            searchkey={searchKey}
+            selStatus={selStatus}
+            filteredData={rows}
+            searchKey={searchKey}
+            setSearchKey={setSearchKey}
+            rows={rows}
           />
-          <TableBody>
-            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
-            {/* {stableSort(rows, getComparator(order, orderBy)).map( */}
-            {/* Assignedto: "Arun"
-Date: "23-01-20221"
-Email: "Jessicanewmannhz@Yahoo.Com"
-Mobile: "9000000000"
-Name: "myName 1"
-Note: "NA"
-Project: "Nakshatra Township"
-Source: "Google"
-Status: "new"
-id: "1" */}
-
-            {/* item.Assignedto.toLowerCase().includes(
-                    searchKey.toLowerCase()
-                  ) || */}
-            {rows
-              .filter((item) => {
-                if (searchKey == '' || !searchKey) {
-                  return item
-                } else if (
-                  item.Date.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Project.toLowerCase().includes(
-                    searchKey.toLowerCase()
-                  ) ||
-                  item.Source.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Status.toLowerCase().includes(searchKey.toLowerCase())
-                ) {
-                  return item
-                }
-              })
-              .slice()
-              .sort(getComparator(order, orderBy))
-              .map((row, index) => {
-                const isItemSelected = isSelected(row.Name)
-                const labelId = `enhanced-table-checkbox-${index}`
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
+          {rows
+            .filter((item) => {
+              if (searchKey == '' || !searchKey) {
+                return item
+              } else if (
+                item.Date.toLowerCase().includes(searchKey.toLowerCase()) ||
+                item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
+                item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
+                item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
+                item.Project.toLowerCase().includes(searchKey.toLowerCase()) ||
+                item.Source.toLowerCase().includes(searchKey.toLowerCase()) ||
+                item.Status.toLowerCase().includes(searchKey.toLowerCase())
+              ) {
+                return item
+              }
+            })
+            .slice()
+            .sort(getComparator(order, orderBy))
+            .map((listing, index) => {
+              const isItemSelected = isSelected(listing.Name)
+              const labelId = `enhanced-table-checkbox-${index}`
+              return (
+                <>
+                  <div
                     key={index}
-                    selected={isItemSelected}
+                    className="flex-1 px-4 py-2 mb-8  bg-white rounded-md"
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.Date}
-                    </TableCell>
-                    <TableCell align="left">
-                      <section>
-                        <div>
-                          <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Name.toString()}
-                          />
-                        </div>
-                        <div>
-                          <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Email.toString()}
-                          />
-                        </div>
-                        <div>
-                          <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Mobile.toString()}
-                          />
-                        </div>
-                      </section>
-                    </TableCell>
-                    <TableCell align="left">
-                      {/* <HighlighterStyle
-                        searchKey={searchKey}
-                        source={row.Assignedto}
-                      /> */}
-                      {row.Assignedto}
-                    </TableCell>
-                    <TableCell align="left">
-                      <HighlighterStyle
-                        searchKey={searchKey}
-                        source={row.Source.toString()}
-                      />
-                    </TableCell>
-                    <TableCell align="left">{row.Project}</TableCell>
-                    <TableCell align="center">
-                      <HighlighterStyle
-                        searchKey={searchKey}
-                        source={row.Status.toString()}
-                      />
-                    </TableCell>
-                    <TableCell align="center">{row.Note}</TableCell>
-                  </TableRow>
-                )
-              })}
-            {emptyRows > 0 && (
-              <TableRow
-                style={{
-                  height: (dense ? 33 : 53) * emptyRows,
-                }}
-              >
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+                    <div className="flex flex-grow">
+                      {listing.Status == 'new' ? (
+                        <p className="tags new-tag rounded-xl p-1 mr-1 px-0 ">
+                          New
+                        </p>
+                      ) : null}
+                      <p className="ml-2 flex justify-center items-center">
+                        {listing.Project}
+                      </p>
+                      {listing.featured ? (
+                        <p className="tags new-tag rounded-xl px-2 p-1">
+                          featured
+                        </p>
+                      ) : null}
+                    </div>
+                    <p className="main-heading my-2">{listing.Name}</p>
+                    <p className="main-heading my-2">{listing.Mobile}</p>
+                    <p className="main-heading my-2">{listing.Email}</p>
+                    <div className="flex items-center justify-between py-2">
+                      <small className="text-gray-400">{listing.Date}</small>
+                      <small className="text-gray-400">{listing.Source}</small>
+                    </div>
+                  </div>
+                </>
+              )
+            })}
+        </div>
+      </div>
+    </>
   )
 }

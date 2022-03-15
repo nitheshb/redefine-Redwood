@@ -16,7 +16,7 @@ export const TextField = ({ label, ...props }) => {
       /> */}
       <input
         className={` ${meta.touched && meta.error && 'is-invalid'}
-           w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-4`}
+           w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-4 mt-1`}
         {...field}
         {...props}
         autoComplete="off"
