@@ -30,8 +30,20 @@ const LeadsManagerPage = () => {
 
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
-          {viewable === 'Today' && <ExecutiveHomeViewerPage />}
-          {viewable === 'Today1' && <TodayLeadsHomePage />}
+          <div
+            flex-grow
+            p-6
+            overflow-auto
+            h-screen
+            text-gray-700
+            bg-gradient-to-tr
+            from-blue-200
+            via-indigo-200
+            to-pink-200
+          >
+            {viewable === 'Today' && <ExecutiveHomeViewerPage />}
+            {viewable === 'Today1' && <TodayLeadsHomePage />}
+          </div>
         </div>
       </div>
     </>

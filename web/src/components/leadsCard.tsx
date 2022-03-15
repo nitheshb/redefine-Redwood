@@ -18,7 +18,7 @@ function CardItem({ data, index }) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="bg-white max-w-[200px] rounded-lg p-3 mb-2 mt-0 last:mb-0  cursor-pointer bg-opacity-90 group hover:bg-opacity-100 hover:bg-pink-100 "
+          className="bg-white max-w-[200px] rounded-lg p-3 mb-1 mt-0 last:mb-0  cursor-pointer bg-opacity-90 group hover:bg-opacity-100 hover:bg-red-200 "
         >
           {/* <label
             className={`bg-gradient-to-r
@@ -39,18 +39,18 @@ function CardItem({ data, index }) {
               : 'High Priority'}
           </label> */}
           <span
-            className={`items-center h-6 px-3 py-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full ${
+            className={`items-center h-6 px-3 py-1 text-xs font-semibold text-white bg-pink-100 rounded-full ${
               data.priority === 0
-                ? 'bg-blue-100 '
+                ? 'bg-blue-500 '
                 : data.priority === 1
-                ? 'bg-green-100'
-                : 'bg-pink-100 '
+                ? 'bg-green-500 '
+                : 'bg-red-500 '
             }   ${
               data.priority === 0
-                ? 'text-blue-500 '
+                ? 'text-white '
                 : data.priority === 1
-                ? 'text-green-500'
-                : 'text-pink-500 '
+                ? 'text-white '
+                : 'text-white '
             }`}
           >
             {data.project}
