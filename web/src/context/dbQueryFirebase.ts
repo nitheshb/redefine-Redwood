@@ -4,7 +4,7 @@ import {
   doc,
   orderBy,
   addDoc,
-  getFirestore,
+  // getFirestore,
   onSnapshot,
   collection,
   getDoc,
@@ -12,10 +12,11 @@ import {
   query,
   where,
   Timestamp,
-  FieldValue,
+  // FieldValue,
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore'
+// import { userAccessRoles } from 'src/constants/userAccess'
 
 // getF
 // addF
@@ -57,7 +58,7 @@ export const getLedsData1 = async () => {
     console.log('inside getLeadsData1')
     const citiesCol = collection(db, 'spark_leads')
     const citySnapshot = await getDocs(citiesCol)
-    const cityList = await citySnapshot.docs.map((doc) => doc.data())
+    await citySnapshot.docs.map((doc) => doc.data())
     await console.log(
       'inside getLeadsData1 length',
       'sparkleads',
@@ -113,10 +114,32 @@ export const checkIfLeadAlreadyExists = async (cName, matchVal) => {
 
   return parentDocs
 
-  await console.log('length is ', q.length)
-  return await q.length
+  // await console.log('length is ', q.length)
+  // return await q.length
 
   // db.collection('spark_leads').add(data)
+}
+
+export const getAllRoleAccess = async () => {
+  // userAccessRoles.forEach(async (element) => {
+  //   const r = 'A' + Math.random() * 100000000000000000 + 'Z'
+  //   const updated = {
+  //     ...element,
+  //     uid: r,
+  //   }
+  //   const ref = doc(db, 'spark_roles_access', r)
+  //   await setDoc(ref, updated, { merge: true })
+  // })
+  const records = []
+  const getAllRolesQueryById = await query(
+    collection(db, 'spark_roles_access'),
+    orderBy('id')
+  )
+  const querySnapshot = await getDocs(getAllRolesQueryById)
+  querySnapshot.forEach((doc) => {
+    records.push(doc.data())
+  })
+  return records
 }
 
 // **********************************************
@@ -175,6 +198,39 @@ export const updateUserRole = async (uid, dept, role, email, by) => {
     txt: `${email} is updated with ${role}`,
     by,
   })
+}
+
+export const updateAccessRoles = async (
+  role,
+  accessRoles,
+  currentUser,
+  enqueueSnackbar,
+  currentPage
+) => {
+  // data.forEach(async (d) => {
+  //   await updateDoc(doc(db, 'spark_roles_access', d.uid), d)
+  // })
+  try {
+    await updateDoc(doc(db, 'spark_roles_access', role.uid), {
+      access: accessRoles,
+    })
+    await addUserLog({
+      s: 's',
+      type: 'updateRoleAccess',
+      subtype: 'updateAccessForPages',
+      txt: `${currentUser.email} is updated the user access roles`,
+      by: currentUser.email,
+    })
+    // variant could be success, error, warning, info, or default
+    enqueueSnackbar(
+      `User roles for ${role.type} & ${currentPage.name} updated successfully`,
+      {
+        variant: 'success',
+      }
+    )
+  } catch (e) {
+    return enqueueSnackbar(e.message, { variant: 'error' })
+  }
 }
 
 // **********************************************

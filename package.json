@@ -65,6 +65,7 @@
     "jwt-decode": "^3.1.2",
     "lodash.merge": "^4.6.2",
     "merge": "^2.1.1",
+    "notistack": "^2.0.3",
     "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
     "papaparse": "^5.3.1",

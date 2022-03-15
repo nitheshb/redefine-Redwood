@@ -1,384 +1,241 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-  Button,
-  Card,
+  Box,
   Checkbox,
   styled,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableRow,
 } from '@mui/material'
-import ScrollBar from 'simplebar-react' // styled components
+import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import { useSnackbar } from 'notistack'
 import { EyeIcon } from '@heroicons/react/outline'
+import {
+  getAllRoleAccess,
+  updateAccessRoles,
+} from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 
-const settings = [
-  {
-    id: 1,
-    type: 'Admin',
-    cat: 'admin',
-    access: [
-      'manage_project',
-      'update_unit_status',
-      'view_project',
-      'view_leads',
-      'update_leads',
-      'manage_leads',
-      'manage_users',
-      'view_users',
-      'view_crm',
-      'update_crm',
-      'manage_crm',
-      'view_roles',
-      'update_roles',
-    ],
-  },
-  {
-    id: 2,
-    cat: 'CRM',
-    type: 'CRM Manager',
-    access: ['view_crm', 'update_crm', 'manage_crm'],
-  },
-  {
-    id: 3,
-    cat: 'CRM',
-    type: 'CRM Executive',
-    access: ['update_crm', 'manage_crm'],
-  },
-  {
-    id: 4,
-    cat: 'HR',
-    type: 'HR Manager',
-    access: ['manage_users', 'view_users', 'view_roles', 'update_roles'],
-  },
-  {
-    id: 5,
-    cat: 'HR',
-    type: 'HR Executive',
-    access: ['view_users', 'view_roles'],
-  },
-  {
-    id: 6,
-    cat: 'LEGAL',
-    type: 'Legal Manager',
-  },
-  {
-    id: 7,
-    cat: 'LEGAL',
-    type: 'Legal Executive',
-  },
-  {
-    id: 8,
-    cat: 'SALES',
-    type: 'Sales Manager',
-    access: [
-      'view_project',
-      'view_leads',
-      'update_leads',
-      'manage_leads',
-      'update_unit_status',
-    ],
-  },
-  {
-    id: 9,
-    cat: 'SALES',
-    type: 'Sales Executive',
-    access: [
-      'view_project',
-      'view_leads',
-      'update_leads',
-      'update_unit_status',
-    ],
-  },
-]
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+  backgroundColor: theme.palette.action.hover,
+  borderTop: '1px solid rgba(224, 224, 224, 1)',
+  borderBottom: '1px solid rgba(224, 224, 224, 1)',
+}))
 
 const StyledTableCell = styled(TableCell)(() => ({
-  fontSize: 12,
-  fontWeight: 500,
-  //   paddingTop: 0,
-  '&:first-of-type': {
-    paddingLeft: 0,
+  [`&.${tableCellClasses.head}`]: {
+    fontWeight: 900,
+    fontSize: 12,
+    paddingTop: '1rem',
+    paddingBottom: '1rem',
+    letterSpacing: 0.8,
   },
-  '&:last-of-type': {
-    paddingRight: 0,
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 12,
+    textAlign: 'center',
+    borderBottom: 0,
+    '&:first-child': {
+      textAlign: 'left',
+    },
   },
 }))
+
+const StickyTableCell = styled(TableCell)(({ theme }) => ({
+  minWidth: '50px',
+  left: 0,
+  position: 'sticky',
+  zIndex: theme.zIndex.appBar + 1,
+  borderBottom: 0,
+  backgroundColor: '#F5F5F5',
+}))
+
+const StickyHeaderCell = styled(TableCell)(({ theme }) => ({
+  minWidth: '50px',
+  left: 0,
+  position: 'sticky',
+  zIndex: theme.zIndex.appBar + 2,
+  borderBottom: 0,
+  backgroundColor: '#F5F5F5',
+}))
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(even)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+    backgroundColor: '#F5F5F5',
+  },
+}))
+
 const StyledCheckBox = styled(Checkbox)(() => ({
   padding: 0,
 }))
 
 const UserAccessTable = () => {
-  const [selDept, showOnlyDept] = useState('all')
-  const onTableRowClicked = (event) => {
-    console.log('-------', event)
+  const [category, setCategory] = useState('all')
+  const [settings, setSettings] = useState([])
+  const [filterData, setFilterData] = useState([])
+  const { user } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
+
+  const getAllRoleAccessDocs = async () => {
+    const data = await getAllRoleAccess()
+    setSettings(data)
+  }
+  useEffect(() => {
+    getAllRoleAccessDocs()
+    setCategory('all')
+  }, [])
+
+  useEffect(() => {
+    if (category === 'all') {
+      setFilterData(settings)
+    } else {
+      const updatedData = settings.filter(
+        (item) => item.category?.toLowerCase() === category
+      )
+      setFilterData(updatedData)
+    }
+  }, [category, settings])
+
+  const onRoleChangeListener = async (role, element) => {
+    let newAccess = {}
+    filterData.forEach((item) => {
+      if (item.uid === role.uid) {
+        newAccess = item.access.map((accessRole) => {
+          if (accessRole.key === element.key) {
+            return {
+              ...accessRole,
+              checked: !element.checked,
+            }
+          }
+          return accessRole
+        })
+      }
+    })
+    await updateAccessRoles(role, newAccess, user, enqueueSnackbar, element)
   }
   return (
-    <section
-      className="bg-white"
-      sx={{
-        padding: 3,
-      }}
-    >
-      <ScrollBar>
-        <section className="flex ml-auto  mb-[0.5px] bg-white  rounded-md  py-4 border-b">
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'all'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('all')}
-          >
-            <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-            All
-          </span>
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'admin'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('admin')}
-          >
-            ADMIN
-          </span>
+    <Box className="bg-white pb-4">
+      <Box className="flex ml-auto  mb-[0.5px] bg-white py-4">
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'all'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('all')}
+        >
+          <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+          All
+        </span>
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'admin'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('admin')}
+        >
+          ADMIN
+        </span>
 
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'crm'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('crm')}
-          >
-            CRM
-          </span>
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'HR'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('HR')}
-          >
-            HR
-          </span>
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'legal'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('legal')}
-          >
-            LEGAL
-          </span>
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'project'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('project')}
-          >
-            PROJECT
-          </span>
-          <span
-            className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-              selDept === 'sales'
-                ? 'text-pink-800 bg-pink-200 border-pink-200'
-                : 'border border-pink-400 text-pink-500'
-            } `}
-            onClick={() => showOnlyDept('sales')}
-          >
-            SALES
-          </span>
-        </section>
-        <section className="px-4">
-          <Table
-            sx={{
-              '& th': {
-                paddingBottom: 0,
-                fontWeight: 600,
-              },
-            }}
-          >
-            <TableHead style={{ backgroundColor: '#F9FAFB' }}>
-              <TableRow>
-
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                    lineHeight: '1rem',
-                  }}
-                >
-                  Type
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  Manage Poject
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  View Projects
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  Update Unit Status
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  View Leads
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  update_leads
-                </StyledTableCell>
-
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  Manage Leads
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  Manage Users
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  View Users
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  View Roles
-                </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    fontWeight: 500,
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  Change User Roles
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {settings.map((item) => (
-                <TableRow key={item.id} onClick={onTableRowClicked}>
-                  <StyledTableCell
-                    sx={{
-                      fontWeight: 500,
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    {item.type}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('manage_project')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('view_project')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes(
-                        'update_unit_status'
-                      )}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('view_leads')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('update_leads')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('manage_leads')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('manage_users')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('view_users')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('view_roles')}
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <StyledCheckBox
-                      defaultChecked={item?.access?.includes('update_roles')}
-                    />
-                  </StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </section>
-      </ScrollBar>
-
-      <Button
-        variant="contained"
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'crm'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('crm')}
+        >
+          CRM
+        </span>
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'hr'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('hr')}
+        >
+          HR
+        </span>
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'legal'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('legal')}
+        >
+          LEGAL
+        </span>
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'project'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('project')}
+        >
+          PROJECT
+        </span>
+        <span
+          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
+            category === 'sales'
+              ? 'text-pink-800 bg-pink-200 border-pink-200'
+              : 'border border-pink-400 text-pink-500'
+          } `}
+          onClick={() => setCategory('sales')}
+        >
+          SALES
+        </span>
+      </Box>
+      <Box
         sx={{
-          mt: 4,
+          width: (2 / 3) * window.innerWidth,
+          height: (2 / 3) * window.innerHeight,
+          overflowX: 'auto',
         }}
       >
-        Save Changes
-      </Button>
-    </section>
+        <Table stickyHeader>
+          <StyledTableHead>
+            <StyledTableRow>
+              {filterData?.[0] && (
+                <StickyHeaderCell>
+                  <StyledTableCell>Type</StyledTableCell>
+                </StickyHeaderCell>
+              )}
+              {filterData?.[0]?.access?.map(({ name, key }) => (
+                <StyledTableCell key={key}>{name}</StyledTableCell>
+              ))}
+            </StyledTableRow>
+          </StyledTableHead>
+
+          <TableBody>
+            {filterData?.map((item) => (
+              <StyledTableRow key={item?.uid}>
+                <StickyTableCell>
+                  <StyledTableCell>{item?.type}</StyledTableCell>
+                </StickyTableCell>
+
+                {item?.access?.map((element) => (
+                  <StyledTableCell key={element.key}>
+                    <StyledCheckBox
+                      defaultChecked={element.checked}
+                      onChange={() => onRoleChangeListener(item, element)}
+                    />
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </Box>
   )
 }
 
