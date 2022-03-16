@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from 'src/context/firebase-auth-context'
 import {
   Form,
@@ -9,7 +9,6 @@ import {
   FieldError,
   Submit,
 } from '@redwoodjs/forms'
-import { navigate, routes } from '@redwoodjs/router'
 import Loader from 'src/components/Loader/Loader'
 import { navigateBasedOnUser } from 'src/util/userflow'
 interface UserInfo {
@@ -22,11 +21,16 @@ const LoginPage = () => {
   const [loginErrorMsg, setloginErrorMsg] = useState('')
   const [loader, setloader] = useState(false)
 
-  const { login, isAuthenticated } = useAuth()
+  const { login, isAuthenticated, user } = useAuth()
+
+  const navigate = useCallback(async () =>
+    // isAuthenticated && user?.uid && (await navigateBasedOnUser(user?.uid)),
+    [isAuthenticated, user?.uid]
+  )
 
   useEffect(() => {
-    isAuthenticated && navigate(routes.home())
-  }, [isAuthenticated])
+    navigate()
+  }, [isAuthenticated, navigate, user?.uid])
 
   const onSubmit = async (data: UserInfo) => {
     setloader(true)

@@ -9,30 +9,23 @@ export const navigateBasedOnUser = async (uid) => {
   }
   if (userData.roles.includes(USER_ROLES.ADMIN)) {
     navigate(routes.home(), { replace: true })
-  }
-  if (
+  } else if (
     userData.roles.includes(USER_ROLES.SALES_MANAGER) ||
     userData.roles.includes(USER_ROLES.SALES_EXECUTIVE)
   ) {
     navigate(routes.leadsManager(), { replace: true })
-  }
-  if (
+  } else if (
     userData.roles.includes(USER_ROLES.HR_MANAGER) ||
     userData.roles.includes(USER_ROLES.HR_EXECUTIVE)
   ) {
     navigate(routes.usersAdmin(), { replace: true })
-  }
-  if (
-    userData.roles.includes(USER_ROLES.HR_MANAGER) ||
-    userData.roles.includes(USER_ROLES.HR_EXECUTIVE)
-  ) {
-    navigate(routes.usersAdmin(), { replace: true })
-  }
-  if (
+  } else if (
     userData.roles.includes(USER_ROLES.CRM_MANAGER) ||
     userData.roles.includes(USER_ROLES.CRM_EXECUTIVE)
   ) {
     navigate(routes.projectModule(), { replace: true })
+  } else {
+    userData.roles && navigate(routes.accessDenied(), { replace: true })
   }
   return false
 }

@@ -1,7 +1,6 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
-import DialogFormBody from '../DialogFormBody/DialogFormBody'
 import SUserSignupBody from '../SUserSignupBody/SUserSignupBody'
 
 const SUserSignup = ({ open, setOpen, title, empData }) => {

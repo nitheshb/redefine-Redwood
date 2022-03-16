@@ -19,7 +19,7 @@ import {
 import { useDispatch } from 'react-redux'
 import { navigate, routes } from '@redwoodjs/router'
 import { getUserSuccess } from 'src/state/actions/user'
-import { getUser } from './dbQueryFirebase'
+import { getUser, getSelectedRoleAccess } from './dbQueryFirebase'
 
 export interface User {
   uid: string
@@ -96,16 +96,19 @@ export default function AuthContextProvider({ children }) {
   const authenticate = useCallback(
     async (currentUser) => {
       const additionalUserInfo = await getUser(currentUser.uid)
-      console.log('------', additionalUserInfo)
+      const access = await getSelectedRoleAccess(additionalUserInfo?.roles[0])
+
       const user = {
         uid: currentUser.uid,
         avatar: currentUser.photoURL,
         email: currentUser.email,
-        displayName: currentUser.displayName,
+        displayName: currentUser.displayName || additionalUserInfo?.name,
         phone: currentUser.phoneNumber,
         token: currentUser.uid,
-        role: additionalUserInfo.roles,
+        role: additionalUserInfo?.roles,
+        access,
       }
+      console.log('----user--', user)
       dispatch({
         type: 'AUTH_STATE_CHANGED',
         payload: {

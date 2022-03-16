@@ -142,6 +142,21 @@ export const getAllRoleAccess = async () => {
   return records
 }
 
+export const getSelectedRoleAccess = async (role) => {
+  const getRolesQueryById = await query(
+    collection(db, 'spark_roles_access'),
+    where('role', '==', role)
+  )
+  const records = []
+  const querySnapshot = await getDocs(getRolesQueryById)
+  querySnapshot.forEach((doc) => {
+    records.push(doc.data())
+  })
+  return records?.[0]?.access
+    ?.filter((item) => item.checked)
+    ?.map((elem) => elem.key)
+}
+
 // **********************************************
 // addF
 // **********************************************

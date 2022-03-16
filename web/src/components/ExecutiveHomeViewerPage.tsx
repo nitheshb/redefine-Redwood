@@ -1,17 +1,18 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Link, routes } from '@redwoodjs/router'
+// import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 
-import { XIcon } from '@heroicons/react/outline'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+// import { XIcon } from '@heroicons/react/outline'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import SiderForm from './SiderForm/SiderForm'
 import CardItem from './leadsCard'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
-import CustomerProfileSideView from './customerProfileSideView'
+// import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
 // import BoardData from '../../components/board-data.json'
 const BoardData = [
@@ -186,16 +187,16 @@ const BoardData = [
     ],
   },
 ]
-function createGuidId() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
+// function createGuidId() {
+//   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+//     const r = (Math.random() * 16) | 0,
+//       v = c == 'x' ? r : (r & 0x3) | 0x8
+//     return v.toString(16)
+//   })
+// }
 const ExecutiveHomeViewerPage = () => {
   const { user } = useAuth()
-  const isSalesManager =
+  const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
@@ -203,11 +204,11 @@ const ExecutiveHomeViewerPage = () => {
   // kanban board
   const [ready, setReady] = useState(false)
   const [boardData, setBoardData] = useState(BoardData)
-  const [showForm, setShowForm] = useState(false)
-  const [selectedBoard, setSelectedBoard] = useState(0)
+  // const [showForm, setShowForm] = useState(false)
+  // const [selectedBoard, setSelectedBoard] = useState(0)
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
-  const [selUserProfile, setSelUserProfile] = useState({})
+  const [selUserProfile] = useState({})
 
   const onDragEnd = (re) => {
     if (!re.destination) return
@@ -226,36 +227,36 @@ const ExecutiveHomeViewerPage = () => {
     setBoardData(newBoardData)
   }
 
-  const onTextAreaKeyPress = (e) => {
-    if (e.keyCode === 13) {
-      //Enter
-      const val = e.target.value
-      if (val.length === 0) {
-        setShowForm(false)
-      } else {
-        const boardId = e.target.attributes['data-id'].value
-        const item = {
-          id: createGuidId(),
-          title: val,
-          priority: 0,
-          chat: 0,
-          attachment: 0,
-          assignees: [],
-        }
-        const newBoardData = boardData
-        newBoardData[boardId].items.push(item)
-        setBoardData(newBoardData)
-        setShowForm(false)
-        e.target.value = ''
-      }
-    }
-  }
+  // const onTextAreaKeyPress = (e) => {
+  //   if (e.keyCode === 13) {
+  //     //Enter
+  //     const val = e.target.value
+  //     if (val.length === 0) {
+  //       setShowForm(false)
+  //     } else {
+  //       const boardId = e.target.attributes['data-id'].value
+  //       const item = {
+  //         id: createGuidId(),
+  //         title: val,
+  //         priority: 0,
+  //         chat: 0,
+  //         attachment: 0,
+  //         assignees: [],
+  //       }
+  //       const newBoardData = boardData
+  //       newBoardData[boardId].items.push(item)
+  //       setBoardData(newBoardData)
+  //       setShowForm(false)
+  //       e.target.value = ''
+  //     }
+  //   }
+  // }
 
   const fSetLeadsType = (type) => {
     setAddLeadsTypes(type)
     setisImportLeadsOpen(true)
   }
-  const selUserProfileF = (title, data) => {
+  const selUserProfileF = (title) => {
     setAddLeadsTypes(title)
     setisImportLeadsOpen(true)
   }
@@ -326,30 +327,29 @@ const ExecutiveHomeViewerPage = () => {
                     </svg>
                   </button>
                 </span>
-                {isSalesManager && (
-                  <>
-                    <button
-                      onClick={() => fSetLeadsType('Add Lead')}
-                      className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
+                <>
+                  <button
+                    onClick={() => fSetLeadsType('Add Lead')}
+                    className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                      </svg>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
 
-                      <span className="ml-1">Add lead</span>
-                    </button>
-
+                    <span className="ml-1">Add lead</span>
+                  </button>
+                  {isImportLeads && (
                     <button
                       onClick={() => fSetLeadsType('Import Leads')}
                       className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
@@ -371,8 +371,8 @@ const ExecutiveHomeViewerPage = () => {
 
                       <span className="ml-1">Import Leads</span>
                     </button>
-                  </>
-                )}
+                  )}
+                </>
               </div>
             </div>
 
@@ -424,17 +424,11 @@ const ExecutiveHomeViewerPage = () => {
                                               key={item.id}
                                               data={item}
                                               index={iIndex}
-                                              onClick={() => {
-                                                console.log(
-                                                  'iam clicked1',
-                                                  item
-                                                )
-                                              }}
                                             />
                                           </div>
                                         )
                                       })}
-                                    {provided.placeholder}
+                                    {provided.placeholder}``
                                     {console.log('dragDatga is', board)}
                                   </div>
                                 </div>
