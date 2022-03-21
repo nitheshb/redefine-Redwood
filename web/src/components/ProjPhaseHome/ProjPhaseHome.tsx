@@ -1,21 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-// const ProjPhaseHome = () => {
-//   return (
-//     <div>
-//       <h2>{'ProjPhaseHome'}</h2>
-//       <p>{'Find me in ./web/src/components/ProjPhaseHome/ProjPhaseHome.tsx'}</p>
-//     </div>
-//   )
-// }
-
-// export default ProjPhaseHome
-
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Fragment, useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams } from '@redwoodjs/router'
 
-import ProjectStatsCard from '../ProjectStatsCard/ProjectStatsCard'
+// import ProjectStatsCard from '../ProjectStatsCard/ProjectStatsCard'
 import BlockStatsCards from '../BlockStatsCards/BlockStatsCards'
 
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
@@ -25,17 +15,20 @@ import PaymentScheuleForm from '../PaymentScheuleForm/PaymentScheuleForm'
 
 import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
 
-import { PencilIcon, DotsVerticalIcon, EyeIcon } from '@heroicons/react/outline'
-import { Link, routes } from '@redwoodjs/router'
+import { PencilIcon, EyeIcon } from '@heroicons/react/outline'
+import { getPhasesByProject } from 'src/context/dbQueryFirebase'
+
+// import { Link, routes } from '@redwoodjs/router'
+
 import SiderForm from '../SiderForm/SiderForm'
 
-const projectFeedData = [
-  { k: 'Total', v: 125, pic: '' },
-  { k: 'Sold', v: 5, pic: '' },
-  { k: 'Booked', v: 25, pic: '' },
-  { k: 'Available', v: 85, pic: '' },
-  { k: 'Hold', v: 10, pic: '' },
-]
+// const projectFeedData = [
+//   { k: 'Total', v: 125, pic: '' },
+//   { k: 'Sold', v: 5, pic: '' },
+//   { k: 'Booked', v: 25, pic: '' },
+//   { k: 'Available', v: 85, pic: '' },
+//   { k: 'Hold', v: 10, pic: '' },
+// ]
 const unitFeedData = [
   { k: 'Total', v: 137500, pic: '' },
   { k: 'Sold', v: 5500, pic: '' },
@@ -43,13 +36,13 @@ const unitFeedData = [
   { k: 'Available', v: 93500, pic: '' },
   { k: 'Hold', v: 11000, pic: '' },
 ]
-const valueFeedData = [
-  { k: 'Total', v: 543125000, pic: '' },
-  { k: 'Sold', v: 21725000, pic: '' },
-  { k: 'Booked', v: 108625000, pic: '' },
-  { k: 'Collected', v: 369325000, pic: '' },
-  { k: 'Balance', v: 43450000, pic: '' },
-]
+// const valueFeedData = [
+//   { k: 'Total', v: 543125000, pic: '' },
+//   { k: 'Sold', v: 21725000, pic: '' },
+//   { k: 'Booked', v: 108625000, pic: '' },
+//   { k: 'Collected', v: 369325000, pic: '' },
+//   { k: 'Balance', v: 43450000, pic: '' },
+// ]
 const aprtConfig = [
   { k: 'Builder', v: 'Prestige', pic: '/builder2.png' },
   { k: 'Type', v: 'Apartment', pic: '/a1.png' },
@@ -59,12 +52,37 @@ const aprtConfig = [
 ]
 const ProjPhaseHome = () => {
   const [showForm, setShowForm] = useState('Block Details')
+  const [phases, setPhases] = useState([])
 
   const [isAddBlockOpen, setAddBlockOpen] = useState(false)
   const handleAddBlockAction = () => setAddBlockOpen(false)
 
   const [isAddPhaseOpen, setAddPhaseOpen] = useState(false)
-  const handleAddPhaseAction = () => setAddPhaseOpen(false)
+  // const handleAddPhaseAction = () => setAddPhaseOpen(false)
+  const { uid } = useParams()
+
+  const getPhases = async () => {
+    const unsubscribe = getPhasesByProject(
+      uid,
+      (querySnapshot) => {
+        const phases = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        setPhases(phases)
+      },
+      (e) => {
+        console.log('error', e)
+        setPhases([])
+      }
+    )
+    return unsubscribe
+  }
+
+  useEffect(() => {
+    getPhases()
+  }, [])
+
+  console.log(phases)
   return (
     <div>
       <section className="py-8 mb-8 leading-7 text-gray-900 bg-white sm:py-12 md:py-16 lg:py-18 rounded-lg">

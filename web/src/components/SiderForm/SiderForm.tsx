@@ -6,14 +6,20 @@ import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import AddPhaseForm from '../AddPhaseForm/AddPhaseForm'
 import LeadsDropHomes from '../LeadUplodCsv/uploadHome'
 import AddLeadForm from '../AddLeadForm'
-const SiderForm = ({ open, setOpen, title, selUserProfile }) => {
+const SiderForm = ({
+  open,
+  setOpen,
+  title,
+  data = {},
+  onCloseDisabled = false,
+}) => {
   // const [open, setOpen] = useState(true)
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 overflow-hidden"
-        onClose={setOpen}
+        onClose={onCloseDisabled ? () => {} : () => setOpen()}
         style={{ zIndex: '1000' }}
       >
         <div className="absolute inset-0 overflow-hidden">
@@ -65,11 +71,19 @@ const SiderForm = ({ open, setOpen, title, selUserProfile }) => {
                   </div>
                 </Transition.Child>
 
-                {title === 'Create Project' && (
-                  <DialogFormBody title={title} dialogOpen={setOpen} />
+                {(title === 'Create Project' || title === 'Edit Project') && (
+                  <DialogFormBody
+                    title={title}
+                    dialogOpen={setOpen}
+                    project={data}
+                  />
                 )}
-                {title === 'Add Phase' && (
-                  <AddPhaseForm title={title} dialogOpen={setOpen} />
+                {(title === 'Add Phase' || title === 'Edit Phase') && (
+                  <AddPhaseForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    phase={data}
+                  />
                 )}
                 {title === 'Add Block' && (
                   <AddBlockForm title={title} dialogOpen={setOpen} />
