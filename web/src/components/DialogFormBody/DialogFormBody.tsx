@@ -53,6 +53,8 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
     projectName: project?.projectName || '',
     builderName: project?.builderName || '',
     builderGSTno: project?.builderGSTno || '',
+    landlordName: project?.landlordName || '',
+    landlordShare: project?.landlordShare || '',
     area: project?.area || '',
     location: project?.location || '',
     pincode: project?.pincode || '',
@@ -141,6 +143,24 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
                           />
                         </div>
                       </div>
+                      {devType.name === 'Joint' && (
+                        <div className="flex mt-3 mb-3 space-y-2 w-full text-xs">
+                          <div className="mt-2 mr-3 w-full">
+                            <TextField
+                              label="LandLord Name*"
+                              name="landlordName"
+                              type="text"
+                            />
+                          </div>
+                          <div className="mt-2 w-full">
+                            <TextField
+                              label="LandLord Share*"
+                              name="landlordShare"
+                              type="text"
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="flex flex-col mt-2 rounded-lg bg-white border border-gray-100 p-4 ">
                       <div className="mb-3">

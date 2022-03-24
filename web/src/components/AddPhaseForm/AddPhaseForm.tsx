@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react'
 import { useState } from 'react'
-import { Form, Formik } from 'formik'
+import { Form, Formik, Field } from 'formik'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
 import { useParams } from '@redwoodjs/router'
@@ -51,20 +51,19 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     sellingRate: phase?.sellingRate || '',
     startDate: phase?.startDate || null,
     endDate: phase?.endDate || null,
+    brokerage: phase?.brokerage || '',
+    unitCancellation: phase?.unitCancellation || '',
     unitsCancel: phase?.unitsCancel || '',
-    reraStartDate: phase?.unitsCancel || null,
-    reraEndDate: phase?.unitsCancel || null,
-    // builderName: phase?.builderName || '',
-    // builderGSTno: phase?.builderGSTno || '',
-    // location: phase?.location || '',
-    // pincode: phase?.pincode || '',
-    // state: phase?.state || '',
-    // city: phase?.city || '',
-    // address: phase?.address || '',
+    reraNo: phase?.reraNo || '',
+    reraStartDate: phase?.reraStartDate || null,
+    reraEndDate: phase?.reraStartDate || null,
     areaTextPrimary: phase?.areaTextPrimary || '',
     areaTextSecondary: phase?.areaTextSecondary || '',
     areaDropDownPrimary: phase?.areaDropDownPrimary || 'acre',
     areaDropdownSecondary: phase?.areaDropdownSecondary || 'gunta',
+    isAgreementsChecked: phase?.isAgreementsChecked || false,
+    isMakeCancelChecked: phase?.isMakeCancelChecked || false,
+    isGSTChecked: phase?.isGSTChecked || false,
   }
 
   const createProjectSchema = Yup.object({
@@ -74,16 +73,6 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     phaseArea: Yup.string().required('Required'),
     sellableArea: Yup.string().required('Required'),
     sellingRate: Yup.number().required('Required'),
-    // startDate: Yup.date().nullable(),
-    // endDate: Yup.date().nullable(),
-    // location: Yup.string().required('Required'),
-    // pincode: Yup.string()
-    //   .required('Required')
-    //   .matches(/^[0-9]+$/, 'Must be only digits')
-    //   .length(6, 'Must be 6 digits'),
-    // city: Yup.string().required('Required'),
-    // state: Yup.string().required('Required'),
-    // area: Yup.number().required('Required'),
   })
 
   return (
@@ -348,7 +337,22 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                           >
                             Separate Agreements For Construction & Land
                           </label>
-                          <Checkbox color="primary" />
+                          <Field
+                            name="isAgreementsChecked"
+                            type="checkbox"
+                            component={() => (
+                              <Checkbox
+                                color="primary"
+                                checked={formik.values.isAgreementsChecked}
+                                onChange={() =>
+                                  formik.setFieldValue(
+                                    'isAgreementsChecked',
+                                    !formik.values.isAgreementsChecked
+                                  )
+                                }
+                              />
+                            )}
+                          />
                         </div>
                         <div className="w-full flex items-center mr-4">
                           <label
@@ -357,7 +361,22 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                           >
                             Make Cancel Unit Available After Refund
                           </label>
-                          <Checkbox color="primary" />
+                          <Field
+                            name="isMakeCancelChecked"
+                            type="checkbox"
+                            component={() => (
+                              <Checkbox
+                                color="primary"
+                                checked={formik.values.isMakeCancelChecked}
+                                onChange={() =>
+                                  formik.setFieldValue(
+                                    'isMakeCancelChecked',
+                                    !formik.values.isMakeCancelChecked
+                                  )
+                                }
+                              />
+                            )}
+                          />
                         </div>
                         <div className="w-full flex items-center">
                           <label
@@ -366,7 +385,22 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                           >
                             GST On Receipt Basis
                           </label>
-                          <Checkbox color="primary" />
+                          <Field
+                            name="isGSTChecked"
+                            type="checkbox"
+                            component={() => (
+                              <Checkbox
+                                color="primary"
+                                checked={formik.values.isGSTChecked}
+                                onChange={() =>
+                                  formik.setFieldValue(
+                                    'isGSTChecked',
+                                    !formik.values.isGSTChecked
+                                  )
+                                }
+                              />
+                            )}
+                          />
                         </div>
                       </div>
                       <p className="text-xs text-red-500 text-right my-3">

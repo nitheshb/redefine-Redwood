@@ -13,7 +13,6 @@ const SiderForm = ({
   data = {},
   onCloseDisabled = false,
 }) => {
-  // const [open, setOpen] = useState(true)
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -85,8 +84,12 @@ const SiderForm = ({
                     phase={data}
                   />
                 )}
-                {title === 'Add Block' && (
-                  <AddBlockForm title={title} dialogOpen={setOpen} />
+                {(title === 'Add Block' || title === 'Edit Block') && (
+                  <AddBlockForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    data={data}
+                  />
                 )}
                 {title === 'Import Leads' && (
                   <LeadsDropHomes title={title} dialogOpen={setOpen} />

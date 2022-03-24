@@ -183,6 +183,21 @@ export const getPhasesByProject = async (uid: string, snapshot, error) => {
   return onSnapshot(getAllPhasesQuery, snapshot, error)
 }
 
+export const getBlocksByPhase = async (
+  { projectId, phaseId },
+  snapshot,
+  error
+) => {
+  const getAllPhasesQuery = await query(
+    collection(db, 'blocks'),
+    where('projectId', '==', projectId),
+    where('phaseId', '==', phaseId),
+    orderBy('created', 'asc'),
+    limit(20)
+  )
+  return onSnapshot(getAllPhasesQuery, snapshot, error)
+}
+
 // **********************************************
 // addF
 // **********************************************
@@ -265,6 +280,27 @@ export const createPhase = async (element, enqueueSnackbar, resetForm) => {
     })
   }
 }
+
+export const createBlock = async (element, enqueueSnackbar, resetForm) => {
+  try {
+    const uid = uuidv4()
+    const updated = {
+      ...element,
+      uid,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'blocks', uid)
+    await setDoc(ref, updated, { merge: true })
+    enqueueSnackbar('Block added successfully', {
+      variant: 'success',
+    })
+    resetForm()
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
 // **********************************************
 // upateF
 // **********************************************
@@ -338,6 +374,26 @@ export const updatePhase = async (uid, project, enqueueSnackbar) => {
       updated: Timestamp.now().toMillis(),
     })
     enqueueSnackbar('Phase updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const updateBlock = async (uid, project, enqueueSnackbar) => {
+  try {
+    await updateDoc(
+      doc(db, 'blocks', uid),
+      {
+        ...project,
+        updated: Timestamp.now().toMillis(),
+      },
+      { merge: true }
+    )
+    enqueueSnackbar('Block updated successfully', {
       variant: 'success',
     })
   } catch (e) {
