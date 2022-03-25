@@ -4,7 +4,11 @@ import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
 import uniqueId from '../../util/generatedId'
-import { getLedsData1 } from 'src/context/dbQueryFirebase'
+import {
+  getAllLeads,
+  getLeadsByStatus,
+  getLedsData1,
+} from 'src/context/dbQueryFirebase'
 
 const tableData2 = [
   {
@@ -463,8 +467,20 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
     getLeadsDataFun()
   }, [])
   const getLeadsDataFun = async () => {
-    const leadsData = await getLedsData1()
-    setLeadsFetchedData(leadsData)
+    const unsubscribe = getLeadsByStatus(
+      (querySnapshot) => {
+        const usersListA = querySnapshot.docs.map((docSnapshot) => {
+          const x = docSnapshot.data()
+          x.id = docSnapshot.id
+          return x
+        })
+        setLeadsFetchedData(usersListA)
+      },
+      { status: ['new', 'inprogress', 'followup', 'visitfixed', ''] },
+      (error) => setLeadsFetchedData([])
+    )
+    return unsubscribe
+
     await console.log('leadsData', leadsData)
   }
   const handleDelete = async (ids) => {
@@ -494,18 +510,18 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
                 role="tablist"
               >
                 {[
-                  { lab: 'All', val: 'all' },
+                  { lab: 'In Progress', val: 'all' },
                   { lab: 'New', val: 'new' },
-                  { lab: 'In Progress', val: 'inprogress' },
+                  // { lab: 'In Progress', val: 'inprogress' },
                   { lab: 'Follow Up', val: 'followup' },
                   { lab: 'Visit Fixed', val: 'visitfixed' },
                   { lab: 'Visit Done', val: 'visitdone' },
                   { lab: 'Negotiation', val: 'negotitation' },
                   { lab: 'Reassign', val: 'reassign' },
                   { lab: 'RNR', val: 'RNR' },
-                  { lab: 'Booked', val: 'booked' },
-                  { lab: 'Not Interested', val: 'notinterested' },
-                  { lab: 'Dead', val: 'dead' },
+                  // { lab: 'Booked', val: 'booked' },
+                  // { lab: 'Not Interested', val: 'notinterested' },
+                  // { lab: 'Dead', val: 'dead' },
                 ].map((d, i) => {
                   return (
                     <li key={i} className="mr-2" role="presentation">

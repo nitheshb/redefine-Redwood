@@ -132,7 +132,6 @@ function EnhancedTableHead(props) {
     rowCount,
     onRequestSort,
     searchKey,
-
   } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
@@ -527,7 +526,6 @@ id: "1" */}
               .map((row, index) => {
                 const isItemSelected = isSelected(row.Name)
                 const labelId = `enhanced-table-checkbox-${index}`
-
                 return (
                   <TableRow
                     hover

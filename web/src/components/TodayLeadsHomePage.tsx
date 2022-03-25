@@ -186,18 +186,8 @@ const BoardData = [
     ],
   },
 ]
-function createGuidId() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
 const TodayLeadsHomePage = () => {
   const { user } = useAuth()
-  const isSalesManager =
-    user?.role?.includes(USER_ROLES.ADMIN) ||
-    user?.role?.includes(USER_ROLES.SALES_MANAGER)
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
 
   // kanban board
@@ -209,53 +199,7 @@ const TodayLeadsHomePage = () => {
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
   const [selUserProfile, setSelUserProfile] = useState({})
 
-  const onDragEnd = (re) => {
-    if (!re.destination) return
-    const newBoardData = boardData
-    const dragItem =
-      newBoardData[parseInt(re.source.droppableId)].items[re.source.index]
-    newBoardData[parseInt(re.source.droppableId)].items.splice(
-      re.source.index,
-      1
-    )
-    newBoardData[parseInt(re.destination.droppableId)].items.splice(
-      re.destination.index,
-      0,
-      dragItem
-    )
-    setBoardData(newBoardData)
-  }
-
-  const onTextAreaKeyPress = (e) => {
-    if (e.keyCode === 13) {
-      //Enter
-      const val = e.target.value
-      if (val.length === 0) {
-        setShowForm(false)
-      } else {
-        const boardId = e.target.attributes['data-id'].value
-        const item = {
-          id: createGuidId(),
-          title: val,
-          priority: 0,
-          chat: 0,
-          attachment: 0,
-          assignees: [],
-        }
-        const newBoardData = boardData
-        newBoardData[boardId].items.push(item)
-        setBoardData(newBoardData)
-        setShowForm(false)
-        e.target.value = ''
-      }
-    }
-  }
-
-  const fSetLeadsType = (type) => {
-    setAddLeadsTypes(type)
-    setisImportLeadsOpen(true)
-  }
-  const selUserProfileF = (title, data) => {
+  const selUserProfileF = (title) => {
     setAddLeadsTypes(title)
     setisImportLeadsOpen(true)
   }

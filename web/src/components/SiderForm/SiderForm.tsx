@@ -6,7 +6,14 @@ import AddBlockForm from '../AddBlockForm/AddBlockForm'
 import AddPhaseForm from '../AddPhaseForm/AddPhaseForm'
 import LeadsDropHomes from '../LeadUplodCsv/uploadHome'
 import AddLeadForm from '../AddLeadForm'
-const SiderForm = ({ open, setOpen, title, selUserProfile }) => {
+import CustomerProfileSideView from '../customerProfileSideView'
+const SiderForm = ({
+  open,
+  setOpen,
+  title,
+  selUserProfile,
+  customerDetails,
+}) => {
   // const [open, setOpen] = useState(true)
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -81,7 +88,10 @@ const SiderForm = ({ open, setOpen, title, selUserProfile }) => {
                   <AddLeadForm title={title} dialogOpen={setOpen} />
                 )}
                 {title === 'User Profile' && (
-                  <AddLeadForm title={title} dialogOpen={setOpen} />
+                  <CustomerProfileSideView
+                    openUserProfile={false}
+                    customerDetails={customerDetails}
+                  />
                 )}
               </div>
             </Transition.Child>

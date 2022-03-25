@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Dialog } from '@headlessui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { Label, InputField, TextAreaField, FieldError } from '@redwoodjs/forms'
 import Select from 'react-select'
@@ -14,24 +14,50 @@ import { TextField } from 'src/util/formFields/TextField'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
-import { addLead, checkIfLeadAlreadyExists } from 'src/context/dbQueryFirebase'
+import { addLead, checkIfLeadAlreadyExists, steamUsersListByRole } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { Timestamp } from 'firebase/firestore'
+import { useRouterStateSetter } from '@redwoodjs/router/dist/router-context'
+import {
+  sendWhatAppMediaSms,
+  sendWhatAppTextSms,
+} from 'src/util/axiosWhatAppApi'
 
 const AddLeadForm = ({ title, dialogOpen }) => {
   const { user } = useAuth()
+  const [fetchedUsersList, setfetchedUsersList] = useState([])
+  const [usersList, setusersList] = useState([])
+  useEffect(() => {
+    const unsubscribe = steamUsersListByRole(
+      (querySnapshot) => {
+        const usersListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        setfetchedUsersList(usersListA)
+        usersListA.map((user) => {
+          user.label = user.displayName || user.name
+          user.value = user.uid
+        })
+        console.log('fetched users list is', usersListA)
+        setusersList(usersListA)
+      },
+      (error) => setfetchedUsersList([])
+    )
+
+    return unsubscribe
+  }, [])
+
   const aquaticCreatures = [
     { label: 'Select the Project', value: '' },
     { label: 'Subha Ecostone', value: 'subhaecostone' },
     { label: 'Esperanza', value: 'esperanza' },
     { label: 'Nakshatra Township', value: 'nakshatratownship' },
   ]
-
-  const cityList = [
-    { label: 'User1', value: 'subhaecostone' },
-    { label: 'User2', value: 'esperanza' },
-    { label: 'User3', value: 'nakshatratownship' },
-  ]
+  // const usersList = [
+  //   { label: 'User1', value: 'User1' },
+  //   { label: 'User2', value: 'User2' },
+  //   { label: 'User3', value: 'User3' },
+  // ]
   const budgetList = [
     { label: 'Select Customer Budget', value: '' },
     { label: '5 - 10 Lacs', value: 'Bangalore,KA' },
@@ -82,7 +108,8 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     },
   ]
   const [loading, setLoading] = useState(false)
-  const [selected, setSelected] = useState(plans[0])
+  const [formMessage, setFormMessage] = useState('')
+  const [selected, setSelected] = useState({})
   const [devType, setdevType] = useState(devTypeA[0])
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -95,22 +122,13 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   const devTypeSel = async (sel) => {
     await setdevType(sel)
   }
-  const onSubmit = async (data) => {
+  const onSubmit = async (data, resetForm) => {
     console.log(data)
     setLoading(true)
 
-    const {
-      email,
-      myRole,
-      deptVal,
-      name,
-      mobileNo,
-      assignedTo,
-      source,
-      project,
-    } = data
+    const { email, name, mobileNo, assignedTo, source, project } = data
     // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
-    setLoading(false)
+
     const foundLength = await checkIfLeadAlreadyExists('spark_leads', mobileNo)
     const leadData = {
       Date: Timestamp.now().toMillis(),
@@ -120,7 +138,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       Note: '',
       Project: project,
       Source: source,
-      Status: 'New',
+      Status: assignedTo === '' ? 'unassigned' : 'new',
       intype: 'Form',
       assignedTo: assignedTo,
       by: user?.email,
@@ -128,29 +146,37 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     console.log('user is ', user)
     if (foundLength?.length > 0) {
       console.log('foundLENGTH IS ', foundLength)
+      setFormMessage('User Already Exists with Ph No')
+      setLoading(false)
     } else {
       console.log('foundLENGTH IS empty ', foundLength)
 
       // proceed to copy
-      // addLead(leadData)
+      await addLead(
+        leadData,
+        user?.email,
+        `lead created and assidged to ${assignedTo}`
+      )
+
+      // msg1
+      await sendWhatAppTextSms(
+        mobileNo,
+        `Thank you ${name} for choosing the world class ${project || 'project'}`
+      )
+
+      // msg2
+      await sendWhatAppMediaSms(mobileNo)
+      const smg =
+        assignedTo === ''
+          ? 'You Interested will be addressed soon... U can contact 9123456789 mean while'
+          : 'we have assigned dedicated manager to you. Mr.Ram as ur personal manager'
+
+      // msg3
+      sendWhatAppTextSms(mobileNo, smg)
+      resetForm()
+      setFormMessage('Saved Successfully..!')
+      setLoading(false)
     }
-    // if (foundLength == undefined) {
-    //   console.log('foundLength is==> ', foundLength)
-    //   return 'valid'
-    // } else {
-    //   return 'duplicate'
-    // }
-    // addUserLog({
-    //   s: 's',
-    //   type: 'updateRole',
-    //   subtype: 'updateRole',
-    //   txt: `${email} as ${myRole}`,
-    //   by: 'nitheshreddy.email@gmail.com',
-    // })
-    // setFormMessage({
-    //   color: 'green',
-    //   message: `Role is updated Successfully`,
-    // })
   }
 
   const deptList = [
@@ -186,12 +212,36 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     //   //  .oneOf(['Admin', 'CRM'], 'DEPT IS REQ')
     //   .required('Required Role'),
   })
+  const resetter = () => {
+    setFormMessage('')
+  }
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
-      <div className="px-4 sm:px-6  z-10">
+      <div className="px-4 sm:px-6  z-10 flex items-center justify-between">
         <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
         </Dialog.Title>
+
+        {formMessage === 'Saved Successfully..!' && (
+          <p className=" flex text-md text-slate-800 text-right my-3">
+            <img
+              className="w-[40px] h-[40px] inline mr-2"
+              alt=""
+              src="/ok.gif"
+            />
+            <span className="mt-2">{formMessage}</span>
+          </p>
+        )}
+        {formMessage === 'User Already Exists with Ph No' && (
+          <p className=" flex text-md text-pink-800 text-right my-3">
+            <img
+              className="w-[40px] h-[40px] inline mr-2"
+              alt=""
+              src="/ok.gif"
+            />
+            <span className="mt-2">{formMessage}</span>
+          </p>
+        )}
       </div>
 
       <div className="grid  gap-8 grid-cols-1">
@@ -213,19 +263,25 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                 myRole: '',
               }}
               validationSchema={validate}
-              onSubmit={(values) => {
+              onSubmit={(values, { resetForm }) => {
                 console.log('ami submitted', values)
-                onSubmit(values)
+                onSubmit(values, resetForm)
               }}
             >
               {(formik) => (
-                <div className="mt-16">
+                <div className="mt-8">
                   <Form>
-                    <label className="font-md text-[#053219] py-2 text-sm mb-2 mt-0">
-                      Client Details<abbr title="required"></abbr>
-                    </label>
+                    <div className="mb-4 ">
+                      <div className="inline">
+                        <div className="">
+                          <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                            Client Details<abbr title="required"></abbr>
+                          </label>
+                        </div>
 
-                    <div className="border-t  mb-3"></div>
+                        <div className="border-t-4 rounded-xl w-16 mt-1 border-green-600"></div>
+                      </div>
+                    </div>
                     <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-2">
                       {/* <div className="mb-3 space-y-2 w-full text-xs">
 
@@ -245,7 +301,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                       </div>
                     </div>
                     {/* 2 */}
-                    <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-2">
+                    <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-">
                       <div className="mb-3 space-y-2 w-full text-xs">
                         {/* <TextField
                           label="Mobile No*"
@@ -278,13 +334,17 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                         <TextField label="Email*" name="email" type="text" />
                       </div>
                     </div>
-                    <label className="font-md text-[#053219] py-2 text-sm mb-1  mt-2">
-                      More Details<abbr title="required">*</abbr>
-                    </label>
+                    <div className="mt-8">
+                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                        More Details<abbr title="required">*</abbr>
+                      </label>
+                    </div>
+                    <div className="border-t-4 rounded-xl w-16 mt-1  border-green-600"></div>
+
                     {/* </div>
                       <div className="rounded-lg bg-white border border-gray-100 p-4 mt-4"> */}
                     {/* 3 */}
-                    <div className="md:flex md:flex-row md:space-x-4 w-full text-xs border-t ">
+                    <div className="md:flex md:flex-row md:space-x-4 w-full text-xs ">
                       <div className="w-full flex flex-col mb-3 mt-2">
                         <CustomSelect
                           name="source"
@@ -317,12 +377,12 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                         <CustomSelect
                           name="assignedTo"
                           label="Assign To"
-                          className="input mt-3"
+                          className="input mt-"
                           onChange={(value) => {
                             formik.setFieldValue('assignedTo', value.value)
                           }}
                           value={formik.values.assignedTo}
-                          options={cityList}
+                          options={usersList}
                         />
 
                         <p
@@ -335,12 +395,16 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                     </div>
 
                     {/* 6 */}
-                    <label className="font-md text-[#053219] py-2 text-sm mb-1  mt-2">
-                      Advanced<abbr title="required"></abbr>
-                    </label>
-                    <div className="border-t">
+                    <div className=" mt-8 ">
+                      <label className="font-semibold text-[#053219]  text-sm  mb-1 ">
+                        Advanced<abbr title="required"></abbr>
+                      </label>
+                    </div>
+                    <div className="border-t-4 rounded-xl w-16 mt-1 border-green-600"></div>
+
+                    <div className="">
                       <div className=" flex flex-col  mt-4  px-1 py-1 ">
-                        <label className="font-semibold text-[#053219]  text-sm mb-2">
+                        <label className="font- text-[#053219]  text-sm mb-2">
                           Type<abbr title="required"></abbr>
                         </label>
                         <RadioGroup value={selected} onChange={typeSel}>
@@ -432,7 +496,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                           </div>
                         </RadioGroup>
                       </div>
-                      <div className="md:flex md:flex-row md:space-x-4 w-full text-xs mt-3">
+                      <div className="md:flex md:flex-row md:space-x-4 w-full text-xs mt-3 mx-2">
                         <div className="w-full flex flex-col mb-3">
                           <CustomSelect
                             name="budget"
@@ -454,7 +518,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                       </div>
                     </div>
                     <div className="mb-8">
-                      <p className="text-xs text-red-500 text-right my-3">
+                      <p className="text-xs text-red-400 text-right my-3">
                         Mobile No / Email is required{' '}
                         <abbr title="Required field">*</abbr>
                       </p>
@@ -462,16 +526,17 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                         <button
                           className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
                           type="reset"
+                          onClick={() => resetter()}
                         >
                           Reset
                         </button>
                         <button
-                          className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
+                          className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
                           type="submit"
                           disabled={loading}
                         >
                           {loading && <Loader />}
-                          Add Employee
+                          Add Lead
                         </button>
                       </div>
                     </div>

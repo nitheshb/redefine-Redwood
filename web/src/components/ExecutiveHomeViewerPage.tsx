@@ -48,25 +48,7 @@ const BoardData = [
       },
     ],
   },
-  {
-    name: 'In Progress',
-    items: [
-      {
-        id: 3,
-        priority: 2,
-        title: 'Venkatesh',
-        mobile: 9000000001,
-        project: 'Nakshatra Township',
-        chat: 0,
-        attachment: 3,
-        assignees: [
-          {
-            avt: 'https://randomuser.me/api/portraits/men/79.jpg',
-          },
-        ],
-      },
-    ],
-  },
+
   {
     name: 'Follow Up',
     items: [
@@ -258,6 +240,7 @@ const ExecutiveHomeViewerPage = () => {
   const selUserProfileF = (title, data) => {
     setAddLeadsTypes(title)
     setisImportLeadsOpen(true)
+    setSelUserProfile(data)
   }
   return (
     <>
@@ -463,7 +446,7 @@ const ExecutiveHomeViewerPage = () => {
         open={isImportLeadsOpen}
         setOpen={setisImportLeadsOpen}
         title={addLeadsTypes}
-        userProfileInput={selUserProfile}
+        customerDetails={selUserProfile}
       />
     </>
   )

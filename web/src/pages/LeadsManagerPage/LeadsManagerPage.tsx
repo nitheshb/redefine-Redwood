@@ -7,6 +7,7 @@ import HeadSideBar from 'src/components/HeadSideBar/HeadSideBar'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
 import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
+import LeadsManagementHome from 'src/components/LeadsManagement'
 
 const LeadsManagerPage = () => {
   const [showSideBar, setShowSideBar] = useState(true)
@@ -43,6 +44,7 @@ const LeadsManagerPage = () => {
           >
             {viewable === 'Today' && <ExecutiveHomeViewerPage />}
             {viewable === 'Today1' && <TodayLeadsHomePage />}
+            {viewable === 'LeadsManagerHome' && <LeadsManagementHome />}
           </div>
         </div>
       </div>

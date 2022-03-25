@@ -34,6 +34,14 @@ export const steamUsersList = (snapshot, error) => {
   const itemsQuery = query(collection(db, 'users'))
   return onSnapshot(itemsQuery, snapshot, error)
 }
+// get users list
+export const steamUsersListByRole = (snapshot, error) => {
+  const itemsQuery = query(
+    collection(db, 'users'),
+    where('roles', 'array-contains-any', ['sales-manager', 'sales-executive'])
+  )
+  return onSnapshot(itemsQuery, snapshot, error)
+}
 
 //  get users activity list
 export const steamUsersActivityLog = (snapshot, error) => {
@@ -50,6 +58,40 @@ export const steamUsersActivityOfUser = (snapshot, error) => {
     collection(db, 'spark_user_log'),
     where('by', '==', 'nithe.nithesh@gmail.com')
   )
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+
+//  get lead activity list
+export const steamLeadActivityLog = (snapshot, error) => {
+  // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
+
+  return onSnapshot(
+    doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'),
+    snapshot,
+    error
+  )
+  // return onSnapshot(itemsQuery, snapshot, error)
+}
+// stream
+export const getLeadsByStatus = (snapshot, data, error) => {
+  const { status } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_leads'),
+    where('Status', 'in', status)
+  )
+  console.log('hello ', status, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+// stream all leads
+export const getAllLeads = (snapshot, data, error) => {
+  const { status } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_leads'),
+    where('Status', 'in', ['status'])
+  )
+  console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
@@ -161,12 +203,18 @@ export const createUser = async (data: any) => {
   }
 }
 
-export const addLead = (data) => {
-  // type === bulkAddLead || updateLead || deleteLead
-
-  // const userRef = doc(db, 'spark_leads')
-  // setDoc(userRef, data)
-  addDoc(collection(db, 'spark_leads'), data)
+export const addLead = async (data, by, msg) => {
+  const x = await addDoc(collection(db, 'spark_leads'), data)
+  await console.log('x value is', x, x.id)
+  await addLeadLog(x.id, {
+    s: 's',
+    type: 'status',
+    subtype: 'added',
+    T: Timestamp.now().toMillis(),
+    txt: msg,
+    by,
+  })
+  return
 }
 
 export const addUserLog = (data) => {
@@ -178,9 +226,21 @@ export const addUserLog = (data) => {
   addDoc(collection(db, 'spark_user_log'), data)
 }
 
-export const addLeadLog = (data) => {
-  const userRef = doc(db, 'spark_leads')
-  setDoc(userRef, data)
+export const addLeadLog = async (did, data) => {
+  const xo = Timestamp.now().toMillis()
+  const yo = {
+    [xo]: data,
+  }
+  try {
+    const washingtonRef = doc(db, 'spark_leads_log', did)
+    console.log('check add LeadLog', washingtonRef)
+
+    await updateDoc(washingtonRef, yo)
+  } catch (error) {
+    await setDoc(doc(db, 'spark_leads_log', did), yo)
+  }
+
+  console.log('am at addLeadLog ')
 }
 
 // **********************************************
