@@ -13,6 +13,8 @@ const SiderForm = ({
   title,
   selUserProfile,
   customerDetails,
+  data = {},
+  onCloseDisabled = false,
 }) => {
   // const [open, setOpen] = useState(true)
   return (
@@ -20,7 +22,7 @@ const SiderForm = ({
       <Dialog
         as="div"
         className="fixed inset-0 overflow-hidden"
-        onClose={setOpen}
+        onClose={onCloseDisabled ? () => {} : () => setOpen()}
         style={{ zIndex: '1000' }}
       >
         <div className="absolute inset-0 overflow-hidden">
@@ -72,14 +74,26 @@ const SiderForm = ({
                   </div>
                 </Transition.Child>
 
-                {title === 'Create Project' && (
-                  <DialogFormBody title={title} dialogOpen={setOpen} />
+                {(title === 'Create Project' || title === 'Edit Project') && (
+                  <DialogFormBody
+                    title={title}
+                    dialogOpen={setOpen}
+                    project={data}
+                  />
                 )}
-                {title === 'Add Phase' && (
-                  <AddPhaseForm title={title} dialogOpen={setOpen} />
+                {(title === 'Add Phase' || title === 'Edit Phase') && (
+                  <AddPhaseForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    phase={data}
+                  />
                 )}
-                {title === 'Add Block' && (
-                  <AddBlockForm title={title} dialogOpen={setOpen} />
+                {(title === 'Add Block' || title === 'Edit Block') && (
+                  <AddBlockForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    data={data}
+                  />
                 )}
                 {title === 'Import Leads' && (
                   <LeadsDropHomes title={title} dialogOpen={setOpen} />

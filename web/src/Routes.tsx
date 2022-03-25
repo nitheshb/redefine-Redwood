@@ -13,12 +13,12 @@ const defaultRoutes = () => {
       <Route path="/admin/users-admin" page={UsersAdminPage} name="usersAdmin" />
       <Route path="/admin/leads-manager" page={LeadsManagerPage} name="leadsManager" />
       <Route path="/admin/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
-      <Route path="/admin/project-edit" page={ProjectEditPage} name="projectEdit" />
+      <Route path="/admin/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
       <Route path="/admin/project-module" page={ProjectModulePage} name="projectModule" />
       <Route path="/users-admin" page={UsersAdminPage} name="usersAdmin" />
       <Route path="/leads-manager" page={LeadsManagerPage} name="leadsManager" />
       <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
-      <Route path="/project-edit" page={ProjectEditPage} name="projectEdit" />
+      <Route path="/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
       <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
     </>
   )
@@ -34,36 +34,40 @@ const Routes = () => {
         <Route path="/admin/users-admin" page={UsersAdminPage} name="usersAdmin" />
         <Route path="/admin/leads-manager" page={LeadsManagerPage} name="leadsManager" />
         <Route path="/admin/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
-        <Route path="/admin/project-edit" page={ProjectEditPage} name="projectEdit" />
+        <Route path="/admin/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
         <Route path="/admin/project-module" page={ProjectModulePage} name="projectModule" />
       </>
     )
-  }
-
-  if (user?.role?.includes(USER_ROLES.HR_MANAGER) || user?.role?.includes(USER_ROLES.HR_EXECUTIVE)) {
+  } else if (user?.role?.includes(USER_ROLES.HR_MANAGER) || user?.role?.includes(USER_ROLES.HR_EXECUTIVE)) {
     UpdatedRoutes = (
       <>
         <Route path="/users-admin" page={UsersAdminPage} name="usersAdmin" />
       </>
     )
-  }
-
-  if (user?.role?.includes(USER_ROLES.SALES_MANAGER) || user?.role?.includes(USER_ROLES.SALES_EXECUTIVE)) {
+  } else if (user?.role?.includes(USER_ROLES.SALES_MANAGER) || user?.role?.includes(USER_ROLES.SALES_EXECUTIVE)) {
     UpdatedRoutes = (
       <>
         <Route path="/leads-manager" page={LeadsManagerPage} name="leadsManager" />
         <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
       </>
     )
-  }
-  if (user?.role?.includes(USER_ROLES.CRM_MANAGER) || user?.role?.includes(USER_ROLES.CRM_EXECUTIVE)) {
+  } else if (user?.role?.includes(USER_ROLES.CRM_MANAGER) || user?.role?.includes(USER_ROLES.CRM_EXECUTIVE)) {
     UpdatedRoutes = (
       <>
-        <Route path="/project-edit" page={ProjectEditPage} name="projectEdit" />
+        <Route path="/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
         <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
       </>
     )
+  } else {
+    if (user?.role) {
+      UpdatedRoutes = (
+        <>
+          <Route path="/access-denied" page={AccessDeniedPage} name="accessDenied" />
+        </>
+      )
+    }
   }
+
   return (
     <Router>
       {UpdatedRoutes}

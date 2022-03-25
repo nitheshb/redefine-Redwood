@@ -4,23 +4,15 @@
 import React, { useEffect, useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import * as Yup from 'yup'
-// import { RadioGroup } from '@headlessui/react'
-import {
-  addLead,
-  addUserLog,
-  createUser,
-  updateUserRole,
-} from 'src/context/dbQueryFirebase'
+import { addUserLog, updateUserRole } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { useForm } from 'react-hook-form'
-import Select from 'react-select'
 import { Form, Formik } from 'formik'
 import { TextField } from 'src/util/formFields/TextField'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import axios from 'axios'
-import { constants } from 'os'
-import { env } from 'process'
 import Loader from '../Loader/Loader'
+import { DEPARTMENT_LIST, ROLES_LIST } from 'src/constants/userRoles'
 
 // import Select from 'react-select'
 // import SelectSearch from 'react-select-search'
@@ -39,36 +31,6 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const [loading, setLoading] = useState(false)
   const { name, email, department, uid } = empData
   console.log('empData is ', empData)
-  const deptList = [
-    { label: 'Select the Dept', value: '' },
-    { label: 'Admin', value: 'admin' },
-    { label: 'CRM', value: 'crm' },
-    { label: 'Extra', value: 'extra' },
-    { label: 'Helper', value: 'helper' },
-    { label: 'HR', value: 'hr' },
-    { label: 'Legal', value: 'legal' },
-    { label: 'project', value: 'project' },
-    { label: 'Support', value: 'support' },
-    { label: 'Sales', value: 'sales' },
-  ]
-  const rolesList = [
-    { label: 'Select the role', value: '' },
-    { label: 'Sales manager', value: 'sales-manager', dept: 'sales' },
-    { label: 'Sales executive', value: 'sales-executive', dept: 'sales' },
-    { label: 'Legal manager', value: 'legal-manager', dept: 'legal' },
-    { label: 'Legal executive', value: 'legal-executive', dept: 'legal' },
-    { label: 'CRM manager', value: 'crm-manager', dept: 'crm' },
-    { label: 'CRM executive', value: 'crm-executive', dept: 'crm' },
-    { label: 'HR manager', value: 'hr-manager', dept: 'hr' },
-    { label: 'HR Executive', value: 'hr-executive', dept: 'hr' },
-    { label: 'Support manager', value: 'support-manager', dept: 'support' },
-    { label: 'Support executive', value: 'support-executive', dept: 'support' },
-    { label: 'Helper manager', value: 'helper-manager', dept: 'helper' },
-    { label: 'Helper executive', value: 'helper-executive', dept: 'helper' },
-    { label: 'Admin', value: 'admin', dept: 'admin' },
-    { label: 'project head', value: 'admin', dept: 'project' },
-    { label: 'project manager', value: 'admin', dept: 'project' },
-  ]
 
   useEffect(() => {
     if (name) {
@@ -99,7 +61,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
       setisdeptEmpty(false)
     }
 
-    const filRoles = rolesList.filter((item) => item.dept === data.value)
+    const filRoles = ROLES_LIST.filter((item) => item.dept === data.value)
     setroles(filRoles)
   }
   const onSubmit = async (data) => {
@@ -128,7 +90,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         message: `Role is updated Successfully`,
       })
     } else {
-      const dataBoxy = JSON.stringify({
+      const data = JSON.stringify({
         email: email,
         name: name,
         password: 'redefine@123',
@@ -143,7 +105,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         headers: {
           'Content-Type': 'text/plain',
         },
-        data: dataBoxy,
+        data,
       }
 
       axios(config)
@@ -253,7 +215,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                     formik.setFieldValue('myRole', '')
                   }}
                   value={formik.values.deptVal}
-                  options={deptList}
+                  options={DEPARTMENT_LIST}
                 />
                 {formik.errors.deptVal ? (
                   <div className="error-message text-red-700 text-xs p-2">

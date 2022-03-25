@@ -16,6 +16,8 @@ import {
   updateAccessRoles,
 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
+import { getPagesBasedonRoles } from 'src/util/PagesBasedOnRoles'
+import StyledButton from 'src/components/RoundedButton'
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   backgroundColor: theme.palette.action.hover,
@@ -94,16 +96,21 @@ const UserAccessTable = () => {
     if (category === 'all') {
       setFilterData(settings)
     } else {
-      const updatedData = settings.filter(
-        (item) => item.category?.toLowerCase() === category
-      )
+      const updatedData = settings.map((item) => {
+        return {
+          ...item,
+          access: item.access.filter((access) =>
+            getPagesBasedonRoles(category).includes(access.key)
+          ),
+        }
+      })
       setFilterData(updatedData)
     }
   }, [category, settings])
 
   const onRoleChangeListener = async (role, element) => {
     let newAccess = {}
-    filterData.forEach((item) => {
+    const newSettings = settings.map((item) => {
       if (item.uid === role.uid) {
         newAccess = item.access.map((accessRole) => {
           if (accessRole.key === element.key) {
@@ -114,85 +121,75 @@ const UserAccessTable = () => {
           }
           return accessRole
         })
+        item.access = newAccess
+        return item
       }
+      return item
     })
+    setSettings(newSettings)
     await updateAccessRoles(role, newAccess, user, enqueueSnackbar, element)
   }
   return (
     <Box className="bg-white pb-4">
       <Box className="flex ml-auto  mb-[0.5px] bg-white py-4">
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'all'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'all'}
           onClick={() => setCategory('all')}
         >
           <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
           All
-        </span>
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'admin'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        </StyledButton>
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'admin'}
           onClick={() => setCategory('admin')}
         >
           ADMIN
-        </span>
+        </StyledButton>
 
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'crm'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'crm'}
           onClick={() => setCategory('crm')}
         >
           CRM
-        </span>
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'hr'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        </StyledButton>
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'hr'}
           onClick={() => setCategory('hr')}
         >
           HR
-        </span>
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'legal'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        </StyledButton>
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'legal'}
           onClick={() => setCategory('legal')}
         >
           LEGAL
-        </span>
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'project'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        </StyledButton>
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'project'}
           onClick={() => setCategory('project')}
         >
           PROJECT
-        </span>
-        <span
-          className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-            category === 'sales'
-              ? 'text-pink-800 bg-pink-200 border-pink-200'
-              : 'border border-pink-400 text-pink-500'
-          } `}
+        </StyledButton>
+        <StyledButton
+          variant="outlined"
+          size="small"
+          isCategoryMatched={category === 'sales'}
           onClick={() => setCategory('sales')}
         >
           SALES
-        </span>
+        </StyledButton>
       </Box>
       <Box
         sx={{

@@ -1,17 +1,14 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
 import { Fragment, useState, useEffect } from 'react'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
-import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
 import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
 import SiderForm from '../../components/SiderForm/SiderForm'
-import CallExecutiveBoard from '../../components/CallExecutiveBoard/CallExecutiveBoard'
 import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 
 import { XIcon } from '@heroicons/react/outline'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import CardItem from '../../components/leadsCard'
 // import BoardData from '../../components/board-data.json'
 const BoardData = [

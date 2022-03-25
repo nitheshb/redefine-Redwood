@@ -1,11 +1,11 @@
 import { render } from '@redwoodjs/testing/web'
 
-import NewHomePagePage from './NewHomePagePage'
+import UnitsStatsCard from './UnitsStatsCard'
 
-describe('NewHomePagePage', () => {
+describe('UnitsStatsCard', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<NewHomePagePage />)
+      render(<UnitsStatsCard />)
     }).not.toThrow()
   })
 })

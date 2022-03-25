@@ -2,7 +2,7 @@ import React from 'react'
 import { ErrorMessage, useField } from 'formik'
 // import { InputField, Label } from '@redwoodjs/forms'
 
-export const TextField = ({ label, ...props }) => {
+export const TextAreaField = ({ label, ...props }) => {
   const [field, meta] = useField(props)
   return (
     <div className="mb-2 w-full">
@@ -14,9 +14,9 @@ export const TextField = ({ label, ...props }) => {
         className="label font-regular text-sm"
         errorClassName="label font-regular text-sm"
       /> */}
-      <input
+      <textarea
         className={` ${meta.touched && meta.error && 'is-invalid'}
-           w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-4`}
+           w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-4 mt-1`}
         {...field}
         {...props}
         autoComplete="off"

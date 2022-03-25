@@ -1,16 +1,42 @@
-import { Fragment, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useParams } from '@redwoodjs/router'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
 import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
 import SiderForm from '../../components/SiderForm/SiderForm'
 import ProjectsMHomeBody from '../../components/ProjectsMHomeBody/ProjectsMHomeBody'
-
 import ProjPhaseHome from '../../components/ProjPhaseHome/ProjPhaseHome'
+import { getProjectByUid } from 'src/context/dbQueryFirebase'
 
 const ProjectEditPage = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const handleOnClose = () => setIsOpen(false)
+  const [isAddPhaseOpen, setIsAddPhaseOpen] = useState(false)
+  const [isEditProjectOpen, setIsEditProjectOpen] = useState(false)
+  const [project, setProject] = useState({
+    projectName: '',
+  })
+  const handleAddPhaseOnClose = () => setIsAddPhaseOpen(false)
+  const handleEditProjectClose = () => setIsEditProjectOpen(false)
+  const { uid } = useParams()
 
+  const getProjectDetails = async (id) => {
+    const unsubscribe = await getProjectByUid(
+      id,
+      (querySnapshot) => {
+        const projects = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        setProject(projects[0])
+      },
+      () =>
+        setProject({
+          projectName: '',
+        })
+    )
+    return unsubscribe
+  }
+  useEffect(() => {
+    getProjectDetails(uid)
+  }, [uid])
   return (
     <>
       <div className="flex w-screen h-screen text-gray-700">
@@ -24,7 +50,7 @@ const ProjectEditPage = () => {
                 PROJECTS
               </span>
               <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => setIsAddPhaseOpen(true)}
                 className="flex items-center justify-center h-10 px-4  bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
               >
                 <svg
@@ -41,35 +67,35 @@ const ProjectEditPage = () => {
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                <span className="ml-2 leading-none">New Project</span>
+                <span className="ml-2 leading-none">Add Phase</span>
               </button>
             </div>
-            {/* <button className="flex items-center justify-center h-10 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300">
-              <svg
-                className="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            {project?.projectName ? (
+              <>
+                <ProjectsMHomeBody
+                  project={project}
+                  isEdit
+                  onSliderOpen={() => {
+                    setIsEditProjectOpen(true)
+                  }}
                 />
-              </svg>
-              <span className="ml-2 leading-none">New Item</span>
-            </button> */}
-            <ProjectsMHomeBody />
-            {/* <ProjectsMHomeBody />
-            <ProjectsMHomeBody /> */}
-            <ProjPhaseHome />
-            <DummyBodyLayout />
+                <ProjPhaseHome />
+              </>
+            ) : (
+              <DummyBodyLayout />
+            )}
             <SiderForm
-              open={isOpen}
-              setOpen={handleOnClose}
-              title="Create Project"
+              open={isAddPhaseOpen}
+              setOpen={handleAddPhaseOnClose}
+              title="Add Phase"
+              data={{}}
+              onCloseDisabled
+            />
+            <SiderForm
+              open={isEditProjectOpen}
+              setOpen={handleEditProjectClose}
+              title="Edit Project"
+              data={project}
             />
           </div>
         </div>

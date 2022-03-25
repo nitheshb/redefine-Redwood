@@ -15,15 +15,11 @@ import {
   // FieldValue,
   updateDoc,
   deleteDoc,
+  limit,
 } from 'firebase/firestore'
+import { v4 as uuidv4 } from 'uuid'
+
 // import { userAccessRoles } from 'src/constants/userAccess'
-
-// getF
-// addF
-// updateF
-// deleteF
-
-//
 
 // **********************************************
 // getF
@@ -175,13 +171,73 @@ export const getAllRoleAccess = async () => {
   const records = []
   const getAllRolesQueryById = await query(
     collection(db, 'spark_roles_access'),
-    orderBy('id')
+    orderBy('id', 'desc')
   )
   const querySnapshot = await getDocs(getAllRolesQueryById)
   querySnapshot.forEach((doc) => {
     records.push(doc.data())
   })
   return records
+}
+
+export const getSelectedRoleAccess = async (role) => {
+  const getRolesQueryById = await query(
+    collection(db, 'spark_roles_access'),
+    where('role', '==', role)
+  )
+  const records = []
+  const querySnapshot = await getDocs(getRolesQueryById)
+  querySnapshot.forEach((doc) => {
+    records.push(doc.data())
+  })
+  return records?.[0]?.access
+    ?.filter((item) => item.checked)
+    ?.map((elem) => elem.key)
+}
+
+export const getAllProjects = async (snapshot, error) => {
+  const getAllProjectsQuery = await query(
+    collection(db, 'projects'),
+    orderBy('created', 'desc')
+  )
+  return onSnapshot(getAllProjectsQuery, snapshot, error)
+}
+
+export const getProjectByUid = async (uid: string, snapshot, error) => {
+  try {
+    const getAllProjectByIdQuery = await query(
+      collection(db, 'projects'),
+      where('uid', '==', uid)
+    )
+    return onSnapshot(getAllProjectByIdQuery, snapshot, error)
+  } catch (error) {
+    console.log('error in db', error)
+  }
+}
+
+export const getPhasesByProject = async (uid: string, snapshot, error) => {
+  const getAllPhasesQuery = await query(
+    collection(db, 'phases'),
+    where('projectId', '==', uid),
+    orderBy('created', 'asc'),
+    limit(20)
+  )
+  return onSnapshot(getAllPhasesQuery, snapshot, error)
+}
+
+export const getBlocksByPhase = async (
+  { projectId, phaseId },
+  snapshot,
+  error
+) => {
+  const getAllPhasesQuery = await query(
+    collection(db, 'blocks'),
+    where('projectId', '==', projectId),
+    where('phaseId', '==', phaseId),
+    orderBy('created', 'asc'),
+    limit(20)
+  )
+  return onSnapshot(getAllPhasesQuery, snapshot, error)
 }
 
 // **********************************************
@@ -243,6 +299,68 @@ export const addLeadLog = async (did, data) => {
   console.log('am at addLeadLog ')
 }
 
+export const createProject = async (element, enqueueSnackbar, resetForm) => {
+  try {
+    const uid = uuidv4()
+    const updated = {
+      ...element,
+      uid,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'projects', uid)
+    await setDoc(ref, updated, { merge: true })
+    enqueueSnackbar('Project added successfully', {
+      variant: 'success',
+    })
+    resetForm()
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const createPhase = async (element, enqueueSnackbar, resetForm) => {
+  try {
+    const uid = uuidv4()
+    const updated = {
+      ...element,
+      uid,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'phases', uid)
+    await setDoc(ref, updated, { merge: true })
+    enqueueSnackbar('Phase added successfully', {
+      variant: 'success',
+    })
+    resetForm()
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const createBlock = async (element, enqueueSnackbar, resetForm) => {
+  try {
+    const uid = uuidv4()
+    const updated = {
+      ...element,
+      uid,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'blocks', uid)
+    await setDoc(ref, updated, { merge: true })
+    enqueueSnackbar('Block added successfully', {
+      variant: 'success',
+    })
+    resetForm()
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
 // **********************************************
 // upateF
 // **********************************************
@@ -293,6 +411,57 @@ export const updateAccessRoles = async (
   }
 }
 
+export const updateProject = async (uid, project, enqueueSnackbar) => {
+  try {
+    await updateDoc(doc(db, 'projects', uid), {
+      ...project,
+      updated: Timestamp.now().toMillis(),
+    })
+    enqueueSnackbar('Project updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const updatePhase = async (uid, project, enqueueSnackbar) => {
+  try {
+    await updateDoc(doc(db, 'phases', uid), {
+      ...project,
+      updated: Timestamp.now().toMillis(),
+    })
+    enqueueSnackbar('Phase updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const updateBlock = async (uid, project, enqueueSnackbar) => {
+  try {
+    await updateDoc(
+      doc(db, 'blocks', uid),
+      {
+        ...project,
+        updated: Timestamp.now().toMillis(),
+      },
+      { merge: true }
+    )
+    enqueueSnackbar('Block updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
 // **********************************************
 // deleteF
 // **********************************************

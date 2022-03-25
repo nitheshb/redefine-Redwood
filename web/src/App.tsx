@@ -4,6 +4,8 @@
 // import { getAuth } from 'firebase/auth'
 import { Provider as ReduxProvider } from 'react-redux'
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
+import { LocalizationProvider } from '@mui/lab'
+import AdapterDateFns from '@mui/lab/AdapterDateFns'
 
 // import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 import AuthProvider from 'src/context/firebase-auth-context'
@@ -59,7 +61,9 @@ const App = () => (
           maxSnack={3}
         >
           <AuthProvider>
-            <Routes />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Routes />
+            </LocalizationProvider>
           </AuthProvider>
         </SnackbarProvider>
       </ReduxProvider>

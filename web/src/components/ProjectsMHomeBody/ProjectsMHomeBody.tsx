@@ -1,13 +1,9 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import { Fragment, useState } from 'react'
+// import { useState } from 'react'
 import ProjectStatsCard from '../ProjectStatsCard/ProjectStatsCard'
-import PhaseDetailsCard from '../PhaseDetailsCard/PhaseDetailsCard'
+// import PhaseDetailsCard from '../PhaseDetailsCard/PhaseDetailsCard'
 
-import { PencilIcon, DotsVerticalIcon, EyeIcon } from '@heroicons/react/outline'
+import { PencilIcon, EyeIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
-import AddPhase from '../AddPhase/AddPhase'
 
 const projectFeedData = [
   { k: 'Total', v: 125, pic: '' },
@@ -30,59 +26,70 @@ const valueFeedData = [
   { k: 'Collected', v: 369325000, pic: '' },
   { k: 'Balance', v: 43450000, pic: '' },
 ]
-const aprtConfig = [
-  { k: 'Builder', v: 'Prestige', pic: '/builder2.png' },
-  { k: 'Type', v: 'Apartment', pic: '/a1.png' },
-  { k: 'Location', v: 'Indore', pic: '/map.png' },
-  { k: 'Area', v: '4,35,600 sqft', pic: '/x.png' },
-  { k: 'Phases', v: 4, pic: '/p1.png' },
-]
-const ProjectsMHomeBody = () => {
-  const [unitsView, setUnitsView] = useState(false)
-  const [areaView, setAreaView] = useState(false)
-  const [valueView, setValueView] = useState(false)
 
-  const [selbg, setSelbg] = useState('')
-  const [seldata, setSeldata] = useState('')
-  const [selkind, setSelkind] = useState('')
-  const [selcurrency, setSelcurrency] = useState('')
+const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
+  const {
+    area,
+    builderName,
+    location,
+    projectName,
+    projectType,
+    uid = 0,
+  } = project
 
-  const [areabg, setAreabg] = useState('')
-  const [areaData, setAreaData] = useState('')
-  const [areakind, setAreakind] = useState('')
-  const [areaCurrency, setareaCurrency] = useState('')
+  const aprtConfig = [
+    { k: 'Builder', v: builderName, pic: '/builder2.png' },
+    { k: 'Type', v: projectType?.name, pic: '/a1.png' },
+    { k: 'Location', v: location, pic: '/map.png' },
+    { k: 'Area', v: `${area} sqft`, pic: '/x.png' },
+    { k: 'Phases', v: 0, pic: '/p1.png' },
+  ]
 
-  const [valuebg, setValuebg] = useState('')
-  const [valuedata, setValuedata] = useState('')
-  const [valueKind, setValueKind] = useState('')
-  const [valueCurrency, setValueCurrency] = useState('')
-  const displayDetailView = (state, bgColor, data, kind, currency) => {
-    // console.log('am i clicked')
-    console.log('check')
-    setUnitsView(!unitsView)
-    setSelbg(bgColor)
-    setSeldata(data)
-    setSelkind(kind)
-    setSelcurrency(currency)
-  }
-  const areaDetailView = (state, bgColor, data, kind, currency) => {
-    // console.log('am i clicked')
-    console.log('check')
-    setAreaView(state)
-    setAreabg(bgColor)
-    setAreaData(data)
-    setAreakind(kind)
-    setareaCurrency(currency)
-  }
-  const valueDetailView = (state, bgColor, data, kind, currency) => {
-    // console.log('am i clicked')
-    console.log('check')
-    setValueView(state)
-    setValuebg(bgColor)
-    setValuedata(data)
-    setValueKind(kind)
-    setValueCurrency(currency)
-  }
+  // const [unitsView, setUnitsView] = useState(false)
+  // const [areaView, setAreaView] = useState(false)
+  // const [valueView, setValueView] = useState(false)
+
+  // const [selbg, setSelbg] = useState('')
+  // const [seldata, setSeldata] = useState('')
+  // const [selkind, setSelkind] = useState('')
+  // const [selcurrency, setSelcurrency] = useState('')
+
+  // const [areabg, setAreabg] = useState('')
+  // const [areaData, setAreaData] = useState('')
+  // const [areakind, setAreakind] = useState('')
+  // const [areaCurrency, setareaCurrency] = useState('')
+
+  // const [valuebg, setValuebg] = useState('')
+  // const [valuedata, setValuedata] = useState('')
+  // const [valueKind, setValueKind] = useState('')
+  // const [valueCurrency, setValueCurrency] = useState('')
+  // const displayDetailView = (state, bgColor, data, kind, currency) => {
+  //   // console.log('am i clicked')
+  //   console.log('check')
+  //   setUnitsView(!unitsView)
+  //   setSelbg(bgColor)
+  //   setSeldata(data)
+  //   setSelkind(kind)
+  //   setSelcurrency(currency)
+  // }
+  // const areaDetailView = (state, bgColor, data, kind, currency) => {
+  //   // console.log('am i clicked')
+  //   console.log('check')
+  //   setAreaView(state)
+  //   setAreabg(bgColor)
+  //   setAreaData(data)
+  //   setAreakind(kind)
+  //   setareaCurrency(currency)
+  // }
+  // const valueDetailView = (state, bgColor, data, kind, currency) => {
+  //   // console.log('am i clicked')
+  //   console.log('check')
+  //   setValueView(state)
+  //   setValuebg(bgColor)
+  //   setValuedata(data)
+  //   setValueKind(kind)
+  //   setValueCurrency(currency)
+  // }
 
   return (
     <div>
@@ -90,67 +97,36 @@ const ProjectsMHomeBody = () => {
         <div className="box-border px-4 mx-auto border-solid sm:px-6 md:px-6 lg:px-8 max-w-full ">
           <div className="flex flex-col  leading-7  text-gray-900 border-0 border-gray-200 ">
             <div className="flex items-center flex-shrink-0  px-0  pl-0 border-b border-grey  mb-2">
-              {/* <h1 className="text-lg font-medium">redefine.</h1> */}
-              <img className="w-16 h-16" alt="" src="/apart.svg"></img>
-              <span className="relative z-10 flex items-center w-auto text-4xl font-bold leading-none pl-0 mt-[18px]">
-                SUBHA 9 SKY VUE
-              </span>
+              <Link
+                className="flex items-center"
+                to={routes.projectEdit({ uid })}
+              >
+                <img className="w-16 h-16" alt="" src="/apart.svg"></img>
+                <span className="relative z-10 flex items-center w-auto text-4xl font-bold leading-none pl-0 mt-[18px]">
+                  {projectName}
+                </span>
+              </Link>
               <section className="flex ml-auto mt-[18px]">
-                <Link to={routes.projectEdit()}>
-                  <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                    <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                    Detail View
-                  </span>
-                </Link>
-                <Link to={routes.projectEdit()}>
+                {!isEdit && (
+                  <Link to={routes.projectEdit({ uid })}>
+                    <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                      <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                      Detail View
+                    </span>
+                  </Link>
+                )}
+                <button onClick={onSliderOpen}>
                   <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
                     <PencilIcon className="h-3 w-3 mr-1" aria-hidden="true" />
                     Edit
                   </span>
-                </Link>
+                </button>
               </section>
-
-              {/* <button
-                // onClick={() => setIsOpen(true)}
-                // 	<span class="flex items-center h-6 px-3 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full">Design</span>
-                className="flex  text-sm focus:outline-none group   h-10 text-sm font-medium items-center justify-center h-10 px-4 group bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
-              >
-                 <div className="flex items-center justify-between w-10 h-10 rounded ">
-                  <DotsVerticalIcon
-                    className="h-6 w-6 mr-1"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div
-                  style={{ zIndex: '100000' }}
-                  className="absolute right-0 z-auto group flex-col items-start hidden w-40 pb-1 bg-white border border-gray-300 shadow-lg group-focus:flex"
-                >
-                  <a
-                    className="w-full px-4 py-2 text-left hover:bg-gray-300"
-                    href="#"
-                  >
-                    Menu Item 1
-                  </a>
-                  <a
-                    className="w-full px-4 py-2 text-left hover:bg-gray-300"
-                    href="#"
-                  >
-                    Menu Item 1
-                  </a>
-                  <a
-                    className="w-full px-4 py-2 text-left hover:bg-gray-300"
-                    href="#"
-                  >
-                    Menu Item 1
-                  </a>
-                </div>
-              </button> */}
             </div>
             <div className="flex  w-full">
               {aprtConfig.map((data, i) => {
                 return (
                   <span key={i} className="inline-flex mr-4">
-                    {/* <img className="w-6 h-6" alt="" src={data.pic}></img> */}
                     <span className="text-sm  font-light  font text-gray-700 ">
                       {' '}
                       {data.k}:{'  '}
@@ -165,17 +141,16 @@ const ProjectsMHomeBody = () => {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-7 mt-10">
-            {/* <ProjectStatsCard feedData={projectFeedData} /> */}
             <span
-              onClick={() =>
-                displayDetailView(
-                  !unitsView,
-                  '#ebf9f9',
-                  projectFeedData,
-                  'Units',
-                  false
-                )
-              }
+            // onClick={() =>
+            //   displayDetailView(
+            //     !unitsView,
+            //     '#ebf9f9',
+            //     projectFeedData,
+            //     'Units',
+            //     false
+            //   )
+            // }
             >
               <ProjectStatsCard
                 kind="Units"
@@ -187,47 +162,46 @@ const ProjectsMHomeBody = () => {
             </span>
 
             <span
-              onClick={() =>
-                areaDetailView(
-                  !areaView,
-                  '#fef7f7',
-                  unitFeedData,
-                  'Area',
-                  false
-                )
-              }
+            // onClick={() =>
+            //   areaDetailView(
+            //     !areaView,
+            //     '#fef7f7',
+            //     unitFeedData,
+            //     'Area',
+            //     false
+            //   )
+            // }
             >
               <ProjectStatsCard
                 kind="Area"
-                iconP= "/l2.png"
+                iconP="/l2.png"
                 feedData={unitFeedData}
                 bg="#fef7f7"
                 currency={false}
               />
             </span>
             <span
-              onClick={() =>
-                valueDetailView(
-                  !valueView,
-                  '#f3f5ff',
-                  valueFeedData,
-                  'Values',
-                  true
-                )
-              }
+            // onClick={() =>
+            //   valueDetailView(
+            //     !valueView,
+            //     '#f3f5ff',
+            //     valueFeedData,
+            //     'Values',
+            //     true
+            //   )
+            // }
             >
               <ProjectStatsCard
                 kind="Values"
-                iconP= "/m4.png"
+                iconP="/m4.png"
                 feedData={valueFeedData}
                 bg="#f3f5ff"
                 currency={true}
               />
             </span>
           </div>
-          {unitsView && (
+          {/* {unitsView && (
             <div className="grid grid-cols-1 gap-7 mt-10">
-              {/* <ProjectStatsCard feedData={projectFeedData} /> */}
               <PhaseDetailsCard
                 kind={selkind}
                 feedData={seldata}
@@ -238,7 +212,6 @@ const ProjectsMHomeBody = () => {
           )}
           {areaView && (
             <div className="grid grid-cols-1 gap-7 mt-10">
-              {/* <ProjectStatsCard feedData={projectFeedData} /> */}
               <PhaseDetailsCard
                 kind={areakind}
                 feedData={areaData}
@@ -249,7 +222,6 @@ const ProjectsMHomeBody = () => {
           )}
           {valueView && (
             <div className="grid grid-cols-1 gap-7 mt-10">
-              {/* <ProjectStatsCard feedData={projectFeedData} /> */}
               <PhaseDetailsCard
                 kind={valueKind}
                 feedData={valuedata}
@@ -257,8 +229,7 @@ const ProjectsMHomeBody = () => {
                 currency={valueCurrency}
               />
             </div>
-          )}
-  
+          )} */}
         </div>
       </section>
     </div>
