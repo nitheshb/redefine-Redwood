@@ -89,11 +89,27 @@ const ProjPhaseHome = () => {
             v: `₹ ${phase?.sellingRate}`,
             pic: '/map.png',
           },
-          { k: 'Project Start Date', v: '', pic: '/p1.png' },
-          { k: 'Project End Date', v: '', pic: '/p1.png' },
+          {
+            k: 'Project Start Date',
+            v: phase?.startDate || 'N/A',
+            pic: '/p1.png',
+          },
+          {
+            k: 'Project End Date',
+            v: phase?.endDate || 'N/A',
+            pic: '/p1.png',
+          },
           { k: 'RERA No', v: phase?.reraNo || 'N/A', pic: '/x.png' },
-          { k: 'RERA Start Date', v: '', pic: '/p1.png' },
-          { k: 'RERA End Date', v: '', pic: '/p1.png' },
+          {
+            k: 'RERA Start Date',
+            v: phase?.reraStartDate || 'N/A',
+            pic: '/p1.png',
+          },
+          {
+            k: 'RERA End Date',
+            v: phase?.reraEndDate || 'N/A',
+            pic: '/p1.png',
+          },
           { k: 'Blocks', v: phase?.blocks || 0, pic: '/p1.png' },
           {
             k: 'Brokrege',

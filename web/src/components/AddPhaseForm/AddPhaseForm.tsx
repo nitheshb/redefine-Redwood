@@ -10,7 +10,7 @@ import {
   Checkbox,
 } from '@mui/material'
 import { Add, Remove } from '@mui/icons-material'
-// import { format } from 'date-fns'
+import { format, isDate, parse } from 'date-fns'
 import Loader from 'src/components/Loader/Loader'
 import { TextField } from 'src/util/formFields/TextField'
 import { DateField } from 'src/util/formFields/DateField'
@@ -25,11 +25,29 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { uid } = useParams()
 
+  const getDates = (data) => {
+    return {
+      startDate: isDate(data.startDate)
+        ? format(data.startDate, 'dd/MM/yyyy')
+        : data.startDate || null,
+      endDate: isDate(data.endDate)
+        ? format(data.endDate, 'dd/MM/yyyy')
+        : data.endDate || null,
+      reraStartDate: isDate(data.reraStartDate)
+        ? format(data.reraStartDate, 'dd/MM/yyyy')
+        : data.reraStartDate || null,
+      reraEndDate: isDate(data.reraEndDate)
+        ? format(data.reraEndDate, 'dd/MM/yyyy')
+        : data.reraEndDate || null,
+    }
+  }
+
   const onSubmit = async (data, resetForm) => {
     const updatedData = {
       ...data,
       projectId: uid,
       editMode: true,
+      ...getDates(data),
     }
     setLoading(true)
     if (phase?.editMode) {
@@ -49,14 +67,10 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     phaseArea: phase?.phaseArea || '',
     sellableArea: phase?.sellableArea || '',
     sellingRate: phase?.sellingRate || '',
-    startDate: phase?.startDate || null,
-    endDate: phase?.endDate || null,
     brokerage: phase?.brokerage || '',
     unitCancellation: phase?.unitCancellation || '',
     unitsCancel: phase?.unitsCancel || '',
     reraNo: phase?.reraNo || '',
-    reraStartDate: phase?.reraStartDate || null,
-    reraEndDate: phase?.reraStartDate || null,
     areaTextPrimary: phase?.areaTextPrimary || '',
     areaTextSecondary: phase?.areaTextSecondary || '',
     areaDropDownPrimary: phase?.areaDropDownPrimary || 'acre',
@@ -64,6 +78,18 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     isAgreementsChecked: phase?.isAgreementsChecked || false,
     isMakeCancelChecked: phase?.isMakeCancelChecked || false,
     isGSTChecked: phase?.isGSTChecked || false,
+    startDate: phase?.startDate
+      ? parse(phase?.startDate, 'dd/MM/yyyy', new Date())
+      : null,
+    endDate: phase?.endDate
+      ? parse(phase?.endDate, 'dd/MM/yyyy', new Date())
+      : null,
+    reraStartDate: phase?.reraStartDate
+      ? parse(phase?.reraStartDate, 'dd/MM/yyyy', new Date())
+      : null,
+    reraEndDate: phase?.reraEndDate
+      ? parse(phase?.reraEndDate, 'dd/MM/yyyy', new Date())
+      : null,
   }
 
   const createProjectSchema = Yup.object({
@@ -73,6 +99,14 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     phaseArea: Yup.string().required('Required'),
     sellableArea: Yup.string().required('Required'),
     sellingRate: Yup.number().required('Required'),
+    startDate: Yup.date().nullable(true),
+    endDate: Yup.date()
+      .nullable(true)
+      .min(Yup.ref('startDate'), 'End date has to be more than start date'),
+    reraStartDate: Yup.date().nullable(true),
+    reraEndDate: Yup.date()
+      .nullable(true)
+      .min(Yup.ref('reraStartDate'), 'End date has to be more than start date'),
   })
 
   return (
@@ -236,8 +270,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                             <DateField
                               name="startDate"
                               label="Start Date"
-                              error={false}
-                              value={formik.values.startDate}
+                              selected={formik.values.startDate}
                               onChange={(newValue) => {
                                 formik.setFieldValue('startDate', newValue)
                               }}
@@ -247,7 +280,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                             <DateField
                               name="endDate"
                               label="End Date"
-                              value={formik.values.endDate}
+                              selected={formik.values.endDate}
                               onChange={(newValue) => {
                                 formik.setFieldValue('endDate', newValue)
                               }}
@@ -304,8 +337,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                             <DateField
                               name="reraStartDate"
                               label="RERA Start Date"
-                              error={false}
-                              value={formik.values.reraStartDate}
+                              selected={formik.values.reraStartDate}
                               onChange={(newValue) => {
                                 formik.setFieldValue('reraStartDate', newValue)
                               }}
@@ -315,7 +347,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                             <DateField
                               name="reraEndDate"
                               label="RERA End Date"
-                              value={formik.values.reraEndDate}
+                              selected={formik.values.reraEndDate}
                               onChange={(newValue) => {
                                 formik.setFieldValue('reraEndDate', newValue)
                               }}

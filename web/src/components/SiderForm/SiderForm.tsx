@@ -11,8 +11,7 @@ const SiderForm = ({
   open,
   setOpen,
   title,
-  selUserProfile,
-  customerDetails,
+  customerDetails = {},
   data = {},
   onCloseDisabled = false,
 }) => {

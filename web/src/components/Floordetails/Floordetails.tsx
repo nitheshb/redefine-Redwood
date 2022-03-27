@@ -44,38 +44,36 @@ const Floordetails = ({ block = 'A' }) => {
           </button>
         </section>
       </div>
-      <div className="bg-white rounded mt-4 shadow-lg pb-6">
-        <div className="px-8">
-          {[1, 2].map((data, i) => {
-            return (
-              <div key={i} className="grid grid-cols-12 gap-0">
-                <div className="h-42 col-span-2 border border-gray-300 content-center">
-                  <FloorStatsCard
-                    kind={`Floor - ${data}`}
-                    feedData={unitFeedData}
-                    bg="#fef7f7"
-                  />
-                </div>
-                <div className="h-42 col-span-10 bg-white border border-gray-300 border-l-0">
-                  <div
-                    id="scrolling-content"
-                    className="flex overflow-x-scroll h-full"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map((data) => (
-                      <div className="p-2 mb-2.5 flex-shrink-0 " key={data}>
-                        <UnitsStatsCard
-                          kind={data}
-                          feedData={unitFeedData}
-                          bg="#fef7f7"
-                        />
-                      </div>
-                    ))}
-                  </div>
+      <div className="bg-white rounded mt-4 shadow-lg">
+        {[1, 2].map((data, i) => {
+          return (
+            <div key={i} className="grid grid-cols-12 gap-0">
+              <div className="h-42 col-span-2 border border-gray-300 content-center">
+                <FloorStatsCard
+                  kind={`Floor - ${data}`}
+                  feedData={unitFeedData}
+                  bg="#fef7f7"
+                />
+              </div>
+              <div className="h-42 col-span-10 bg-white border border-gray-300 border-l-0">
+                <div
+                  id="scrolling-content"
+                  className="flex overflow-x-scroll h-full"
+                >
+                  {[1, 2, 3, 4, 5, 6].map((data) => (
+                    <div className="p-2 mb-2.5 flex-shrink-0 " key={data}>
+                      <UnitsStatsCard
+                        kind={data}
+                        feedData={unitFeedData}
+                        bg="#fef7f7"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

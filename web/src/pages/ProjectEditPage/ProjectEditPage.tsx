@@ -89,7 +89,6 @@ const ProjectEditPage = () => {
               setOpen={handleAddPhaseOnClose}
               title="Add Phase"
               data={{}}
-              onCloseDisabled
             />
             <SiderForm
               open={isEditProjectOpen}
