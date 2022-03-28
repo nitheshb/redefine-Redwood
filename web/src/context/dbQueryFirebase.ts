@@ -240,6 +240,34 @@ export const getBlocksByPhase = async (
   return onSnapshot(getAllPhasesQuery, snapshot, error)
 }
 
+export const getPaymentSchedule = async (
+  { projectId, phaseId },
+  snapshot,
+  error
+) => {
+  const getAllPaymentSchedule = await query(
+    collection(db, 'paymentSchedule'),
+    where('projectId', '==', projectId),
+    where('phaseId', '==', phaseId),
+    orderBy('created', 'asc')
+  )
+  return onSnapshot(getAllPaymentSchedule, snapshot, error)
+}
+
+export const getAdditionalCharges = async (
+  { projectId, phaseId },
+  snapshot,
+  error
+) => {
+  const getAllAdditionalCharges = await query(
+    collection(db, 'additionalCharges'),
+    where('projectId', '==', projectId),
+    where('phaseId', '==', phaseId),
+    orderBy('created', 'asc')
+  )
+  return onSnapshot(getAllAdditionalCharges, snapshot, error)
+}
+
 // **********************************************
 // addF
 // **********************************************
@@ -361,6 +389,46 @@ export const createBlock = async (element, enqueueSnackbar, resetForm) => {
     })
   }
 }
+
+export const createPayment = async (element, enqueueSnackbar) => {
+  try {
+    const uid = uuidv4()
+    const updated = {
+      ...element,
+      uid,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'paymentSchedule', uid)
+    await setDoc(ref, updated, { merge: true })
+    enqueueSnackbar('Payment added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const createAdditonalCharges = async (element, enqueueSnackbar) => {
+  try {
+    const uid = uuidv4()
+    const updated = {
+      ...element,
+      uid,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'additionalCharges', uid)
+    await setDoc(ref, updated, { merge: true })
+    enqueueSnackbar('Charges added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
 // **********************************************
 // upateF
 // **********************************************
@@ -462,6 +530,68 @@ export const updateBlock = async (uid, project, enqueueSnackbar) => {
     })
   }
 }
+
+export const updateMoreDetails = async (uid, moreDetails, enqueueSnackbar) => {
+  try {
+    await updateDoc(doc(db, 'phases', uid), {
+      moreDetails: {
+        ...moreDetails,
+        updated: Timestamp.now().toMillis(),
+      },
+    })
+    enqueueSnackbar('Details updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const updatePayment = async (uid, element, enqueueSnackbar) => {
+  try {
+    await updateDoc(
+      doc(db, 'paymentSchedule', uid),
+      {
+        ...element,
+        updated: Timestamp.now().toMillis(),
+      },
+      { merge: true }
+    )
+    enqueueSnackbar('Payment updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const updateAdditionalCharges = async (
+  uid,
+  element,
+  enqueueSnackbar
+) => {
+  try {
+    await updateDoc(
+      doc(db, 'additionalCharges', uid),
+      {
+        ...element,
+        updated: Timestamp.now().toMillis(),
+      },
+      { merge: true }
+    )
+    enqueueSnackbar('Payment updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
 // **********************************************
 // deleteF
 // **********************************************
@@ -475,4 +605,32 @@ export const deleteUser = async (uid, by, email, myRole) => {
     txt: `Employee ${email} as ${myRole} is deleted`,
     by,
   })
+}
+
+export const deletePayment = async (uid, enqueueSnackbar) => {
+  try {
+    await deleteDoc(doc(db, 'paymentSchedule', uid))
+
+    enqueueSnackbar('Payment deleted successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const deleteAdditionalCharge = async (uid, enqueueSnackbar) => {
+  try {
+    await deleteDoc(doc(db, 'additionalCharges', uid))
+
+    enqueueSnackbar('Payment deleted successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
 }

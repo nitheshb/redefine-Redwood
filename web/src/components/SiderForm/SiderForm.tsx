@@ -7,6 +7,10 @@ import AddPhaseForm from '../AddPhaseForm/AddPhaseForm'
 import LeadsDropHomes from '../LeadUplodCsv/uploadHome'
 import AddLeadForm from '../AddLeadForm'
 import CustomerProfileSideView from '../customerProfileSideView'
+import AdditionalChargesForm from '../AdditionalChargesForm/AdditionalChargesForm'
+import PaymentScheduleForm from '../PaymentScheduleForm/PaymentScheduleForm'
+import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
+
 const SiderForm = ({
   open,
   setOpen,
@@ -14,6 +18,7 @@ const SiderForm = ({
   customerDetails = {},
   data = {},
   onCloseDisabled = false,
+  widthClass = 'max-w-2xl',
 }) => {
   // const [open, setOpen] = useState(true)
   return (
@@ -46,12 +51,7 @@ const SiderForm = ({
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <div
-                className={
-                  'relative w-screen  ' +
-                  (title === 'Import Leads' ? 'max-w-6xl' : 'max-w-2xl')
-                }
-              >
+              <div className={`relative w-screen ${widthClass}`}>
                 <Transition.Child
                   as={Fragment}
                   enter="ease-in-out duration-500"
@@ -104,6 +104,19 @@ const SiderForm = ({
                   <CustomerProfileSideView
                     openUserProfile={false}
                     customerDetails={customerDetails}
+                  />
+                )}
+                {title === 'Additional Charges' && (
+                  <AdditionalChargesForm title={title} data={data} />
+                )}
+                {title === 'Payment Schedule' && (
+                  <PaymentScheduleForm title={title} data={data} />
+                )}
+                {title === 'More Details' && (
+                  <MoreDetailsPhaseForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    data={data}
                   />
                 )}
               </div>

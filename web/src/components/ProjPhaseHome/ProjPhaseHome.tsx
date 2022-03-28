@@ -20,6 +20,7 @@ const ProjPhaseHome = () => {
     open: false,
     title: '',
     sliderData: {},
+    widthClass: 'max-w-2xl',
   })
 
   const handleSliderClose = () => {
@@ -27,6 +28,7 @@ const ProjPhaseHome = () => {
       open: false,
       title: '',
       sliderData: {},
+      widthClass: 'max-w-2xl',
     })
   }
 
@@ -99,6 +101,8 @@ const ProjPhaseHome = () => {
             v: phase?.endDate || 'N/A',
             pic: '/p1.png',
           },
+        ]
+        const reraConfig = [
           { k: 'RERA No', v: phase?.reraNo || 'N/A', pic: '/x.png' },
           {
             k: 'RERA Start Date',
@@ -178,6 +182,7 @@ const ProjPhaseHome = () => {
                           open: true,
                           title: 'Edit Phase',
                           sliderData: phase,
+                          widthClass: 'max-w-2xl',
                         })
                       }}
                       className={
@@ -196,6 +201,7 @@ const ProjPhaseHome = () => {
                             phase,
                             block: {},
                           },
+                          widthClass: 'max-w-2xl',
                         })
                       }}
                       className={
@@ -206,7 +212,16 @@ const ProjPhaseHome = () => {
                       Add block
                     </button>
                     <button
-                      onClick={() => {}}
+                      onClick={() => {
+                        setSliderInfo({
+                          open: true,
+                          title: 'Additional Charges',
+                          sliderData: {
+                            phase,
+                          },
+                          widthClass: 'max-w-6xl',
+                        })
+                      }}
                       className={
                         'flex ml-2  cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-full hover:bg-pink-200 hover:text-pink-800 text-green-800 bg-green-200'
                       }
@@ -215,7 +230,16 @@ const ProjPhaseHome = () => {
                       Additional Charges
                     </button>
                     <button
-                      onClick={() => {}}
+                      onClick={() => {
+                        setSliderInfo({
+                          open: true,
+                          title: 'Payment Schedule',
+                          sliderData: {
+                            phase,
+                          },
+                          widthClass: 'max-w-6xl',
+                        })
+                      }}
                       className={
                         'flex ml-2  cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-full hover:bg-pink-200 hover:text-pink-800 text-green-800 bg-green-200'
                       }
@@ -224,7 +248,16 @@ const ProjPhaseHome = () => {
                       Payment Schedule
                     </button>
                     <button
-                      onClick={() => {}}
+                      onClick={() => {
+                        setSliderInfo({
+                          open: true,
+                          title: 'More Details',
+                          sliderData: {
+                            phase,
+                          },
+                          widthClass: 'max-w-2xl',
+                        })
+                      }}
                       className={
                         'flex ml-2  cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-full hover:bg-pink-200 hover:text-pink-800 text-green-800 bg-green-200'
                       }
@@ -235,10 +268,23 @@ const ProjPhaseHome = () => {
                   </section>
                 </div>
 
-                <div className="flex flex-wrap w-full">
+                <div className="grid grid-cols-6 grid-flow-col gap-2">
                   {aprtConfig.map((data, i) => {
                     return (
-                      <span key={i} className="inline-flex mr-4">
+                      <span key={i} className="inline-flex mb-2">
+                        <span className="text-sm font-medium text-gray-500 ">
+                          {' '}
+                          {data.k}:{'  '}
+                        </span>
+                        <span className="text-sm ml-1"> {data.v}</span>
+                      </span>
+                    )
+                  })}
+                </div>
+                <div className="grid grid-cols-6 grid-flow-col gap-2">
+                  {reraConfig.map((data, i) => {
+                    return (
+                      <span key={i} className="inline-flex mb-2">
                         <span className="text-sm font-medium text-gray-500 ">
                           {' '}
                           {data.k}:{'  '}
@@ -274,6 +320,7 @@ const ProjPhaseHome = () => {
         setOpen={handleSliderClose}
         title={sliderInfo.title}
         data={sliderInfo.sliderData}
+        widthClass={sliderInfo.widthClass}
       />
     </div>
   )

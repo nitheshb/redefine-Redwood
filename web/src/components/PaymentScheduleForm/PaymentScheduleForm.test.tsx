@@ -1,6 +1,6 @@
 import { render } from '@redwoodjs/testing/web'
 
-import PaymentScheuleForm from './PaymentScheuleForm'
+import PaymentScheuleForm from './PaymentScheduleForm'
 
 describe('PaymentScheuleForm', () => {
   it('renders successfully', () => {
