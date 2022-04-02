@@ -476,7 +476,19 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
         })
         setLeadsFetchedData(usersListA)
       },
-      { status: ['new', 'inprogress', 'followup', 'visitfixed', ''] },
+      {
+        status: [
+          'new',
+          'inprogress',
+          'followup',
+          'visitfixed',
+          '',
+          'visitdone',
+          'negotiation',
+          'reassign',
+          'RNR',
+        ],
+      },
       (error) => setLeadsFetchedData([])
     )
     return unsubscribe

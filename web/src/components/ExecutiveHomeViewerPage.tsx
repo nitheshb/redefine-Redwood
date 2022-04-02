@@ -190,7 +190,7 @@ const ExecutiveHomeViewerPage = () => {
   // const [selectedBoard, setSelectedBoard] = useState(0)
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
-  const [selUserProfile] = useState({})
+  const [selUserProfile, setSelUserProfile] = useState({})
 
   const onDragEnd = (re) => {
     if (!re.destination) return
@@ -238,7 +238,7 @@ const ExecutiveHomeViewerPage = () => {
     setAddLeadsTypes(type)
     setisImportLeadsOpen(true)
   }
-  const selUserProfileF = (title) => {
+  const selUserProfileF = (title, data) => {
     setAddLeadsTypes(title)
     setisImportLeadsOpen(true)
     setSelUserProfile(data)

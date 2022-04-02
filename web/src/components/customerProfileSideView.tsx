@@ -1,16 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { ArrowRightIcon } from '@heroicons/react/outline'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
+import { Listbox, Transition } from '@headlessui/react'
+import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import {
+  addSchedulerLog,
   steamLeadActivityLog,
   steamUsersList,
   steamUsersListByRole,
+  updateLeadAssigTo,
+  updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
 import ClockIcon from '@heroicons/react/solid/ClockIcon'
+import CalendarIcon from '@heroicons/react/outline/CalendarIcon'
 import { timeConv } from 'src/util/dateConverter'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
@@ -22,12 +28,19 @@ import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import { setHours, setMinutes } from 'date-fns'
+import { Timestamp } from 'firebase/firestore'
 
 // interface iToastInfo {
 //   open: boolean
 //   message: string
 //   severity: AlertColor
 // }
+const people = [
+  { name: 'Priority 1' },
+  { name: 'Priority 2' },
+  { name: 'Priority 3' },
+  { name: 'Priority 4' },
+]
 const statuslist = [
   { label: 'Select the Status', value: '' },
   { label: 'New', value: 'new' },
@@ -47,16 +60,24 @@ export default function CustomerProfileSideView({
   console.log('customer Details', customerDetails)
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
-  const [leadStatus, setLeadStatus] = useState([])
+  // const [leadStatus, setLeadStatus] = useState([])
   const [selFeature, setFeature] = useState('appointments')
+  const [leadStatus, setLeadStatus] = useState('')
+  const [assignerName, setAssignerName] = useState('')
+  const [assignedTo, setAssignedTo] = useState('')
   const [leadsActivityFetchedData, setLeadsFetchedActivityData] = useState([])
   const [filterData, setFilterData] = useState([])
   const d = new window.Date()
   const [value, setValue] = useState(d)
   // const [startDate, setStartDate] = useState(d)
   const [startDate, setStartDate] = useState(setHours(setMinutes(d, 30), 16))
+  const [selected, setSelected] = useState(people[0])
+  const [taskDetails, setTaskDetails] = useState('')
+  const [schPri, setSchPri] = useState(1)
+  const [schTime, setSchTime] = useState()
 
   const {
+    id,
     Name,
     Project,
     Source,
@@ -90,6 +111,11 @@ export default function CustomerProfileSideView({
 
     return unsubscribe
   }, [])
+  useEffect(() => {
+    setAssignedTo(customerDetails?.assignedTo)
+    setLeadStatus(Status)
+    console.log('assinger to', assignedTo)
+  }, [customerDetails])
   // adopt this
   useEffect(() => {
     // setFilterData
@@ -128,6 +154,19 @@ export default function CustomerProfileSideView({
   useEffect(() => {
     setLeadStatus(Status?.toLowerCase())
   }, [customerDetails])
+
+  const setAssigner = (leadDocId, value) => {
+    setAssignerName(value.name)
+    setAssignedTo(value.value)
+    // save assigner Details in db
+
+    updateLeadAssigTo(leadDocId, value, by)
+  }
+
+  const setStatusFun = (leadDocId, newStatus) => {
+    setLeadStatus(newStatus)
+    updateLeadStatus(leadDocId, newStatus)
+  }
   const getLeadsDataFun = async () => {
     console.log('ami triggered')
     const unsubscribe = steamLeadActivityLog(
@@ -154,6 +193,16 @@ export default function CustomerProfileSideView({
       (error) => setLeadsFetchedActivityData([])
     )
     return unsubscribe
+  }
+  const fAddSchedule = () => {
+    const data = {
+      by: 'uid',
+      type: 'schedule',
+      pri: 1,
+      notes: 'call again',
+      schTime: Timestamp.now().toMillis(),
+    }
+    addSchedulerLog(id, data)
   }
   const handleColor = (time) => {
     return time.getHours() > 12 ? 'text-success' : 'text-error'
@@ -218,10 +267,11 @@ export default function CustomerProfileSideView({
                 name="roleName"
                 label=""
                 className="input mt-1"
-                onChange={(value) =>
+                onChange={(value) => {
                   // formik.setFieldValue('myRole', value.value)
                   console.log('i was changed', value)
-                }
+                  setStatusFun(id, value.value)
+                }}
                 value={leadStatus}
                 options={statuslist}
               />
@@ -231,7 +281,7 @@ export default function CustomerProfileSideView({
         <div className="border-b mt-3">
           <div className="py-2 px-1">
             <div className="px-3  font-md font-medium text-sm mb-3  text-gray-800">
-              Assinger Details
+              Assigner Details
             </div>
             <div className="px-3  flex justify-between">
               <section>
@@ -244,11 +294,12 @@ export default function CustomerProfileSideView({
                     name="roleName"
                     label=""
                     className="input mt-3"
-                    onChange={(value) =>
+                    onChange={(value) => {
                       // formik.setFieldValue('myRole', value.value)
-                      console.log('i was changed', value)
-                    }
-                    value={''}
+                      console.log('i was changed', value, usersList)
+                      setAssigner(id, value)
+                    }}
+                    value={assignedTo}
                     options={usersList}
                   />
                 </div>
@@ -273,7 +324,7 @@ export default function CustomerProfileSideView({
               </div>
               <div>
                 <div className="font-md text-xs mt-2 text-gray-500 mb-[2]">
-                  Last Activitys
+                  Last Activist
                 </div>
                 <div className="font-lg text-sm text-slate-900">3 days ago</div>
               </div>
@@ -574,28 +625,125 @@ export default function CustomerProfileSideView({
         )}
 
         {selFeature === 'appointments' && (
-          <div className="py-8 px-8 flex flex-col items-center">
-            {/* <DesktopDatePicker
+          <>
+            <div className="flex flex-col pt-0 my-10 mt-[10px] rounded">
+              <div className="  outline-none border  rounded p-4">
+                <textarea
+                // onChange={setTakTitle()}
+                  placeholder="Schedule Title"
+                  className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                ></textarea>
+                <div className="flex flex-row mt-1">
+                  <div className="bg-green border  pl-4  rounded flex flex-row mt-2 h-[36px]">
+                    <CalendarIcon className="w-4  ml-1 inline text-[#058527]" />
+                    <span className="inline">
+                      <DatePicker
+                        className=" mt-[7px] pl- px-2  inline text-sm "
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        injectTimes={[
+                          setHours(setMinutes(d, 1), 0),
+                          setHours(setMinutes(d, 5), 12),
+                          setHours(setMinutes(d, 59), 23),
+                        ]}
+                        dateFormat="MMMM d, yyyy h:mm aa"
+                      />
+                    </span>
+                  </div>
+
+                  <div className="flex ml-4 mt-1 h-[36px]">
+                    <Listbox value={selected} onChange={setSelected}>
+                      <div className="relative mt-1">
+                        <Listbox.Button className="relative w-full w-[116px]  h-[36px] py-2 pl-3 pr-10 text-left border bg-white rounded  cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
+                          <span className="block truncate">
+                            {selected.name}
+                          </span>
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <SelectorIcon
+                              className="w-5 h-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </Listbox.Button>
+                        <Transition
+                          as={Fragment}
+                          leave="transition ease-in duration-100"
+                          leaveFrom="opacity-100"
+                          leaveTo="opacity-0"
+                        >
+                          <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            {people.map((person, personIdx) => (
+                              <Listbox.Option
+                                key={personIdx}
+                                className={({ active }) =>
+                                  `cursor-default select-none relative py-2 pl-10 pr-4 ${
+                                    active
+                                      ? 'text-amber-900 bg-amber-100'
+                                      : 'text-gray-900'
+                                  }`
+                                }
+                                value={person}
+                              >
+                                {({ selected }) => (
+                                  <>
+                                    <span
+                                      className={`block truncate ${
+                                        selected ? 'font-medium' : 'font-normal'
+                                      }`}
+                                    >
+                                      {person.name}
+                                    </span>
+                                    {selected ? (
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                        <CheckIcon
+                                          className="w-5 h-5"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Listbox.Option>
+                            ))}
+                          </Listbox.Options>
+                        </Transition>
+                      </div>
+                    </Listbox>
+                  </div>
+                </div>
+              </div>
+              {/* <span className="text-[#0091ae]">
+                    Save
+                    <ArrowRightIcon className="w-5 ml-5" />
+                  </span> */}
+              <div className="flex flex-row mt-1">
+                <button
+                  onClick={() => fAddSchedule()}
+                  className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                >
+                  <span className="ml-1 ">Add Schedule</span>
+                </button>
+                <button
+                  // onClick={() => fSetLeadsType('Add Lead')}
+                  className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                >
+                  <span className="ml-1 ">Cancel</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="py-8 px-8 flex flex-col items-center">
+              {/* <DesktopDatePicker
               label="Date desktop"
               inputFormat="MM/dd/yyyy"
               value={value}
               onChange={handleChange}
               renderInput={(params) => <TextField {...params} />}
             /> */}
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              showTimeSelect
-              timeFormat="HH:mm"
-              injectTimes={[
-                setHours(setMinutes(d, 1), 0),
-                setHours(setMinutes(d, 5), 12),
-                setHours(setMinutes(d, 59), 23),
-              ]}
-              dateFormat="MMMM d, yyyy h:mm aa"
-            />
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(props) => <TextField {...props} />}
                 label="DateTimePicker"
@@ -604,22 +752,23 @@ export default function CustomerProfileSideView({
                   setValue(newValue)
                 }}
               />
-            </LocalizationProvider>
-            <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-              <img
-                className="w-[200px] h-[200px] inline"
-                alt=""
-                src="/target.svg"
-              />
+            </LocalizationProvider> */}
+              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                <img
+                  className="w-[200px] h-[200px] inline"
+                  alt=""
+                  src="/target.svg"
+                />
+              </div>
+              <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                No Appointmentss
+              </h3>
+              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                Appointments always bring more suprises{' '}
+                <span className="text-blue-600">Add new</span>
+              </time>
             </div>
-            <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-              No Appointmentss
-            </h3>
-            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Appointments always bring more suprises{' '}
-              <span className="text-blue-600">Add new</span>
-            </time>
-          </div>
+          </>
         )}
         {selFeature === 'timeline' && (
           <div className="py-8 px-8 ">

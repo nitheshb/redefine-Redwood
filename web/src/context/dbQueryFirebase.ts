@@ -299,6 +299,24 @@ export const addLeadLog = async (did, data) => {
   console.log('am at addLeadLog ')
 }
 
+export const addSchedulerLog = async (did, data) => {
+  const xo = Timestamp.now().toMillis()
+  data.time = Timestamp.now().toMillis()
+  const yo = {
+    [xo]: data,
+  }
+  try {
+    const washingtonRef = doc(db, 'spark_schedules_log', did)
+    console.log('check add LeadLog', washingtonRef)
+
+    await updateDoc(washingtonRef, yo)
+  } catch (error) {
+    await setDoc(doc(db, 'spark_schedules_log', did), yo)
+  }
+
+  console.log('am at addLeadLog ')
+}
+
 export const createProject = async (element, enqueueSnackbar, resetForm) => {
   try {
     const uid = uuidv4()
@@ -362,7 +380,7 @@ export const createBlock = async (element, enqueueSnackbar, resetForm) => {
   }
 }
 // **********************************************
-// upateF
+// updateF
 // **********************************************
 export const updateUserRole = async (uid, dept, role, email, by) => {
   await updateDoc(doc(db, 'users', uid), {
@@ -461,6 +479,39 @@ export const updateBlock = async (uid, project, enqueueSnackbar) => {
       variant: 'error',
     })
   }
+}
+export const updateLeadAssigTo = async (leadDocId, assignedTo, by) => {
+  const { value } = assignedTo
+  await updateDoc(doc(db, 'spark_leads', leadDocId), {
+    assignedTo: value,
+    assingedToObj: assignedTo,
+    AssignedBy: by,
+  })
+  console.log('inside updater ')
+  return
+  // return await addUserLog({
+  //   s: 's',
+  //   type: 'updateRole',
+  //   subtype: 'updateRole',
+  //   txt: `${email} is updated with ${role}`,
+  //   by,
+  // })
+}
+export const updateLeadStatus = async (leadDocId, newStatus) => {
+  await updateDoc(doc(db, 'spark_leads', leadDocId), {
+    Status: newStatus,
+  })
+  // await updateDoc(doc(db, 'spark_leads', uid), {
+  //   department: [dept],
+  //   roles: [role],
+  // })
+  // return await addUserLog({
+  //   s: 's',
+  //   type: 'updateRole',
+  //   subtype: 'updateRole',
+  //   txt: `${email} is updated with ${role}`,
+  //   by,
+  // })
 }
 // **********************************************
 // deleteF

@@ -192,6 +192,7 @@ function createGuidId() {
 }
 const ExecutiveHomePage = () => {
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
+  // const [selUserProfileF, setSelUserProfileF] = useState({})
 
   // kanban board
   const [ready, setReady] = useState(true)
@@ -206,6 +207,9 @@ const ExecutiveHomePage = () => {
     // }
   }, [])
 
+  const selUserProfileF = (data, check) => {
+    console.log('sel user profile', data, check)
+  }
   const onDragEnd = (re) => {
     if (!re.destination) return
     const newBoardData = boardData
@@ -679,6 +683,8 @@ const ExecutiveHomePage = () => {
               <LLeadsTableView
                 setisImportLeadsOpen={setisImportLeadsOpen}
                 fSetLeadsType={fSetLeadsType}
+                selUserProfileF={selUserProfileF}
+                // setSelUserProfileF={setSelUserProfileF}
               />
             )}
           </div>
@@ -688,6 +694,7 @@ const ExecutiveHomePage = () => {
         open={isImportLeadsOpen}
         setOpen={setisImportLeadsOpen}
         title={addLeadsTypes}
+        customerDetails={customerDetails}
       />
     </>
   )
