@@ -16,10 +16,11 @@ export const TextAreaField = ({ label, ...props }) => {
       /> */}
       <textarea
         className={` ${meta.touched && meta.error && 'is-invalid'}
-           w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-4 mt-1`}
+           w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md px-4 mt-1`}
         {...field}
         {...props}
         autoComplete="off"
+        rows={4}
       />
       <ErrorMessage
         component="div"
@@ -27,19 +28,5 @@ export const TextAreaField = ({ label, ...props }) => {
         className="error-message text-red-700 text-xs p-2"
       />
     </div>
-    // <div className="mb-3 space-y-2 w-full text-xs">
-    //   <Label
-    //     name={label}
-    //     className="label font-regular text-sm"
-    //     errorClassName="label font-regular text-sm"
-    //   />
-    //   <InputField
-    //     name="email"
-    //     placeholder="Email Id"
-    //     className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded-lg h-10 px-4"
-    //     validation={{ required: true }}
-    //   />
-    //   <ErrorMessage component="div" name={field.name} className="error" />
-    // </div>
   )
 }

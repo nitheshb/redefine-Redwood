@@ -1,15 +1,5 @@
 import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
 import Floordetails from 'src/components/Floordetails/Floordetails'
-// import ProjectStatsCard from '../ProjectStatsCard/ProjectStatsCard'
-// import BlockStatsCards from '../BlockStatsCards/BlockStatsCards'
-
-// import AddBlockForm from '../AddBlockForm/AddBlockForm'
-// import AdditionalChargesForm from '../AdditionalChargesForm/AdditionalChargesForm'
-
-// import PaymentScheuleForm from '../PaymentScheuleForm/PaymentScheuleForm'
-
-// import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
-
 const Blockdetails = ({ blocks = [] }) => {
   return (
     <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-8 w-full  mt-10">

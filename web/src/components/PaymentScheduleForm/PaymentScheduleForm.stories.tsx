@@ -1,4 +1,4 @@
-import PaymentScheuleForm from './PaymentScheuleForm'
+import PaymentScheuleForm from './PaymentScheduleForm'
 
 export const generated = () => {
   return <PaymentScheuleForm />
