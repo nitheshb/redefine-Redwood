@@ -574,7 +574,7 @@ const LfileUploadTableHome = ({ fileRecords }) => {
               >
                 <li className="mr-2" role="presentation">
                   <button
-                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
+                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-black hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
                       value === 'all'
                         ? 'border-blue-600 text-gray-800'
                         : 'border-transparent'
@@ -584,16 +584,14 @@ const LfileUploadTableHome = ({ fileRecords }) => {
                     onClick={() => setValue('all')}
                   >
                     {`All `}
-                    <div className="  px-2 mt-1  text-[8px] text-black rounded-full">
-                      <span className="bg-gray-100 px-2 py-1 rounded-full">
-                        {fileRecords.length}
-                      </span>
-                    </div>
+                    <span className="bg-gray-100 px-2 py-1 ml-2 rounded-full">
+                      {fileRecords.length}
+                    </span>
                   </button>
                 </li>
                 <li className="mr-2" role="presentation">
                   <button
-                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
+                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500    rounded-t-lg border-b-2  hover:text-black hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
                       value === 'validR'
                         ? 'border-blue-600 text-gray-800'
                         : 'border-transparent'
@@ -603,17 +601,14 @@ const LfileUploadTableHome = ({ fileRecords }) => {
                     onClick={() => setValue('validR')}
                   >
                     {`Valid `}
-
-                    <div className="px-2 mt-1 text-[8px] text-black  rounded-full">
-                      <span className="bg-gray-100 px-2 py-1 rounded-full">
-                        {validRows.length}
-                      </span>
-                    </div>
+                    <span className="bg-gray-100 px-2 py-1 ml-2  text-gray-500  rounded-full">
+                      {validRows.length}
+                    </span>
                   </button>
                 </li>
                 <li className="mr-2" role="presentation">
                   <button
-                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
+                    className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-black hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
                       value === 'duplicateR'
                         ? 'border-blue-600 text-gray-800'
                         : 'border-transparent'
@@ -622,13 +617,10 @@ const LfileUploadTableHome = ({ fileRecords }) => {
                     role="tab"
                     onClick={() => setValue('duplicateR')}
                   >
-                    {`Duplicate`}
-
-                    <div className="px-2 mt-1  text-[8px] text-black  rounded-full">
-                      <span className="bg-gray-100 px-2 py-1 rounded-full">
-                        {dupRows.length}
-                      </span>
-                    </div>
+                    {`Duplicate`}{' '}
+                    <span className="bg-gray-100 px-2 py-1 rounded-full ml-2">
+                      {dupRows.length}
+                    </span>
                   </button>
                 </li>
               </ul>
@@ -654,7 +646,7 @@ const LfileUploadTableHome = ({ fileRecords }) => {
                 <LfileuploadTableTemplate
                   key={index}
                   selStatus={'all'}
-                  rowsParent={data.duplicate}
+                  rowsParent={dupRows}
                   sourceTab={value}
                 />
               ))}

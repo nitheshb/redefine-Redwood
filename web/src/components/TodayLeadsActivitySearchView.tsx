@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import { alpha } from '@mui/material/styles'
@@ -26,6 +29,14 @@ import Highlighter from 'react-highlight-words'
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
 import CSVDownloader from 'src/util/csvDownload'
+import { H1 } from './Typography'
+import { useAuth } from 'src/context/firebase-auth-context'
+import {
+  getDifferenceInHours,
+  getDifferenceInMinutes,
+} from 'src/util/dateConverter'
+import SiderForm from './SiderForm/SiderForm'
+import Loader from './Loader/Loader'
 
 // function createData(
 //   Date,
@@ -208,7 +219,7 @@ const EnhancedTableToolbar = (props) => {
         return item
       } else if (
         // item.Assignedto.toLowerCase().includes(searchString.toLowerCase()) ||
-        item.Date.toLowerCase().includes(searchString.toLowerCase()) ||
+
         item.Email.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Mobile.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Name.toLowerCase().includes(searchString.toLowerCase()) ||
@@ -335,8 +346,10 @@ const HighlighterStyle = (props) => {
 export default function TodayLeadsActivitySearchView({
   selStatus,
   rowsParent,
-  selUserProfileF,
+  todaySch,
+  taskType,
 }) {
+  const { user } = useAuth()
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('calories')
   const [selected, setSelected] = React.useState([])
@@ -345,6 +358,10 @@ export default function TodayLeadsActivitySearchView({
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [rows, setRows] = React.useState([])
   const [searchKey, setSearchKey] = React.useState('')
+  const [isImportLeadsOpen, setisImportLeadsOpen] = React.useState(false)
+  const [addLeadsTypes, setAddLeadsTypes] = React.useState('')
+  const [selUserProfile, setSelUserProfile] = React.useState({})
+  const [schFetData, setSchFetData] = React.useState([])
 
   React.useEffect(() => {
     console.log('send values is', rowsParent)
@@ -375,6 +392,12 @@ export default function TodayLeadsActivitySearchView({
     filterSearchString(rows)
   }, [searchKey])
 
+  React.useEffect(() => {
+    if (todaySch) {
+      setSchFetData(todaySch)
+    }
+  }, [todaySch])
+
   const filterStuff = async (parent) => {
     const x = await parent.filter((item) => {
       if (selStatus === 'all') {
@@ -403,47 +426,11 @@ export default function TodayLeadsActivitySearchView({
     await setRows(x)
     await console.log('xo', x)
   }
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(property)
-  }
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name)
-      setSelected(newSelecteds)
-      return
-    }
-    setSelected([])
-  }
-
-  const handleClick = (event, row) => {
-    // const selectedIndex = selected.indexOf(name)
-    const newSelected = []
-
-
-    console.log('is row clicked', row)
-    selUserProfileF('User Profile', row)
-
-    setSelected(newSelected)
-  }
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked)
-  }
-
-  function handleClick1(skill) {
-    // filter_f(skill)
+  const selUserProfileF = (title, data) => {
+    console.log('data is', data)
+    setAddLeadsTypes(title)
+    setisImportLeadsOpen(true)
+    setSelUserProfile(data)
   }
 
   const isSelected = (name) => selected.indexOf(name) !== -1
@@ -465,14 +452,182 @@ export default function TodayLeadsActivitySearchView({
   )
   const languages = ['HTML', 'CSS', 'JavaScript']
   const tools = ['React', 'Sass']
-
+  console.log('what is here', todaySch)
   return (
     <>
       <div>
         {/* <Header /> */}
         <div className="flex justify-center items-center text-gray-900 h-12"></div>
-        <div className=" p-16 justify-center items-center text-gray-900">
+        <div className=" px-4 justify-center items-center text-gray-900">
+          <h1 className="box-border px-0 pt-0 pb-3  md:pb-4 m-0 text-3xl font-bold tracking-tight  text-gray-900 align-baseline border-0 xl:text-4xl xl:tracking-normal md:text-3xl md:tracking-tight">
+            Welcome back, {user?.displayName?.toLocaleUpperCase()}
+          </h1>
+
           {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
+          <h2 className="mb-12">
+            You've got{' '}
+            <span className="inline-flex text-xl leading-5 font-semibold rounded-full  text-green-800">
+              {schFetData.length}
+            </span>{' '}
+            tasks{' '}
+            {taskType === 'Today1' ? 'for Today' : 'coming up in the next days'}{' '}
+          </h2>
+          {todaySch && schFetData.length === 0 && (
+            <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
+              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                <img
+                  className="w-[180px] h-[180px] inline"
+                  alt=""
+                  src="../note-widget.svg"
+                />
+              </div>
+              <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                No Unassigned Leads Found
+              </h3>
+              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                <span className="text-blue-600"> Add New Lead</span>
+              </time>
+            </div>
+          )}
+          {!todaySch && (
+            <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
+              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                <img
+                  className="w-[180px] h-[180px] inline"
+                  alt=""
+                  src="../note-widget.svg"
+                />
+              </div>
+              <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                <Loader /> Loading
+              </h3>
+              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                <span className="text-blue-600"> Add New Lead</span>
+              </time>
+            </div>
+          )}
+
+          {schFetData.map((dat, index) => {
+            console.log('what am i', dat)
+            const { leadUser, staDA, staA, uid } = dat
+            leadUser.id = uid
+            return (
+              <>
+                <div
+                  key={index}
+                  className="flex-1 px-4 py-2 mb-2  bg-white rounded-md"
+                >
+                  <div className="flex flex-grow flex-row items-center justify-between p-4">
+                    <div className="flex flex-row">
+                      <svg
+                        className="ml-4 mb-8 mt-10 mr-6 text-center"
+                        width="32px"
+                        height="32px"
+                        viewBox="0 0 32 32"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g
+                          id="HELO"
+                          stroke="none"
+                          strokeWidth="1"
+                          fill="none"
+                          fillRule="evenodd"
+                        >
+                          <g
+                            transform="translate(-1012.000000, -1924.000000)"
+                            fill="#3F3BFF"
+                            fillRule="nonzero"
+                            id="Feature-section"
+                          >
+                            <g transform="translate(100.000000, 1579.000000)">
+                              <path
+                                d="M941,345 C942.597681,345 943.903661,346.24892 943.994907,347.823727 L944,348 L944,366 C944,367.597681 942.75108,368.903661 941.176273,368.994907 L941,369 L936,369 L936,374 C936,375.597681 934.75108,376.903661 933.176273,376.994907 L933,377 L915,377 C913.402319,377 912.096339,375.75108 912.005093,374.176273 L912,374 L912,356 C912,354.402319 913.24892,353.096339 914.823727,353.005093 L915,353 L920,353 L920,348 C920,346.402319 921.24892,345.096339 922.823727,345.005093 L923,345 L941,345 Z M933,355 L915,355 C914.487164,355 914.064493,355.38604 914.006728,355.883379 L914,356 L914,374 C914,374.512836 914.38604,374.935507 914.883379,374.993272 L915,375 L933,375 C933.512836,375 933.935507,374.61396 933.993272,374.116621 L934,374 L934,356 C934,355.487164 933.61396,355.064493 933.116621,355.006728 L933,355 Z M930,369 C930.552285,369 931,369.447715 931,370 C931,370.512836 930.61396,370.935507 930.116621,370.993272 L930,371 L918,371 C917.447715,371 917,370.552285 917,370 C917,369.487164 917.38604,369.064493 917.883379,369.006728 L918,369 L930,369 Z M941,347 L923,347 C922.487164,347 922.064493,347.38604 922.006728,347.883379 L922,348 L922,351 C922,352.104569 922.895431,353 924,353 L933,353 L933,353 C934.597681,353 935.903661,354.24892 935.994907,355.823727 L936,356 L936,365 C936,366.104569 936.895431,367 938,367 L941,367 L941,367 C941.512836,367 941.935507,366.61396 941.993272,366.116621 L942,366 L942,348 C942,347.487164 941.61396,347.064493 941.116621,347.006728 L941,347 Z M930,364 C930.552285,364 931,364.447715 931,365 C931,365.512836 930.61396,365.935507 930.116621,365.993272 L930,366 L918,366 C917.447715,366 917,365.552285 917,365 C917,364.487164 917.38604,364.064493 917.883379,364.006728 L918,364 L930,364 Z M930,359 C930.552285,359 931,359.447715 931,360 C931,360.512836 930.61396,360.935507 930.116621,360.993272 L930,361 L918,361 C917.447715,361 917,360.552285 917,360 C917,359.487164 917.38604,359.064493 917.883379,359.006728 L918,359 L930,359 Z"
+                                id="Shape"
+                              ></path>
+                            </g>
+                          </g>
+                        </g>
+                      </svg>
+
+                      <div className="flex flex-col">
+                        {staDA
+                          ?.filter((d) => dat[d]['sts'] == 'pending')
+                          .map((ts, inx) => {
+                            return (
+                              <>
+                                <section
+                                  className="border-b pb-4 pointer"
+                                  key={inx}
+                                  onClick={() =>
+                                    selUserProfileF('User Profile', leadUser)
+                                  }
+                                >
+                                  <h4 className="font-brand pt-4 text-2xl text-brand-900 mb-4">
+                                    {dat[ts]['notes']}
+                                  </h4>
+                                  <section className="flex flex-row">
+                                    <span className="px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                      {dat[ts]['pri']}
+                                    </span>
+                                    <span className="ml-4 px-4 py-1 inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
+                                      {Math.abs(
+                                        getDifferenceInMinutes(
+                                          dat[ts]['schTime'],
+                                          ''
+                                        )
+                                      ) > 60
+                                        ? `${getDifferenceInHours(
+                                            dat[ts]['schTime'],
+                                            ''
+                                          )} Hours `
+                                        : `${getDifferenceInMinutes(
+                                            dat[ts]['schTime'],
+                                            ''
+                                          )} Min`}{' '}
+                                      {getDifferenceInMinutes(
+                                        dat[ts]['schTime'],
+                                        ''
+                                      ) < 0
+                                        ? 'Due'
+                                        : 'Left'}
+                                    </span>
+                                    <span className="ml-4 px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
+                                      {dat[ts]['sts']}
+                                    </span>
+                                  </section>
+                                </section>
+                              </>
+                            )
+                          })}
+                      </div>
+                    </div>
+                    <div className="flex flex-col pl-10 p-4 h-full border border-2 rounded-r-[44px] rounded-bl-[44px]">
+                      <p className="main-heading my-2">{leadUser?.Name}</p>
+                      <p className="main-heading my-2">{leadUser?.Mobile}</p>
+                      <p className="main-heading my-2">{leadUser?.Email}</p>
+                      <small className="text-gray-400">
+                        {leadUser?.Project}
+                      </small>
+                    </div>
+                  </div>
+
+                  {/* <div className="flex items-center justify-between py-2">
+                    <small className="text-gray-400">{leadUser?.Date}</small>
+                    {console.log('staA is ', staA)}
+                    {staA && (
+                      <small className="">
+                        {staA?.filter((data) => data === 'pending').length} Task
+                        Pendings out of {staA?.length}
+
+                      </small>
+                    )}
+                    <small className="text-gray-400">{leadUser?.Project}</small>
+                  </div> */}
+                </div>
+              </>
+            )
+          })}
           <EnhancedTableToolbar
             numSelected={selected.length}
             selStatus={selStatus}
@@ -486,7 +641,6 @@ export default function TodayLeadsActivitySearchView({
               if (searchKey == '' || !searchKey) {
                 return item
               } else if (
-                item.Date.toLowerCase().includes(searchKey.toLowerCase()) ||
                 item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
                 item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
                 item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
@@ -536,6 +690,12 @@ export default function TodayLeadsActivitySearchView({
             })}
         </div>
       </div>
+      <SiderForm
+        open={isImportLeadsOpen}
+        setOpen={setisImportLeadsOpen}
+        title={addLeadsTypes}
+        customerDetails={selUserProfile}
+      />
     </>
   )
 }

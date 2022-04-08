@@ -239,10 +239,10 @@ export function MultipleFileUploadField({ name }: { name: string }) {
         </div>
       ))}
 
-      <div className="mt-4 text-bold text-lg">or</div>
-      <div className="mt-2 p-6 bg-white border border-gray-100">
+      {/* <div className="mt-4 text-bold text-lg">or</div> */}
+      {/* <div className="mt-2 p-6 bg-white border border-gray-100">
         <LAddLeadTable />
-      </div>
+      </div> */}
     </React.Fragment>
   )
 }

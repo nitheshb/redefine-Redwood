@@ -3,7 +3,7 @@
 // import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 
 // import { XIcon } from '@heroicons/react/outline'
@@ -12,6 +12,11 @@ import SiderForm from './SiderForm/SiderForm'
 import CardItem from './leadsCard'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
+import {
+  getLeadsByStatus,
+  updateLeadAssigTo,
+  updateLeadStatus,
+} from 'src/context/dbQueryFirebase'
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
 // import BoardData from '../../components/board-data.json'
@@ -51,7 +56,7 @@ const BoardData = [
   },
 
   {
-    name: 'Follow Up',
+    name: 'Followup',
     items: [
       {
         id: 4,
@@ -176,7 +181,7 @@ const BoardData = [
 //     return v.toString(16)
 //   })
 // }
-const ExecutiveHomeViewerPage = () => {
+const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const { user } = useAuth()
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
@@ -191,10 +196,72 @@ const ExecutiveHomeViewerPage = () => {
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
   const [selUserProfile, setSelUserProfile] = useState({})
+  const [leadsFetchedData, setLeadsFetchedData] = useState([])
+  const [serialLeadsData, setSerialLeadsData] = useState([])
 
+  const statusFields = [
+    'new',
+    'followup',
+    'visitfixed',
+    'visitdone',
+    'negotiation',
+    'reassign',
+    'RNR',
+    'booked',
+  ]
+  const archieveFields = ['Dead', 'RNR', 'blocked', 'notinterested']
+  useEffect(() => {
+    getLeadsDataFun()
+  }, [])
+  const getLeadsDataFun = async () => {
+    const unsubscribe = getLeadsByStatus(
+      async (querySnapshot) => {
+        const usersListA = querySnapshot.docs.map((docSnapshot) => {
+          const x = docSnapshot.data()
+          x.id = docSnapshot.id
+          return x
+        })
+        // setBoardData
+        console.log('my Array data is ', usersListA)
+        await serealizeData(usersListA)
+        await setLeadsFetchedData(usersListA)
+      },
+      {
+        status:
+          leadsTyper === 'archieveLeads'
+            ? archieveFields
+            : [
+                'new',
+                'followup',
+                'visitfixed',
+                '',
+                'visitdone',
+                'negotiation',
+                'reassign',
+                'RNR',
+                'booked',
+              ],
+      },
+      (error) => setLeadsFetchedData([])
+    )
+    return unsubscribe
+
+    // await console.log('leadsData', leadsData)
+  }
+
+  const serealizeData = (array) => {
+    // let newData =
+    const x = statusFields.map((status) => {
+      const items = array.filter((data) => data.Status.toLowerCase() == status)
+
+      return { name: status, items }
+    })
+    setSerialLeadsData(x)
+  }
   const onDragEnd = (re) => {
+    console.log('re is', re)
     if (!re.destination) return
-    const newBoardData = boardData
+    const newBoardData = serialLeadsData
     const dragItem =
       newBoardData[parseInt(re.source.droppableId)].items[re.source.index]
     newBoardData[parseInt(re.source.droppableId)].items.splice(
@@ -205,6 +272,11 @@ const ExecutiveHomeViewerPage = () => {
       re.destination.index,
       0,
       dragItem
+    )
+
+    updateLeadStatus(
+      re.draggableId,
+      statusFields[parseInt(re.destination.droppableId)]
     )
     setBoardData(newBoardData)
   }
@@ -249,20 +321,12 @@ const ExecutiveHomeViewerPage = () => {
         <div className="">
           <div
             className="
-            flex-grow
-            p-6
-            overflow-auto
-            h-screen
-            text-gray-700
-            bg-gradient-to-tr
-            from-blue-200
-            via-indigo-200
-            to-pink-200"
+            p-6"
           >
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
-                  Leads Space
+                  Leads Space {leadsTyper}
                 </h2>
               </div>
               <div className="flex">
@@ -352,7 +416,7 @@ const ExecutiveHomeViewerPage = () => {
                         />
                       </svg>
 
-                      <span className="ml-1">Import Leads</span>
+                      <span className="ml-1">Import Lead</span>
                     </button>
                   )}
                 </>
@@ -366,7 +430,13 @@ const ExecutiveHomeViewerPage = () => {
                 <main className="mt-3 flex flex-row overflow-auto max-h-[60%] rounded ">
                   <div className="flex">
                     <DragDropContext onDragEnd={onDragEnd}>
-                      {boardData.map((board, bIndex) => {
+                      {serialLeadsData.map((board, bIndex) => {
+                        const x = leadsFetchedData.filter(
+                          (data) =>
+                            data.Status.toLowerCase() ===
+                            board.name.toLowerCase()
+                        )
+                        console.log('serialLeadsData, ', serialLeadsData)
                         return (
                           <div
                             key={bIndex}
@@ -386,6 +456,7 @@ const ExecutiveHomeViewerPage = () => {
                                       {board.name}
                                     </span>
                                     <span className="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-indigo-500 bg-white rounded bg-opacity-30">
+                                      {/* {x.length} */}
                                       {board.items.length}
                                     </span>
                                   </div>
@@ -411,7 +482,7 @@ const ExecutiveHomeViewerPage = () => {
                                           </div>
                                         )
                                       })}
-                                    {provided.placeholder}``
+                                    {provided.placeholder}
                                     {console.log('dragDatga is', board)}
                                   </div>
                                 </div>
@@ -429,8 +500,10 @@ const ExecutiveHomeViewerPage = () => {
 
             {!ready && (
               <LLeadsTableView
+                leadsFetchedData={leadsFetchedData}
                 setisImportLeadsOpen={setisImportLeadsOpen}
                 selUserProfileF={selUserProfileF}
+                leadsTyper={leadsTyper}
               />
             )}
           </div>

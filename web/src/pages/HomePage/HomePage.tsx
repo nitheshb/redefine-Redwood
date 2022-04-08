@@ -36,16 +36,16 @@ const HomePage = () => {
   return (
     <>
       <div className="flex w-screen h-screen text-gray-700">
-        <HeadSideBar pgName={'home'} />
-        <HeadSideBarDetailView
-          pgName={'leadsManager'}
-          sourceLink={'projectsScreen'}
-          showSideView1={undefined}
-          setViewable={undefined}
-        />
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
           <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+            <HeadSideBar pgName={'home'} />
+            <HeadSideBarDetailView
+              pgName={'leadsManager'}
+              sourceLink={'projectsScreen'}
+              showSideView1={undefined}
+              setViewable={undefined}
+            />
             <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-screen  px-300  py-300">
               <div className="">
                 <div className="flex items-center justify-between py-2  ">

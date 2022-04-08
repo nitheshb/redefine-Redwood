@@ -26,6 +26,55 @@ const HeadNavBar = () => {
         {/* <h1 className="text-lg font-medium">redefine.</h1> */}
         <span
           style={{ marginLeft: '10px' }}
+          className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-black select-none pl-0"
+        >
+          <svg
+            className="w-8 h-8 to-indigo-600 "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            // color="#a770ef"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+          <span className="ml-1"> Redefine Erp.</span>
+        </span>
+
+        {/* <a
+        className="flex items-center fixe flex-shrink-0 w-full h-16  border-b bg-white"
+        href="#"
+      >
+
+        <span
+          style={{ marginLeft: '10px' }}
+          className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-black select-none pl-0"
+        >
+          <svg
+            className="w-8 h-8 to-indigo-600 "
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            // color="#a770ef"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+          <span className="ml-1"> Redefine Erp.</span>
+        </span>
+      </a> */}
+        <span
+          style={{ marginLeft: '10px' }}
           className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-black select-none pl-0 ml-4"
         ></span>
         <button className="flex items-center justify-center h-10 px-4 ml-auto "></button>

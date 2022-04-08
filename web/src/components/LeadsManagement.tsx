@@ -104,17 +104,15 @@ const LeadsManagementHome = () => {
       : (a, b) => -descendingComparator(a, b, orderBy)
   }
 
-
   const fSetLeadsType = (type) => {
     setAddLeadsTypes(type)
     setisImportLeadsOpen(true)
-
   }
   return (
     <>
       <div className="flex  flex-row  text-gray-700">
         <div className="flex-1 overflow-auto">
-          <div className="flex-grow p-6 overflow-auto h-screen text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+          <div className="p-6 ">
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
@@ -214,9 +212,6 @@ const LeadsManagementHome = () => {
                     if (searchKey == '' || !searchKey) {
                       return item
                     } else if (
-                      item.Date.toLowerCase().includes(
-                        searchKey.toLowerCase()
-                      ) ||
                       item.Email.toLowerCase().includes(
                         searchKey.toLowerCase()
                       ) ||

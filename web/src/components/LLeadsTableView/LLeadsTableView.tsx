@@ -435,13 +435,19 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
   },
 }))
 
-const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
+const LLeadsTableView = ({
+  setisImportLeadsOpen,
+  selUserProfileF,
+  leadsFetchedData,
+  leadsTyper,
+}) => {
   // change navbar title
   // useTitle('Data Table V1')
   const { t } = useTranslation()
   const [value, setValue] = useState('new')
   const [tableData, setTableData] = useState([])
-  const [leadsFetchedData, setLeadsFetchedData] = useState([])
+  const [tabHeadFieldsA, settabHeadFieldsA] = useState([])
+  // const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [openModal, setOpenModal] = useState(false)
 
   const handleChange = (_, newValue) => {
@@ -461,40 +467,29 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
     //     // setTableData(tableData1)
     //     console.log(error)
     //   })
+
+    const tabHeadFieldsA1 =
+      leadsTyper === 'archieveLeads'
+        ? archieveTab
+        : [
+            { lab: 'In Progress', val: 'all' },
+            { lab: 'New', val: 'new' },
+            // { lab: 'In Progress', val: 'inprogress' },
+            { lab: 'Follow Up', val: 'followup' },
+            { lab: 'Visit Fixed', val: 'visitfixed' },
+            { lab: 'Visit Done', val: 'visitdone' },
+            { lab: 'Negotiation', val: 'negotitation' },
+            { lab: 'Reassign', val: 'reassign' },
+            { lab: 'RNR', val: 'RNR' },
+            { lab: 'Booked', val: 'booked' },
+            // { lab: 'Not Interested', val: 'notinterested' },
+            // { lab: 'Dead', val: 'dead' },
+          ]
+    settabHeadFieldsA(tabHeadFieldsA1)
+
+    leadsTyper === 'archieveLeads' ? setValue('all') : setValue('new')
   }, [])
 
-  useEffect(() => {
-    getLeadsDataFun()
-  }, [])
-  const getLeadsDataFun = async () => {
-    const unsubscribe = getLeadsByStatus(
-      (querySnapshot) => {
-        const usersListA = querySnapshot.docs.map((docSnapshot) => {
-          const x = docSnapshot.data()
-          x.id = docSnapshot.id
-          return x
-        })
-        setLeadsFetchedData(usersListA)
-      },
-      {
-        status: [
-          'new',
-          'inprogress',
-          'followup',
-          'visitfixed',
-          '',
-          'visitdone',
-          'negotiation',
-          'reassign',
-          'RNR',
-        ],
-      },
-      (error) => setLeadsFetchedData([])
-    )
-    return unsubscribe
-
-    await console.log('leadsData', leadsData)
-  }
   const handleDelete = async (ids) => {
     const { data } = await axios.post('/api/tableData1/delete', {
       ids,
@@ -505,6 +500,13 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
   const filterTable = tableData.filter((item) =>
     value !== '' ? item.role.toLowerCase() === value : item.role
   )
+
+  const archieveTab = [
+    { lab: 'Archieve', val: 'all' },
+    { lab: 'Dead', val: 'dead' },
+    { lab: 'Not Interested', val: 'notinterested' },
+    { lab: 'Blocked', val: 'blockded' },
+  ]
   return (
     <Box pt={2} pb={4}>
       <Card
@@ -521,20 +523,7 @@ const LLeadsTableView = ({ setisImportLeadsOpen, selUserProfileF }) => {
                 data-tabs-toggle="#myTabContent"
                 role="tablist"
               >
-                {[
-                  { lab: 'In Progress', val: 'all' },
-                  { lab: 'New', val: 'new' },
-                  // { lab: 'In Progress', val: 'inprogress' },
-                  { lab: 'Follow Up', val: 'followup' },
-                  { lab: 'Visit Fixed', val: 'visitfixed' },
-                  { lab: 'Visit Done', val: 'visitdone' },
-                  { lab: 'Negotiation', val: 'negotitation' },
-                  { lab: 'Reassign', val: 'reassign' },
-                  { lab: 'RNR', val: 'RNR' },
-                  // { lab: 'Booked', val: 'booked' },
-                  // { lab: 'Not Interested', val: 'notinterested' },
-                  // { lab: 'Dead', val: 'dead' },
-                ].map((d, i) => {
+                {tabHeadFieldsA.map((d, i) => {
                   return (
                     <li key={i} className="mr-2" role="presentation">
                       <button

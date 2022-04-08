@@ -16,6 +16,8 @@ import {
   updateDoc,
   deleteDoc,
   limit,
+  arrayUnion,
+  deleteField,
 } from 'firebase/firestore'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -58,14 +60,23 @@ export const steamUsersActivityOfUser = (snapshot, error) => {
 }
 
 //  get lead activity list
-export const steamLeadActivityLog = (snapshot, error) => {
+export const steamLeadActivityLog = (snapshot, data, error) => {
   // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
-
-  return onSnapshot(
-    doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'),
-    snapshot,
-    error
-  )
+  const { uid } = data
+  console.log('is uid g', uid)
+  return onSnapshot(doc(db, 'spark_leads_log', uid), snapshot, error)
+  // return onSnapshot(itemsQuery, snapshot, error)
+}
+export const steamLeadScheduleLog = (snapshot, data, error) => {
+  // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
+  const { uid } = data
+  return onSnapshot(doc(db, 'spark_leads_sch', uid), snapshot, error)
+  // return onSnapshot(itemsQuery, snapshot, error)
+}
+export const steamLeadById = (snapshot, data, error) => {
+  // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
+  const { uid } = data
+  return onSnapshot(doc(db, 'spark_leads', uid), snapshot, error)
   // return onSnapshot(itemsQuery, snapshot, error)
 }
 // stream
@@ -90,7 +101,62 @@ export const getAllLeads = (snapshot, data, error) => {
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
+export const getTodayTodoLeadsData1 = async () => {
+  try {
+    console.log('inside getLeadsData1')
+    const citiesCol = collection(db, 'spark_leads')
+    const citySnapshot = await getDocs(citiesCol)
+    await citySnapshot.docs.map((doc) => doc.data())
+    await console.log(
+      'inside getLeadsData1 length',
+      'sparkleads',
+      citySnapshot.docs.map((doc) => doc.data())
+    )
+    return citySnapshot.docs.map((doc) => doc.data())
+  } catch (error) {
+    console.log('error in db', error)
+  }
+}
+export const getTodayTodoLeadsData = (snapshot, data, error) => {
+  // const { status } = data
 
+  const itemsQuery = query(
+    collection(db, 'spark_leads_sch'),
+    where('staA', 'array-contains-any', ['pending', 'overdue'])
+  )
+  // const itemsQuery1 = query(
+  //   collection(db, 'spark_leads_sch'),
+  //   where('staA', 'array-contains-any', ['pending', 'overdue'])
+  // )
+  // return onSnapshot(itemsQuery, (docSna) => {
+  //   console.log('Current data: ', docSna.docs.length)
+  //   docSna.docs.map(async (dataSnp) => {
+  //     const userRef = doc(db, 'spark_leads', dataSnp.id)
+  //     const docSnap1 = await getDoc(userRef)
+  //     if (docSnap1.exists()) {
+  //       return docSnap1.data()
+  //     } else {
+  //       // doc.data() will be undefined in this case
+  //       console.log('No such document!')
+  //       return null
+  //     }
+  //   })
+  // })
+  console.log('hello ', status, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+export const getLeadbyId1 = async (uid) => {
+  const docRef = doc(db, 'spark_leads', uid)
+  const docSnap = await getDoc(docRef)
+
+  if (docSnap.exists()) {
+    console.log('Document data:', docSnap.data())
+    return docSnap.data()
+  } else {
+    // doc.data() will be undefined in this case
+    console.log('No such document!')
+  }
+}
 export const getLedsData1 = async () => {
   try {
     console.log('inside getLeadsData1')
@@ -107,6 +173,7 @@ export const getLedsData1 = async () => {
     console.log('error in db', error)
   }
 }
+
 export const getLedsData = async () => {
   try {
     const citiesCol = collection(db, 'users')
@@ -298,6 +365,24 @@ export const addLead = async (data, by, msg) => {
     txt: msg,
     by,
   })
+
+  // add task to scheduler to Intro call in 3 hrs
+
+  const data1 = {
+    by: by,
+    type: 'schedule',
+    pri: 'priority 1',
+    notes: 'Get into Introduction Call with customer',
+    sts: 'pending',
+    schTime: Timestamp.now().toMillis() + 10800000, // 3 hrs
+    ct: Timestamp.now().toMillis(),
+  }
+
+  const x1 = []
+
+  x1.push('pending')
+
+  await addLeadScheduler(x.id, data1, x1)
   return
 }
 
@@ -327,6 +412,25 @@ export const addLeadLog = async (did, data) => {
   console.log('am at addLeadLog ')
 }
 
+export const addLeadScheduler = async (did, data, schStsA) => {
+  const xo = data?.ct
+  const yo = {
+    staA: schStsA,
+    staDA: arrayUnion(xo),
+    [xo]: data,
+  }
+  try {
+    const washingtonRef = doc(db, 'spark_leads_sch', did)
+    console.log('check add LeadLog', washingtonRef)
+
+    await updateDoc(washingtonRef, yo)
+  } catch (error) {
+    await setDoc(doc(db, 'spark_leads_sch', did), yo)
+  }
+
+  console.log('am at addLeadLog ')
+}
+
 export const addSchedulerLog = async (did, data) => {
   const xo = Timestamp.now().toMillis()
   data.time = Timestamp.now().toMillis()
@@ -336,12 +440,10 @@ export const addSchedulerLog = async (did, data) => {
   try {
     const washingtonRef = doc(db, 'spark_schedules_log', did)
     console.log('check add LeadLog', washingtonRef)
-
     await updateDoc(washingtonRef, yo)
   } catch (error) {
     await setDoc(doc(db, 'spark_schedules_log', did), yo)
   }
-
   console.log('am at addLeadLog ')
 }
 
@@ -551,12 +653,18 @@ export const updateBlock = async (uid, project, enqueueSnackbar) => {
 
 export const updateLeadAssigTo = async (leadDocId, assignedTo, by) => {
   const { value } = assignedTo
+  console.log('inside updater ', {
+    leadDocId,
+    assignedTo: value,
+    assingedToObj: assignedTo,
+    AssignedBy: by,
+  })
   await updateDoc(doc(db, 'spark_leads', leadDocId), {
     assignedTo: value,
     assingedToObj: assignedTo,
     AssignedBy: by,
   })
-  console.log('inside updater ')
+
   return
   // return await addUserLog({
   //   s: 's',
@@ -569,6 +677,14 @@ export const updateLeadAssigTo = async (leadDocId, assignedTo, by) => {
 export const updateLeadStatus = async (leadDocId, newStatus) => {
   await updateDoc(doc(db, 'spark_leads', leadDocId), {
     Status: newStatus,
+  })
+}
+export const updateSchLog = async (uid, kId, newStat, schStsA) => {
+  const x = `${kId}.sts`
+  await updateDoc(doc(db, 'spark_leads_sch', uid), {
+    staA: schStsA,
+    // staDA: arrayUnion(xo),
+    [x]: newStat,
   })
 }
 export const updateMoreDetails = async (uid, moreDetails, enqueueSnackbar) => {
@@ -673,4 +789,12 @@ export const deleteAdditionalCharge = async (uid, enqueueSnackbar) => {
       variant: 'error',
     })
   }
+}
+
+export const deleteSchLog = async (uid, kId, newStat, schStsA, schStsMA) => {
+  await updateDoc(doc(db, 'spark_leads_sch', uid), {
+    staA: schStsA,
+    staDA: schStsMA,
+    [kId]: deleteField(),
+  })
 }

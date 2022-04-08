@@ -238,6 +238,30 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                     {formik.values.myRole}
                   </div>
                 ) : null}
+
+                {/*  */}
+
+                <div className="md:flex md:flex-row md:space-x-4 w-full text-xs mt-5">
+                  <div className="w-full flex flex-col mb-3">
+
+                    <TextField
+                      label="Aadhar No"
+                      name="aadharNo"
+                      type="text"
+                      disabled={editMode}
+                    />
+                  </div>
+                  <div className="w-full flex flex-col mb-3">
+                    <TextField
+                      label="Date of Birth"
+                      name="dob"
+                      type="text"
+                      disabled={editMode}
+                    />
+
+                  </div>
+                </div>
+
                 <p className="text-xs text-red-500 text-right my-3">
                   Required fields are marked with an asterisk{' '}
                   <abbr title="Required field">*</abbr>

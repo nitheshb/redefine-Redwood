@@ -14,7 +14,12 @@ import { TextField } from 'src/util/formFields/TextField'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
-import { addLead, checkIfLeadAlreadyExists, steamUsersListByRole } from 'src/context/dbQueryFirebase'
+import {
+  addLead,
+  addLeadScheduler,
+  checkIfLeadAlreadyExists,
+  steamUsersListByRole,
+} from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { Timestamp } from 'firebase/firestore'
 import { useRouterStateSetter } from '@redwoodjs/router/dist/router-context'
@@ -122,7 +127,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   const devTypeSel = async (sel) => {
     await setdevType(sel)
   }
-  const onSubmit = async (data, resetForm) => {
+  const onSubmitFun = async (data, resetForm) => {
     console.log(data)
     setLoading(true)
 
@@ -158,7 +163,8 @@ const AddLeadForm = ({ title, dialogOpen }) => {
         `lead created and assidged to ${assignedTo}`
       )
 
-      // msg1
+     
+
       await sendWhatAppTextSms(
         mobileNo,
         `Thank you ${name} for choosing the world class ${project || 'project'}`
@@ -265,7 +271,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
               validationSchema={validate}
               onSubmit={(values, { resetForm }) => {
                 console.log('ami submitted', values)
-                onSubmit(values, resetForm)
+                onSubmitFun(values, resetForm)
               }}
             >
               {(formik) => (

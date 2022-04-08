@@ -18,7 +18,7 @@ const SiderForm = ({
   customerDetails = {},
   data = {},
   onCloseDisabled = false,
-  widthClass = 'max-w-2xl',
+  widthClass = 'max-w-4xl',
 }) => {
   // const [open, setOpen] = useState(true)
   return (
@@ -51,7 +51,11 @@ const SiderForm = ({
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <div className={`relative w-screen ${widthClass}`}>
+              <div
+                className={`relative w-screen ${
+                  title === 'Add Lead' ? 'max-w-2xl' : widthClass
+                }`}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-in-out duration-500"

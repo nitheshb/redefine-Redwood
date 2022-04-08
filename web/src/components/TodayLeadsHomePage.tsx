@@ -186,7 +186,7 @@ const BoardData = [
     ],
   },
 ]
-const TodayLeadsHomePage = () => {
+const TodayLeadsHomePage = ({ taskType }) => {
   const { user } = useAuth()
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
 
@@ -207,8 +207,8 @@ const TodayLeadsHomePage = () => {
     <>
       <div className="flex  flex-row  text-gray-700">
         <div className="flex-1 overflow-auto">
-          <div className="flex-grow p-6 overflow-auto h-screen text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
-            <div className="flex items-center justify-between py-2 ">
+          <div className="p-6 ">
+            {/* <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
                   Today Activity
@@ -217,13 +217,14 @@ const TodayLeadsHomePage = () => {
               <div className="flex">
                 <h1> hello</h1>
               </div>
-            </div>
+            </div> */}
 
             <MetaTags title="ExecutiveHome" description="ExecutiveHome page" />
             {!ready && (
               <TodayLeadsActivityListHomeView
                 setisImportLeadsOpen={setisImportLeadsOpen}
                 selUserProfileF={selUserProfileF}
+                taskType={taskType}
               />
             )}
           </div>

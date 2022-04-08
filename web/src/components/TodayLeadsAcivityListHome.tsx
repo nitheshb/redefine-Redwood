@@ -1,10 +1,18 @@
+import { CleaningServicesRounded } from '@mui/icons-material'
 import { TabList } from '@mui/lab'
 import { Box, Card, Grid, styled } from '@mui/material'
+import { yearsToMonths } from 'date-fns'
 // import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
 // import uniqueId from '../../util/generatedId'
-import { getLedsData1 } from 'src/context/dbQueryFirebase'
+import {
+  getLeadbyId1,
+  getLedsData1,
+  getTodayTodoLeadsData,
+  getTodayTodoLeadsData1,
+  steamLeadById,
+} from 'src/context/dbQueryFirebase'
 import uniqueId from 'src/util/generatedId'
 import LLeadsTableBody from './LLeadsTableBody/LLeadsTableBody'
 import TodayLeadsActivitySearchView from './TodayLeadsActivitySearchView'
@@ -437,6 +445,7 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
 const TodayLeadsActivityListHomeView = ({
   setisImportLeadsOpen,
   selUserProfileF,
+  taskType,
 }) => {
   // change navbar title
   // useTitle('Data Table V1')
@@ -445,6 +454,7 @@ const TodayLeadsActivityListHomeView = ({
   const [tableData, setTableData] = useState([])
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [openModal, setOpenModal] = useState(false)
+  const [todaySchL, setTodaySchL] = useState()
 
   const handleChange = (_, newValue) => {
     console.log('newvalue is ', newValue)
@@ -461,8 +471,61 @@ const TodayLeadsActivityListHomeView = ({
   }, [])
   const getLeadsDataFun = async () => {
     const leadsData = await getLedsData1()
-    setLeadsFetchedData(leadsData)
-    await console.log('leadsData', leadsData)
+
+    const todoData = await getTodayTodoLeadsData(
+      (querySnapshot) => {
+        let pro
+        setTodaySchL([])
+        const projects = querySnapshot.docs.map(async (docSnapshot) => {
+          const x = docSnapshot.data()
+          x.uid = docSnapshot.id
+          // eslint-disable-next-line prefer-const
+          let y = await getLeadbyId1(x.uid)
+          await console.log('fetched value is ', x, y)
+          x.leadUser = await y
+          return x
+        })
+        //  get the task details from docid
+
+        Promise.all(projects).then(function (results) {
+          console.log('my values are ', results)
+          setTodaySchL(results)
+        })
+      },
+      {},
+      () => {
+        console.log('error')
+      }
+    )
+    await console.log('what are we', todoData)
+  }
+
+  useEffect(() => {
+    // getValueByIdFun()
+  }, [todaySchL])
+
+  const getValueByIdFun = async () => {
+    todaySchL.map((data) => {
+      const { uid } = data
+
+      const z = steamLeadById(
+        (querySnapshot) => {
+          data.sch = querySnapshot.data()
+
+          console.log('my valu is', data)
+          const x = todaySchL
+          x.push(data)
+
+          // setTodaySchL(x)
+          console.log('checkerrr', todaySchL.length, x)
+          return data
+        },
+        { uid },
+        () => {
+          console.log('error')
+        }
+      )
+    })
   }
   const handleDelete = async (ids) => {
     const { data } = await axios.post('/api/tableData1/delete', {
@@ -479,8 +542,10 @@ const TodayLeadsActivityListHomeView = ({
       data={filterTable}
       handleDelete={handleDelete}
       selStatus={value}
+      todaySch={todaySchL}
       rowsParent={leadsFetchedData}
       selUserProfileF={selUserProfileF}
+      taskType={taskType}
     />
   )
 }

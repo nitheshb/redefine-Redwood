@@ -138,8 +138,8 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                   </Grid>
                 </Grid>
                 {/* <pre>hello{parseExcel(values)}</pre> */}
-                <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
-                <p>{JSON.stringify({ existingCols })}</p>
+                {/* <pre>{JSON.stringify({ values, errors }, null, 4)}</pre> */}
+                {/* <p>{JSON.stringify({ existingCols })}</p> */}
               </Form>
             )}
           </Formik>

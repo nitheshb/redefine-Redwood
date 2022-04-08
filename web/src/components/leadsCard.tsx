@@ -57,19 +57,19 @@ function CardItem({ data, index }) {
           </span>
           <h5 className="text-md mt-3 text-md leading-6 flex">
             <PhoneIcon className="h-4 w-4 mt-1 mr-1" aria-hidden="true" />{' '}
-            {data.mobile
-              .toString()
-              .replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}
+            {data.Mobile.toString().replace(
+              /(\d{3})(\d{3})(\d{4})/,
+              '$1-$2-$3'
+            )}
           </h5>
           <h5 className="text-sm text-md leading-6 flex">
             {' '}
             <UserIcon className="h-4 w-4 mt-1 mr-1" aria-hidden="true" />{' '}
-            {data.title}
+            {data.Name}
           </h5>
           <h5 className="text-sm mb-3 text-md leading-6 flex">
             <MailIcon className="h-4 w-4 mt-1 mr-1" aria-hidden="true" />{' '}
-            {data.title.toLowerCase().replaceAll(' ', '')}
-            @gmail.com
+            {data.Email.toLowerCase().replaceAll(' ', '')}
           </h5>
 
           <div className="flex items-center w-full mt-3 text-xs font-medium text-gray-400">

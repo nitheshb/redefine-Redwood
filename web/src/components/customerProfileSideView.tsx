@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment, useEffect, useState } from 'react'
 
@@ -5,19 +7,28 @@ import { ArrowRightIcon } from '@heroicons/react/outline'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
+import { useAuth } from 'src/context/firebase-auth-context'
 import {
+  addLeadScheduler,
   addSchedulerLog,
+  deleteSchLog,
   steamLeadActivityLog,
+  steamLeadScheduleLog,
   steamUsersList,
   steamUsersListByRole,
   updateLeadAssigTo,
   updateLeadStatus,
+  updateSchLog,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
 import ClockIcon from '@heroicons/react/solid/ClockIcon'
 import CalendarIcon from '@heroicons/react/outline/CalendarIcon'
-import { timeConv } from 'src/util/dateConverter'
+import {
+  getDifferenceInHours,
+  getDifferenceInMinutes,
+  timeConv,
+} from 'src/util/dateConverter'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { DateTimePicker } from '@mui/lab'
@@ -58,6 +69,7 @@ export default function CustomerProfileSideView({
   customerDetails,
 }) {
   console.log('customer Details', customerDetails)
+  const { user } = useAuth()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   // const [leadStatus, setLeadStatus] = useState([])
@@ -66,6 +78,8 @@ export default function CustomerProfileSideView({
   const [assignerName, setAssignerName] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
   const [leadsActivityFetchedData, setLeadsFetchedActivityData] = useState([])
+  const [leadSchFetchedData, setLeadsFetchedSchData] = useState([])
+  const [takTitle, setTakTitle] = useState('')
   const [filterData, setFilterData] = useState([])
   const d = new window.Date()
   const [value, setValue] = useState(d)
@@ -75,6 +89,8 @@ export default function CustomerProfileSideView({
   const [taskDetails, setTaskDetails] = useState('')
   const [schPri, setSchPri] = useState(1)
   const [schTime, setSchTime] = useState()
+  const [schStsA, setschStsA] = useState([])
+  const [schStsMA, setschStsMA] = useState([])
 
   const {
     id,
@@ -131,21 +147,26 @@ export default function CustomerProfileSideView({
     } else if (selFeature === 'timeline') {
       fet = 'status'
     }
-    leadsActivityFetchedData.map((data) => {
-      console.log('value of filtered feature count before', data)
-    })
-    let x = []
-    if (selFeature != 'timeline') {
-      x = leadsActivityFetchedData.filter((data) => data.type === fet)
+
+    if (fet === 'appoint') {
+      return
     } else {
-      x = leadsActivityFetchedData
+      leadsActivityFetchedData.map((data) => {
+        console.log('value of filtered feature count before', data)
+      })
+      let x = []
+      if (selFeature != 'timeline') {
+        x = leadsActivityFetchedData.filter((data) => data.type === fet)
+      } else {
+        x = leadsActivityFetchedData
+      }
+      console.log(
+        'value of filtered feature count is wow it ',
+        leadsActivityFetchedData,
+        x.length
+      )
+      setFilterData(x)
     }
-    console.log(
-      'value of filtered feature count is wow it ',
-      leadsActivityFetchedData,
-      x.length
-    )
-    setFilterData(x)
   }, [leadsActivityFetchedData, selFeature])
 
   useEffect(() => {
@@ -163,8 +184,17 @@ export default function CustomerProfileSideView({
     updateLeadAssigTo(leadDocId, value, by)
   }
 
-  const setStatusFun = (leadDocId, newStatus) => {
+  const setStatusFun = async (leadDocId, newStatus) => {
     setLeadStatus(newStatus)
+    setFeature('appointments')
+    if (newStatus === 'visitfixed') {
+      setTakTitle('Schedule a cab ')
+    } else if (newStatus === 'booked') {
+      await setTakTitle('Share the Details with CRM team')
+      await fAddSchedule()
+    } else {
+      setTakTitle(' ')
+    }
     updateLeadStatus(leadDocId, newStatus)
   }
   const getLeadsDataFun = async () => {
@@ -190,22 +220,116 @@ export default function CustomerProfileSideView({
         console.log('my total fetched list is', usersListA.length)
         setLeadsFetchedActivityData(usersListA)
       },
+      {
+        uid: id,
+      },
       (error) => setLeadsFetchedActivityData([])
     )
+
+    //  lead Schedule list
+    steamLeadScheduleLog(
+      (doc) => {
+        console.log('my total fetched list is 1', doc.data())
+        const usersList = doc.data()
+        const usersListA = []
+
+        const sMapStsA = []
+        const { staA, staDA } = usersList
+        console.log('this is what we found', staA)
+        setschStsA(staA)
+        setschStsMA(staDA)
+        // delete usersList['staA']
+        // delete usersList['staDA']
+        Object.entries(usersList).forEach((entry) => {
+          const [key, value] = entry
+          if (['staA', 'staDA'].includes(key)) {
+            if (key === 'staA') {
+              // setschStsA(value)
+            } else if (key === 'staDA') {
+              // sMapStsA = value
+            }
+          } else {
+            usersListA.push(value)
+            console.log('my total fetched list is 3', `${key}: ${value}`)
+          }
+        })
+        // for (const key in usersList) {
+        //   if (usersList.hasOwnProperty(key)) {
+        //     console.log(`${key} : ${usersList[key]}`)
+        //     console.log(`my total fetched list is 2 ${usersList[key]}`)
+        //   }
+        // }
+
+        console.log('my total fetched list is', usersListA.length)
+        usersListA.sort((a, b) => {
+          return b.ct - a.cr
+        })
+        setLeadsFetchedSchData(
+          usersListA.sort((a, b) => {
+            return a.ct - b.ct
+          })
+        )
+      },
+      {
+        uid: id,
+      },
+      (error) => setLeadsFetchedSchData([])
+    )
+
     return unsubscribe
   }
   const fAddSchedule = () => {
+    console.log('start time is ', startDate)
     const data = {
-      by: 'uid',
+      by: user.email,
       type: 'schedule',
-      pri: 1,
-      notes: 'call again',
-      schTime: Timestamp.now().toMillis(),
+      pri: selected?.name,
+      notes: takTitle,
+      sts: 'pending',
+      schTime:
+        leadStatus === 'booked'
+          ? Timestamp.now().toMillis() + 10800000
+          : startDate.getTime(),
+      ct: Timestamp.now().toMillis(),
     }
-    addSchedulerLog(id, data)
+
+    const x = schStsA
+
+    console.log('new one ', schStsA, x)
+    x.push('pending')
+    setschStsA(x)
+    // addSchedulerLog(id, data)
+    console.log('new one ', schStsA)
+    addLeadScheduler(id, data, schStsA)
   }
   const handleColor = (time) => {
     return time.getHours() > 12 ? 'text-success' : 'text-error'
+  }
+
+  const setTitleFun = (e) => {
+    console.log('title value is', e.target.value)
+    setTakTitle(e.target.value)
+  }
+  const doneFun = (data) => {
+    console.log('clicked schedule is', data)
+    const inx = schStsMA.indexOf(data.ct)
+    const x = schStsA
+    x[inx] = 'completed'
+    setschStsA(x)
+
+    updateSchLog(id, data.ct, 'completed', schStsA)
+  }
+  const delFun = (data) => {
+    console.log('clicked schedule is', data)
+    const inx = schStsMA.indexOf(data.ct)
+    const x = schStsA
+    const y = schStsMA
+    x.splice(inx, 1)
+    y.splice(inx, 1)
+    setschStsA(x)
+    setschStsMA(y)
+
+    deleteSchLog(id, data.ct, 'completed', schStsA, schStsMA)
   }
   return (
     <div
@@ -628,8 +752,37 @@ export default function CustomerProfileSideView({
           <>
             <div className="flex flex-col pt-0 my-10 mt-[10px] rounded">
               <div className="  outline-none border  rounded p-4">
+                <div className="flex flex-row  border-b mb-4">
+                  <div className=" mb-3 flex justify-between">
+                    <section>
+                      <span
+                        className={`items-center h-6 px-3 py-1 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                      `}
+                        onClick={() => setTakTitle('Call again')}
+                      >
+                        Call again
+                      </span>
+                      <span
+                        className={`items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                      `}
+                        onClick={() => setTakTitle('Get more details')}
+                      >
+                        Get more details
+                      </span>
+                      <span
+                        className={`items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                      `}
+                        onClick={() => setTakTitle('Book Cab')}
+                      >
+                        Book Cab
+                      </span>
+                    </section>
+                  </div>
+                </div>
                 <textarea
-                // onChange={setTakTitle()}
+                  // onChange={setTakTitle()}
+                  value={takTitle}
+                  onChange={(e) => setTitleFun(e)}
                   placeholder="Schedule Title"
                   className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
                 ></textarea>
@@ -733,9 +886,9 @@ export default function CustomerProfileSideView({
                 </button>
               </div>
             </div>
-
-            <div className="py-8 px-8 flex flex-col items-center">
-              {/* <DesktopDatePicker
+            {leadSchFetchedData.length == 0 && (
+              <div className="py-8 px-8 flex flex-col items-center">
+                {/* <DesktopDatePicker
               label="Date desktop"
               inputFormat="MM/dd/yyyy"
               value={value}
@@ -743,7 +896,7 @@ export default function CustomerProfileSideView({
               renderInput={(params) => <TextField {...params} />}
             /> */}
 
-              {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(props) => <TextField {...props} />}
                 label="DateTimePicker"
@@ -753,21 +906,158 @@ export default function CustomerProfileSideView({
                 }}
               />
             </LocalizationProvider> */}
-              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                <img
-                  className="w-[200px] h-[200px] inline"
-                  alt=""
-                  src="/target.svg"
-                />
+                <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                  <img
+                    className="w-[200px] h-[200px] inline"
+                    alt=""
+                    src="/target.svg"
+                  />
+                </div>
+                <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                  No Appointmentss
+                </h3>
+                <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                  Appointments always bring more suprises{' '}
+                  <span className="text-blue-600">Add new</span>
+                </time>
               </div>
-              <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-                No Appointmentss
-              </h3>
-              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                Appointments always bring more suprises{' '}
-                <span className="text-blue-600">Add new</span>
-              </time>
+            )}
+
+            <div className="font-md font-medium text-xs mb-4 ml-7 text-gray-800">
+              Schedule
             </div>
+            <ol className="relative border-l ml-7 border-gray-200 dark:border-gray-700">
+              {leadSchFetchedData.map((data, i) => (
+                <section key={i} className=" border-b">
+                  <a
+                    href="#"
+                    className="block items-center p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {/* <PlusCircleIcon className="mr-3 mb-3 w-10 h-10 rounded-full sm:mb-0" /> */}
+
+                    {data?.type != 'ph' && (
+                      <>
+                        <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                          <CalendarIcon className="w-3 inline text-[#058527]" />
+                        </span>
+                        <div className="text-gray-600 dark:text-gray-400 m-3 w-screen">
+                          <div className="p-3 flex justify-between">
+                            <section className="text-base font-normal">
+                              {/* <span className="font-medium text-green-900 dark:text-white">
+                            {data?.notes}
+                            </span>{' '} */}
+
+                              <span className="text-sm  dark:text-white">
+                                {data?.notes}
+                              </span>
+                              {''}
+                              <span className="text-xs font-normal text-gray-500 ml-2">
+                                in
+                              </span>
+                              <span className="text-xs font-normal text-red-900  text-gray-500 ml-2">
+                                {Math.abs(
+                                  getDifferenceInMinutes(data?.schTime, '')
+                                ) > 60
+                                  ? `${getDifferenceInHours(
+                                      data?.schTime,
+                                      ''
+                                    )} Hours `
+                                  : `${getDifferenceInMinutes(
+                                      data?.schTime,
+                                      ''
+                                    )} Min`}
+                              </span>
+                            </section>
+
+                            {/* section 2 */}
+                            {data?.sts != 'completed' && (
+                              <section>
+                                <button
+                                  className="inline-flex items-center justify-center w-7 h-7 mr-2 text-pink-100 transition-colors duration-150 bg-green-500 rounded-full focus:shadow-outline  hover:bg-pink-800"
+                                  onClick={() => doneFun(data)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                </button>
+                                <button className="inline-flex items-center justify-center w-7 h-7 mr-2 text-pink-100 transition-colors duration-150 bg-red-400 rounded-full focus:shadow-outline hover:bg-pink-800">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  className="inline-flex items-center justify-center w-7 h-7 mr-2 text-pink-100 transition-colors duration-150 bg-pink-700 rounded-full focus:shadow-outline hover:bg-pink-800"
+                                  onClick={() => delFun(data)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                                    />
+                                  </svg>
+                                </button>
+                              </section>
+                            )}
+                          </div>
+                          <div className="p-3 flex justify-between">
+                            <section>
+                              <span
+                                className={`items-center h-6 px-3 py-1 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                      `}
+                              >
+                                {data?.pri}
+                              </span>
+                              <span
+                                className={`items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                      `}
+                              >
+                                {data?.sts}
+                              </span>
+                            </section>
+                            <span className="inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
+                              <ClockIcon className="mr-1 w-3 h-3" />
+                              {timeConv(data?.schTime).toLocaleString()}
+                              {'    '}
+                            </span>
+                          </div>
+                          <div className="text-sm font-normal">{data?.txt}</div>
+                        </div>
+                      </>
+                    )}
+                  </a>
+                </section>
+              ))}
+            </ol>
           </>
         )}
         {selFeature === 'timeline' && (

@@ -217,7 +217,6 @@ const EnhancedTableToolbar = (props) => {
         return item
       } else if (
         item.Assignedto.toLowerCase().includes(searchString.toLowerCase()) ||
-        item.Date.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Email.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Mobile.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Name.toLowerCase().includes(searchString.toLowerCase()) ||
@@ -564,7 +563,7 @@ export default function LfileuploadTableTemplate({
                     item.Assignedto.toLowerCase().includes(
                       searchKey.toLowerCase()
                     ) ||
-                    item.Date.toLowerCase().includes(searchKey.toLowerCase()) ||
+            
                     item.Email.toLowerCase().includes(
                       searchKey.toLowerCase()
                     ) ||

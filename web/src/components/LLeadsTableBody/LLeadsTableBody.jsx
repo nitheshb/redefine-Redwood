@@ -23,6 +23,8 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import { visuallyHidden } from '@mui/utils'
 import Highlighter from 'react-highlight-words'
 import CSVDownloader from '../../util/csvDownload'
+import { timeConv, prettyDate } from '../../util/dateConverter'
+
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
 
@@ -86,6 +88,12 @@ const headCells = [
     label: 'Date',
   },
   {
+    id: 'Currentstatus',
+    numeric: false,
+    disablePadding: false,
+    label: 'Status',
+  },
+  {
     id: 'Clientdetails',
     numeric: false,
     disablePadding: false,
@@ -109,12 +117,7 @@ const headCells = [
     disablePadding: false,
     label: 'Project',
   },
-  {
-    id: 'Currentstatus',
-    numeric: true,
-    disablePadding: false,
-    label: 'Current Status',
-  },
+
   {
     id: 'Notes',
     numeric: true,
@@ -207,7 +210,7 @@ const EnhancedTableToolbar = (props) => {
         return item
       } else if (
         // item.Assignedto.toLowerCase().includes(searchString.toLowerCase()) ||
-        item.Date.toLowerCase().includes(searchString.toLowerCase()) ||
+        // item.Date.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Email.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Mobile.toLowerCase().includes(searchString.toLowerCase()) ||
         item.Name.toLowerCase().includes(searchString.toLowerCase()) ||
@@ -346,7 +349,7 @@ export default function LLeadsTableBody({
   const [searchKey, setSearchKey] = React.useState('')
 
   React.useEffect(() => {
-    console.log('send values is', rowsParent)
+    console.log('send values is', rowsParent, selStatus)
     filterStuff(rowsParent)
     // let x = rowsParent.filter((item) => {
     //   if (selStatus === 'all') {
@@ -508,7 +511,6 @@ id: "1" */}
                 if (searchKey == '' || !searchKey) {
                   return item
                 } else if (
-                  item.Date.toLowerCase().includes(searchKey.toLowerCase()) ||
                   item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
                   item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
                   item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
@@ -551,7 +553,13 @@ id: "1" */}
                       scope="row"
                       padding="none"
                     >
-                      {row.Date}
+                      {prettyDate(row.Date).toLocaleString()}
+                    </TableCell>
+                    <TableCell align="left">
+                      <HighlighterStyle
+                        searchKey={searchKey}
+                        source={row.Status.toString()}
+                      />
                     </TableCell>
                     <TableCell align="left">
                       <section>
@@ -575,6 +583,7 @@ id: "1" */}
                         </div>
                       </section>
                     </TableCell>
+
                     <TableCell align="left">
                       {/* <HighlighterStyle
                         searchKey={searchKey}
@@ -589,12 +598,7 @@ id: "1" */}
                       />
                     </TableCell>
                     <TableCell align="left">{row.Project}</TableCell>
-                    <TableCell align="center">
-                      <HighlighterStyle
-                        searchKey={searchKey}
-                        source={row.Status.toString()}
-                      />
-                    </TableCell>
+
                     <TableCell align="center">{row.Note}</TableCell>
                   </TableRow>
                 )
