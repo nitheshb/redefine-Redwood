@@ -17,6 +17,7 @@ import {
 import { TrashIcon } from '@heroicons/react/outline'
 import { camalize } from 'src/util/camelCaseConv'
 import { prettyDate, timeConv } from 'src/util/dateConverter'
+import LeadsTeamReportBody from '../LeadsTeamReportBody'
 
 const people = [
   {
@@ -108,154 +109,9 @@ const MyActivityHome = ({ source }) => {
     setSelDept(category)
   }
   return (
+
     <div className="flex flex-col">
-      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <section className="flex ml-auto mt-[18px]  bg-white  py-4">
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'all'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('all')}
-            >
-              <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-              All
-            </span>
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'admin'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('admin')}
-            >
-              ADMIN
-            </span>
-
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'crm'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('crm')}
-            >
-              CRM
-            </span>
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'HR'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('HR')}
-            >
-              HR
-            </span>
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'legal'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('legal')}
-            >
-              LEGAL
-            </span>
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'project'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('project')}
-            >
-              PROJECT
-            </span>
-            <span
-              className={`flex ml-2 items-center h-6 px-3 text-xs font-semibold cursor-pointer  active:bg-pink-200 active:text-pink-800 rounded-full ${
-                selDept === 'sales'
-                  ? 'text-pink-800 bg-pink-200 border-pink-200'
-                  : 'border border-pink-400 text-pink-500'
-              } `}
-              onClick={() => showOnlyDept('sales')}
-            >
-              SALES
-            </span>
-          </section>
-          <div className="">
-            <div className="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700">
-              {/* <time className="text-lg font-semibold text-gray-900 dark:text-white">
-                January 13th, 2022
-              </time> */}
-              {filterData.map((activity, ind) => (
-                <>
-                  <time className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {prettyDate(filterData[ind - 1]?.time) ===
-                    prettyDate(activity?.time)
-                      ? ''
-                      : prettyDate(activity?.time)}
-                  </time>
-                  <section key={ind} className="border-b">
-                    <a
-                      href="#"
-                      className="block items-center p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      <span className="flex  mr-4 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 dark:text-blue-400"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      <div className="text-gray-600 dark:text-gray-400">
-                        <div className="text-base font-normal">
-                          <span className="font-medium text-green-900 dark:text-white">
-                            {activity?.type?.toUpperCase()}
-                          </span>{' '}
-                          by{' '}
-                          <span className="text-sm text-red-900 dark:text-white">
-                            {activity?.by}
-                          </span>{' '}
-                        </div>
-                        <div className="text-sm font-normal">
-                          {activity?.txt}
-                        </div>
-                        <span className="inline-flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
-                          {/* <svg
-                          className="mr-1 w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg> */}
-
-                          <ClockIcon className="mr-1 w-3 h-3" />
-                          {timeConv(activity?.time).toLocaleString()}
-                        </span>
-                      </div>
-                    </a>
-                  </section>
-                </>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+     <LeadsTeamReportBody project={undefined} isEdit={undefined} />
     </div>
   )
 }

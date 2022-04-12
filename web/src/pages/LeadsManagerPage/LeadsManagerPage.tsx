@@ -8,6 +8,7 @@ import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
 import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
 import LeadsManagementHome from 'src/components/LeadsManagement'
+import LeadsTeamReportBody from 'src/components/LeadsTeamReportBody'
 
 const LeadsManagerPage = () => {
   const [showSideBar, setShowSideBar] = useState(true)
@@ -39,6 +40,7 @@ const LeadsManagerPage = () => {
               showSideBar={showSideBar}
               showSideView1={showSideView1}
               setViewable={setViewable}
+              viewable={viewable}
             />
             <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  px-300  py-300">
               {viewable === 'inProgress' && (
@@ -53,7 +55,25 @@ const LeadsManagerPage = () => {
               {viewable === 'Upcoming' && (
                 <TodayLeadsHomePage taskType={viewable} />
               )}
+              {viewable === 'Today1Team' && (
+                <TodayLeadsHomePage taskType={viewable} />
+              )}
+              {viewable === 'UpcomingTeam' && (
+                <TodayLeadsHomePage taskType={viewable} />
+              )}
               {viewable === 'LeadsManagerHome' && <LeadsManagementHome />}
+              {viewable === 'Team Lead Report' && (
+                <LeadsTeamReportBody
+                  project={{
+                    area: 1000,
+                    builderName: 'hello',
+                    location: 'local',
+                    projectName: 'Team Leads Report',
+                    projectType: 'aprtment',
+                  }}
+                  isEdit={false}
+                />
+              )}
             </div>
             {/* <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-screen  px-300  py-300"> */}
             {/* {viewable === 'Today' && <ExecutiveHomeViewerPage />} */}

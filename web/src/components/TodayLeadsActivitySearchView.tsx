@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -32,6 +33,7 @@ import CSVDownloader from 'src/util/csvDownload'
 import { H1 } from './Typography'
 import { useAuth } from 'src/context/firebase-auth-context'
 import {
+  getDifferenceInDays,
   getDifferenceInHours,
   getDifferenceInMinutes,
 } from 'src/util/dateConverter'
@@ -203,6 +205,7 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, selStatus, filteredData, setSearchKey, rows } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
+  const [settimeMilli, setTimeMilli] = React.useState('')
 
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
@@ -453,6 +456,9 @@ export default function TodayLeadsActivitySearchView({
   const languages = ['HTML', 'CSS', 'JavaScript']
   const tools = ['React', 'Sass']
   console.log('what is here', todaySch)
+  const torrowDate = new Date(
+    +new Date().setHours(0, 0, 0, 0) + 86400000
+  ).getTime()
   return (
     <>
       <div>
@@ -469,8 +475,10 @@ export default function TodayLeadsActivitySearchView({
             <span className="inline-flex text-xl leading-5 font-semibold rounded-full  text-green-800">
               {schFetData.length}
             </span>{' '}
-            tasks{' '}
-            {taskType === 'Today1' ? 'for Today' : 'coming up in the next days'}{' '}
+            leads{' '}
+            {taskType === 'Today1'
+              ? 'with schedules for Today'
+              : 'with coming up schedules in the next days'}{' '}
           </h2>
           {todaySch && schFetData.length === 0 && (
             <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
@@ -515,44 +523,99 @@ export default function TodayLeadsActivitySearchView({
               <>
                 <div
                   key={index}
-                  className="flex-1 px-4 py-2 mb-2  bg-white rounded-md"
+                  className="flex-1 px-4 py-2 mb-2  bg-white rounded-md cursor-pointer"
+                  onClick={() => selUserProfileF('User Profile', leadUser)}
                 >
-                  <div className="flex flex-grow flex-row items-center justify-between p-4">
+                  <div className="inline">
+                    <div className="ml-4 mt-4">
+                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                        Lead Schedule Details<abbr title="required"></abbr>
+                      </label>
+                    </div>
+
+                    <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
+                  </div>
+                  <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
                     <div className="flex flex-row">
-                      <svg
-                        className="ml-4 mb-8 mt-10 mr-6 text-center"
-                        width="32px"
-                        height="32px"
-                        viewBox="0 0 32 32"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g
-                          id="HELO"
-                          stroke="none"
-                          strokeWidth="1"
-                          fill="none"
-                          fillRule="evenodd"
+                      {/* <div className="flex flex-col">
+                        <svg
+                          className="ml-4 mt-10 mr-6 text-center"
+                          width="32px"
+                          height="32px"
+                          viewBox="0 0 32 32"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
                           <g
-                            transform="translate(-1012.000000, -1924.000000)"
-                            fill="#3F3BFF"
-                            fillRule="nonzero"
-                            id="Feature-section"
+                            id="HELO"
+                            stroke="none"
+                            strokeWidth="1"
+                            fill="none"
+                            fillRule="evenodd"
                           >
-                            <g transform="translate(100.000000, 1579.000000)">
-                              <path
-                                d="M941,345 C942.597681,345 943.903661,346.24892 943.994907,347.823727 L944,348 L944,366 C944,367.597681 942.75108,368.903661 941.176273,368.994907 L941,369 L936,369 L936,374 C936,375.597681 934.75108,376.903661 933.176273,376.994907 L933,377 L915,377 C913.402319,377 912.096339,375.75108 912.005093,374.176273 L912,374 L912,356 C912,354.402319 913.24892,353.096339 914.823727,353.005093 L915,353 L920,353 L920,348 C920,346.402319 921.24892,345.096339 922.823727,345.005093 L923,345 L941,345 Z M933,355 L915,355 C914.487164,355 914.064493,355.38604 914.006728,355.883379 L914,356 L914,374 C914,374.512836 914.38604,374.935507 914.883379,374.993272 L915,375 L933,375 C933.512836,375 933.935507,374.61396 933.993272,374.116621 L934,374 L934,356 C934,355.487164 933.61396,355.064493 933.116621,355.006728 L933,355 Z M930,369 C930.552285,369 931,369.447715 931,370 C931,370.512836 930.61396,370.935507 930.116621,370.993272 L930,371 L918,371 C917.447715,371 917,370.552285 917,370 C917,369.487164 917.38604,369.064493 917.883379,369.006728 L918,369 L930,369 Z M941,347 L923,347 C922.487164,347 922.064493,347.38604 922.006728,347.883379 L922,348 L922,351 C922,352.104569 922.895431,353 924,353 L933,353 L933,353 C934.597681,353 935.903661,354.24892 935.994907,355.823727 L936,356 L936,365 C936,366.104569 936.895431,367 938,367 L941,367 L941,367 C941.512836,367 941.935507,366.61396 941.993272,366.116621 L942,366 L942,348 C942,347.487164 941.61396,347.064493 941.116621,347.006728 L941,347 Z M930,364 C930.552285,364 931,364.447715 931,365 C931,365.512836 930.61396,365.935507 930.116621,365.993272 L930,366 L918,366 C917.447715,366 917,365.552285 917,365 C917,364.487164 917.38604,364.064493 917.883379,364.006728 L918,364 L930,364 Z M930,359 C930.552285,359 931,359.447715 931,360 C931,360.512836 930.61396,360.935507 930.116621,360.993272 L930,361 L918,361 C917.447715,361 917,360.552285 917,360 C917,359.487164 917.38604,359.064493 917.883379,359.006728 L918,359 L930,359 Z"
-                                id="Shape"
-                              ></path>
+                            <g
+                              transform="translate(-1012.000000, -1924.000000)"
+                              fill="#3F3BFF"
+                              fillRule="nonzero"
+                              id="Feature-section"
+                            >
+                              <g transform="translate(100.000000, 1579.000000)">
+                                <path
+                                  d="M941,345 C942.597681,345 943.903661,346.24892 943.994907,347.823727 L944,348 L944,366 C944,367.597681 942.75108,368.903661 941.176273,368.994907 L941,369 L936,369 L936,374 C936,375.597681 934.75108,376.903661 933.176273,376.994907 L933,377 L915,377 C913.402319,377 912.096339,375.75108 912.005093,374.176273 L912,374 L912,356 C912,354.402319 913.24892,353.096339 914.823727,353.005093 L915,353 L920,353 L920,348 C920,346.402319 921.24892,345.096339 922.823727,345.005093 L923,345 L941,345 Z M933,355 L915,355 C914.487164,355 914.064493,355.38604 914.006728,355.883379 L914,356 L914,374 C914,374.512836 914.38604,374.935507 914.883379,374.993272 L915,375 L933,375 C933.512836,375 933.935507,374.61396 933.993272,374.116621 L934,374 L934,356 C934,355.487164 933.61396,355.064493 933.116621,355.006728 L933,355 Z M930,369 C930.552285,369 931,369.447715 931,370 C931,370.512836 930.61396,370.935507 930.116621,370.993272 L930,371 L918,371 C917.447715,371 917,370.552285 917,370 C917,369.487164 917.38604,369.064493 917.883379,369.006728 L918,369 L930,369 Z M941,347 L923,347 C922.487164,347 922.064493,347.38604 922.006728,347.883379 L922,348 L922,351 C922,352.104569 922.895431,353 924,353 L933,353 L933,353 C934.597681,353 935.903661,354.24892 935.994907,355.823727 L936,356 L936,365 C936,366.104569 936.895431,367 938,367 L941,367 L941,367 C941.512836,367 941.935507,366.61396 941.993272,366.116621 L942,366 L942,348 C942,347.487164 941.61396,347.064493 941.116621,347.006728 L941,347 Z M930,364 C930.552285,364 931,364.447715 931,365 C931,365.512836 930.61396,365.935507 930.116621,365.993272 L930,366 L918,366 C917.447715,366 917,365.552285 917,365 C917,364.487164 917.38604,364.064493 917.883379,364.006728 L918,364 L930,364 Z M930,359 C930.552285,359 931,359.447715 931,360 C931,360.512836 930.61396,360.935507 930.116621,360.993272 L930,361 L918,361 C917.447715,361 917,360.552285 917,360 C917,359.487164 917.38604,359.064493 917.883379,359.006728 L918,359 L930,359 Z"
+                                  id="Shape"
+                                ></path>
+                              </g>
                             </g>
                           </g>
-                        </g>
-                      </svg>
+                        </svg>
 
-                      <div className="flex flex-col">
+                      </div> */}
+
+                      <div className="flex flex-col  py-4 pr-4 h-full  ">
+                        <section>
+                          <span className="main-heading my-2 text-gray-600">
+                            Name:{' '}
+                          </span>{' '}
+                          <span className="main-heading my-2">
+                            {leadUser?.Name}
+                          </span>
+                        </section>
+                        <section className="mt-3">
+                          <span className="main-heading my-2 text-gray-600">
+                            Phone:{' '}
+                          </span>{' '}
+                          <span className="main-heading my-2">
+                            {leadUser?.Mobile}
+                          </span>
+                        </section>
+                        <section className="mt-3">
+                          <span className="main-heading my-2 text-gray-600">
+                            Email:{' '}
+                          </span>{' '}
+                          <span className="main-heading my-2">
+                            {leadUser?.Email}
+                          </span>
+                        </section>
+                        <section className="mt-3">
+                          <small className="text-gray-400 mr-6">
+                            {leadUser?.Status}
+                          </small>
+                          <small className="text-gray-400">
+                            {leadUser?.Project}
+                          </small>
+                        </section>
+                      </div>
+
+                      <div className="flex flex-col pl-6 border-l">
                         {staDA
-                          ?.filter((d) => dat[d]['sts'] == 'pending')
+                          ?.filter((d) =>
+                            dat[d]['sts'] == 'pending' &&
+                            taskType === 'Today1Team'
+                              ? dat[d]['schTime'] < torrowDate
+                              : taskType === 'Today1'
+                              ? dat[d]['schTime'] < torrowDate
+                              : dat[d]['schTime'] > torrowDate
+                          )
                           .map((ts, inx) => {
                             return (
                               <>
@@ -563,7 +626,7 @@ export default function TodayLeadsActivitySearchView({
                                     selUserProfileF('User Profile', leadUser)
                                   }
                                 >
-                                  <h4 className="font-brand pt-4 text-2xl text-brand-900 mb-4">
+                                  <h4 className="font-brand pt-4 text-xl text-blue-700 mb-4">
                                     {dat[ts]['notes']}
                                   </h4>
                                   <section className="flex flex-row">
@@ -577,10 +640,20 @@ export default function TodayLeadsActivitySearchView({
                                           ''
                                         )
                                       ) > 60
-                                        ? `${getDifferenceInHours(
-                                            dat[ts]['schTime'],
-                                            ''
-                                          )} Hours `
+                                        ? Math.abs(
+                                            getDifferenceInMinutes(
+                                              dat[ts]['schTime'],
+                                              ''
+                                            )
+                                          ) > 1440
+                                          ? `${getDifferenceInDays(
+                                              dat[ts]['schTime'],
+                                              ''
+                                            )} Days `
+                                          : `${getDifferenceInHours(
+                                              dat[ts]['schTime'],
+                                              ''
+                                            )} Hours `
                                         : `${getDifferenceInMinutes(
                                             dat[ts]['schTime'],
                                             ''
@@ -602,14 +675,6 @@ export default function TodayLeadsActivitySearchView({
                           })}
                       </div>
                     </div>
-                    <div className="flex flex-col pl-10 p-4 h-full border border-2 rounded-r-[44px] rounded-bl-[44px]">
-                      <p className="main-heading my-2">{leadUser?.Name}</p>
-                      <p className="main-heading my-2">{leadUser?.Mobile}</p>
-                      <p className="main-heading my-2">{leadUser?.Email}</p>
-                      <small className="text-gray-400">
-                        {leadUser?.Project}
-                      </small>
-                    </div>
                   </div>
 
                   {/* <div className="flex items-center justify-between py-2">
@@ -628,66 +693,6 @@ export default function TodayLeadsActivitySearchView({
               </>
             )
           })}
-          <EnhancedTableToolbar
-            numSelected={selected.length}
-            selStatus={selStatus}
-            filteredData={rows}
-            searchKey={searchKey}
-            setSearchKey={setSearchKey}
-            rows={rows}
-          />
-          {rows
-            .filter((item) => {
-              if (searchKey == '' || !searchKey) {
-                return item
-              } else if (
-                item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
-                item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
-                item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
-                item.Project.toLowerCase().includes(searchKey.toLowerCase()) ||
-                item.Source.toLowerCase().includes(searchKey.toLowerCase()) ||
-                item.Status.toLowerCase().includes(searchKey.toLowerCase())
-              ) {
-                return item
-              }
-            })
-            .slice()
-            .sort(getComparator(order, orderBy))
-            .map((listing, index) => {
-              const isItemSelected = isSelected(listing.Name)
-              const labelId = `enhanced-table-checkbox-${index}`
-              return (
-                <>
-                  <div
-                    key={index}
-                    className="flex-1 px-4 py-2 mb-8  bg-white rounded-md"
-                  >
-                    <div className="flex flex-grow">
-                      {listing.Status == 'new' ? (
-                        <p className="tags new-tag rounded-xl p-1 mr-1 px-0 ">
-                          New
-                        </p>
-                      ) : null}
-                      <p className="ml-2 flex justify-center items-center">
-                        {listing.Project}
-                      </p>
-                      {listing.featured ? (
-                        <p className="tags new-tag rounded-xl px-2 p-1">
-                          featured
-                        </p>
-                      ) : null}
-                    </div>
-                    <p className="main-heading my-2">{listing.Name}</p>
-                    <p className="main-heading my-2">{listing.Mobile}</p>
-                    <p className="main-heading my-2">{listing.Email}</p>
-                    <div className="flex items-center justify-between py-2">
-                      <small className="text-gray-400">{listing.Date}</small>
-                      <small className="text-gray-400">{listing.Source}</small>
-                    </div>
-                  </div>
-                </>
-              )
-            })}
         </div>
       </div>
       <SiderForm

@@ -20,6 +20,7 @@ import {
   deleteField,
 } from 'firebase/firestore'
 import { v4 as uuidv4 } from 'uuid'
+import { WhereToVote } from '@mui/icons-material'
 
 // import { userAccessRoles } from 'src/constants/userAccess'
 
@@ -90,6 +91,18 @@ export const getLeadsByStatus = (snapshot, data, error) => {
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
+// get leads only of a user
+export const getLeadsByStatusUser = (snapshot, data, error) => {
+  const { status, uid } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_leads'),
+    where('Status', 'in', status),
+    where('assignedTo', '==', uid)
+  )
+  console.log('hello ', status, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
 // stream all leads
 export const getAllLeads = (snapshot, data, error) => {
   const { status } = data
@@ -118,7 +131,9 @@ export const getTodayTodoLeadsData1 = async () => {
   }
 }
 export const getTodayTodoLeadsData = (snapshot, data, error) => {
-  // const { status } = data
+  const { type } = data
+
+  // type: 'upcoming'
 
   const itemsQuery = query(
     collection(db, 'spark_leads_sch'),
@@ -142,6 +157,18 @@ export const getTodayTodoLeadsData = (snapshot, data, error) => {
   //     }
   //   })
   // })
+  console.log('hello ', status, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+export const getTodayTodoLeadsDataByUser = (snapshot, data, error) => {
+  const { status, uid } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_leads_sch'),
+    where('staA', 'array-contains-any', ['pending', 'overdue']),
+    where('assignedTo', '==', uid)
+  )
+
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }

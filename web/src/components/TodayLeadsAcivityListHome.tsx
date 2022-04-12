@@ -11,8 +11,10 @@ import {
   getLedsData1,
   getTodayTodoLeadsData,
   getTodayTodoLeadsData1,
+  getTodayTodoLeadsDataByUser,
   steamLeadById,
 } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 import uniqueId from 'src/util/generatedId'
 import LLeadsTableBody from './LLeadsTableBody/LLeadsTableBody'
 import TodayLeadsActivitySearchView from './TodayLeadsActivitySearchView'
@@ -450,6 +452,7 @@ const TodayLeadsActivityListHomeView = ({
   // change navbar title
   // useTitle('Data Table V1')
   const { t } = useTranslation()
+  const { user } = useAuth()
   const [value, setValue] = useState('new')
   const [tableData, setTableData] = useState([])
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
@@ -468,36 +471,118 @@ const TodayLeadsActivityListHomeView = ({
 
   useEffect(() => {
     getLeadsDataFun()
-  }, [])
+  }, [taskType])
   const getLeadsDataFun = async () => {
-    const leadsData = await getLedsData1()
+    // const leadsData = await getLedsData1()
+    const { access, uid } = user
 
-    const todoData = await getTodayTodoLeadsData(
-      (querySnapshot) => {
-        let pro
-        setTodaySchL([])
-        const projects = querySnapshot.docs.map(async (docSnapshot) => {
-          const x = docSnapshot.data()
-          x.uid = docSnapshot.id
-          // eslint-disable-next-line prefer-const
-          let y = await getLeadbyId1(x.uid)
-          await console.log('fetched value is ', x, y)
-          x.leadUser = await y
-          return x
-        })
-        //  get the task details from docid
+    const torrowDate = new Date(
+      +new Date().setHours(0, 0, 0, 0) + 86400000
+    ).getTime()
+    if (taskType === 'Today1Team' || taskType === 'UpcomingTeam') {
+      console.log('torw date', torrowDate)
+      const todoData = await getTodayTodoLeadsData(
+        (querySnapshot) => {
+          let pro
+          let y = []
+          setTodaySchL([])
+          const projects = querySnapshot.docs.map(async (docSnapshot) => {
+            const x = docSnapshot.data()
+            const { staDA } = x
 
-        Promise.all(projects).then(function (results) {
-          console.log('my values are ', results)
-          setTodaySchL(results)
-        })
-      },
-      {},
-      () => {
-        console.log('error')
-      }
-    )
-    await console.log('what are we', todoData)
+            if (taskType === 'Today1Team') {
+              y = staDA.filter((da) => x[da]['schTime'] < torrowDate)
+            } else {
+              y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
+            }
+            if (y.length > 0) {
+              x.uid = docSnapshot.id
+              // eslint-disable-next-line prefer-const
+              let y1 = await getLeadbyId1(x.uid)
+              await console.log('fetched value is ', x, y)
+              x.leadUser = await y1
+              return x
+            } else {
+              return 'remove'
+            }
+          })
+          //  get the task details from docid
+          if (projects.length > 0) {
+            console.log(
+              'my values are ',
+              projects.filter((data) => data != 'remove')
+            )
+            projects.filter((data) => data != undefined)
+            Promise.all(projects).then(function (results) {
+              console.log(
+                'my values are ',
+                results.filter((data) => data != 'remove')
+              )
+              results.filter((data) => data != 'remove')
+              setTodaySchL(results.filter((data) => data != 'remove'))
+            })
+          } else {
+            console.log('my values are 1 ', projects)
+          }
+        },
+        { type: 'upcoming' },
+        () => {
+          console.log('error')
+        }
+      )
+      await console.log('what are we', todoData)
+    } else {
+      const todoData = await getTodayTodoLeadsDataByUser(
+        (querySnapshot) => {
+          let pro
+          let y = []
+          setTodaySchL([])
+          const projects = querySnapshot.docs.map(async (docSnapshot) => {
+            const x = docSnapshot.data()
+            const { staDA } = x
+
+            if (taskType === 'Today1') {
+              y = staDA.filter((da) => x[da]['schTime'] < torrowDate)
+            } else {
+              y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
+            }
+            if (y.length > 0) {
+              x.uid = docSnapshot.id
+              // eslint-disable-next-line prefer-const
+              let y1 = await getLeadbyId1(x.uid)
+              await console.log('fetched value is ', x, y)
+              x.leadUser = await y1
+              return x
+            } else {
+              return 'remove'
+            }
+          })
+          //  get the task details from docid
+          if (projects.length > 0) {
+            console.log(
+              'my values are ',
+              projects.filter((data) => data != 'remove')
+            )
+            projects.filter((data) => data != undefined)
+            Promise.all(projects).then(function (results) {
+              console.log(
+                'my values are ',
+                results.filter((data) => data != 'remove')
+              )
+              results.filter((data) => data != 'remove')
+              setTodaySchL(results.filter((data) => data != 'remove'))
+            })
+          } else {
+            console.log('my values are 1 ', projects)
+          }
+        },
+        { uid: uid, type: 'today' },
+        () => {
+          console.log('error')
+        }
+      )
+      await console.log('what are we', todoData)
+    }
   }
 
   useEffect(() => {

@@ -278,7 +278,7 @@ export default function CustomerProfileSideView({
 
     return unsubscribe
   }
-  const fAddSchedule = () => {
+  const fAddSchedule = async () => {
     console.log('start time is ', startDate)
     const data = {
       by: user.email,
@@ -300,7 +300,8 @@ export default function CustomerProfileSideView({
     setschStsA(x)
     // addSchedulerLog(id, data)
     console.log('new one ', schStsA)
-    addLeadScheduler(id, data, schStsA)
+    await addLeadScheduler(id, data, schStsA)
+    await setTakTitle('')
   }
   const handleColor = (time) => {
     return time.getHours() > 12 ? 'text-success' : 'text-error'
@@ -611,30 +612,38 @@ export default function CustomerProfileSideView({
                     * Call him at 10.00 pm tomorrow
                   </div>
                 </div> */}
-                <div className="flex flex-row h-24 pt-0 my-10 mt-[150px] rounded">
-                  <textarea
-                    placeholder="Type & make a notes"
-                    className="w-full h-full pb-10 outline-none border focus:border-blue-600 hover:border-blue-600 rounded p-4 shadow-lg"
-                  ></textarea>
 
+                <div className="flex flex-col pt-0 my-10 mt-[10px] rounded">
+                  <div className="  outline-none border  rounded p-4">
+                    <textarea
+                      // value={takTitle}
+                      // onChange={(e) => setTitleFun(e)}
+                      placeholder="Type & make a notes"
+                      className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                    ></textarea>
+                  </div>
                   {/* <span className="text-[#0091ae]">
                     Save
                     <ArrowRightIcon className="w-5 ml-5" />
                   </span> */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-row mt-1">
                     <button
-                      // onClick={() => fSetLeadsType('Add Lead')}
-                      className={`flex rounded items-center  pl-2 h-[36px] pr-4 py-6 text-sm font-medium text-white bg-green-500  hover:bg-gray-700  `}
+                      onClick={() => fAddSchedule()}
+                      className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                     >
-                      <span className="ml-1 ">WhatsApp it </span>
-                      {/* <ArrowRightIcon className="w-4 ml-1 inline" /> */}
+                      <span className="ml-1 ">Save</span>
+                    </button>
+                    <button
+                      onClick={() => fAddSchedule()}
+                      className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                    >
+                      <span className="ml-1 ">Save & Whats App</span>
                     </button>
                     <button
                       // onClick={() => fSetLeadsType('Add Lead')}
-                      className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#F77B9D]  hover:bg-gray-700  `}
+                      className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
                     >
-                      <span className="ml-1 ">SAVE</span>
-                      <ArrowRightIcon className="w-4 ml-1 inline" />
+                      <span className="ml-1 ">Cancel</span>
                     </button>
                   </div>
                 </div>

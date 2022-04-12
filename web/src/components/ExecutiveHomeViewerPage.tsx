@@ -14,6 +14,7 @@ import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
   getLeadsByStatus,
+  getLeadsByStatusUser,
   updateLeadAssigTo,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
@@ -214,37 +215,75 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     getLeadsDataFun()
   }, [])
   const getLeadsDataFun = async () => {
-    const unsubscribe = getLeadsByStatus(
-      async (querySnapshot) => {
-        const usersListA = querySnapshot.docs.map((docSnapshot) => {
-          const x = docSnapshot.data()
-          x.id = docSnapshot.id
-          return x
-        })
-        // setBoardData
-        console.log('my Array data is ', usersListA)
-        await serealizeData(usersListA)
-        await setLeadsFetchedData(usersListA)
-      },
-      {
-        status:
-          leadsTyper === 'archieveLeads'
-            ? archieveFields
-            : [
-                'new',
-                'followup',
-                'visitfixed',
-                '',
-                'visitdone',
-                'negotiation',
-                'reassign',
-                'RNR',
-                'booked',
-              ],
-      },
-      (error) => setLeadsFetchedData([])
-    )
-    return unsubscribe
+    console.log('login role detials', user)
+    const { access, uid } = user
+
+    if (access.includes('manage_leads')) {
+      const unsubscribe = getLeadsByStatus(
+        async (querySnapshot) => {
+          const usersListA = querySnapshot.docs.map((docSnapshot) => {
+            const x = docSnapshot.data()
+            x.id = docSnapshot.id
+            return x
+          })
+          // setBoardData
+          console.log('my Array data is ', usersListA)
+          await serealizeData(usersListA)
+          await setLeadsFetchedData(usersListA)
+        },
+        {
+          status:
+            leadsTyper === 'archieveLeads'
+              ? archieveFields
+              : [
+                  'new',
+                  'followup',
+                  'visitfixed',
+                  '',
+                  'visitdone',
+                  'negotiation',
+                  'reassign',
+                  'RNR',
+                  'booked',
+                ],
+        },
+        (error) => setLeadsFetchedData([])
+      )
+      return unsubscribe
+    } else {
+      const unsubscribe = getLeadsByStatusUser(
+        async (querySnapshot) => {
+          const usersListA = querySnapshot.docs.map((docSnapshot) => {
+            const x = docSnapshot.data()
+            x.id = docSnapshot.id
+            return x
+          })
+          // setBoardData
+          console.log('my Array data is ', usersListA)
+          await serealizeData(usersListA)
+          await setLeadsFetchedData(usersListA)
+        },
+        {
+          uid: uid,
+          status:
+            leadsTyper === 'archieveLeads'
+              ? archieveFields
+              : [
+                  'new',
+                  'followup',
+                  'visitfixed',
+                  '',
+                  'visitdone',
+                  'negotiation',
+                  'reassign',
+                  'RNR',
+                  'booked',
+                ],
+        },
+        (error) => setLeadsFetchedData([])
+      )
+      return unsubscribe
+    }
 
     // await console.log('leadsData', leadsData)
   }
@@ -326,7 +365,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
-                  Leads Space {leadsTyper}
+                  Leads Space
                 </h2>
               </div>
               <div className="flex">
