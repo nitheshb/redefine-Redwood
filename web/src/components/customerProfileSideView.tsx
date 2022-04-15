@@ -13,6 +13,7 @@ import {
   addSchedulerLog,
   deleteSchLog,
   steamLeadActivityLog,
+  steamLeadPhoneLog,
   steamLeadScheduleLog,
   steamUsersList,
   steamUsersListByRole,
@@ -150,7 +151,29 @@ export default function CustomerProfileSideView({
 
     if (fet === 'appoint') {
       return
-    } else {
+    }
+    //  else if (fet === 'ph') {
+    //   const unsubscribe = steamLeadPhoneLog(
+    //     (doc) => {
+    //       console.log('my total fetched list is yo yo 1', doc.data())
+    //       const usersList = doc.data()
+    //       const usersListA = []
+
+    //       Object.entries(usersList).forEach((entry) => {
+    //         const [key, value] = entry
+    //         usersListA.push(value)
+    //         console.log('my total fetched list is 3', `${key}: ${value}`)
+    //       })
+    //       console.log('my total fetched list is', usersListA.length)
+    //       // setLeadsFetchedActivityData(usersListA)
+    //     },
+    //     {
+    //       uid: id,
+    //     },
+    //     (error) => setLeadsFetchedActivityData([])
+    //   )
+    // }
+    else {
       leadsActivityFetchedData.map((data) => {
         console.log('value of filtered feature count before', data)
       })
@@ -201,7 +224,7 @@ export default function CustomerProfileSideView({
     console.log('ami triggered')
     const unsubscribe = steamLeadActivityLog(
       (doc) => {
-        console.log('my total fetched list is 1', doc.data())
+        console.log('my total fetched list is yo yo ', doc.data())
         const usersList = doc.data()
         const usersListA = []
 

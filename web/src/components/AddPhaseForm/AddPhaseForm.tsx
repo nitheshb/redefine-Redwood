@@ -149,6 +149,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
                             >
                               Phase Area*
                             </label>
+
                             <MuiTextField
                               id="phaseArea"
                               className={`w-full bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 mt-1 p-0`}

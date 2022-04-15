@@ -108,12 +108,42 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
               </Link>
               <section className="flex ml-auto mt-[18px]">
                 {!isEdit && (
-                  <Link to={routes.projectEdit({ uid })}>
-                    <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                      <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                      Detail View
-                    </span>
-                  </Link>
+                  <>
+                    <Link to={routes.projectEdit({ uid })}>
+                      <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                        <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Detail View
+                      </span>
+                    </Link>
+                  </>
+                )}
+                {isEdit && (
+                  <>
+                    <Link to={routes.projectEdit({ uid })}>
+                      <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                        <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Approval Details
+                      </span>
+                    </Link>
+                    <Link to={routes.projectEdit({ uid })}>
+                      <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                        <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Bank Details
+                      </span>
+                    </Link>
+                    <Link to={routes.projectEdit({ uid })}>
+                      <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                        <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Brouchers
+                      </span>
+                    </Link>
+                    <Link to={routes.projectEdit({ uid })}>
+                      <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                        <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Plan Diagram
+                      </span>
+                    </Link>
+                  </>
                 )}
                 <button onClick={onSliderOpen}>
                   <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">

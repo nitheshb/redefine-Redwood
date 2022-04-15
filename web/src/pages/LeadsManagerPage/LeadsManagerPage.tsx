@@ -9,6 +9,9 @@ import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
 import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
 import LeadsManagementHome from 'src/components/LeadsManagement'
 import LeadsTeamReportBody from 'src/components/LeadsTeamReportBody'
+import MyAttedanceHomeBody from 'src/components/myAttedanceHomeBody'
+import MyPayHomeBody from 'src/components/myPayHomeBody'
+import MyLeadsReportHome from 'src/components/myLeadsReportHome'
 
 const LeadsManagerPage = () => {
   const [showSideBar, setShowSideBar] = useState(true)
@@ -69,6 +72,54 @@ const LeadsManagerPage = () => {
                     builderName: 'hello',
                     location: 'local',
                     projectName: 'Team Leads Report',
+                    projectType: 'aprtment',
+                  }}
+                  isEdit={false}
+                />
+              )}
+              {viewable === 'My Lead Report' && (
+                <MyLeadsReportHome
+                  project={{
+                    area: 1000,
+                    builderName: 'hello',
+                    location: 'local',
+                    projectName: 'My Leads Report',
+                    projectType: 'aprtment',
+                  }}
+                  isEdit={false}
+                />
+              )}
+              {viewable === 'Attendance' && (
+                <MyAttedanceHomeBody
+                  project={{
+                    area: 1000,
+                    builderName: 'hello',
+                    location: 'local',
+                    projectName: 'Attendance',
+                    projectType: 'aprtment',
+                  }}
+                  isEdit={false}
+                />
+              )}
+              {viewable === 'Pay' && (
+                <MyPayHomeBody
+                  project={{
+                    area: 1000,
+                    builderName: 'hello',
+                    location: 'local',
+                    projectName: 'Pay',
+                    projectType: 'aprtment',
+                  }}
+                  isEdit={false}
+                />
+              )}
+              {viewable === 'LinkWhatsApp' && (
+                <LeadsTeamReportBody
+                  project={{
+                    area: 1000,
+                    builderName: 'hello',
+                    location: 'local',
+                    projectName: 'Pay',
                     projectType: 'aprtment',
                   }}
                   isEdit={false}

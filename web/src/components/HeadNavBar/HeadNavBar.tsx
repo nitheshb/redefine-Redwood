@@ -25,10 +25,10 @@ const HeadNavBar = () => {
       <div className="flex items-center flex-shrink-0 h-16 px-2  pl-0 bg-white bg-opacity-75 ">
         {/* <h1 className="text-lg font-medium">redefine.</h1> */}
         <span
-          style={{ marginLeft: '10px' }}
-          className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-black select-none pl-0"
+          style={{ marginLeft: '-25px' }}
+          className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-[#141446] select-none pl-0"
         >
-          <svg
+          {/* <svg
             className="w-8 h-8 to-indigo-600 "
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -42,8 +42,45 @@ const HeadNavBar = () => {
               strokeWidth="2"
               d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
             />
+          </svg> */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="88"
+            height="32"
+            viewBox="0 0 1 28"
+            fill="none"
+            className="injected-svg"
+            data-src="/images/logo/cubejs-logo.svg"
+          >
+            <path
+              d="M22.1337 7.03243L11.8594 1V5.17391L22.1336 11.1804L22.1337 7.03243Z"
+              fill="#FF6492"
+            ></path>
+            <path
+              d="M22.1336 11.1823L19.0513 13.0019L11.8574 8.78565L7.74692 11.1857L4.66406 9.49917L11.8593 5.17578L22.1336 11.1823Z"
+              fill="#141446"
+            ></path>
+            <path
+              d="M7.74692 11.1826L4.66406 9.49609V12.9988L7.74692 11.1826Z"
+              fill="#A14474"
+            ></path>
+            <path
+              d="M1.58105 18.9676L11.8572 13L22.1334 18.9676L11.8572 25L1.58105 18.9676Z"
+              fill="#141446"
+            ></path>
+            <path
+              d="M22.1336 14.8259L11.8574 8.71875V12.9998L22.1336 18.9674L22.1336 14.8259Z"
+              fill="#FF6492"
+            ></path>
+            <path
+              d="M4.66391 13V9.4973L11.8592 5.17391V1L1.58105 7.03243V18.9676L11.8573 13V8.71892L4.66391 13Z"
+              fill="#7A77FF"
+            ></path>
           </svg>
-          <span className="ml-1"> Redefine Erp.</span>
+          <span className="ml-" style={{ marginLeft: '-11px' }}>
+            {' '}
+            Redefine Erp.
+          </span>
         </span>
 
         {/* <a

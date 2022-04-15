@@ -68,6 +68,13 @@ export const steamLeadActivityLog = (snapshot, data, error) => {
   return onSnapshot(doc(db, 'spark_leads_log', uid), snapshot, error)
   // return onSnapshot(itemsQuery, snapshot, error)
 }
+export const steamLeadPhoneLog = (snapshot, data, error) => {
+  // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
+  const { uid } = data
+  console.log('is uid g', uid)
+  return onSnapshot(doc(db, 'spark_leads_log', uid), snapshot, error)
+  // return onSnapshot(itemsQuery, snapshot, error)
+}
 export const steamLeadScheduleLog = (snapshot, data, error) => {
   // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
   const { uid } = data

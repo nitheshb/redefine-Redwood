@@ -152,15 +152,15 @@ export const projectPlans = [
   },
   {
     name: 'Plots',
-    img: './plot.svg',
+    img: '/plot.svg',
   },
   {
     name: 'WeekendVillas',
-    img: './weekend.svg',
+    img: '/weekend.svg',
   },
   {
     name: 'Villas',
-    img: './villa.svg',
+    img: '/villa.svg',
   },
 ]
 

@@ -463,9 +463,9 @@ export default function TodayLeadsActivitySearchView({
     <>
       <div>
         {/* <Header /> */}
-        <div className="flex justify-center items-center text-gray-900 h-12"></div>
+        <div className="flex justify-center items-center text-gray-900 h-6"></div>
         <div className=" px-4 justify-center items-center text-gray-900">
-          <h1 className="box-border px-0 pt-0 pb-3  md:pb-4 m-0 text-3xl font-bold tracking-tight  text-gray-900 align-baseline border-0 xl:text-4xl xl:tracking-normal md:text-3xl md:tracking-tight">
+          <h1 className="box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-tight  text-gray-900 align-baseline border-0 xl:text-4xl xl:tracking-normal md:text-3xl md:tracking-tight">
             Welcome back, {user?.displayName?.toLocaleUpperCase()}
           </h1>
 
@@ -536,7 +536,7 @@ export default function TodayLeadsActivitySearchView({
                     <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
                   </div>
                   <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
-                    <div className="flex flex-row">
+                    <div className="flex flex-row  w-full ">
                       {/* <div className="flex flex-col">
                         <svg
                           className="ml-4 mt-10 mr-6 text-center"
@@ -571,12 +571,12 @@ export default function TodayLeadsActivitySearchView({
 
                       </div> */}
 
-                      <div className="flex flex-col  py-4 pr-4 h-full  ">
+                      <div className="flex flex-col  py-4 pr-4 h-full  bg-green-100 min-w-[300px] px-4 rounded-md mr-4 ">
                         <section>
                           <span className="main-heading my-2 text-gray-600">
                             Name:{' '}
                           </span>{' '}
-                          <span className="main-heading my-2">
+                          <span className="main-heading my-2 text-green-800">
                             {leadUser?.Name}
                           </span>
                         </section>
@@ -584,7 +584,7 @@ export default function TodayLeadsActivitySearchView({
                           <span className="main-heading my-2 text-gray-600">
                             Phone:{' '}
                           </span>{' '}
-                          <span className="main-heading my-2">
+                          <span className="main-heading my-2 text-green-800">
                             {leadUser?.Mobile}
                           </span>
                         </section>
@@ -592,7 +592,7 @@ export default function TodayLeadsActivitySearchView({
                           <span className="main-heading my-2 text-gray-600">
                             Email:{' '}
                           </span>{' '}
-                          <span className="main-heading my-2">
+                          <span className="main-heading my-2 text-green-800">
                             {leadUser?.Email}
                           </span>
                         </section>
@@ -600,13 +600,13 @@ export default function TodayLeadsActivitySearchView({
                           <small className="text-gray-400 mr-6">
                             {leadUser?.Status}
                           </small>
-                          <small className="text-gray-400">
+                          <small className="text-gray-400 ">
                             {leadUser?.Project}
                           </small>
                         </section>
                       </div>
 
-                      <div className="flex flex-col pl-6 border-l">
+                      <div className="flex flex-col pl-6 border-l w-full  ">
                         {staDA
                           ?.filter((d) =>
                             dat[d]['sts'] == 'pending' &&
@@ -620,20 +620,18 @@ export default function TodayLeadsActivitySearchView({
                             return (
                               <>
                                 <section
-                                  className="border-b pb-4 pointer"
+                                  className="border-b pb-3 pointer w-100 flex flex-col"
                                   key={inx}
                                   onClick={() =>
                                     selUserProfileF('User Profile', leadUser)
                                   }
                                 >
-                                  <h4 className="font-brand pt-4 text-xl text-blue-700 mb-4">
+                                  <h4 className="font-brand pt-4 text-lg text-blue-700">
                                     {dat[ts]['notes']}
                                   </h4>
-                                  <section className="flex flex-row">
-                                    <span className="px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                      {dat[ts]['pri']}
-                                    </span>
-                                    <span className="ml-4 px-4 py-1 inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
+                                  <section className="flex  mt-[4px]  items-center justify-between   ">
+                                    <span className="px- py-[1px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
+
                                       {Math.abs(
                                         getDifferenceInMinutes(
                                           dat[ts]['schTime'],
@@ -665,9 +663,15 @@ export default function TodayLeadsActivitySearchView({
                                         ? 'Due'
                                         : 'Left'}
                                     </span>
-                                    <span className="ml-4 px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
-                                      {dat[ts]['sts']}
-                                    </span>
+
+                                    <section>
+                                      <span className="px-4 py-[4px] bg-green-100 inline-flex text-xs leading-5 font-semibold rounded-full text-green-800">
+                                        {dat[ts]['pri']}
+                                      </span>
+                                      <span className="ml-4 px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
+                                        {dat[ts]['sts']}
+                                      </span>
+                                    </section>
                                   </section>
                                 </section>
                               </>
