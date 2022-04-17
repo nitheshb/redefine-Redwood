@@ -163,7 +163,7 @@ export function MultipleFileUploadField({ name }: { name: string }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       onDrop,
-      accept: ['.csv'],
+      accept: '.csv, text/csv',
       maxSize: 300 * 1024, // 300KB
     })
 

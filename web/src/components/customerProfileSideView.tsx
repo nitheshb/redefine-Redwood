@@ -275,10 +275,10 @@ export default function CustomerProfileSideView({
             }
           } else {
             usersListA.push(value)
-            console.log(
-              'my total fetched list is 3',
-              `${key}: ${JSON.stringify(value)}`
-            )
+            // console.log(
+            //   'my total fetched list is 3',
+            //   `${key}: ${JSON.stringify(value)}`
+            // )
           }
         })
         // for (const key in usersList) {

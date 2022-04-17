@@ -49,6 +49,9 @@ const LeadsManagerPage = () => {
               {viewable === 'inProgress' && (
                 <ExecutiveHomeViewerPage leadsTyper={'inProgress'} />
               )}
+              {viewable === 'booked' && (
+                <ExecutiveHomeViewerPage leadsTyper={'booked'} />
+              )}
               {viewable === 'archieveLeads' && (
                 <ExecutiveHomeViewerPage leadsTyper={'archieveLeads'} />
               )}

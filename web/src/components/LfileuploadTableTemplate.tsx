@@ -27,6 +27,7 @@ import DoneIcon from '@material-ui/icons/DoneAllTwoTone'
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
 import { addLead, getLedsData1 } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 // function createData(
 //   Date,
@@ -205,7 +206,7 @@ const EnhancedTableToolbar = (props) => {
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
   }, [rows])
-
+  const { user } = useAuth()
   const searchKeyField = (e) => {
     // console.log('searched values is ', e.target.value)
     setSearchKey(e.target.value)
@@ -237,8 +238,9 @@ const EnhancedTableToolbar = (props) => {
         const newData = data
         newData['intype'] = 'bulk'
         newData['by'] = 'bulk'
+        newData['Status'] = 'unassigned'
         console.log('am inside addLeadstoDB', newData)
-        return await addLead(newData)
+        return await addLead(newData, user?.email, 'Lead Created by csv')
         console.log('am inside addLeadstoDB')
       })
     )
@@ -563,7 +565,6 @@ export default function LfileuploadTableTemplate({
                     item.Assignedto.toLowerCase().includes(
                       searchKey.toLowerCase()
                     ) ||
-            
                     item.Email.toLowerCase().includes(
                       searchKey.toLowerCase()
                     ) ||

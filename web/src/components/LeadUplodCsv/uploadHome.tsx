@@ -126,7 +126,7 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                 <Grid container spacing={2} direction="column">
                   <MultipleFileUploadField name="files" />
 
-                  <Grid item>
+                  {/* <Grid item>
                     <Button
                       variant="contained"
                       color="primary"
@@ -135,7 +135,7 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                     >
                       Submit
                     </Button>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 {/* <pre>hello{parseExcel(values)}</pre> */}
                 {/* <pre>{JSON.stringify({ values, errors }, null, 4)}</pre> */}

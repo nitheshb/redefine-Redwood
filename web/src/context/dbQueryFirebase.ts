@@ -460,9 +460,9 @@ export const addLeadScheduler = async (did, data, schStsA, assignedTo) => {
     await updateDoc(washingtonRef, yo)
   } catch (error) {
     const y1 = { ...yo }
-    yo.assignedTo = assignedTo
+    yo.assignedTo = assignedTo || ''
+    console.log('new log set', yo)
     await setDoc(doc(db, 'spark_leads_sch', did), yo)
-    console.log('new log set')
   }
 
   console.log('am at addLeadLog ')

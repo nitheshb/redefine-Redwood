@@ -469,25 +469,35 @@ const LLeadsTableView = ({
     //   })
 
     const tabHeadFieldsA1 =
-      leadsTyper === 'archieveLeads'
-        ? archieveTab
-        : [
+      leadsTyper === 'inProgress'
+        ? [
             { lab: 'In Progress', val: 'all' },
             { lab: 'New', val: 'new' },
-            // { lab: 'In Progress', val: 'inprogress' },
+            { lab: 'Un Assigned', val: 'unassigned' },
             { lab: 'Follow Up', val: 'followup' },
             { lab: 'Visit Fixed', val: 'visitfixed' },
             { lab: 'Visit Done', val: 'visitdone' },
             { lab: 'Negotiation', val: 'negotitation' },
             { lab: 'Reassign', val: 'reassign' },
             { lab: 'RNR', val: 'RNR' },
+            // { lab: 'Booked', val: 'booked' },
+            // { lab: 'Not Interested', val: 'notinterested' },
+            // { lab: 'Dead', val: 'dead' },
+          ]
+        : leadsTyper === 'archieveLeads'
+        ? archieveTab
+        : [
             { lab: 'Booked', val: 'booked' },
             // { lab: 'Not Interested', val: 'notinterested' },
             // { lab: 'Dead', val: 'dead' },
           ]
     settabHeadFieldsA(tabHeadFieldsA1)
 
-    leadsTyper === 'archieveLeads' ? setValue('all') : setValue('new')
+    leadsTyper === 'inProgress'
+      ? setValue('new')
+      : leadsTyper === 'archieveLeads'
+      ? setValue('all')
+      : setValue('booked')
   }, [])
 
   const handleDelete = async (ids) => {

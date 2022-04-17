@@ -214,6 +214,27 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   useEffect(() => {
     getLeadsDataFun()
   }, [])
+
+  useEffect(() => {
+    if (leadsTyper == 'archieveLeads') {
+      const archieveFields1 = ['Dead', 'RNR', 'blocked', 'notinterested']
+      setGetStatus(archieveFields1)
+    } else if (leadsTyper == 'inProgress') {
+      const archieveFields2 = [
+        'new',
+        'followup',
+        'unassigned',
+        'visitfixed',
+        '',
+        'visitdone',
+        'negotiation',
+        'reassign',
+        'RNR',
+      ]
+      setGetStatus(archieveFields2)
+    }
+  }, [leadsTyper])
+  const [getStatus, setGetStatus] = useState([])
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
     const { access, uid } = user
@@ -233,19 +254,22 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
         },
         {
           status:
-            leadsTyper === 'archieveLeads'
-              ? archieveFields
-              : [
+            leadsTyper === 'inProgress'
+              ? [
                   'new',
                   'followup',
+                  'unassigned',
                   'visitfixed',
                   '',
                   'visitdone',
                   'negotiation',
                   'reassign',
                   'RNR',
-                  'booked',
-                ],
+                  // 'booked',
+                ]
+              : leadsTyper === 'booked'
+              ? ['booked']
+              : archieveFields,
         },
         (error) => setLeadsFetchedData([])
       )
@@ -266,19 +290,22 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
         {
           uid: uid,
           status:
-            leadsTyper === 'archieveLeads'
-              ? archieveFields
-              : [
+            leadsTyper === 'inProgress'
+              ? [
                   'new',
                   'followup',
+                  'unassigned',
                   'visitfixed',
                   '',
                   'visitdone',
                   'negotiation',
                   'reassign',
                   'RNR',
-                  'booked',
-                ],
+                  // 'booked',
+                ]
+              : leadsTyper === 'booked'
+              ? ['booked']
+              : archieveFields,
         },
         (error) => setLeadsFetchedData([])
       )

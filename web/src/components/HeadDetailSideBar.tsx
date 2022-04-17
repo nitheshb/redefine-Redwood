@@ -407,7 +407,7 @@ const HeadSideBarDetailView = ({
                             ? setViewable('inProgress')
                             : data === 'Archive'
                             ? setViewable('archieveLeads')
-                            : setViewable('inProgress')
+                            : setViewable('booked')
                         }
                       >
                         <span className="flex items-center">
@@ -469,7 +469,7 @@ const HeadSideBarDetailView = ({
                             ? setViewable('inProgress')
                             : data === 'Archive'
                             ? setViewable('archieveLeads')
-                            : setViewable('inProgress')
+                            : setViewable('booked')
                         }
                       >
                         <span className="flex items-center">
