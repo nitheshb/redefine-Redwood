@@ -396,6 +396,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                 </h2>
               </div>
               <div className="flex">
+                {leadsTyper == 'inProgress' && (
                 <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                   <button
                     className={`px-2 py-1  rounded ${
@@ -440,6 +441,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                     </svg>
                   </button>
                 </span>
+                )}
                 <>
                   <button
                     onClick={() => fSetLeadsType('Add Lead')}
