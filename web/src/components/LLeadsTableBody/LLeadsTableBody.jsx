@@ -81,6 +81,12 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
+  // {
+  //   id: 'S.No',
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: 'S.No',
+  // },
   {
     id: 'Date',
     numeric: false,
@@ -142,9 +148,16 @@ function EnhancedTableHead(props) {
 
   return (
     <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
+      <TableRow selected={true}>
+        <TableCell
+          align="center"
+          component="th"
+          scope="row"
+          padding="checkbox"
+          size="small"
+          style={{ backgroundColor: '#efedfe' }}
+        >
+          {/* <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
@@ -152,7 +165,8 @@ function EnhancedTableHead(props) {
             inputProps={{
               'aria-label': 'select all desserts',
             }}
-          />
+          /> */}
+          <TableSortLabel>S.No</TableSortLabel>
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -160,6 +174,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? 'center' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            style={{ backgroundColor: '#efedfe' }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -538,14 +553,15 @@ id: "1" */}
                     key={index}
                     selected={isItemSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
+                    <TableCell
+                      align="center"
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="checkbox"
+                      size="small"
+                    >
+                      {index + 1}
                     </TableCell>
                     <TableCell
                       component="th"

@@ -131,7 +131,15 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     console.log(data)
     setLoading(true)
 
-    const { email, name, mobileNo, assignedTo, source, project } = data
+    const {
+      email,
+      name,
+      mobileNo,
+      assignedTo,
+      assignedToObj,
+      source,
+      project,
+    } = data
     // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
 
     const foundLength = await checkIfLeadAlreadyExists('spark_leads', mobileNo)
@@ -145,7 +153,17 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       Source: source,
       Status: assignedTo === '' ? 'unassigned' : 'new',
       intype: 'Form',
-      assignedTo: assignedTo,
+      assignedTo: assignedToObj?.value || '',
+      assingedToObj: {
+        department: assignedToObj?.department || [],
+        email: assignedToObj?.email || '',
+        label: assignedToObj?.label || '',
+        name: assignedToObj?.name || '',
+        namespace: 'spark',
+        roles: assignedToObj?.roles || [],
+        uid: assignedToObj?.value || '',
+        value: assignedToObj?.value || '',
+      },
       by: user?.email,
     }
     console.log('user is ', user)
@@ -162,8 +180,6 @@ const AddLeadForm = ({ title, dialogOpen }) => {
         user?.email,
         `lead created and assidged to ${assignedTo}`
       )
-
-     
 
       await sendWhatAppTextSms(
         mobileNo,
@@ -386,6 +402,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                           className="input mt-"
                           onChange={(value) => {
                             formik.setFieldValue('assignedTo', value.value)
+                            formik.setFieldValue('assignedToObj', value)
                           }}
                           value={formik.values.assignedTo}
                           options={usersList}

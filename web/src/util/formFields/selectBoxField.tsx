@@ -25,7 +25,7 @@ export const CustomSelect = ({
           onChange(value)
         }}
         options={options}
-        className="text-sm  mt-1"
+        className="text-sm  mt-1 border-transparent"
       />
       {/* <ErrorMessage
         component="div"

@@ -517,8 +517,9 @@ const LLeadsTableView = ({
         <Grid container>
           <Grid item xs={12}>
             <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+              {/* bg-[#fdb7b7] */}
               <ul
-                className="flex flex-wrap -mb-px"
+                className="flex flex-wrap -mb-px "
                 id="myTab"
                 data-tabs-toggle="#myTabContent"
                 role="tablist"

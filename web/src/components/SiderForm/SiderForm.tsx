@@ -22,7 +22,7 @@ const SiderForm = ({
 }) => {
   // const [open, setOpen] = useState(true)
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open || false} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 overflow-hidden"
@@ -53,7 +53,9 @@ const SiderForm = ({
             >
               <div
                 className={`relative w-screen ${
-                  title === 'Add Lead' ? 'max-w-2xl' : widthClass
+                  title === 'Add Lead' || title === 'User Profile'
+                    ? 'max-w-2xl'
+                    : widthClass
                 }`}
               >
                 <Transition.Child

@@ -218,7 +218,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     console.log('login role detials', user)
     const { access, uid } = user
 
-    if (access.includes('manage_leads')) {
+    if (access?.includes('manage_leads')) {
       const unsubscribe = getLeadsByStatus(
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {

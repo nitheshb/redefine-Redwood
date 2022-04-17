@@ -470,118 +470,122 @@ const TodayLeadsActivityListHomeView = ({
   }, [])
 
   useEffect(() => {
+    console.log('check if this is loading on new page check', user?.uid)
     getLeadsDataFun()
-  }, [taskType])
+  }, [taskType, user])
   const getLeadsDataFun = async () => {
     // const leadsData = await getLedsData1()
-    const { access, uid } = user
 
-    const torrowDate = new Date(
-      +new Date().setHours(0, 0, 0, 0) + 86400000
-    ).getTime()
-    if (taskType === 'Today1Team' || taskType === 'UpcomingTeam') {
-      console.log('torw date', torrowDate)
-      const todoData = await getTodayTodoLeadsData(
-        (querySnapshot) => {
-          let pro
-          let y = []
-          setTodaySchL([])
-          const projects = querySnapshot.docs.map(async (docSnapshot) => {
-            const x = docSnapshot.data()
-            const { staDA } = x
+    const uid = user?.uid
+    if (uid) {
+      const torrowDate = new Date(
+        +new Date().setHours(0, 0, 0, 0) + 86400000
+      ).getTime()
+      if (taskType === 'Today1Team' || taskType === 'UpcomingTeam') {
+        console.log('torw date', torrowDate)
+        const todoData = await getTodayTodoLeadsData(
+          (querySnapshot) => {
+            let pro
+            let y = []
+            setTodaySchL([])
+            const projects = querySnapshot.docs.map(async (docSnapshot) => {
+              const x = docSnapshot.data()
+              const { staDA } = x
 
-            if (taskType === 'Today1Team') {
-              y = staDA.filter((da) => x[da]['schTime'] < torrowDate)
-            } else {
-              y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
-            }
-            if (y.length > 0) {
-              x.uid = docSnapshot.id
-              // eslint-disable-next-line prefer-const
-              let y1 = await getLeadbyId1(x.uid)
-              await console.log('fetched value is ', x, y)
-              x.leadUser = await y1
-              return x
-            } else {
-              return 'remove'
-            }
-          })
-          //  get the task details from docid
-          if (projects.length > 0) {
-            console.log(
-              'my values are ',
-              projects.filter((data) => data != 'remove')
-            )
-            projects.filter((data) => data != undefined)
-            Promise.all(projects).then(function (results) {
+              if (taskType === 'Today1Team') {
+                y = staDA.filter((da) => x[da]['schTime'] < torrowDate)
+              } else {
+                y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
+              }
+              if (y.length > 0) {
+                x.uid = docSnapshot.id
+                // eslint-disable-next-line prefer-const
+                let y1 = await getLeadbyId1(x.uid)
+                await console.log('fetched value is ', x, y)
+                x.leadUser = await y1
+                return x
+              } else {
+                return 'remove'
+              }
+            })
+
+            //  get the task details from docid
+            if (projects.length > 0) {
               console.log(
                 'my values are ',
-                results.filter((data) => data != 'remove')
+                projects.filter((data) => data != 'remove')
               )
-              results.filter((data) => data != 'remove')
-              setTodaySchL(results.filter((data) => data != 'remove'))
-            })
-          } else {
-            console.log('my values are 1 ', projects)
+              projects.filter((data) => data != undefined)
+              Promise.all(projects).then(function (results) {
+                console.log(
+                  'my values are ',
+                  results.filter((data) => data != 'remove')
+                )
+                results.filter((data) => data != 'remove')
+                setTodaySchL(results.filter((data) => data != 'remove'))
+              })
+            } else {
+              console.log('my values are 1 ', projects)
+            }
+          },
+          { type: 'upcoming' },
+          () => {
+            console.log('error')
           }
-        },
-        { type: 'upcoming' },
-        () => {
-          console.log('error')
-        }
-      )
-      await console.log('what are we', todoData)
-    } else {
-      const todoData = await getTodayTodoLeadsDataByUser(
-        (querySnapshot) => {
-          let pro
-          let y = []
-          setTodaySchL([])
-          const projects = querySnapshot.docs.map(async (docSnapshot) => {
-            const x = docSnapshot.data()
-            const { staDA } = x
+        )
+        await console.log('what are we', todoData)
+      } else {
+        const todoData = await getTodayTodoLeadsDataByUser(
+          (querySnapshot) => {
+            let pro
+            let y = []
+            setTodaySchL([])
+            const projects = querySnapshot.docs.map(async (docSnapshot) => {
+              const x = docSnapshot.data()
+              const { staDA } = x
 
-            if (taskType === 'Today1') {
-              y = staDA.filter((da) => x[da]['schTime'] < torrowDate)
-            } else {
-              y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
-            }
-            if (y.length > 0) {
-              x.uid = docSnapshot.id
-              // eslint-disable-next-line prefer-const
-              let y1 = await getLeadbyId1(x.uid)
-              await console.log('fetched value is ', x, y)
-              x.leadUser = await y1
-              return x
-            } else {
-              return 'remove'
-            }
-          })
-          //  get the task details from docid
-          if (projects.length > 0) {
-            console.log(
-              'my values are ',
-              projects.filter((data) => data != 'remove')
-            )
-            projects.filter((data) => data != undefined)
-            Promise.all(projects).then(function (results) {
+              if (taskType === 'Today1') {
+                y = staDA.filter((da) => x[da]['schTime'] < torrowDate)
+              } else {
+                y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
+              }
+              if (y.length > 0) {
+                x.uid = docSnapshot.id
+                // eslint-disable-next-line prefer-const
+                let y1 = await getLeadbyId1(x.uid)
+                await console.log('fetched value is ', x, y)
+                x.leadUser = await y1
+                return x
+              } else {
+                return 'remove'
+              }
+            })
+            //  get the task details from docid
+            if (projects.length > 0) {
               console.log(
                 'my values are ',
-                results.filter((data) => data != 'remove')
+                projects.filter((data) => data != 'remove')
               )
-              results.filter((data) => data != 'remove')
-              setTodaySchL(results.filter((data) => data != 'remove'))
-            })
-          } else {
-            console.log('my values are 1 ', projects)
+              projects.filter((data) => data != undefined)
+              Promise.all(projects).then(function (results) {
+                console.log(
+                  'my values are ',
+                  results.filter((data) => data != 'remove')
+                )
+                results.filter((data) => data != 'remove')
+                setTodaySchL(results.filter((data) => data != 'remove'))
+              })
+            } else {
+              console.log('my values are 1 ', projects)
+            }
+          },
+          { uid: uid, type: 'today' },
+          () => {
+            console.log('error')
           }
-        },
-        { uid: uid, type: 'today' },
-        () => {
-          console.log('error')
-        }
-      )
-      await console.log('what are we', todoData)
+        )
+        await console.log('what are we', todoData)
+      }
     }
   }
 

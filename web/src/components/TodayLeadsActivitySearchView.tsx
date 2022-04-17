@@ -398,6 +398,8 @@ export default function TodayLeadsActivitySearchView({
   React.useEffect(() => {
     if (todaySch) {
       setSchFetData(todaySch)
+    } else {
+      console.log('my value is ', todaySch)
     }
   }, [todaySch])
 
@@ -448,13 +450,6 @@ export default function TodayLeadsActivitySearchView({
   //   listing.featured ? 'featured-item' : ''
   // } max-w-4xl mb-10 shadow-lg p-4 flex justify-center items-center`
 
-  const Skills = ({ skill }) => (
-    <div className="tag rounded-md p-1 px-2 m-2">
-      <button onClick={() => handleClick1(skill)}>{skill}</button>
-    </div>
-  )
-  const languages = ['HTML', 'CSS', 'JavaScript']
-  const tools = ['React', 'Sass']
   console.log('what is here', todaySch)
   const torrowDate = new Date(
     +new Date().setHours(0, 0, 0, 0) + 86400000
@@ -465,7 +460,7 @@ export default function TodayLeadsActivitySearchView({
         {/* <Header /> */}
         <div className="flex justify-center items-center text-gray-900 h-6"></div>
         <div className=" px-4 justify-center items-center text-gray-900">
-          <h1 className="box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-tight  text-gray-900 align-baseline border-0 xl:text-4xl xl:tracking-normal md:text-3xl md:tracking-tight">
+          <h1 className="box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-wide  text-gray-900 align-baseline border-0 xl:text-3xl xl:tracking-normal md:text-3xl md:tracking-tight">
             Welcome back, {user?.displayName?.toLocaleUpperCase()}
           </h1>
 
@@ -518,7 +513,9 @@ export default function TodayLeadsActivitySearchView({
           {schFetData.map((dat, index) => {
             console.log('what am i', dat)
             const { leadUser, staDA, staA, uid } = dat
-            leadUser.id = uid
+            if (leadUser) {
+              leadUser.id = uid
+            }
             return (
               <>
                 <div
@@ -526,7 +523,7 @@ export default function TodayLeadsActivitySearchView({
                   className="flex-1 px-4 py-2 mb-2  bg-white rounded-md cursor-pointer"
                   onClick={() => selUserProfileF('User Profile', leadUser)}
                 >
-                  <div className="inline">
+                  {/* <div className="inline">
                     <div className="ml-4 mt-4">
                       <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
                         Lead Schedule Details<abbr title="required"></abbr>
@@ -534,6 +531,73 @@ export default function TodayLeadsActivitySearchView({
                     </div>
 
                     <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
+                  </div> */}
+
+                  <div className="flex  w-full mx-4 py-2 border-b mt-4 ">
+                    <label className="font-semibold text-[#053219] px-4 py-[4px] bg-green-100  text-2xl  mb-1 mr-2  ">
+                      {index + 1}
+                    </label>
+                    {/* <div className="inline">
+                    <div className="ml-4 mt-4">
+                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                        Lead Schedule Details<abbr title="required"></abbr>
+                      </label>
+                    </div>
+
+                    <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
+                  </div> */}
+                    <section className="mt-1">
+                      <span className="inline-flex mr-4">
+                        <span className="text-sm  font-light  font text-gray-700 ">
+                          {' '}
+                          {'Client Name'}:{'  '}
+                        </span>
+                        <span className="text-sm ml-1 font-semibold">
+                          {''}
+                          {leadUser?.Name}
+                        </span>
+                      </span>
+                      <span className="inline-flex mr-4">
+                        <span className="text-sm  font-light  font text-gray-700 ">
+                          {' '}
+                          {'Phone No'}:{'  '}
+                        </span>
+                        <span className="text-sm ml-1 font-semibold">
+                          {''}
+                          {leadUser?.Mobile}
+                        </span>
+                      </span>
+                      <span className="inline-flex mr-4">
+                        <span className="text-sm  font-light  font text-gray-700 ">
+                          {' '}
+                          {'Email'}:{'  '}
+                        </span>
+                        <span className="text-sm ml-1 font-semibold">
+                          {''}
+                          {leadUser?.Email}
+                        </span>
+                      </span>
+                      <span className="inline-flex mr-4">
+                        <span className="text-sm  font-light  font text-gray-700 ">
+                          {' '}
+                          {'Status'}:{'  '}
+                        </span>
+                        <span className="text-sm ml-1 font-semibold">
+                          {''}
+                          {leadUser?.Status}
+                        </span>
+                      </span>
+                      <span className="inline-flex mr-4">
+                        <span className="text-sm  font-light  font text-gray-700 ">
+                          {' '}
+                          {'Project'}:{'  '}
+                        </span>
+                        <span className="text-sm ml-1 font-semibold">
+                          {''}
+                          {leadUser?.Project}
+                        </span>
+                      </span>
+                    </section>
                   </div>
                   <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
                     <div className="flex flex-row  w-full ">
@@ -570,43 +634,7 @@ export default function TodayLeadsActivitySearchView({
                         </svg>
 
                       </div> */}
-
-                      <div className="flex flex-col  py-4 pr-4 h-full  bg-green-100 min-w-[300px] px-4 rounded-md mr-4 ">
-                        <section>
-                          <span className="main-heading my-2 text-gray-600">
-                            Name:{' '}
-                          </span>{' '}
-                          <span className="main-heading my-2 text-green-800">
-                            {leadUser?.Name}
-                          </span>
-                        </section>
-                        <section className="mt-3">
-                          <span className="main-heading my-2 text-gray-600">
-                            Phone:{' '}
-                          </span>{' '}
-                          <span className="main-heading my-2 text-green-800">
-                            {leadUser?.Mobile}
-                          </span>
-                        </section>
-                        <section className="mt-3">
-                          <span className="main-heading my-2 text-gray-600">
-                            Email:{' '}
-                          </span>{' '}
-                          <span className="main-heading my-2 text-green-800">
-                            {leadUser?.Email}
-                          </span>
-                        </section>
-                        <section className="mt-3">
-                          <small className="text-gray-400 mr-6">
-                            {leadUser?.Status}
-                          </small>
-                          <small className="text-gray-400 ">
-                            {leadUser?.Project}
-                          </small>
-                        </section>
-                      </div>
-
-                      <div className="flex flex-col pl-6 border-l w-full  ">
+                      <div className="flex flex-col   w-full  ">
                         {staDA
                           ?.filter((d) =>
                             dat[d]['sts'] == 'pending' &&
@@ -626,44 +654,46 @@ export default function TodayLeadsActivitySearchView({
                                     selUserProfileF('User Profile', leadUser)
                                   }
                                 >
-                                  <h4 className="font-brand pt-4 text-lg text-blue-700">
-                                    {dat[ts]['notes']}
-                                  </h4>
                                   <section className="flex  mt-[4px]  items-center justify-between   ">
-                                    <span className="px- py-[1px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
-
-                                      {Math.abs(
-                                        getDifferenceInMinutes(
-                                          dat[ts]['schTime'],
-                                          ''
-                                        )
-                                      ) > 60
-                                        ? Math.abs(
-                                            getDifferenceInMinutes(
-                                              dat[ts]['schTime'],
-                                              ''
-                                            )
-                                          ) > 1440
-                                          ? `${getDifferenceInDays(
-                                              dat[ts]['schTime'],
-                                              ''
-                                            )} Days `
-                                          : `${getDifferenceInHours(
-                                              dat[ts]['schTime'],
-                                              ''
-                                            )} Hours `
-                                        : `${getDifferenceInMinutes(
+                                    <section>
+                                      <span className="px- py-[1px]  min-w-[100px] inline-flex text-xs leading-5 tracking-wide font-bold rounded-full  text-green-800">
+                                        {Math.abs(
+                                          getDifferenceInMinutes(
                                             dat[ts]['schTime'],
                                             ''
-                                          )} Min`}{' '}
-                                      {getDifferenceInMinutes(
-                                        dat[ts]['schTime'],
-                                        ''
-                                      ) < 0
-                                        ? 'Due'
-                                        : 'Left'}
-                                    </span>
+                                          )
+                                        ) > 60
+                                          ? Math.abs(
+                                              getDifferenceInMinutes(
+                                                dat[ts]['schTime'],
+                                                ''
+                                              )
+                                            ) > 1440
+                                            ? `${getDifferenceInDays(
+                                                dat[ts]['schTime'],
+                                                ''
+                                              )} Days `
+                                            : `${getDifferenceInHours(
+                                                dat[ts]['schTime'],
+                                                ''
+                                              )} Hours `
+                                          : `${getDifferenceInMinutes(
+                                              dat[ts]['schTime'],
+                                              ''
+                                            )} Min`}{' '}
+                                        {getDifferenceInMinutes(
+                                          dat[ts]['schTime'],
+                                          ''
+                                        ) < 0
+                                          ? 'Due'
+                                          : 'Left'}
+                                      </span>
 
+                                      <span className="font-brand  text-md text-blue-800 tracking-wider">
+                                        {' '}
+                                        {dat[ts]['notes']}
+                                      </span>
+                                    </section>
                                     <section>
                                       <span className="px-4 py-[4px] bg-green-100 inline-flex text-xs leading-5 font-semibold rounded-full text-green-800">
                                         {dat[ts]['pri']}
