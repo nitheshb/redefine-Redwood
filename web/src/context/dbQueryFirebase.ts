@@ -68,6 +68,13 @@ export const steamLeadActivityLog = (snapshot, data, error) => {
   return onSnapshot(doc(db, 'spark_leads_log', uid), snapshot, error)
   // return onSnapshot(itemsQuery, snapshot, error)
 }
+export const steamLeadNotes = (snapshot, data, error) => {
+  // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
+  const { uid } = data
+  console.log('is uid g', uid)
+  return onSnapshot(doc(db, 'spark_leads_notes', uid), snapshot, error)
+  // return onSnapshot(itemsQuery, snapshot, error)
+}
 export const steamLeadPhoneLog = (snapshot, data, error) => {
   // const itemsQuery = query(doc(db, 'spark_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
   const { uid } = data
@@ -218,7 +225,17 @@ export const getLedsData = async () => {
     console.log('error in db', error)
   }
 }
-
+export const getCustomerDocs = async (uid: string, snapshot, error) => {
+  try {
+    const getAllProjectByIdQuery = await query(
+      collection(db, 'spark_leads_docs'),
+      where('cUid', '==', uid)
+    )
+    return onSnapshot(getAllProjectByIdQuery, snapshot, error)
+  } catch (error) {
+    console.log('error in db', error)
+  }
+}
 export const getUser = async (uid: string) => {
   try {
     const userRef = doc(db, 'users', uid)
@@ -420,6 +437,21 @@ export const addLead = async (data, by, msg) => {
   return
 }
 
+export const addLeadNotes = async (id, data) => {
+  const xo = data?.ct
+  const yo = {
+    [xo]: data,
+  }
+  try {
+    const washingtonRef = doc(db, 'spark_leads_notes', id)
+    console.log('check add LeadLog', washingtonRef)
+
+    await updateDoc(washingtonRef, yo)
+  } catch (error) {
+    await setDoc(doc(db, 'spark_leads_notes', id), yo)
+  }
+}
+
 export const addUserLog = (data) => {
   // type    === addUser || updateUserRole || deleteUser
   // subtype === addUser
@@ -586,6 +618,21 @@ export const createAdditonalCharges = async (element, enqueueSnackbar) => {
     })
   }
 }
+export const createAttach = async (url, by, name, cUid, type) => {
+  try {
+    const docRef = await addDoc(collection(db, 'spark_leads_docs'), {
+      name,
+      url,
+      by,
+      cUid,
+      type,
+      cTime: Timestamp.now().toMillis(),
+    })
+    return docRef
+  } catch (error) {
+    console.log('error in db', error)
+  }
+}
 // **********************************************
 // updateF
 // **********************************************
@@ -712,6 +759,7 @@ export const updateLeadAssigTo = async (leadDocId, assignedTo, by) => {
   // })
 }
 export const updateLeadStatus = async (leadDocId, newStatus) => {
+  console.log('wow it should be here', leadDocId, newStatus)
   await updateDoc(doc(db, 'spark_leads', leadDocId), {
     Status: newStatus,
   })
@@ -722,6 +770,12 @@ export const updateSchLog = async (uid, kId, newStat, schStsA) => {
     staA: schStsA,
     // staDA: arrayUnion(xo),
     [x]: newStat,
+  })
+}
+export const updateSch = async (uid, kId, newCt, schStsA) => {
+  const x = `${kId}.schTime`
+  await updateDoc(doc(db, 'spark_leads_sch', uid), {
+    [x]: newCt,
   })
 }
 export const updateMoreDetails = async (uid, moreDetails, enqueueSnackbar) => {

@@ -29,6 +29,35 @@ export function prettyDate(d) {
   )
 }
 
+export function prettyDateTime(d) {
+  const date = new Date(d)
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+
+  return (
+    months[date.getUTCMonth()] +
+    ' ' +
+    date.getUTCDate() +
+    ', ' +
+    date.getUTCFullYear() +
+    '   ' +
+    date.getUTCHours() +
+    ':' +
+    String(date.getMinutes()).padStart(2, '0')
+  )
+}
 export function getDifferenceInDays(date1, date2) {
   const x = new Date()
   const diffInMs = date1 - x

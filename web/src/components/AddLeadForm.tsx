@@ -18,6 +18,7 @@ import {
   addLead,
   addLeadScheduler,
   checkIfLeadAlreadyExists,
+  getAllProjects,
   steamUsersListByRole,
 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
@@ -32,6 +33,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   const { user } = useAuth()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
+  const [projectList, setprojectList] = useState([])
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
       (querySnapshot) => {
@@ -44,7 +46,27 @@ const AddLeadForm = ({ title, dialogOpen }) => {
           user.value = user.uid
         })
         console.log('fetched users list is', usersListA)
+
         setusersList(usersListA)
+      },
+      (error) => setfetchedUsersList([])
+    )
+
+    return unsubscribe
+  }, [])
+  useEffect(() => {
+    const unsubscribe = getAllProjects(
+      (querySnapshot) => {
+        const projectsListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        setfetchedUsersList(projectsListA)
+        projectsListA.map((user) => {
+          user.label = user.projectName
+          user.value = user.projectName
+        })
+        console.log('fetched users list is', projectsListA)
+        setprojectList(projectsListA)
       },
       (error) => setfetchedUsersList([])
     )
@@ -389,7 +411,8 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                             formik.setFieldValue('project', value.value)
                           }}
                           value={formik.values.project}
-                          options={aquaticCreatures}
+                          // options={aquaticCreatures}
+                          options={projectList}
                         />
                       </div>
                     </div>

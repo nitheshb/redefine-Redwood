@@ -594,7 +594,10 @@ id: "1" */}
                         <div>
                           <HighlighterStyle
                             searchKey={searchKey}
-                            source={row.Mobile.toString()}
+                            source={row.Mobile.toString().replace(
+                              /(\d{3})(\d{3})(\d{4})/,
+                              '$1-$2-$3'
+                            )}
                           />
                         </div>
                       </section>

@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore, initializeFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 // import { initializeApp } from 'firebase-admin/app'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,8 +30,10 @@ initializeFirestore(app, settings)
 
 // firebase.firestore().settings({ experimentalForceLongPolling: true });
 const db = getFirestore(app)
+const storage = getStorage()
+
 // export const auth = app.auth()
 const auth = getAuth()
 const analytics = getAnalytics(app)
 
-export { auth, db }
+export { auth, db, storage }

@@ -546,7 +546,7 @@ export default function TodayLeadsActivitySearchView({
 
                     <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
                   </div> */}
-                    <section className="mt-1">
+                    <section className="mt-2">
                       <span className="inline-flex mr-4">
                         <span className="text-sm  font-light  font text-gray-700 ">
                           {' '}
@@ -564,7 +564,10 @@ export default function TodayLeadsActivitySearchView({
                         </span>
                         <span className="text-sm ml-1 font-semibold">
                           {''}
-                          {leadUser?.Mobile}
+                          {leadUser?.Mobile.toString().replace(
+                            /(\d{3})(\d{3})(\d{4})/,
+                            '$1-$2-$3'
+                          )}
                         </span>
                       </span>
                       <span className="inline-flex mr-4">
