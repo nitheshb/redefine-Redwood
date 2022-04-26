@@ -126,7 +126,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
 
   const devTypeA = [
     {
-      name: 'Outrate',
+      name: 'Outright',
       img: '/apart.svg',
     },
     {

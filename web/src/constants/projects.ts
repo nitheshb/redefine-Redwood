@@ -166,7 +166,7 @@ export const projectPlans = [
 
 export const developmentTypes = [
   {
-    name: 'Outrate',
+    name: 'Outright',
     img: '/apart.svg',
   },
   {

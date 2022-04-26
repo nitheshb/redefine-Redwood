@@ -473,9 +473,10 @@ const LLeadsTableView = ({
         ? [
             { lab: 'In Progress', val: 'all' },
             { lab: 'New', val: 'new' },
-            // { lab: 'Follow Up', val: 'followup' },
+            { lab: 'Follow Up', val: 'followup' },
             { lab: 'Visit Fixed', val: 'visitfixed' },
             { lab: 'Visit Done', val: 'visitdone' },
+            { lab: 'Visit Cancel', val: 'visitcancel' },
             { lab: 'Negotiation', val: 'negotitation' },
             { lab: 'Reassign', val: 'reassign' },
             // { lab: 'RNR', val: 'RNR' },

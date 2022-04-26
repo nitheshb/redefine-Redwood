@@ -8,6 +8,8 @@ import {
   CurrencyRupeeIcon,
   BadgeCheckIcon,
   XCircleIcon,
+  RefreshIcon,
+  BanIcon,
 } from '@heroicons/react/solid'
 
 export default function StatusDropComp({ leadStatus, id, setStatusFun }) {
@@ -59,6 +61,31 @@ export default function StatusDropComp({ leadStatus, id, setStatusFun }) {
                     className={`${
                       active ? 'bg-violet-500 text-white' : 'text-gray-900'
                     } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    onClick={() => setStatusFun(id, 'followup')}
+                  >
+                    {active ? (
+                      <RefreshIcon
+                        className="w-5 h-5 mr-2"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <RefreshIcon
+                        className="w-5 h-5 mr-2 text-violet-500"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Follow Up
+                  </button>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active
+                        ? 'bg-violet-500 text-white rounded-md'
+                        : 'text-gray-900 border-t'
+                    } group flex  items-center w-full px-2 py-2 text-sm`}
                     onClick={() => setStatusFun(id, 'visitfixed')}
                   >
                     {active ? (
@@ -76,6 +103,7 @@ export default function StatusDropComp({ leadStatus, id, setStatusFun }) {
                   </button>
                 )}
               </Menu.Item>
+
               <Menu.Item>
                 {({ active }) => (
                   <button
@@ -105,6 +133,28 @@ export default function StatusDropComp({ leadStatus, id, setStatusFun }) {
                     className={`${
                       active ? 'bg-violet-500 text-white' : 'text-gray-900'
                     } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    onClick={() => setStatusFun(id, 'visitcancel')}
+                  >
+                    {active ? (
+                      <BanIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+                    ) : (
+                      <BanIcon
+                        className="w-5 h-5 mr-2 text-violet-500"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Visit Cancel
+                  </button>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active
+                        ? 'bg-violet-500 text-white rounded-md'
+                        : 'text-gray-900 border-t'
+                    } group flex  items-center w-full px-2 py-2 text-sm`}
                     onClick={() => setStatusFun(id, 'Negotiation')}
                   >
                     {active ? (
@@ -122,6 +172,7 @@ export default function StatusDropComp({ leadStatus, id, setStatusFun }) {
                   </button>
                 )}
               </Menu.Item>
+
               <Menu.Item>
                 {({ active }) => (
                   <button
