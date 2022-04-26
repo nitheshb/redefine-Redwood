@@ -13,11 +13,14 @@ import CardItem from './leadsCard'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
+  getAllProjects,
   getLeadsByStatus,
   getLeadsByStatusUser,
   updateLeadAssigTo,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
+import { CustomSelect } from 'src/util/formFields/selectBoxField'
+
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
 // import BoardData from '../../components/board-data.json'
@@ -199,6 +202,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [selUserProfile, setSelUserProfile] = useState({})
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [serialLeadsData, setSerialLeadsData] = useState([])
+  const [projectList, setprojectList] = useState([])
+  const [selProjectIs, setSelProject] = useState('all')
 
   const statusFields = [
     'new',
@@ -234,6 +239,26 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
       setGetStatus(archieveFields2)
     }
   }, [leadsTyper])
+
+  useEffect(() => {
+    const unsubscribe = getAllProjects(
+      (querySnapshot) => {
+        const projectsListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+
+        projectsListA.map((user) => {
+          user.label = user.projectName
+          user.value = user.projectName
+        })
+        console.log('fetched users list is', projectsListA)
+        setprojectList(projectsListA)
+      },
+      (error) => setprojectList([])
+    )
+
+    return unsubscribe
+  }, [])
   const [getStatus, setGetStatus] = useState([])
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
@@ -397,52 +422,53 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
               </div>
               <div className="flex">
                 {leadsTyper == 'inProgress' && (
-                <span className="inline-flex p-1 border bg-gray-200 rounded-md">
-                  <button
-                    className={`px-2 py-1  rounded ${
-                      ready ? 'bg-white shadow' : ''
-                    }`}
-                    onClick={() => setReady(true)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-gray-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                  <span className="inline-flex p-1 border bg-gray-200 rounded-md">
+                    <button
+                      className={`px-2 py-1  rounded ${
+                        ready ? 'bg-white shadow' : ''
+                      }`}
+                      onClick={() => setReady(true)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    className={`px-2 py-1  rounded ${
-                      !ready ? 'bg-white shadow' : ''
-                    }`}
-                    onClick={() => setReady(false)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-gray-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-gray-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      className={`px-2 py-1  rounded ${
+                        !ready ? 'bg-white shadow' : ''
+                      }`}
+                      onClick={() => setReady(false)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </button>
-                </span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-gray-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </button>
+                  </span>
                 )}
                 <>
+
                   <button
                     onClick={() => fSetLeadsType('Add Lead')}
                     className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}

@@ -44,7 +44,7 @@ const Floordetails = ({ block = 'A' }) => {
           </button>
         </section>
       </div>
-      <div className="grid lg:grid-cols-6  md:grid-cols-4 sm:grid-cols-3">
+      <div className="grid lg:grid-cols-4  md:grid-cols-4 sm:grid-cols-3">
         {[1, 2, 3, 4, 5, 6, 7, 8, 13, 14, 15, 16, 17].map((data) => (
           <div className="p-2 mb-2.5 w-[240px] mx-3 " key={data}>
             <UnitsStatsCard kind={data} feedData={unitFeedData} bg="#fef7f7" />

@@ -93,7 +93,20 @@ const attachTypes = [
   { label: 'Estimation Sheet', value: 'estimation_sheet' },
   { label: 'Payment Screenshot (IMPS/RTGS/NEFT)', value: 'payment_screenshot' },
   { label: 'Payment Receipt', value: 'payment_receipt' },
+  { label: 'Others', value: 'others' },
 
+  // { label: 'RNR', value: 'rnr' },
+  // { label: 'Dead', value: 'Dead' },
+]
+
+const notInterestOptions = [
+  { label: 'Select Document', value: '' },
+  { label: 'Budget Issue', value: 'budget_issue' },
+  { label: 'Looking for Different Property', value: 'differeent_options' },
+
+  { label: 'Others', value: 'others' },
+
+  // { label: 'Follow Up', value: 'followup' },
   // { label: 'RNR', value: 'rnr' },
   // { label: 'Dead', value: 'Dead' },
 ]
@@ -119,6 +132,7 @@ export default function CustomerProfileSideView({
   const [takTitle, setTakTitle] = useState('')
   const [takNotes, setNotesTitle] = useState('')
   const [attachType, setAttachType] = useState('')
+  const [notInterestType, setNotInterestType] = useState('')
   const [attachTitle, setAttachTitle] = useState('')
   const [filterData, setFilterData] = useState([])
   const [docsList, setDocsList] = useState([])
@@ -288,8 +302,10 @@ export default function CustomerProfileSideView({
 
   const setStatusFun = async (leadDocId, newStatus) => {
     setLeadStatus(newStatus)
-    setFeature('appointments')
-    setAddSch(true)
+    newStatus === 'notinterested'
+      ? setFeature('notes')
+      : setFeature('appointments')
+    newStatus === 'notinterested' ? setAddNote(true) : setAddSch(true)
     if (newStatus === 'visitfixed') {
       setTakTitle('Schedule a cab ')
     } else if (newStatus === 'booked') {
@@ -792,6 +808,20 @@ export default function CustomerProfileSideView({
                 )}
                 {addNote && (
                   <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
+                    <div className="w-full flex flex-col mb-3 mt-2">
+                      <CustomSelect
+                        name="source"
+                        label="Not Interest Reason*"
+                        className="input mt-3"
+                        onChange={(value) => {
+                          // formik.setFieldValue('source', value.value)
+                          setNotInterestType(value.value)
+                        }}
+                        value={notInterestType}
+                        options={notInterestOptions}
+                      />
+                    </div>
+
                     <div className="  outline-none border  rounded p-4 mt-4">
                       <textarea
                         value={takNotes}
@@ -906,7 +936,7 @@ export default function CustomerProfileSideView({
 
             {attach && (
               <div className="flex justify-center mt-4">
-                <div className="mb-3 w-96 bg-[#FFF9F2] rounded-md py-3">
+                <div className="mb-3 w-96 px-10 bg-[#FFF9F2] rounded-md py-3 pb-6">
                   <div className="w-full flex flex-col mb-3 mt-2">
                     <CustomSelect
                       name="source"
