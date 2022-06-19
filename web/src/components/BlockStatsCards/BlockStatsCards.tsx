@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconButton, Menu, MenuItem, styled } from '@mui/material'
 import { MoreVert, Edit, AddBusiness } from '@mui/icons-material'
 import SiderForm from '../SiderForm/SiderForm'
@@ -7,7 +7,13 @@ const CustomMenuItem = styled(MenuItem)(() => ({
   fontSize: '0.85rem',
 }))
 
-const BlockStatsCards = ({ kind, feedData, bg }) => {
+const BlockStatsCards = ({
+  kind,
+  feedData,
+  bg,
+  setSelBlock,
+  viewUnitStatusA,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const [sliderInfo, setSliderInfo] = useState({
@@ -15,6 +21,9 @@ const BlockStatsCards = ({ kind, feedData, bg }) => {
     title: '',
     sliderData: {},
   })
+  useEffect(() => {
+    console.log('i was changed')
+  }, [viewUnitStatusA])
 
   const handleSliderClose = () => {
     setSliderInfo({
@@ -53,29 +62,47 @@ const BlockStatsCards = ({ kind, feedData, bg }) => {
         </IconButton>
       </div>
       <div className="flex flex-col justify-between px-2">
-        <span className="flex flex-row items-center justify-between mt-2">
-          <span className="text-sm text-gray-700 ">Floors</span>
-          <span className="text-sm font-semibold">{feedData?.floors}</span>
-        </span>
+        {viewUnitStatusA.includes('Available') && (
+          <span className="flex flex-row items-center justify-between mt-2">
+            <span className="text-sm text-gray-700 ">Available</span>
+            <span className="text-sm font">
+              {feedData?.availableCount || 0}
+            </span>
+          </span>
+        )}
+        {viewUnitStatusA.includes('Blocked') && (
+          <span className="flex flex-row items-center justify-between mt-2">
+            <span className="text-sm text-gray-700 ">Blocked</span>
+            <span>
+              <span className="text-sm font">
+                {feedData?.blockedCount || 0}
+              </span>
+            </span>
+          </span>
+        )}
+        {viewUnitStatusA.includes('Booked') && (
+          <span className="flex flex-row items-center justify-between mt-2 border-b">
+            <span className="text-sm text-gray-700 ">Booked</span>
+            <span className="text-sm font">
+              {feedData?.totalBookedCount || 0}
+            </span>
+          </span>
+        )}
         {/* <span className="flex flex-row items-center justify-between mt-2">
           <span className="text-sm text-gray-700">Parking</span>
           <span className="text-sm font-semibold">
             {feedData?.parking || 0}
           </span>
         </span> */}
-        <span className="flex flex-row items-center justify-between mt-2">
-          <span className="text-sm text-gray-700 ">Total Units</span>
-          <span className="text-sm font-semibold">{feedData?.units || 0}</span>
-        </span>
-        <span className="flex flex-row items-center justify-between mt-2">
-          <span className="text-sm text-gray-700 ">
-            Total Area
-            <span className="text-[10px] text-black-500">(sqft)</span>
+        {viewUnitStatusA.includes('Total') && (
+          <span className="flex flex-row items-center justify-between mt-2">
+            <span className="text-sm text-gray-700 font-semibold ">Total</span>
+            <span className="text-sm font-semibold">
+              {feedData?.totalUnitCount || 0}
+            </span>
           </span>
-          <span>
-            <span className="text-sm font-semibold">{feedData?.totalArea}</span>
-          </span>
-        </span>
+        )}
+
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}

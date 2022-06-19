@@ -1,6 +1,7 @@
 import { Grid, makeStyles } from '@material-ui/core'
 import { useField } from 'formik'
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
+import { Form, Formik } from 'formik'
 import { DocumentAddIcon } from '@heroicons/react/outline'
 import { parse } from 'papaparse'
 import { FileError, FileRejection, useDropzone } from 'react-dropzone'
@@ -8,7 +9,17 @@ import { SingleFileUploadWithProgress } from './SingleFileUploadWithProgress'
 import { UploadError } from './UploadError'
 import { LAddLeadTable } from '../LAddLeadTable'
 import LfileUploadTableHome from '../LfileUploadTableHome'
-import { checkIfLeadAlreadyExists } from 'src/context/dbQueryFirebase'
+import { v4 as uuidv4 } from 'uuid'
+import * as Yup from 'yup'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import {
+  checkIfLeadAlreadyExists,
+  checkIfUnitAlreadyExists,
+  createPhaseAssets,
+} from 'src/context/dbQueryFirebase'
+import { TextField } from 'src/util/formFields/TextField'
+import Loader from '../Loader/Loader'
+import { storage } from 'src/context/firebaseConfig'
 
 let currentId = 0
 
@@ -77,12 +88,24 @@ const rejectStyle = {
   borderColor: '#ff1744',
 }
 
-export function MultipleFileUploadField({ name }: { name: string }) {
+export function MultipleFileUploadField({
+  name,
+  title,
+  pId,
+  myPhase,
+  myBlock,
+  source,
+}) {
   const [_, __, helpers] = useField(name)
   const classes = useStyles()
 
   const [files, setFiles] = useState<UploadableFile[]>([])
   const [fileRecords, setfileRecords] = useState([])
+  const [fileName, setFileName] = useState('')
+
+  const [uploadedUrl, setUploadedUrl] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [formMessage, setFormMessage] = useState('')
   const onDrop = useCallback((accFiles: File[], rejFiles: FileRejection[]) => {
     const mappedAcc = accFiles.map((file) => ({
       file,
@@ -98,8 +121,65 @@ export function MultipleFileUploadField({ name }: { name: string }) {
     // helpers.setTouched(true);
   }, [files])
 
+  function uploadFile(file: File) {
+    setLoading(true)
+    if (!file) return
+    try {
+      const uid = uuidv4()
+      const storageRef = ref(storage, `/spark_files/_${uid}`)
+      const uploadTask = uploadBytesResumable(storageRef, file)
+      return uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const prog =
+            Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+
+          // setProgress(prog)
+        },
+        (err) => console.log(err),
+        async () => {
+          const { projectId, uid } = myPhase || {}
+          const url = await getDownloadURL(uploadTask.snapshot.ref)
+          let type
+          switch (title) {
+            case 'Plan Diagram':
+              type = 'plan_diagram'
+              break
+            case 'Brouchers':
+              type = 'broucher'
+              break
+            case 'Approvals':
+              type = 'approval'
+              break
+
+            default:
+              break
+          }
+
+          createPhaseAssets(
+            url,
+            'nithe.nithesh@gmail.com',
+            fileName || file.name,
+            pId,
+            uid,
+            type,
+            'pdf'
+          )
+          // setUploadedUrl(url)
+          setLoading(false)
+          setFormMessage('Uploaded Successfully..!')
+          await console.log('file url i s', url, myPhase)
+          return url
+          //  save this doc as a new file in spark_leads_doc
+        }
+      )
+    } catch (error) {
+      console.log('upload error is ', error)
+      
+    }
+  }
   function onUpload(file: File, url: string) {
-    console.log('field uploaded successfully', file)
+    console.log('field uploaded successfully', file, url, uploadedUrl)
 
     parse(file, {
       header: true,
@@ -108,32 +188,68 @@ export function MultipleFileUploadField({ name }: { name: string }) {
         const records = input.data
         // await setfileRecords((existing) => [...existing, ...input.data])
         // set All records
-        const clean1 = records.filter((row) => row['Date'] != '')
+        if (title == 'Import Units') {
+          const clean1 = records.filter((row) => row['unit_no'] != '')
 
-        // set duplicate & valid records
-        // check in db if record exists with matched phone Number & email
-        const serialData = await Promise.all(
-          clean1.map(async (dRow) => {
-            const foundLength = await checkIfLeadAlreadyExists(
-              'spark_leads',
-              dRow['Mobile']
-            )
-            dRow['mode'] = await makeMode(foundLength)
-            await console.log(
-              'foundLength is',
-              foundLength,
-              dRow,
-              foundLength,
-              dRow['Mobile']
-            )
-            return await dRow
-          })
-        )
+          // set duplicate & valid records
+          // check in db if record exists with matched phone Number & email
+          const serialData = await Promise.all(
+            clean1.map(async (dRow) => {
+              const foundLength = await checkIfUnitAlreadyExists(
+                'spark_units',
+                pId,
+                myPhase?.uid,
+                myBlock?.uid,
+                dRow['unit_no']
+              )
+              dRow['mode'] = await makeMode(foundLength)
+              await console.log(
+                'foundLength is',
+                foundLength,
+                dRow,
+                foundLength,
+                dRow['Mobile']
+              )
+              return await dRow
+            })
+          )
 
-        await setfileRecords(serialData)
-        // let x =   await getLedsData()
-        // await addLead(existingCols)
-        await console.log('Finished: records', serialData, fileRecords)
+          await setfileRecords(serialData)
+          // let x =   await getLedsData()
+          // await addLead(existingCols)
+          await console.log('Finished: records', serialData, fileRecords)
+        } else if (['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)) {
+          console.log('data os jere', records)
+          // uploadFile(file)
+          // upload pdf to cloud
+        } else {
+          const clean1 = records.filter((row) => row['Date'] != '')
+
+          // set duplicate & valid records
+          // check in db if record exists with matched phone Number & email
+          const serialData = await Promise.all(
+            clean1.map(async (dRow) => {
+              const foundLength = await checkIfLeadAlreadyExists(
+                'spark_leads',
+                dRow['Mobile']
+              )
+              dRow['mode'] = await makeMode(foundLength)
+              await console.log(
+                'foundLength is',
+                foundLength,
+                dRow,
+                foundLength,
+                dRow['Mobile']
+              )
+              return await dRow
+            })
+          )
+
+          await setfileRecords(serialData)
+          // let x =   await getLedsData()
+          // await addLead(existingCols)
+          await console.log('Finished: records', serialData, fileRecords)
+        }
       },
     })
     setFiles((curr) =>
@@ -163,8 +279,10 @@ export function MultipleFileUploadField({ name }: { name: string }) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       onDrop,
-      accept: '.csv, text/csv',
-      maxSize: 300 * 1024, // 300KB
+      accept: ['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)
+        ? '.pdf'
+        : '.csv, text/csv',
+      maxSize: 12000 * 1024, // 1200KB
     })
 
   const style = useMemo(
@@ -177,6 +295,20 @@ export function MultipleFileUploadField({ name }: { name: string }) {
     [isFocused, isDragAccept, isDragReject]
   )
 
+  const resetter = () => {
+    setSelected({})
+    setFormMessage('')
+  }
+
+  const validate = Yup.object({
+    file_name: Yup.string()
+      // .max(15, 'Must be 15 characters or less')
+      .required('file_name is Required'),
+  })
+
+  const handleSubmit = (file) => {
+    uploadFile(file)
+  }
   return (
     <React.Fragment>
       <div className="mx-3" {...getRootProps({ style })}>
@@ -196,7 +328,9 @@ export function MultipleFileUploadField({ name }: { name: string }) {
           <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
             or
             <span className="text-blue-600"> pick from local computer </span>
-            *.csv
+            {['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)
+              ? '*.pdf'
+              : '*.csv'}
             {/* <span className="text-blue-600"> get sample template</span> */}
           </time>
         </div>
@@ -231,9 +365,97 @@ export function MultipleFileUploadField({ name }: { name: string }) {
                 onUpload={onUpload}
                 file={fileWrapper.file}
               />
-              <div className="mt-2 p-6 bg-white border border-gray-100">
-                <LfileUploadTableHome fileRecords={fileRecords} />
-              </div>
+              {['Plan Diagram', 'Brouchers', 'Approvals'].includes(title) && (
+                <Formik
+                  initialValues={{
+                    file_name: '',
+                  }}
+                  // validationSchema={validate}
+                  onSubmit={(values, { resetForm }) => {
+                    console.log('ami submitted', values)
+                    uploadFile(fileWrapper.file)
+                    // onSubmitFun(values, resetForm)
+                  }}
+                >
+                  {(formik) => (
+                    <Form>
+                      {/* 2 */}
+                      <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-1">
+                        <div className="mb-3 space-y-2 w-full text-xs mt-4">
+                          <TextField
+                            label="File Name*"
+                            name="file_name"
+                            value={fileName}
+                            type="text"
+                            onChange={(e) => {
+                              setFileName(e.target.value)
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-8">
+                        <p className="text-xs text-red-400 text-right my-3">
+                          <abbr title="Required field">*</abbr> fields are
+                          mandatory
+                        </p>
+                        {formMessage === 'Saved Successfully..!' ||
+                          (formMessage === 'Uploaded Successfully..!' && (
+                            <p className=" flex text-md text-slate-800 text-right my-3">
+                              <img
+                                className="w-[40px] h-[40px] inline mr-2"
+                                alt=""
+                                src="/ok.gif"
+                              />
+                              <span className="mt-2">{formMessage}</span>
+                            </p>
+                          ))}
+                        {formMessage === 'Unit Already Exists' && (
+                          <p className=" flex text-md text-pink-800 text-right my-3">
+                            <img
+                              className="w-[40px] h-[40px] inline mr-2"
+                              alt=""
+                              src="/error.gif"
+                            />
+                            <span className="mt-2">{formMessage}</span>
+                          </p>
+                        )}
+                        <div className="mt-5 mt-8 text-right md:space-x-3 md:block flex flex-col-reverse">
+                          <button
+                            className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
+                            type="reset"
+                            onClick={() => resetter()}
+                          >
+                            Reset
+                          </button>
+
+                          <button
+                            className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
+                            type="reset"
+                            onClick={() => handleSubmit(fileWrapper.file)}
+                            disabled={loading}
+                          >
+                            {loading && <Loader />}
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              )}
+
+              {/* this is for csv file upload */}
+
+              {!['Plan Diagram', 'Brouchers', 'Approvals'].includes(title) && (
+                <div className="mt-2 p-6 bg-white border border-gray-100">
+                  <LfileUploadTableHome
+                    fileRecords={fileRecords}
+                    title={title}
+                    pId={pId}
+                    myBlock={myBlock}
+                  />
+                </div>
+              )}
             </section>
           )}
         </div>

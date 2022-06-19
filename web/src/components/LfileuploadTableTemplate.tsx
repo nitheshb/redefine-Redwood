@@ -26,7 +26,7 @@ import CSVDownloader from '../util/csvDownload'
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone'
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
-import { addLead, getLedsData1 } from 'src/context/dbQueryFirebase'
+import { addLead, addUnit, getLedsData1 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 
 // function createData(
@@ -199,6 +199,9 @@ const EnhancedTableToolbar = (props) => {
     setSearchKey,
     rows,
     sourceTab,
+    title,
+    pId,
+    myBlock,
   } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
@@ -241,6 +244,22 @@ const EnhancedTableToolbar = (props) => {
         newData['Status'] = 'unassigned'
         console.log('am inside addLeadstoDB', newData)
         return await addLead(newData, user?.email, 'Lead Created by csv')
+        console.log('am inside addLeadstoDB')
+      })
+    )
+    console.log('mappedArry', mappedArry)
+  }
+  const addUnitsToDB = async (records, pId) => {
+    const mappedArry = await Promise.all(
+      records.map(async (data) => {
+        const newData = data
+        newData['intype'] = 'bulk'
+        newData['pId'] = pId
+        newData['blockId'] = myBlock?.uid
+        newData['by'] = 'bulk'
+        newData['Status'] = 'available'
+        console.log('am inside addLeadstoDB', newData)
+        return await addUnit(newData, user?.email, 'Unit Created by csv')
         console.log('am inside addLeadstoDB')
       })
     )
@@ -310,6 +329,21 @@ const EnhancedTableToolbar = (props) => {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
+      ) : sourceTab != 'all' && title === 'Import Units' ? (
+        <span style={{ display: 'flex' }}>
+          <IconButton
+            aria-label="done"
+            onClick={() => addUnitsToDB(rowsAfterSearchKey, pId)}
+          >
+            <DoneIcon />
+          </IconButton>
+          <IconButton
+            aria-label="done"
+            onClick={() => onToggleEditMode(row.id)}
+          >
+            <RevertIcon></RevertIcon>
+          </IconButton>
+        </span>
       ) : sourceTab != 'all' ? (
         <span style={{ display: 'flex' }}>
           <IconButton
@@ -337,6 +371,9 @@ EnhancedTableToolbar.propTypes = {
   selStatus: PropTypes.string.isRequired,
   filteredData: PropTypes.array.isRequired,
   searchKey: PropTypes.string || PropTypes.number,
+  title: PropTypes.string,
+  pId: PropTypes.string,
+  myBlock: PropTypes.object,
 }
 
 const HighlighterStyle = (props) => {
@@ -353,49 +390,16 @@ const HighlighterStyle = (props) => {
     />
   )
 }
-const columns = [
-  { id: 'Date', label: 'Date', minWidth: 80 },
-  { id: 'Status', label: 'Status', minWidth: 100 },
-  {
-    id: 'Name',
-    label: 'Name',
-    minWidth: 10,
-    align: 'left',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'Mobile',
-    label: 'Mobile',
-    minWidth: 10,
-    align: 'left',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'Email',
-    label: 'Email',
-    minWidth: 10,
-    align: 'left',
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: 'Project',
-    label: 'Project',
-    minWidth: 10,
-    align: 'left',
-    format: (value) => value.toFixed(2),
-  },
-  {
-    id: 'Source',
-    label: 'Source',
-    minWidth: 10,
-    align: 'left',
-    format: (value) => value.toFixed(2),
-  },
-]
+let columns
+
+// title
 export default function LfileuploadTableTemplate({
   selStatus,
   rowsParent,
   sourceTab,
+  title,
+  pId,
+  myBlock,
 }) {
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('calories')
@@ -405,6 +409,90 @@ export default function LfileuploadTableTemplate({
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [rows, setRows] = React.useState([])
   const [searchKey, setSearchKey] = React.useState('')
+
+  React.useEffect(() => {
+    if (title === 'Import Units') {
+      columns = [
+        { id: 'unit_no', label: 'unit_no', minWidth: 80 },
+        { id: 'floor', label: 'floor', minWidth: 100 },
+        {
+          id: 'unit_type',
+          label: 'unit_type',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+          id: 'facing',
+          label: 'facing',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+          id: 'bed_rooms',
+          label: 'bed_rooms',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'carpet_area',
+          label: 'carpet_area',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'carpet_area_uom',
+          label: 'carpet_area_uom',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+      ]
+    } else {
+      columns = [
+        { id: 'Date', label: 'Date', minWidth: 80 },
+        { id: 'Status', label: 'Status', minWidth: 100 },
+        {
+          id: 'Name',
+          label: 'Name',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+          id: 'Mobile',
+          label: 'Mobile',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+          id: 'Email',
+          label: 'Email',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'Project',
+          label: 'Project',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'Source',
+          label: 'Source',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+      ]
+    }
+  }, [])
 
   React.useEffect(() => {
     filterStuff(rowsParent)
@@ -529,6 +617,9 @@ export default function LfileuploadTableTemplate({
           setSearchKey={setSearchKey}
           sourceTab={sourceTab}
           rows={rows}
+          title={title}
+          pId={pId}
+          myBlock={myBlock}
         />
         <TableContainer sx={{ maxHeight: 640 }}>
           <Table
@@ -541,7 +632,7 @@ export default function LfileuploadTableTemplate({
             <TableHead>
               <TableRow>
                 <TableCell>sNO</TableCell>
-                {columns.map((column, ind) => (
+                {columns?.map((column, ind) => (
                   <TableCell
                     key={ind}
                     align={column.align}

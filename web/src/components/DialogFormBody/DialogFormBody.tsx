@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
@@ -10,13 +10,19 @@ import { TextField } from 'src/util/formFields/TextField'
 import { TextAreaField } from 'src/util/formFields/TextAreaField'
 import { CustomRadioGroup } from 'src/util/formFields/CustomRadioGroup'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
+import { MultiSelectMultiLineField } from 'src/util/formFields/selectBoxMultiLineField'
 import {
   developmentTypes,
   projectPlans,
   statesList,
 } from 'src/constants/projects'
 import { AreaConverter } from 'src/components/AreaConverter'
-import { createProject, updateProject } from 'src/context/dbQueryFirebase'
+import {
+  createProject,
+  steamBankDetailsList,
+  updateProject,
+} from 'src/context/dbQueryFirebase'
+import AddBankDetailsForm from '../addBankDetailsForm'
 
 const DialogFormBody = ({ title, dialogOpen, project }) => {
   const [selected, setSelected] = useState(
@@ -25,9 +31,58 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
   const [devType, setdevType] = useState(
     project?.developmentType || developmentTypes[0]
   )
+  const [addNewBankStuff, setAddNewBankStuff] = useState(false)
   const [loading, setLoading] = useState(false)
   const [openAreaFields, setOpenAreaFields] = useState(false)
+  const [bankDetailsA, setBankDetailsA] = useState([])
+  const [existingBuildBankId, setNowBuilderBankDocId] = useState('')
+  const [existingLandBankId, setNowLandLordBankDocId] = useState('')
+  const [builerShare, setBuilderShare] = useState(100)
+  const [landLordShare, setLandLordShare] = useState(0)
   const { enqueueSnackbar } = useSnackbar()
+
+  useEffect(() => {
+    setNowBuilderBankDocId(project?.builderBankDocId)
+    setNowLandLordBankDocId(project?.landlordBankDocId)
+  }, [project?.editMode])
+
+  const EditedLandlord = (e, formik) => {
+    //
+    console.log(
+      'valare',
+      e.target.name === 'builderShare' && e.target.value != builerShare,
+      e.target.name,
+      e.target.value
+    )
+    if (
+      e.target.name === 'builderShare' &&
+      e.target.value != builerShare &&
+      e.target.value >= 0 &&
+      e.target.value <= 100
+    ) {
+      formik.setFieldValue('builderShare', e.target.value - 0)
+      formik.setFieldValue('landlordShare', 100 - e.target.value)
+      setBuilderShare(e.target.value)
+      setLandLordShare(100 - e.target.value)
+      console.log('my eis ', e.target.name)
+    } else if (
+      e.target.name === 'landlordShare' &&
+      e.target.value != landLordShare &&
+      e.target.value >= 0 &&
+      e.target.value <= 100
+    ) {
+      formik.setFieldValue('landlordShare', e.target.value - 0)
+      formik.setFieldValue('builderShare', 100 - e.target.value - 0)
+      setLandLordShare(e.target.value)
+      setBuilderShare(100 - e.target.value)
+    }
+  }
+  const EditedBuilderShare = (e) => {
+    // e.preventdefault()
+    // setLandLordShare(e.target.value)
+    // setBuilderShare(100 - e.target.value)
+    // console.log('my eis ', e.target.value)
+  }
 
   const onSubmit = async (data, resetForm) => {
     const updatedData = {
@@ -38,7 +93,13 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
     }
     setLoading(true)
     if (project?.editMode) {
-      await updateProject(project.uid, updatedData, enqueueSnackbar)
+      await updateProject(
+        project.uid,
+        updatedData,
+        existingBuildBankId,
+        existingLandBankId,
+        enqueueSnackbar
+      )
     } else {
       await createProject(updatedData, enqueueSnackbar, resetForm)
     }
@@ -49,12 +110,43 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
     setOpenAreaFields(!openAreaFields)
   }
 
+  useEffect(() => {
+    const unsubscribe = steamBankDetailsList(
+      (querySnapshot) => {
+        const addNewSetUp = [{ value: 'addNewOption', label: 'Add New' }]
+        const bankA = querySnapshot.docs.map((docSnapshot) => {
+          const x = docSnapshot.data()
+          x.id = docSnapshot.id
+          return x
+        })
+        bankA.map((user) => {
+          user.label = user?.accountName
+          user.value = user?.accountNo
+        })
+        console.log('fetched users list is', bankA)
+        setBankDetailsA([...addNewSetUp, ...bankA])
+      },
+      (error) => setBankDetailsA([])
+    )
+
+    return unsubscribe
+  }, [])
+
+  const closeAddNewFun = () => {
+    setAddNewBankStuff(false)
+  }
+
   const initialState = {
     projectName: project?.projectName || '',
     builderName: project?.builderName || '',
+    builder_bank_details: project?.builder_bank_details || '',
     builderGSTno: project?.builderGSTno || '',
     landlordName: project?.landlordName || '',
-    landlordShare: project?.landlordShare || '',
+    builderBankDocId: project?.builderBankDocId || '',
+    landlordBankDocId: project?.landlordBankDocId || '',
+    landlord_bank_details: project?.landlord_bank_details || '',
+    landlordShare: project?.landlordShare || landLordShare,
+    builderShare: project?.builderShare || builerShare,
     area: project?.area || '',
     location: project?.location || '',
     pincode: project?.pincode || '',
@@ -74,9 +166,6 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
     builderName: Yup.string()
       .min(3, 'Must be 3 characters or more')
       .required('Required'),
-    builderGSTno: Yup.string()
-      .length(15, 'Must be 15 characters')
-      .required('Required'),
     location: Yup.string().required('Required'),
     pincode: Yup.string()
       .required('Required')
@@ -84,7 +173,16 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
       .length(6, 'Must be 6 digits'),
     city: Yup.string().required('Required'),
     state: Yup.string().required('Required'),
-    area: Yup.number().required('Required'),
+    landlordShare:
+      devType.name === 'Joint'
+        ? Yup.number().required('Required')
+        : Yup.string().notRequired(),
+    builderShare: Yup.number().required('Required'),
+    builderBankDocId: Yup.string().required('Required'),
+    landlordBankDocId:
+      devType.name === 'Joint'
+        ? Yup.string().required('Required')
+        : Yup.string().notRequired(),
   })
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
@@ -128,35 +226,94 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
                         onChange={setdevType}
                       />
                       <div className="flex mt-3 mb-3 space-y-2 w-full text-xs">
-                        <div className="mt-2 mr-3 w-full">
-                          <TextField
-                            label="Builder Name*"
-                            name="builderName"
-                            type="text"
+                        <div className=" mt-2 mr-3 w-full">
+                          <MultiSelectMultiLineField
+                            label="Builder Bank Account*"
+                            name="builderBankDocId"
+                            onChange={(payload) => {
+                              console.log('changed value is ', payload)
+                              const { value, id, accountName } = payload
+                              formik.setFieldValue('builderName', accountName)
+                              formik.setFieldValue('landlordBankDocId', id)
+
+                              if (value === 'addNewOption') {
+                                setAddNewBankStuff(true)
+                              }
+                              formik.setFieldValue('builderBankDocId', id)
+                            }}
+                            value={formik.values.builderBankDocId}
+                            options={bankDetailsA}
+                            setAddNewBankStuff={setAddNewBankStuff}
                           />
+                          {formik.errors.builderBankDocId ? (
+                            <div className="error-message text-red-700 text-xs p-2">
+                              {formik.errors.builderBankDocId}
+                              {formik.values.builderBankDocId}
+                            </div>
+                          ) : null}
                         </div>
-                        <div className="mt-2 w-full">
-                          <TextField
-                            label="Builder GST No*"
-                            name="builderGSTno"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      {devType.name === 'Joint' && (
-                        <div className="flex mt-3 mb-3 space-y-2 w-full text-xs">
+                        {devType.name === 'Joint' && (
                           <div className="mt-2 mr-3 w-full">
                             <TextField
-                              label="LandLord Name*"
-                              name="landlordName"
-                              type="text"
+                              label="Builder Share*"
+                              name="builderShare"
+                              value={builerShare}
+                              onChange={(e) => EditedLandlord(e, formik)}
+                              type="number"
+                              id="numberSize"
                             />
                           </div>
-                          <div className="mt-2 w-full">
+                        )}
+                      </div>
+
+                      {addNewBankStuff && (
+                        <AddBankDetailsForm
+                          title={'Add New Account'}
+                          dialogOpen={closeAddNewFun}
+                          phase={'data'}
+                        />
+                      )}
+                      {devType.name === 'Joint' && (
+                        <div className="flex  mb-3 space-y-2 w-full text-xs">
+                          <div className=" mt-2 mr-3 w-full">
+                            <MultiSelectMultiLineField
+                              label="Landlord Bank Account*"
+                              name="landlordBankDocId"
+                              onChange={(payload) => {
+                                console.log('changed value is ', payload)
+                                const { value, id, accountName } = payload
+                                formik.setFieldValue(
+                                  'landlordName',
+                                  accountName
+                                )
+                                formik.setFieldValue('landlordBankDocId', id)
+
+                                console.log('changed value is ', value)
+
+                                if (value === 'addNewOption') {
+                                  setAddNewBankStuff(true)
+                                }
+                                formik.setFieldValue('landlordBankDocId', id)
+                              }}
+                              value={formik.values.landlordBankDocId}
+                              options={bankDetailsA}
+                              setAddNewBankStuff={setAddNewBankStuff}
+                            />
+                            {formik.errors.landlordBankDocId ? (
+                              <div className="error-message text-red-700 text-xs p-2">
+                                {formik.errors.landlordBankDocId}
+                                {formik.values.landlordBankDocId}
+                              </div>
+                            ) : null}
+                          </div>
+
+                          <div className="mt-2 mr-3 w-full">
                             <TextField
                               label="LandLord Share*"
                               name="landlordShare"
-                              type="text"
+                              value={landLordShare}
+                              type="number"
+                              onChange={(e) => EditedLandlord(e, formik)}
                             />
                           </div>
                         </div>
@@ -233,7 +390,7 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
                           <CustomSelect
                             name="state"
                             label="State*"
-                            className="input mt-3"
+                            className="input mt-2"
                             onChange={({ value }) => {
                               formik.setFieldValue('state', value)
                             }}

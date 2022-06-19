@@ -10,6 +10,9 @@ import CustomerProfileSideView from '../customerProfileSideView'
 import AdditionalChargesForm from '../AdditionalChargesForm/AdditionalChargesForm'
 import PaymentScheduleForm from '../PaymentScheduleForm/PaymentScheduleForm'
 import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
+import AddUnit from '../AddUnit'
+import { pid } from 'process'
+import AddBankDetailsForm from '../addBankDetailsForm'
 
 const SiderForm = ({
   open,
@@ -18,6 +21,13 @@ const SiderForm = ({
   customerDetails = {},
   data = {},
   onCloseDisabled = false,
+  pId,
+  phaseFeed,
+  BlockFeed,
+  myBlock,
+  projectDetails,
+  phaseDetails,
+  blockDetails,
   widthClass = 'max-w-4xl',
 }) => {
   // const [open, setOpen] = useState(true)
@@ -53,7 +63,10 @@ const SiderForm = ({
             >
               <div
                 className={`relative w-screen ${
-                  title === 'Add Lead' || title === 'User Profile'
+                  title === 'Add Lead' ||
+                  title === 'User Profile' ||
+                  title === 'Create Project' ||
+                  title === 'Edit Project'
                     ? 'max-w-2xl'
                     : widthClass
                 }`}
@@ -100,8 +113,33 @@ const SiderForm = ({
                     data={data}
                   />
                 )}
+                {title === 'Import Units' && (
+                  <LeadsDropHomes
+                    title={title}
+                    dialogOpen={setOpen}
+                    pId={pId}
+                    myPhase={phaseDetails}
+                    myBlock={myBlock}
+                  />
+                )}
+                {title === 'Add Unit' && (
+                  <AddUnit
+                    title={title}
+                    phaseFeed={phaseFeed}
+                    BlockFeed={BlockFeed}
+                    dialogOpen={setOpen}
+                    projectDetails={projectDetails}
+                    phaseDetails={phaseDetails}
+                    blockDetails={blockDetails}
+                  />
+                )}
+
                 {title === 'Import Leads' && (
-                  <LeadsDropHomes title={title} dialogOpen={setOpen} />
+                  <LeadsDropHomes
+                    title={title}
+                    dialogOpen={setOpen}
+                    pId={pId}
+                  />
                 )}
                 {title === 'Add Lead' && (
                   <AddLeadForm title={title} dialogOpen={setOpen} />
@@ -123,6 +161,50 @@ const SiderForm = ({
                     title={title}
                     dialogOpen={setOpen}
                     data={data}
+                  />
+                )}
+                {title === 'Plan Diagram' && (
+                  <LeadsDropHomes
+                    title={title}
+                    dialogOpen={setOpen}
+                    pId={pId}
+                    source={'planDiagram'}
+                    myPhase={phaseDetails}
+                    myBlock={myBlock}
+                  />
+                )}
+                {title === 'Brouchers' && (
+                  <LeadsDropHomes
+                    title={title}
+                    dialogOpen={setOpen}
+                    pId={pId}
+                    source={'Brouchers'}
+                    myPhase={phaseDetails}
+                    myBlock={myBlock}
+                  />
+                )}
+                {title === 'Approvals' && (
+                  <LeadsDropHomes
+                    title={title}
+                    dialogOpen={setOpen}
+                    pId={pId}
+                    source={'Approvals'}
+                    myPhase={phaseDetails}
+                    myBlock={myBlock}
+                  />
+                )}
+                {title === 'Bank Accounts' && (
+                  <AddBankDetailsForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    phase={data}
+                  />
+                )}
+                {title === 'Virtual Accounts' && (
+                  <AddBankDetailsForm
+                    title={title}
+                    dialogOpen={setOpen}
+                    phase={data}
                   />
                 )}
               </div>

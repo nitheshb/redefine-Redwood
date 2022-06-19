@@ -4,6 +4,7 @@ import ProjectStatsCard from '../ProjectStatsCard/ProjectStatsCard'
 
 import { PencilIcon, EyeIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
+import PieChartProject from '../comps/pieChartProject'
 
 const projectFeedData = [
   { k: 'Total', v: 125, pic: '' },
@@ -185,42 +186,13 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
               <ProjectStatsCard
                 kind="Units"
                 iconP="/m2.png"
-                feedData={projectFeedData}
+                feedData={unitFeedData}
                 bg="#ebf9f9"
                 currency={false}
               />
             </span>
 
-            <span
-            // onClick={() =>
-            //   areaDetailView(
-            //     !areaView,
-            //     '#fef7f7',
-            //     unitFeedData,
-            //     'Area',
-            //     false
-            //   )
-            // }
-            >
-              <ProjectStatsCard
-                kind="Area"
-                iconP="/l2.png"
-                feedData={unitFeedData}
-                bg="#fef7f7"
-                currency={false}
-              />
-            </span>
-            <span
-            // onClick={() =>
-            //   valueDetailView(
-            //     !valueView,
-            //     '#f3f5ff',
-            //     valueFeedData,
-            //     'Values',
-            //     true
-            //   )
-            // }
-            >
+            <span>
               <ProjectStatsCard
                 kind="Values"
                 iconP="/m4.png"
@@ -228,6 +200,24 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                 bg="#f3f5ff"
                 currency={true}
               />
+            </span>
+            {/* <span>
+              <ProjectStatsCard
+                kind="Area"
+                iconP="/m4.png"
+                feedData={unitFeedData}
+                bg="#f3f5ff"
+                currency={true}
+              />
+            </span> */}
+
+            <span>
+              <section
+                className="flex "
+                style={{ width: '580px', height: '270px' }}
+              >
+                <PieChartProject />
+              </section>
             </span>
           </div>
           {/* {unitsView && (

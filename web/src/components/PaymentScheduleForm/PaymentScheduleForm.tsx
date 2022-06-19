@@ -190,11 +190,14 @@ const PaymentScheduleForm = ({ title, data }) => {
   }
 
   return (
-    <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
+    <div className="h-full flex flex-col mt-6 mb-6 bg-white shadow-xl overflow-y-scroll">
       <div className="z-10">
-        <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        {/* <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
-        </Dialog.Title>
+        </Dialog.Title> */}
+        <span className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
+          {title}
+        </span>
         <div className="mt-2">
           <MaterialCRUDTable
             title=""
@@ -210,7 +213,7 @@ const PaymentScheduleForm = ({ title, data }) => {
               doubleHorizontalScroll: true,
             }}
             style={{
-              padding: '0 0.25rem',
+              padding: '30px',
             }}
             actionsCellStyle={{
               width: 'auto',

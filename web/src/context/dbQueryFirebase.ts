@@ -12,7 +12,7 @@ import {
   query,
   where,
   Timestamp,
-  // FieldValue,
+  increment,
   updateDoc,
   deleteDoc,
   limit,
@@ -39,6 +39,18 @@ export const steamUsersListByRole = (snapshot, error) => {
     collection(db, 'users'),
     where('roles', 'array-contains-any', ['sales-manager', 'sales-executive'])
   )
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+
+// get all bank detials list
+export const steamBankDetailsList = (snapshot, error) => {
+  const itemsQuery = query(collection(db, 'spark_BankDetails'))
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+
+// get all Virtual Accounts detials list
+export const steamVirtualAccountsList = (snapshot, error) => {
+  const itemsQuery = query(collection(db, 'spark_VirtualAccounts'))
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
@@ -225,6 +237,18 @@ export const getLedsData = async () => {
     console.log('error in db', error)
   }
 }
+export const getUnits = (snapshot, data, error) => {
+  const { status, pId, blockId } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_units'),
+    where('pId', '==', pId),
+    where('blockId', '==', blockId)
+  )
+
+  console.log('hello ', status, itemsQuery, data)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
 export const getCustomerDocs = async (uid: string, snapshot, error) => {
   try {
     const getAllProjectByIdQuery = await query(
@@ -236,6 +260,23 @@ export const getCustomerDocs = async (uid: string, snapshot, error) => {
     console.log('error in db', error)
   }
 }
+
+export const getPlanDiagramByPhase = async (data, snapshot, error) => {
+  const { pId, phaseId, type } = data
+  console.log('plandiagram data is', data)
+  try {
+    const getAllProjectByIdQuery = await query(
+      collection(db, 'spark_project_docs'),
+      where('pId', '==', pId),
+      where('phaseId', '==', phaseId),
+      where('type', '==', type)
+    )
+    return onSnapshot(getAllProjectByIdQuery, snapshot, error)
+  } catch (error) {
+    console.log('error in db', error)
+  }
+}
+
 export const getUser = async (uid: string) => {
   try {
     const userRef = doc(db, 'users', uid)
@@ -276,6 +317,41 @@ export const checkIfLeadAlreadyExists = async (cName, matchVal) => {
   // db.collection('spark_leads').add(data)
 }
 
+export const checkIfUnitAlreadyExists = async (
+  cName,
+  pId,
+  phaseId,
+  blockId,
+  unitId
+) => {
+  // db.collection('spark_leads').doc().set(data)
+  // db.collection('')
+  console.log('inoinel', pId, phaseId, blockId, unitId)
+  const q = await query(
+    collection(db, cName),
+    where('unit_no', '==', unitId),
+    where('phaseId', '==', phaseId),
+    where('blockId', '==', blockId),
+    where('pId', '==', pId)
+  )
+
+  const querySnapshot = await getDocs(q)
+  await console.log('foundLength @@', querySnapshot.docs.length)
+  // return await querySnapshot.docs.length
+  const parentDocs = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log('dc', doc.id, ' => ', doc.data())
+    parentDocs.push(doc.data())
+  })
+
+  return parentDocs
+
+  // await console.log('length is ', q.length)
+  // return await q.length
+
+  // db.collection('spark_leads').add(data)
+}
 export const getAllRoleAccess = async () => {
   // userAccessRoles.forEach(async (element) => {
   //   const r = 'A' + Math.random() * 100000000000000000 + 'Z'
@@ -437,6 +513,63 @@ export const addLead = async (data, by, msg) => {
   return
 }
 
+export const addUnit = async (data, by, msg) => {
+  const x = await addDoc(collection(db, 'spark_units'), data)
+  await console.log('x value is', x, x.id)
+  // await addLeadLog(x.id, {
+  //   s: 's',
+  //   type: 'status',
+  //   subtype: 'added',
+  //   T: Timestamp.now().toMillis(),
+  //   txt: msg,
+  //   by,
+  // })
+
+  // add task to scheduler to Intro call in 3 hrs
+  const { pId, phaseId, blockId, builtup_area, rate_per_sqft } = data
+
+  addUnitComputedValues(
+    'projects',
+    pId,
+    builtup_area * rate_per_sqft,
+    builtup_area,
+    1
+  )
+  addUnitComputedValues(
+    'phases',
+    phaseId,
+    builtup_area * rate_per_sqft,
+    builtup_area,
+    1
+  )
+  addUnitComputedValues(
+    'blocks',
+    blockId,
+    builtup_area * rate_per_sqft,
+    builtup_area,
+    1
+  )
+
+  return
+}
+export const addBankAccount = async (
+  data,
+  by,
+  msg,
+  enqueueSnackbar,
+  resetForm
+) => {
+  const x = await addDoc(collection(db, 'spark_BankDetails'), data)
+  enqueueSnackbar('Account added successfully', {
+    variant: 'success',
+  })
+  resetForm()
+  return
+}
+export const addVirtualAccount = async (data, by, msg) => {
+  await addDoc(collection(db, 'spark_VirtualAccounts'), data)
+  return
+}
 export const addLeadNotes = async (id, data) => {
   const xo = data?.ct
   const yo = {
@@ -524,8 +657,22 @@ export const createProject = async (element, enqueueSnackbar, resetForm) => {
       uid,
       created: Timestamp.now().toMillis(),
     }
+    const {
+      builderBankDocId,
+      landlordBankDocId,
+      projectName,
+      landlordShare,
+      builderShare,
+    } = element
     const ref = doc(db, 'projects', uid)
     await setDoc(ref, updated, { merge: true })
+    await updateBankEntry(builderBankDocId, uid, projectName, builderShare)
+    await updateBankEntry(landlordBankDocId, uid, projectName, landlordShare)
+    await addVirtualAccount(
+      { accountName: projectName, accountNo: uid },
+      'nithe.nithesh@gmail.com',
+      'its virtual Account'
+    )
     enqueueSnackbar('Project added successfully', {
       variant: 'success',
     })
@@ -559,6 +706,7 @@ export const createPhase = async (element, enqueueSnackbar, resetForm) => {
 }
 
 export const createBlock = async (element, enqueueSnackbar, resetForm) => {
+  console.log('it is ', element)
   try {
     const uid = uuidv4()
     const updated = {
@@ -633,6 +781,31 @@ export const createAttach = async (url, by, name, cUid, type) => {
     console.log('error in db', error)
   }
 }
+export const createPhaseAssets = async (
+  url,
+  by,
+  name,
+  pId,
+  phaseId,
+  type,
+  format
+) => {
+  try {
+    const docRef = await addDoc(collection(db, 'spark_project_docs'), {
+      name,
+      url,
+      by,
+      pId,
+      phaseId,
+      type,
+      format,
+      cTime: Timestamp.now().toMillis(),
+    })
+    return docRef
+  } catch (error) {
+    console.log('error in db', error, pId)
+  }
+}
 // **********************************************
 // updateF
 // **********************************************
@@ -683,12 +856,41 @@ export const updateAccessRoles = async (
   }
 }
 
-export const updateProject = async (uid, project, enqueueSnackbar) => {
+export const updateProject = async (
+  uid,
+  project,
+  existingBuildBankId,
+  existingLandBankId,
+  enqueueSnackbar
+) => {
   try {
     await updateDoc(doc(db, 'projects', uid), {
       ...project,
       updated: Timestamp.now().toMillis(),
     })
+    const {
+      projectName,
+      builderBankDocId,
+      landlordBankDocId,
+      landlordShare,
+      builderShare,
+    } = project
+    console.log('my master setup Is', {
+      projectName,
+      builderBankDocId,
+      landlordBankDocId,
+      landlordShare,
+      builderShare,
+    })
+    if (builderBankDocId != existingBuildBankId) {
+      await removeProjectInBankEntry(existingBuildBankId, uid, projectName)
+      await updateBankEntry(builderBankDocId, uid, projectName, builderShare)
+    }
+    if (landlordBankDocId != existingLandBankId) {
+      await removeProjectInBankEntry(existingLandBankId, uid, projectName)
+      await updateBankEntry(landlordBankDocId, uid, projectName, landlordShare)
+    }
+
     enqueueSnackbar('Project updated successfully', {
       variant: 'success',
     })
@@ -698,7 +900,57 @@ export const updateProject = async (uid, project, enqueueSnackbar) => {
     })
   }
 }
+export const updateBankEntry = async (
+  newBankDocId,
+  pId,
+  projectName,
+  share
+) => {
+  try {
+    await updateDoc(doc(db, 'spark_BankDetails', newBankDocId), {
+      usedIn: increment(1),
+      usedInA: arrayUnion({ pId: pId, pName: projectName, share: share }),
+      updated: Timestamp.now().toMillis(),
+    })
+  } catch (e) {
+    console.log('updateBankEntry error', e)
+  }
+}
+export const removeProjectInBankEntry = async (
+  oldbankDocId,
+  pId,
+  projectName
+) => {
+  try {
+    if (oldbankDocId === '') return
+    // get the exisiting usedInA from old docId and filter the matched project Id
+    console.log('oldbankDocId', oldbankDocId)
+    const getBankProfile = doc(db, 'spark_BankDetails', oldbankDocId)
+    // let records
+    // const docSnap1 = await await getDoc(getBankProfile)
+    // if (docSnap1.exists()) {
+    //   records = docSnap1.data()
+    // } else {
+    //   // doc.data() will be undefined in this case
+    //   console.log('No such document!')
+    //   return null
+    // }
+    // const { usedInA } = records
+    // try {
+    //   const removedUsedinA = usedInA?.filter((item) => item.pId != pId)
 
+    //   await updateDoc(doc(db, 'spark_BankDetails', oldbankDocId), {
+    //     usedIn: increment(-1),
+    //     usedInA: removedUsedinA,
+    //     updated: Timestamp.now().toMillis(),
+    //   })
+    // } catch (error) {
+    //   console.log('error1 ', error, usedInA, pId)
+    // }
+  } catch (e) {
+    console.log('updateBankEntry error', e, oldbankDocId)
+  }
+}
 export const updatePhase = async (uid, project, enqueueSnackbar) => {
   try {
     await updateDoc(doc(db, 'phases', uid), {
@@ -726,6 +978,21 @@ export const updateBlock = async (uid, project, enqueueSnackbar) => {
       { merge: true }
     )
     enqueueSnackbar('Block updated successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+export const updateBlock_AddFloor = async (uid, floorName, enqueueSnackbar) => {
+  try {
+    await updateDoc(doc(db, 'blocks', uid), {
+      floorA: arrayUnion(floorName),
+      updated: Timestamp.now().toMillis(),
+    })
+    enqueueSnackbar(`Floor ${floorName} added updated successfully`, {
       variant: 'success',
     })
   } catch (e) {
@@ -854,6 +1121,43 @@ export const deleteUser = async (uid, by, email, myRole) => {
   })
 }
 
+export const deleteAsset = async (uid, by, email, myRole) => {
+  await deleteDoc(doc(db, 'spark_project_docs', uid))
+  // return await addUserLog({
+  //   s: 's',
+  //   type: 'deleteRole',
+  //   subtype: 'deleteRole',
+  //   txt: `Employee ${email} as ${myRole} is deleted`,
+  //   by,
+  // })
+}
+export const deleteBankAccount = async (
+  uid,
+  by,
+  email,
+  myRole,
+  enqueueSnackbar
+) => {
+  try {
+    await deleteDoc(doc(db, 'spark_project_docs', uid))
+    enqueueSnackbar('Payment deleted successfully', {
+      variant: 'success',
+    })
+  } catch (error) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+
+  // return await addUserLog({
+  //   s: 's',
+  //   type: 'deleteRole',
+  //   subtype: 'deleteRole',
+  //   txt: `Employee ${email} as ${myRole} is deleted`,
+  //   by,
+  // })
+}
+
 export const deletePayment = async (uid, enqueueSnackbar) => {
   try {
     await deleteDoc(doc(db, 'paymentSchedule', uid))
@@ -888,4 +1192,31 @@ export const deleteSchLog = async (uid, kId, newStat, schStsA, schStsMA) => {
     staDA: schStsMA,
     [kId]: deleteField(),
   })
+}
+
+/// **********************************************
+// Manipulators
+// **********************************************
+
+export const addUnitComputedValues = async (
+  c_name,
+  docId,
+  value,
+  area,
+  unitCount
+) => {
+  const yo = {
+    totalValue: increment(value),
+    totalArea: increment(area),
+    totalUnitCount: increment(unitCount),
+    availableCount: increment(unitCount),
+  }
+  try {
+    const washingtonRef = doc(db, c_name, docId)
+
+    await updateDoc(washingtonRef, yo)
+  } catch (error) {
+    await setDoc(doc(db, c_name, docId), yo)
+  }
+  return
 }

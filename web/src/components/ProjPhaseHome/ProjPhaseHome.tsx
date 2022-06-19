@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useParams } from '@redwoodjs/router'
-import { PencilIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
+import {
+  PencilIcon,
+  EyeIcon,
+  EyeOffIcon,
+  PlusIcon,
+} from '@heroicons/react/outline'
 import {
   getPhasesByProject,
   getBlocksByPhase,
@@ -8,10 +13,16 @@ import {
 import SiderForm from 'src/components/SiderForm/SiderForm'
 import Blockdetails from 'src/components/Blockdetails/Blockdetails'
 import DummyBodyLayout from 'src/components/DummyBodyLayout/DummyBodyLayout'
+import AdditionalChargesForm from '../AdditionalChargesForm/AdditionalChargesForm'
+import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
+import PaymentScheduleForm from '../PaymentScheduleForm/PaymentScheduleForm'
+import PlanDiagramView from '../planDiagramView'
 
-const ProjPhaseHome = () => {
+const ProjPhaseHome = ({ projectDetails }) => {
   // phases
   const [phases, setPhases] = useState([])
+  const [phaseViewFeature, setPhaseViewFeature] = useState('Blocks')
+
   // blocks
   const [blocks, setBlocks] = useState({})
   // Set button id
@@ -71,6 +82,12 @@ const ProjPhaseHome = () => {
   useEffect(() => {
     getPhases()
   }, [])
+
+  useEffect(() => {
+    if (phases.length > 0) {
+      getBlocks(phases[0]['uid'] || '')
+    }
+  }, [phases])
 
   return (
     <div>
@@ -134,6 +151,7 @@ const ProjPhaseHome = () => {
             pic: '/p1.png',
           },
         ]
+
         return (
           <section
             key={phase?.uid}
@@ -147,7 +165,7 @@ const ProjPhaseHome = () => {
                     {phase?.phaseName}
                   </span>
 
-                  <section className="flex ml-auto mt-[18px] mb-3">
+                  {/* <section className="flex ml-auto mt-[18px] mb-3">
                     <button
                       onClick={() => {
                         setButtonId({
@@ -265,38 +283,90 @@ const ProjPhaseHome = () => {
                       <PencilIcon className="h-3 w-3 mr-1" aria-hidden="true" />
                       More Details
                     </button>
-                  </section>
+                  </section> */}
                 </div>
 
-                <div className="grid grid-cols-6 grid-flow-col gap-2">
-                  {aprtConfig.map((data, i) => {
-                    return (
-                      <span key={i} className="inline-flex mb-2">
-                        <span className="text-sm font-medium text-gray-500 ">
-                          {' '}
-                          {data.k}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1"> {data.v}</span>
-                      </span>
-                    )
-                  })}
+                <div className=" border-gray-800 ">
+                  <ul
+                    className="flex justify-  rounded-t-lg border-b"
+                    id="myTab"
+                    data-tabs-toggle="#myTabContent"
+                    role="tablist"
+                  >
+                    {[
+                      { lab: 'Report', val: 'Report' },
+                      { lab: 'Blocks', val: 'Blocks' },
+                      { lab: 'Additional Charges', val: 'Additional Charges' },
+                      { lab: 'Payment Schedule', val: 'Payment Schedule' },
+                      { lab: 'Plan Diagram', val: 'Plan Diagram' },
+                      { lab: 'Brouchers', val: 'Brouchers' },
+                      { lab: 'Approvals', val: 'Approvals' },
+                      { lab: 'Bank Details', val: 'Bank Details' },
+                      { lab: 'More Details', val: 'More Details' },
+                    ].map((d, i) => {
+                      return (
+                        <li key={i} className="mr-2" role="presentation">
+                          <button
+                            className={`inline-block py-3 px-4 text-sm font-medium text-center rounded-t-lg border-b-2  hover:text-blue hover:border-gray-300   ${
+                              phaseViewFeature === d.val
+                                ? 'border-black border-b-3'
+                                : 'border-transparent'
+                            }`}
+                            type="button"
+                            role="tab"
+                            onClick={() => setPhaseViewFeature(d.val)}
+                          >
+                            {`${d.lab} `}
+                            {/* <span className="bg-gray-100 px-2 py-1 rounded-full">
+                          {/* {rowsCounter(leadsFetchedData, d.val).length} */}
+                          </button>
+                        </li>
+                      )
+                    })}
+                  </ul>
                 </div>
-                <div className="grid grid-cols-6 grid-flow-col gap-2">
-                  {reraConfig.map((data, i) => {
-                    return (
-                      <span key={i} className="inline-flex mb-2">
-                        <span className="text-sm font-medium text-gray-500 ">
-                          {' '}
-                          {data.k}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1"> {data.v}</span>
-                      </span>
-                    )
-                  })}
-                </div>
-                {buttonId[`add-block-${phase.uid}`] ? (
-                  blocks[phase.uid]?.length ? (
-                    <Blockdetails blocks={blocks[phase.uid]} />
+
+                {phaseViewFeature === 'Report' && (
+                  <>
+                    <div className="grid grid-cols-6 grid-flow-col gap-2 mt-6">
+                      {aprtConfig.map((data, i) => {
+                        return (
+                          <span key={i} className="inline-flex mb-2">
+                            <span className="text-sm font-medium text-gray-500 ">
+                              {' '}
+                              {data.k}:{'  '}
+                            </span>
+                            <span className="text-sm ml-1"> {data.v}</span>
+                          </span>
+                        )
+                      })}
+                    </div>
+
+                    <div className="grid grid-cols-6 grid-flow-col gap-2">
+                      {reraConfig.map((data, i) => {
+                        return (
+                          <span key={i} className="inline-flex mb-2">
+                            <span className="text-sm font-medium text-gray-500 ">
+                              {' '}
+                              {data.k}:{'  '}
+                            </span>
+                            <span className="text-sm ml-1"> {data.v}</span>
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+                {phaseViewFeature === 'Blocks' &&
+                  (blocks[phase.uid]?.length ? (
+                    <Blockdetails
+                      blocks={blocks[phase.uid]}
+                      blockPayload={blocks}
+                      phaseFeed={phases}
+                      pId={uid}
+                      projectDetails={projectDetails}
+                      phaseDetails={phase}
+                    />
                   ) : !blocks[phase.uid] ? (
                     <DummyBodyLayout />
                   ) : (
@@ -307,9 +377,78 @@ const ProjPhaseHome = () => {
                         src="/l1.png"
                       ></img>
                       Blocks are not created yet
+                      <button
+                        onClick={() => {
+                          setSliderInfo({
+                            open: true,
+                            title: 'Add Block',
+                            sliderData: {
+                              phase,
+                              block: {},
+                            },
+                            widthClass: 'max-w-2xl',
+                          })
+                        }}
+                        className={
+                          'flex ml-2  cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-full hover:bg-pink-200 hover:text-pink-800 text-green-800 '
+                        }
+                      >
+                        <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Add block
+                      </button>
                     </div>
-                  )
-                ) : null}
+                  ))}
+
+                {phaseViewFeature === 'Additional Charges' && (
+                  <AdditionalChargesForm
+                    title={'Additional Charges'}
+                    data={{ phase: phase }}
+                  />
+                )}
+                {phaseViewFeature === 'Payment Schedule' && (
+                  <PaymentScheduleForm
+                    title={'Payment Schedule'}
+                    data={{ phase: phase }}
+                  />
+                )}
+                {phaseViewFeature === 'Plan Diagram' && (
+                  <PlanDiagramView
+                    title={'Plan Diagram'}
+                    data={phase}
+                    blocks={[]}
+                    pId={uid}
+                  />
+                )}
+                {phaseViewFeature === 'Brouchers' && (
+                  <PlanDiagramView
+                    title={'Brouchers'}
+                    data={phase}
+                    blocks={[]}
+                    pId={uid}
+                  />
+                )}
+                {phaseViewFeature === 'Approvals' && (
+                  <PlanDiagramView
+                    title={'Approvals'}
+                    data={phase}
+                    blocks={[]}
+                    pId={uid}
+                  />
+                )}
+                {phaseViewFeature === 'Bank Details' && (
+                  <PaymentScheduleForm
+                    title={'Payment Schedule'}
+                    data={{ phase: phase }}
+                  />
+                )}
+
+                {phaseViewFeature === 'More Details' && (
+                  <MoreDetailsPhaseForm
+                    title={'More Detailss'}
+                    dialogOpen={'false'}
+                    data={{ phase: phase }}
+                  />
+                )}
               </div>
             </div>
           </section>
@@ -321,6 +460,7 @@ const ProjPhaseHome = () => {
         title={sliderInfo.title}
         data={sliderInfo.sliderData}
         widthClass={sliderInfo.widthClass}
+        pid={uid}
       />
     </div>
   )

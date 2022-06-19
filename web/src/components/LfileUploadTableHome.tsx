@@ -526,7 +526,7 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
   },
 }))
 
-const LfileUploadTableHome = ({ fileRecords }) => {
+const LfileUploadTableHome = ({ fileRecords, title, pId, myBlock }) => {
   // change navbar title
   // useTitle('Data Table V1')
   const { t } = useTranslation()
@@ -629,25 +629,32 @@ const LfileUploadTableHome = ({ fileRecords }) => {
             {/*  Data Table */}
             {value === 'all' && (
               <LfileuploadTableTemplate
+                title={title}
                 selStatus={'all'}
                 rowsParent={fileRecords}
                 sourceTab={value}
+                pId={pId}
               />
             )}
             {value === 'validR' && (
               <LfileuploadTableTemplate
                 selStatus={'all'}
+                title={title}
                 rowsParent={validRows}
                 sourceTab={value}
+                pId={pId}
+                myBlock={myBlock}
               />
             )}
             {value === 'duplicateR' &&
               dupeDatais.map((data, index) => (
                 <LfileuploadTableTemplate
                   key={index}
+                  title={title}
                   selStatus={'all'}
                   rowsParent={dupRows}
                   sourceTab={value}
+                  pId={pId}
                 />
               ))}
 

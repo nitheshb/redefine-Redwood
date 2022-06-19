@@ -208,3 +208,55 @@ export const unitsCancellation = [
     label: 'Percentage',
   },
 ]
+export const bankPreferredType = [
+  {
+    value: 'Rera Account',
+    label: 'Rera Account',
+  },
+  {
+    value: 'Builder Account',
+    label: 'Builder Account',
+  },
+  {
+    value: 'Land Lord',
+    label: 'Landlord Account',
+  },
+]
+export const banksList = [
+  {
+    value: 'State Bank of India',
+    label: 'statebankofindia',
+  },
+  {
+    value: 'Canara Bank',
+    label: 'canarabank',
+  },
+  {
+    value: 'Karnataka Bank',
+    label: 'karnatakabank',
+  },
+  {
+    value: 'Hdfc Bank',
+    label: 'hdfcbank',
+  },
+  {
+    value: 'Icici Bank',
+    label: 'icicibank',
+  },
+  {
+    value: 'Bank of Barodo',
+    label: 'bankofbarodo',
+  },
+  {
+    value: 'Axis Bank',
+    label: 'axisbank',
+  },
+  {
+    value: 'Union Bank of India',
+    label: 'unionbankofindia',
+  },
+  {
+    value: 'Kotak Mahindra',
+    label: 'kotakmahindra',
+  },
+]

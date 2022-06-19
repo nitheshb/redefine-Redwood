@@ -79,7 +79,7 @@ const ProjectEditPage = () => {
                     setIsEditProjectOpen(true)
                   }}
                 />
-                <ProjPhaseHome />
+                <ProjPhaseHome projectDetails={project} />
               </>
             ) : (
               <DummyBodyLayout />

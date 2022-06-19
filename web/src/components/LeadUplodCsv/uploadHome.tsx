@@ -8,7 +8,13 @@ import { parse } from 'papaparse'
 import csv from 'csvtojson'
 import { addLead, getLedsData } from '../../context/dbQueryFirebase'
 
-export default function LeadsDropHomes({ title, dialogOpen }) {
+export default function LeadsDropHomes({
+  title,
+  dialogOpen,
+  pId,
+  myPhase,
+  myBlock,
+}) {
   const [existingCols, setexistingCols] = useState([])
 
   const parseExcel = async (values) => {
@@ -31,8 +37,8 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
           console.log('Finished:', existingCols)
         },
       })
-    }else{
-      'hello'
+    } else {
+      ;('hello')
     }
   }
   return (
@@ -43,6 +49,11 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
         </Dialog.Title>
       </div>
       <div className="grid  gap-8 grid-cols-1">
+        {title === 'import Unit' && (
+          <div className="flex flex-col  my-10 rounded-lg  px-4 m-4 mt-12">
+            Block:{' '}
+          </div>
+        )}
         <div className="flex flex-col  my-10 rounded-lg  px-4 m-4 mt-12">
           <Formik
             initialValues={{ files: null }}
@@ -59,30 +70,34 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
                 type: values.files[0].type,
                 size: `${values.files[0].size} bytes`,
               })
-              try {
-                const jsonArray = await csv().fromFile(
-                  values.files[0].file.path
-                )
 
-                await console.log('jsonArray is ', jsonArray)
-              } catch (error) {
-                console.log('error at jsonArray', error)
+              if (title === 'Plan Diagram') {
+              } else {
+                try {
+                  const jsonArray = await csv().fromFile(
+                    values.files[0].file.path
+                  )
+
+                  await console.log('jsonArray is ', jsonArray)
+                } catch (error) {
+                  console.log('error at jsonArray', error)
+                }
+
+                parse(values.files[0].file, {
+                  header: true,
+                  // download: true,
+                  complete: async function (input) {
+                    const records = input.data
+                    await setexistingCols((existing) => [
+                      ...existing,
+                      ...input.data,
+                    ])
+                    // let x =   await getLedsData()
+                    // await addLead(existingCols)
+                    console.log('Finished:', existingCols)
+                  },
+                })
               }
-
-              parse(values.files[0].file, {
-                header: true,
-                // download: true,
-                complete: async function (input) {
-                  const records = input.data
-                  await setexistingCols((existing) => [
-                    ...existing,
-                    ...input.data,
-                  ])
-                  // let x =   await getLedsData()
-                  // await addLead(existingCols)
-                  console.log('Finished:', existingCols)
-                },
-              })
               // const myFiles = Array.from(values.files)
               // console.log('upload file values', values)
               // console.log('vsv data is ', myFiles)
@@ -124,7 +139,13 @@ export default function LeadsDropHomes({ title, dialogOpen }) {
               // {parseExcel(values)}
               <Form>
                 <Grid container spacing={2} direction="column">
-                  <MultipleFileUploadField name="files" />
+                  <MultipleFileUploadField
+                    name="files"
+                    title={title}
+                    pId={pId}
+                    myPhase={myPhase}
+                    myBlock={myBlock}
+                  />
 
                   {/* <Grid item>
                     <Button

@@ -36,9 +36,12 @@ const MoreDetailsPhaseForm = ({ title, dialogOpen, data }) => {
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
       <div className="px-4 sm:px-6  z-10">
-        <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        {/* <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
-        </Dialog.Title>
+        </Dialog.Title> */}
+        <span className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
+          {title}
+        </span>
         <div className="grid  gap-8 grid-cols-1">
           <div className="flex flex-col m-4">
             <div className="mt-0"></div>

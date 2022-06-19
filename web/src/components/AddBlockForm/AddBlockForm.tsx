@@ -9,6 +9,7 @@ import Loader from 'src/components/Loader/Loader'
 import { TextField } from 'src/util/formFields/TextField'
 import { TextAreaField } from 'src/util/formFields/TextAreaField'
 import { createBlock, updateBlock } from 'src/context/dbQueryFirebase'
+import { CheckIcon } from '@heroicons/react/outline'
 
 const AddBlockForm = ({ title, dialogOpen, data }) => {
   const [loading, setLoading] = useState(false)
@@ -40,9 +41,9 @@ const AddBlockForm = ({ title, dialogOpen, data }) => {
 
   const initialState = {
     blockName: data?.block?.blockName || '',
-    floors: data?.block?.floors || '',
-    units: data?.block?.units || '',
-    totalArea: data?.block?.totalArea || '',
+    floors: data?.block?.floors || 0,
+    units: data?.block?.units || 0,
+    totalArea: data?.block?.totalArea || 0,
     remarks: data?.block?.remarks || '',
   }
 
@@ -50,18 +51,9 @@ const AddBlockForm = ({ title, dialogOpen, data }) => {
     blockName: Yup.string()
       .max(30, 'Must be 30 characters or less')
       .required('Required'),
-    floors: Yup.number().required('Required'),
-    units: Yup.number().required('Required'),
-    totalArea: Yup.number().required('Required'),
   })
   return (
-    <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
-      <div className="px-4 sm:px-6  z-10">
-        <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
-          {title}
-        </Dialog.Title>
-      </div>
-
+    <div className="h-full flex flex-col  rounded bg-white shadow-xl overflow-y-scroll">
       <div className="grid  gap-8 grid-cols-1">
         <div className="flex flex-col m-4">
           <div className="mt-0">
@@ -75,81 +67,41 @@ const AddBlockForm = ({ title, dialogOpen, data }) => {
               {(formik) => (
                 <Form>
                   <div className="form">
-                    <div className="flex flex-col mt-2 rounded-lg bg-white border border-gray-100 p-4 ">
-                      <TextField
-                        label="Block Name*"
-                        name="blockName"
-                        type="text"
-                      />
-                      <div className="flex mt-3 mb-3 space-y-2 w-full text-xs">
-                        <div className="mt-2 mr-3">
-                          <TextField
-                            label="Floors*"
-                            name="floors"
-                            type="text"
-                          />
-                        </div>
-                        <div className="mt-2 mr-3">
-                          <TextField label="Units*" name="units" type="text" />
-                        </div>
-                        <div className="mb-3">
-                          <label
-                            htmlFor="area"
-                            className="label font-regular text-sm"
-                          >
-                            Total Area*
-                          </label>
-                          <MuiTextField
-                            id="area"
-                            className={`w-full bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 mt-1 p-0`}
-                            size="small"
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  sqft
-                                </InputAdornment>
-                              ),
-                            }}
-                            label=""
-                            name="totalArea"
-                            type="text"
-                            value={formik.values.totalArea}
-                            onChange={formik.handleChange}
-                          />
-                          {formik.errors.totalArea ? (
-                            <div className="error-message text-red-700 text-xs p-2">
-                              {formik.errors.totalArea}
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="mt-2 w-full">
-                        <TextAreaField
-                          label="Remarks"
-                          name="remarks"
+                    <div className="flex flex-col mt-2 rounded-lg bg-white  ">
+                      <div className="min-w-[96px]">
+                        <TextField
+                          label="Block Name*"
+                          name="blockName"
                           type="text"
                         />
                       </div>
-                      <p className="text-xs text-red-500 text-right my-3">
-                        Required fields are marked with an asterisk{' '}
-                        <abbr title="Required field">*</abbr>
-                      </p>
-                      <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">
-                        <button
+                      <div className=" w-full md:space-x-3 md:block flex  mb-6 align-center mt-1 bg-green-400 hover:shadow-sm hover:bg-green-500 rounded-sm ">
+                        {/* <button
                           onClick={() => dialogOpen(false)}
                           type="button"
-                          className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100"
+                          className="mb-4  mt-5 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100"
                         >
                           {' '}
                           Cancel{' '}
-                        </button>
+                        </button> */}
                         <button
-                          className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-green-500"
+                          className="mb-2 py-[9px] flex pl-[2px] md:mb-0 bg-green-400  py-2 w-[42px] text-sm shadow-sm font-medium tracking-wider text-white rounded-sm "
                           type="submit"
                           disabled={loading}
                         >
                           {loading && <Loader />}
-                          {data?.block?.editMode ? 'Update' : 'Save'}
+                          <div className="align-center">
+                            {' '}
+                            {data?.block?.editMode ? (
+                              'Update'
+                            ) : (
+                              <section className="flex flex-row">
+                                {' '}
+                                <CheckIcon className="w-4 h-4 ml-8 mt-[1px] mr-1 inline" />
+                                <span>Save</span>
+                              </section>
+                            )}
+                          </div>
                         </button>
                       </div>
                     </div>

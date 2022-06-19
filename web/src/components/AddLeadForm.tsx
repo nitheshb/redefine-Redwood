@@ -139,7 +139,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   const [selected, setSelected] = useState({})
   const [devType, setdevType] = useState(devTypeA[0])
   const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+    /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
 
   const typeSel = async (sel) => {
     await console.log('value is', selected)
@@ -235,11 +235,12 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   const validate = Yup.object({
     name: Yup.string()
       .max(15, 'Must be 15 characters or less')
-      .required('Required'),
+      .required('Name is Required'),
     // lastName: Yup.string()
     //   .max(20, 'Must be 20 characters or less')
     //   .required('Required'),
     email: Yup.string().email('Email is invalid').required('Email is required'),
+
     // password: Yup.string()
     //   .min(6, 'Password must be at least 6 charaters')
     //   .required('Password is required'),
@@ -247,7 +248,11 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     //   .oneOf([Yup.ref('password'), null], 'Password must match')
     //   .required('Confirm password is required'),
     // mobileNo
-    mobileNo: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    mobileNo: Yup.string()
+      .required('Phone number is required')
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .min(10, 'to short')
+      .max(10, 'to long'),
 
     // deptVal: Yup.string()
     //   // .oneOf(['Admin', 'CRM'], 'Required Dept')
@@ -257,6 +262,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     //   .required('Required Role'),
   })
   const resetter = () => {
+    setSelected({})
     setFormMessage('')
   }
   return (
@@ -265,27 +271,6 @@ const AddLeadForm = ({ title, dialogOpen }) => {
         <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
         </Dialog.Title>
-
-        {formMessage === 'Saved Successfully..!' && (
-          <p className=" flex text-md text-slate-800 text-right my-3">
-            <img
-              className="w-[40px] h-[40px] inline mr-2"
-              alt=""
-              src="/ok.gif"
-            />
-            <span className="mt-2">{formMessage}</span>
-          </p>
-        )}
-        {formMessage === 'User Already Exists with Ph No' && (
-          <p className=" flex text-md text-pink-800 text-right my-3">
-            <img
-              className="w-[40px] h-[40px] inline mr-2"
-              alt=""
-              src="/ok.gif"
-            />
-            <span className="mt-2">{formMessage}</span>
-          </p>
-        )}
       </div>
 
       <div className="grid  gap-8 grid-cols-1">
@@ -301,7 +286,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                 email: '',
                 source: '',
                 project: '',
-                assignTo: '',
+                assignedTo: '',
                 budget: '',
                 deptVal: '',
                 myRole: '',
@@ -309,6 +294,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
               validationSchema={validate}
               onSubmit={(values, { resetForm }) => {
                 console.log('ami submitted', values)
+                console.log('ami submitted 1', values.assignedTo === '')
                 onSubmitFun(values, resetForm)
               }}
             >
@@ -568,6 +554,26 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                         Mobile No / Email is required{' '}
                         <abbr title="Required field">*</abbr>
                       </p>
+                      {formMessage === 'Saved Successfully..!' && (
+                        <p className=" flex text-md text-slate-800 text-right my-3">
+                          <img
+                            className="w-[40px] h-[40px] inline mr-2"
+                            alt=""
+                            src="/ok.gif"
+                          />
+                          <span className="mt-2">{formMessage}</span>
+                        </p>
+                      )}
+                      {formMessage === 'User Already Exists with Ph No' && (
+                        <p className=" flex text-md text-pink-800 text-right my-3">
+                          <img
+                            className="w-[40px] h-[40px] inline mr-2"
+                            alt=""
+                            src="/error.gif"
+                          />
+                          <span className="mt-2">{formMessage}</span>
+                        </p>
+                      )}
                       <div className="mt-5 mt-8 text-right md:space-x-3 md:block flex flex-col-reverse">
                         <button
                           className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"

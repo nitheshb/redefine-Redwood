@@ -10,6 +10,7 @@ import { getAllProjects } from 'src/context/dbQueryFirebase'
 import { ResponsiveBar } from '@nivo/bar'
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
+import AllBankDetailsView from 'src/components/All_BankDetailsView'
 
 const HomePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -345,7 +346,9 @@ const HomePage = () => {
             <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-screen  px-300  py-300">
               {viewable != 'inProgress' &&
                 viewable != 'Projects Lead Report' &&
-                viewable != 'Campaign Budget Report' && (
+                viewable != 'Campaign Budget Report' &&
+                viewable != 'Bank Accounts' &&
+                viewable != 'Virtual Accounts' && (
                   <>
                     <div className="">
                       <div className="flex items-center justify-between py-2  ">
@@ -576,6 +579,53 @@ const HomePage = () => {
                               }}
                             />
                           </div>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </>
+              )}
+
+              {(viewable === 'Bank Accounts' ||
+                viewable === 'Virtual Accounts') && (
+                <>
+                  <div className="">
+                    <div className="flex items-center justify-between py-2  ">
+                      <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
+                        {viewable}
+                      </span>
+                      <button className="flex items-center justify-center h-10 px-4  bg-transparent ml-auto text-sm font-medium rounded hover:bg-transparent"></button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <section className="w-full py-8 mb-8 leading-7 text-gray-900 bg-white sm:py-12 md:py-16 lg:py-18 rounded-lg">
+                      <div className="box-border px-4 mx-auto border-solid sm:px-6 md:px-6 lg:px-8 max-w-full ">
+                        <div className="flex flex-col  leading-7  text-gray-900 border-0 border-gray-200 ">
+                          <div className="flex items-center flex-shrink-0  px-0  pl-0 border-b border-grey  mb-2">
+                            <span className="flex items-center">
+                              <img
+                                className="w-16 h-16"
+                                alt=""
+                                src="/apart.svg"
+                              ></img>
+                              <span className="relative z-10 flex items-center w-auto text-4xl font-bold leading-none pl-0 mt-[18px]">
+                                {viewable}
+                              </span>
+                            </span>
+                            <section className="flex ml-auto mt-[18px]">
+                              <button>
+                                <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                                  <PencilIcon
+                                    className="h-3 w-3 mr-1"
+                                    aria-hidden="true"
+                                  />
+                                  Edit
+                                </span>
+                              </button>
+                            </section>
+                          </div>
+                          <AllBankDetailsView title={viewable} />
                         </div>
                       </div>
                     </section>

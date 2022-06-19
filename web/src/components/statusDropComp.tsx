@@ -155,7 +155,7 @@ export default function StatusDropComp({ leadStatus, id, setStatusFun }) {
                         ? 'bg-violet-500 text-white rounded-md'
                         : 'text-gray-900 border-t'
                     } group flex  items-center w-full px-2 py-2 text-sm`}
-                    onClick={() => setStatusFun(id, 'Negotiation')}
+                    onClick={() => setStatusFun(id, 'negotiation')}
                   >
                     {active ? (
                       <CurrencyRupeeIcon

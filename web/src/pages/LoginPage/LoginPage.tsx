@@ -185,7 +185,7 @@ const LoginPage = () => {
                   style={{ backgroundColor: '#091225' }}
                   disabled={loader}
                 >
-                  {loader && <Loader />}
+                  {loader && <Loader texColor="text-white" />}
                   Log in
                 </Submit>
               </Form>

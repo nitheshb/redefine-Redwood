@@ -25,11 +25,11 @@ export const PhoneNoField = ({
         format="###-###-####"
         mask=""
       />
-      {/* <ErrorMessage
+      <ErrorMessage
         component="div"
         name={name}
-        className="error-message text-red-700 text-xs px-2"
-      /> */}
+        className="error-message text-red-700 text-xs px-1 mt-1"
+      />
     </div>
   )
 }

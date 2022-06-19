@@ -14,6 +14,8 @@ import { CheckIcon, SelectorIcon, DownloadIcon } from '@heroicons/react/solid'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from 'src/context/firebaseConfig'
+import toast from 'react-hot-toast'
+
 import {
   addLeadScheduler,
   addSchedulerLog,
@@ -56,6 +58,7 @@ import { setHours, setMinutes } from 'date-fns'
 import { Timestamp } from 'firebase/firestore'
 import StatusDropComp from './statusDropComp'
 import AssigedToDropComp from './assignedToDropComp'
+import Loader from './Loader/Loader'
 
 // interface iToastInfo {
 //   open: boolean
@@ -120,7 +123,7 @@ export default function CustomerProfileSideView({
   const [usersList, setusersList] = useState([])
   // const [leadStatus, setLeadStatus] = useState([])
   const [selFeature, setFeature] = useState('appointments')
-  const [leadStatus, setLeadStatus] = useState('')
+  const [tempLeadStatus, setLeadStatus] = useState('')
   const [assignerName, setAssignerName] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
   const [leadsActivityFetchedData, setLeadsFetchedActivityData] = useState([])
@@ -152,6 +155,7 @@ export default function CustomerProfileSideView({
   const [addNote, setAddNote] = useState(false)
   const [addSch, setAddSch] = useState(false)
   const [attach, setAttach] = useState(false)
+  const [loader, setLoader] = useState(false)
   const {
     id,
     Name,
@@ -301,20 +305,24 @@ export default function CustomerProfileSideView({
   }
 
   const setStatusFun = async (leadDocId, newStatus) => {
+    setLoader(true)
     setLeadStatus(newStatus)
-    newStatus === 'notinterested'
-      ? setFeature('notes')
-      : setFeature('appointments')
-    newStatus === 'notinterested' ? setAddNote(true) : setAddSch(true)
+
+    const arr = ['notinterested', 'visitdone', 'visitcancel']
+    arr.includes(newStatus) ? setFeature('notes') : setFeature('appointments')
+    arr.includes(newStatus) ? setAddNote(true) : setAddSch(true)
     if (newStatus === 'visitfixed') {
-      setTakTitle('Schedule a cab ')
+      await setTakTitle('Schedule a cab ')
     } else if (newStatus === 'booked') {
       await setTakTitle('Share the Details with CRM team')
       await fAddSchedule()
     } else {
       setTakTitle(' ')
     }
-    updateLeadStatus(leadDocId, newStatus)
+
+    //
+    // updateLeadStatus(leadDocId, newStatus)
+    // toast.success('Status Updated Successfully')
   }
 
   const downloadFile = (url) => {
@@ -436,7 +444,7 @@ export default function CustomerProfileSideView({
       notes: takTitle,
       sts: 'pending',
       schTime:
-        leadStatus === 'booked'
+        tempLeadStatus === 'booked'
           ? Timestamp.now().toMillis() + 10800000
           : startDate.getTime(),
       ct: Timestamp.now().toMillis(),
@@ -450,8 +458,19 @@ export default function CustomerProfileSideView({
     // addSchedulerLog(id, data)
     console.log('new one ', schStsA)
     await addLeadScheduler(id, data, schStsA, '')
+    if (Status != tempLeadStatus) {
+      updateLeadStatus(id, tempLeadStatus)
+    }
     await setTakTitle('')
     await setAddSch(false)
+    await setLoader(false)
+  }
+  const cancelResetStatusFun = () => {
+    setAddSch(false)
+    setAddNote(false)
+    // if its not edit mode ignore it
+    setLeadStatus(Status)
+    setLoader(false)
   }
   const fUpdateSchedule = async (data) => {
     const tmId = data.ct
@@ -550,9 +569,7 @@ export default function CustomerProfileSideView({
   }
   return (
     <div
-      className={`bg-white   h-screen    ${
-        openUserProfile ? 'hidden' : ''
-      } overflow-y-auto`}
+      className={`bg-white   h-screen    ${openUserProfile ? 'hidden' : ''} `}
     >
       <div className="">
         <div className="p-3 flex justify-between">
@@ -562,7 +579,7 @@ export default function CustomerProfileSideView({
           {/* <XIcon className="w-5 h-5 mt-[2px]" /> */}
         </div>
       </div>
-      <div className="py-3 px-3 m-4 mt-2 rounded-lg border border-gray-100">
+      <div className="py-3 px-3 m-4 mt-2 rounded-lg border border-gray-100 h-screen overflow-y-auto">
         <div className="flex flex-row justify-between">
           {/* <div className="px-3  font-md font-medium text-sm mt-3 mb-2 text-gray-800">
             Customer Details
@@ -645,7 +662,7 @@ export default function CustomerProfileSideView({
                 Status
               </div>
               <StatusDropComp
-                leadStatus={leadStatus}
+                leadStatus={tempLeadStatus}
                 id={id}
                 setStatusFun={setStatusFun}
               />
@@ -741,6 +758,7 @@ export default function CustomerProfileSideView({
             </div>
           </div>
         </div> */}
+
         <div className="">
           <div className="">
             {/* <div className="font-md font-medium text-xs  text-gray-800">
@@ -845,7 +863,7 @@ export default function CustomerProfileSideView({
                       </button>
                       <button
                         // onClick={() => fSetLeadsType('Add Lead')}
-                        onClick={() => setAddNote(false)}
+                        onClick={() => cancelResetStatusFun()}
                         className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
                       >
                         <span className="ml-1 ">Cancel</span>
@@ -1171,6 +1189,95 @@ export default function CustomerProfileSideView({
         {selFeature === 'appointments' && (
           <>
             <div className=" pb-2 pt-7 h-screen border">
+              {loader && (
+                <div
+                  id="toast-success"
+                  className="flex items-center w-[95%] mx-4  p-2 mb-5 text-black
+                  rounded shadow  bg-[#FDF7F1]"
+                  role="alert"
+                >
+                  {/* <div className="inline-flex items-center justify-center flex-shrink-0 w-6 h-6 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+              <svg
+                className="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </div> */}
+                  {loader && (
+                    <span className="pl-3 pr-3">
+                      {' '}
+                      {/* <Loader texColor="text-black" /> */}
+                      <svg
+                        height="21"
+                        viewBox="0 0 21 21"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g
+                          fill="none"
+                          fillRule="evenodd"
+                          transform="translate(1 1)"
+                        >
+                          <path
+                            d="m9.5.5 9 16h-18z"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="m9.5 10.5v-5"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <circle
+                            cx="9.5"
+                            cy="13.5"
+                            fill="currentColor"
+                            r="1"
+                          />
+                        </g>
+                      </svg>
+                    </span>
+                  )}
+                  <div className=" text-sm font-normal">
+                    Add a new schedule{' '}
+                    <span className="text-orange-600">
+                      {tempLeadStatus == 'visitfixed'
+                        ? 'with visit info'
+                        : 'with call again time'}{' '}
+                    </span>{' '}
+                    to make status as {tempLeadStatus.toLocaleUpperCase()}
+                  </div>
+                  <button
+                    type="button"
+                    className="ml-auto -mx-0.5 -my-0.5  text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                    data-dismiss-target="#toast-success"
+                    aria-label="Close"
+                  >
+                    <span className="sr-only">Close</span>
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              )}
               {addSch && (
                 <div className="flex flex-col pt-0 my-10 mx-4 mt-[10px] rounded">
                   <div className="  outline-none border  rounded p-4">
@@ -1312,7 +1419,7 @@ export default function CustomerProfileSideView({
                     </button>
                     <button
                       // onClick={() => fSetLeadsType('Add Lead')}
-                      onClick={() => setAddSch(false)}
+                      onClick={() => cancelResetStatusFun()}
                       className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
                     >
                       <span className="ml-1 ">Cancel</span>
