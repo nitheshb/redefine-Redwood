@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { IconButton, Menu, MenuItem, styled } from '@mui/material'
-import { MoreVert, Edit } from '@mui/icons-material'
+import { MoreVert, Edit, AddBusiness } from '@mui/icons-material'
 import SiderForm from './SiderForm/SiderForm'
 
 const CustomMenuItem = styled(MenuItem)(() => ({
@@ -49,15 +49,15 @@ const UnitsSmallViewCard = ({ kind, feedData, bg }) => {
         <h3 className="m-0 ml-2 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
           #{kind?.unit_no}
         </h3>
-        {/* <IconButton onClick={handleClick}>
+        <IconButton onClick={handleClick}>
           <MoreVert sx={{ fontSize: '1rem' }} />
-        </IconButton> */}
+        </IconButton>
       </div>
       <div className="flex flex-row justify-between px-2">
         <span className="flex flex-row items-center justify-between mr-2">
           <span className="text-sm font-">
             {kind?.builtup_area || 0} sqft
-            
+
           </span>
         </span>
 
@@ -76,6 +76,36 @@ const UnitsSmallViewCard = ({ kind, feedData, bg }) => {
           </CustomMenuItem>
         </Menu>
       </div>
+      <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          <CustomMenuItem onClick={() => handleClose('Quotation')}>
+            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
+            Quotation
+          </CustomMenuItem>
+          <CustomMenuItem onClick={() => handleClose('Block')}>
+            <Edit className="mr-1" sx={{ fontSize: '1rem' }} />
+            Block
+          </CustomMenuItem>
+          <CustomMenuItem onClick={() => handleClose('Book')}>
+            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
+            Book
+          </CustomMenuItem>
+          <CustomMenuItem onClick={() => handleClose('edit')}>
+            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
+            Edit
+          </CustomMenuItem>
+          <CustomMenuItem onClick={() => handleClose('Delete')}>
+            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
+            Delete
+          </CustomMenuItem>
+        </Menu>
       <SiderForm
         open={sliderInfo.open}
         setOpen={handleSliderClose}

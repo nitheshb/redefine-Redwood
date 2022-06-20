@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import DialogFormBody from '../DialogFormBody/DialogFormBody'
@@ -29,8 +29,11 @@ const SiderForm = ({
   phaseDetails,
   blockDetails,
   widthClass = 'max-w-4xl',
+  unitViewerrr,
 }) => {
-  // const [open, setOpen] = useState(true)
+  // dont write too many here
+  //  this is for customerProfileSideView
+  const [unitsViewMode, setUnitsViewMode] = useState(false)
   return (
     <Transition.Root show={open || false} as={Fragment}>
       <Dialog
@@ -69,7 +72,8 @@ const SiderForm = ({
                   title === 'Edit Project'
                     ? 'max-w-2xl'
                     : widthClass
-                }`}
+                }
+                 ${unitsViewMode ? 'max-w-7xl' : widthClass}`}
               >
                 <Transition.Child
                   as={Fragment}
@@ -148,6 +152,9 @@ const SiderForm = ({
                   <CustomerProfileSideView
                     openUserProfile={false}
                     customerDetails={customerDetails}
+                    unitViewerrr={unitViewerrr}
+                    unitsViewMode={unitsViewMode}
+                    setUnitsViewMode={setUnitsViewMode}
                   />
                 )}
                 {title === 'Additional Charges' && (

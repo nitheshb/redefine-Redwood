@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/outline'
+import { useSnackbar } from 'notistack'
 import { documentId } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
@@ -12,6 +13,7 @@ import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
 import Floordetails from 'src/components/Floordetails/Floordetails'
 import {
   deleteAsset,
+  deleteBankAccount,
   getPlanDiagramByPhase,
   steamBankDetailsList,
   steamVirtualAccountsList,
@@ -26,6 +28,7 @@ const AllBankDetailsView = ({
   phaseDetails,
   data,
 }) => {
+  const { enqueueSnackbar } = useSnackbar()
   const [bankDetialsA, setGetBankDetailsA] = useState([])
   const [showAssetLink, setShowAssetLink] = useState('')
 
@@ -79,9 +82,18 @@ const AllBankDetailsView = ({
       return unsubscribe
     }
   }
-  const deleteAssetFun = async (docId) => {
-    console.log('assert details ', docId)
-    deleteAsset(docId, '', '', '')
+  const deleteAssetFun = async (docId, accountName, usedIn) => {
+    console.log('assert details ', docId, accountName, usedIn)
+    if (usedIn > 0) {
+      enqueueSnackbar(
+        `${accountName} Account Cannot be deleted. Remove the linked projects`,
+        {
+          variant: 'error',
+        }
+      )
+    } else {
+      deleteBankAccount(docId, '', '', '', enqueueSnackbar)
+    }
   }
 
   return (
@@ -125,9 +137,25 @@ const AllBankDetailsView = ({
                   <div className="bg-[#f9fafb] p-8 rounded-xl shadow-md shadow-neutral-200 w-96">
                     <div className=" justify-between mb-4">
                       <div>
-                        <p className="text-lg font-semibold text-neutral-700">
-                          {bankDe?.accountName}
-                        </p>
+                        <div className="flex flex-row justify-between">
+                          <p className="text-lg font-semibold text-neutral-700">
+                            {bankDe?.accountName}
+                          </p>
+                          <span
+                            onClick={() =>
+                              deleteAssetFun(
+                                bankDe?.docId,
+                                bankDe?.accountName,
+                                bankDe?.usedInA?.length || 0
+                              )
+                            }
+                          >
+                            <TrashIcon
+                              className="h-4 w-4 mr-1  mt-3 inline"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </div>
                         <p className="mt-0.5  text-neutral-400 text-sm">
                           {bankDe?.aliasName}
                         </p>
@@ -213,7 +241,7 @@ const AllBankDetailsView = ({
                     <div className="mt-5 border-t border-dashed space-y-4 py-4">
                       <div className="flex justify-between group duration-150 cursor-pointer">
                         <div>
-                          <p className="text-xs text-neutral-400">Used In</p>
+                          <p className="text-xs text-neutral-400">Linked In</p>
                           <p className="text-sm text-neutral-600 group-hover:text-red-600 duration-150">
                             {bankDe?.usedInA?.length || 0} Projects
                           </p>

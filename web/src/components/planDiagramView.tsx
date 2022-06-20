@@ -20,11 +20,18 @@ const PlanDiagramView = ({
   projectDetails,
   phaseDetails,
   data,
+  source,
 }) => {
   console.log('piddd is ', pId, blocks, phaseFeed, data)
   const [planDiagramsA, setPlanDiagramsA] = useState([])
   const [showAssetLink, setShowAssetLink] = useState('')
+  const [editOpitionsObj, setEditOptions] = useState(false)
 
+  useEffect(() => {
+    if (source === 'projectManagement') {
+      setEditOptions(true)
+    }
+  }, [source])
   const [sliderInfo, setSliderInfo] = useState({
     open: false,
     title: 'Plan Diagram',
@@ -34,6 +41,7 @@ const PlanDiagramView = ({
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
   const [numPages, setNumPages] = useState(null)
   const [pageNumber, setPageNumber] = useState(1)
+
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages)
   }
@@ -89,30 +97,32 @@ const PlanDiagramView = ({
             <h2 className="text-sm font-semibold">{title}</h2>
             <section className="flex flex-row justify-between">
               <span></span>
-              <button
-                className="text-right"
-                onClick={() => {
-                  setSliderInfo({
-                    open: true,
-                    title: title,
-                    sliderData: {},
-                    widthClass: 'max-w-xl',
-                  })
-                }}
-              >
-                {planDiagramsA.length > 0 && (
-                  <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                    <span className="text-blue-600">
-                      {' '}
-                      <PlusCircleIcon
-                        className="h-4 w-4 mr-1 mb-[2px] inline"
-                        aria-hidden="true"
-                      />
-                      <span>Add New</span>
-                    </span>
-                  </time>
-                )}
-              </button>
+              {editOpitionsObj && (
+                <button
+                  className="text-right"
+                  onClick={() => {
+                    setSliderInfo({
+                      open: true,
+                      title: title,
+                      sliderData: {},
+                      widthClass: 'max-w-xl',
+                    })
+                  }}
+                >
+                  {planDiagramsA.length > 0 && (
+                    <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                      <span className="text-blue-600">
+                        {' '}
+                        <PlusCircleIcon
+                          className="h-4 w-4 mr-1 mb-[2px] inline"
+                          aria-hidden="true"
+                        />
+                        <span>Add New</span>
+                      </span>
+                    </time>
+                  )}
+                </button>
+              )}
             </section>
           </section>
           <ul className="max-h-[500px] overflow-scroll">
@@ -148,12 +158,14 @@ const PlanDiagramView = ({
                     >
                       {planDiagram?.name}
                     </span>
-                    <span onClick={() => deleteAssetFun(planDiagram?.docId)}>
-                      <TrashIcon
-                        className="h-4 w-4 mr-1  mt-3 inline"
-                        aria-hidden="true"
-                      />
-                    </span>
+                    {editOpitionsObj && (
+                      <span onClick={() => deleteAssetFun(planDiagram?.docId)}>
+                        <TrashIcon
+                          className="h-4 w-4 mr-1  mt-3 inline"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    )}
                   </div>
                   {/* <span>{planDiagram?.url}</span> */}
                   {/* <BlockStatsCards
@@ -215,7 +227,9 @@ const PlanDiagramView = ({
             >
               <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
                 Better always attach a string
-                <span className="text-blue-600"> Add {title}</span>
+                {editOpitionsObj && (
+                  <span className="text-blue-600"> Add {title}</span>
+                )}
               </time>
             </button>
           </div>

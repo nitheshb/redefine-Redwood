@@ -40,33 +40,60 @@ const Floordetails = ({
   phaseFeed,
   BlockFeed,
   selBlock,
+  source,
 }) => {
+  const {
+    totalValue,
+    soldValue,
+    availValue,
+    bookValue,
+    blockValue,
+    holdValue,
+    totalArea,
+    soldArea,
+    availArea,
+    bookArea,
+    blockArea,
+    holdArea,
+    totalUnitCount,
+    soldUnitCount,
+    availableCount,
+    bookUnitCount,
+    blockUnitCount,
+  } = selBlock
   const unitStatsData = [
     {
       id: 'Total',
       label: 'Total',
-      value: 300,
+      value: totalUnitCount || 0,
       pic: '',
       color: 'hsl(9, 70%, 50%)',
     },
     {
       id: 'Available',
       label: 'Available',
-      value: 100,
+      value: availableCount || 0,
+      pic: '',
+      color: 'hsl(35, 70%, 50%)',
+    },
+    {
+      id: 'Sold',
+      label: 'Sold',
+      value: soldUnitCount || 0,
       pic: '',
       color: 'hsl(35, 70%, 50%)',
     },
     {
       id: 'Booked',
       label: 'Booked',
-      value: 25,
+      value: bookUnitCount || 0,
       pic: '',
       color: 'hsl(9, 70%, 50%)',
     },
     {
       id: 'Blocked',
       label: 'Blocked',
-      value: 50,
+      value: blockUnitCount || 0,
       pic: '',
       color: 'hsl(202, 70%, 50%)',
     },
@@ -114,35 +141,35 @@ const Floordetails = ({
     {
       id: 'Total',
       label: 'Total',
-      value: 137500,
+      value: totalValue || 0,
       pic: '',
       color: 'hsl(9, 70%, 50%)',
     },
     {
       id: 'Available',
       label: 'Available',
-      value: 5500,
+      value: availValue || 0,
       pic: '',
       color: 'hsl(35, 70%, 50%)',
     },
     {
       id: 'Booked',
       label: 'Booked',
-      value: 27500,
+      value: bookValue || 0,
       pic: '',
       color: 'hsl(9, 70%, 50%)',
     },
     {
       id: 'Blocked',
       label: 'Blocked',
-      value: 93500,
+      value: blockValue || 0,
       pic: '',
       color: 'hsl(202, 70%, 50%)',
     },
     {
       id: 'Hold',
       label: 'Hold',
-      value: 11000,
+      value: holdValue || 0,
       pic: '',
       color: 'hsl(202, 70%, 50%)',
     },
@@ -151,35 +178,35 @@ const Floordetails = ({
     {
       id: 'Total',
       label: 'Total',
-      value: 23750000,
+      value: totalArea || 0,
       pic: '',
       color: 'hsl(9, 70%, 50%)',
     },
     {
       id: 'Available',
       label: 'Available',
-      value: 1935000,
+      value: availArea || 0,
       pic: '',
       color: 'hsl(35, 70%, 50%)',
     },
     {
       id: 'Booked',
       label: 'Booked',
-      value: 4275000,
+      value: bookArea || 0,
       pic: '',
       color: 'hsl(9, 70%, 50%)',
     },
     {
       id: 'Blocked',
       label: 'Blocked',
-      value: 93500,
+      value: blockArea || 0,
       pic: '',
       color: 'hsl(202, 70%, 50%)',
     },
     {
       id: 'Hold',
       label: 'Hold',
-      value: 611000,
+      value: holdArea || 0,
       pic: '',
       color: 'hsl(202, 70%, 50%)',
     },
@@ -475,155 +502,142 @@ const Floordetails = ({
                 <li key={i}>
                   <section>
                     Fl-{floorDat}
-                    {/* {unitShrink && (
-                      <div className="mt-6 ">
-                        {unitsFeed.map((data) => (
-                          <div
-                            className="p-2 mb-1  mx-1 inline-block"
-                            key={data}
-                          >
-                            <UnitsSmallViewCard
-                              kind={data}
-                              feedData={unitFeedData}
-                              bg="#fef7f7"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )} */}
-
-                      <div className="mt-6">
-                        {unitsFeed
-                          ?.filter((da) => da?.floor === i)
-                          .map((data) => {
-                            return unitShrink ? (
-                              <div
-                                className="p-2 mb-1  mx-1 inline-block"
-                                key={data}
-                              >
-                                <UnitsSmallViewCard
-                                  kind={data}
-                                  feedData={unitFeedData}
-                                  bg="#fef7f7"
-                                />
-                              </div>
-                            ) : (
-                              <div
-                                className="p-2 mb-1  mx-1 inline-block"
-                                key={data}
-                              >
-                                <UnitsStatsCard
-                                  kind={data}
-                                  feedData={unitFeedData}
-                                  bg="#fef7f7"
-                                />
-                              </div>
-                            )
-                          })}
-                      </div>
-
+                    <div className="mt-6">
+                      {unitsFeed
+                        ?.filter((da) => da?.floor === i)
+                        .map((data) => {
+                          return unitShrink ? (
+                            <div
+                              className="p-2 mb-1  mx-1 inline-block"
+                              key={data}
+                            >
+                              <UnitsSmallViewCard
+                                kind={data}
+                                feedData={unitFeedData}
+                                bg="#fef7f7"
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="p-2 mb-1  mx-1 inline-block"
+                              key={data}
+                            >
+                              <UnitsStatsCard
+                                kind={data}
+                                feedData={unitFeedData}
+                                bg="#fef7f7"
+                              />
+                            </div>
+                          )
+                        })}
+                    </div>
                   </section>
                 </li>
               )
             })}
           </ul>
-
           {/* 1 */}
-          <div className=" z-10 flex flex-row">
-            <div
-              className=" z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
-              // style={{ backgroundColor: '#fef7f7' }}
-              onClick={() => {
-                // setSliderInfo({
-                //   open: true,
-                //   title: 'Add Unit',
-                //   sliderData: {
-                //     phase: {},
-                //     block: {},
-                //   },
-                //   widthClass: 'max-w-2xl',
-                // })
-                const { uid, floorA } = selBlock
-                updateBlock_AddFloor(uid, floorA?.length || 0, enqueueSnackbar)
-                console.log('chiru is', selBlock)
-              }}
-            >
-              <div className="flex flex-col items-center justify-between">
-                <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                  Add Floor
-                </h3>
-                {/* <IconButton onClick={handleClick}>
+          {source === 'projectManagement' && (
+            <div className=" z-10 flex flex-row">
+              <div
+                className=" z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
+                // style={{ backgroundColor: '#fef7f7' }}
+                onClick={() => {
+                  // setSliderInfo({
+                  //   open: true,
+                  //   title: 'Add Unit',
+                  //   sliderData: {
+                  //     phase: {},
+                  //     block: {},
+                  //   },
+                  //   widthClass: 'max-w-2xl',
+                  // })
+                  const { uid, floorA } = selBlock
+                  updateBlock_AddFloor(
+                    uid,
+                    floorA?.length || 0,
+                    enqueueSnackbar
+                  )
+                  console.log('chiru is', selBlock)
+                }}
+              >
+                <div className="flex flex-col items-center justify-between">
+                  <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                  <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                    Add Floor
+                  </h3>
+                  {/* <IconButton onClick={handleClick}>
           <MoreVert sx={{ fontSize: '1rem' }} />
         </IconButton> */}
+                </div>
+                <div className="flex flex-row justify-between px-2">
+                  <span className="flex flex-row items-center justify-between mr-2">
+                    <span className="text-sm font-"></span>
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-row justify-between px-2">
-                <span className="flex flex-row items-center justify-between mr-2">
-                  <span className="text-sm font-"></span>
-                </span>
-              </div>
-            </div>
-            <div
-              className=" cursor-pointer z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
-              // style={{ backgroundColor: '#fef7f7' }}
-              onClick={() => {
-                setSliderInfo({
-                  open: true,
-                  title: 'Add Unit',
-                  sliderData: {
-                    phase: {},
-                    block: {},
-                  },
-                  widthClass: 'max-w-2xl',
-                })
-              }}
-            >
-              <div className="flex flex-col items-center justify-between">
-                <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                  Add Unit
-                </h3>
-                {/* <IconButton onClick={handleClick}>
+              <div
+                className=" cursor-pointer z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
+                // style={{ backgroundColor: '#fef7f7' }}
+                onClick={() => {
+                  setSliderInfo({
+                    open: true,
+                    title: 'Add Unit',
+                    sliderData: {
+                      phase: {},
+                      block: {},
+                    },
+                    widthClass: 'max-w-2xl',
+                  })
+                }}
+              >
+                <div className="flex flex-col items-center justify-between">
+                  <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                  <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                    Add Unit
+                  </h3>
+                  {/* <IconButton onClick={handleClick}>
           <MoreVert sx={{ fontSize: '1rem' }} />
         </IconButton> */}
+                </div>
+                <div className="flex flex-row justify-between px-2">
+                  <span className="flex flex-row items-center justify-between mr-2">
+                    <span className="text-sm font-"></span>
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-row justify-between px-2">
-                <span className="flex flex-row items-center justify-between mr-2">
-                  <span className="text-sm font-"></span>
-                </span>
-              </div>
-            </div>
-            {/* 2 */}
-            <div
-              className="cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0  mx-4 rounded-sm inline-block  min-h-[50px]  min-w-[100px] border border-dotted border-black rounded-md"
-              onClick={() => {
-                setSliderInfo({
-                  open: true,
-                  title: 'Import Units',
-                  sliderData: {
-                    phase: {},
-                    block: {},
-                  },
-                  widthClass: 'max-w-2xl',
-                })
-              }}
-            >
-              <div className="flex flex-col items-center justify-between">
-                <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                <h3 className="m-0  text-sm  mt-1 font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                  Import Units
-                </h3>
-                {/* <IconButton onClick={handleClick}>
+              {/* 2 */}
+              <div
+                className="cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0  mx-4 rounded-sm inline-block  min-h-[50px]  min-w-[100px] border border-dotted border-black rounded-md"
+                onClick={() => {
+                  setSliderInfo({
+                    open: true,
+                    title: 'Import Units',
+                    sliderData: {
+                      phase: {},
+                      block: {},
+                    },
+                    widthClass: 'max-w-2xl',
+                  })
+                }}
+              >
+                <div className="flex flex-col items-center justify-between">
+                  <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                  <h3 className="m-0  text-sm  mt-1 font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                    Import Units
+                  </h3>
+                  {/* <IconButton onClick={handleClick}>
           <MoreVert sx={{ fontSize: '1rem' }} />
         </IconButton> */}
-              </div>
-              <div className="flex flex-row justify-between px-2">
-                <span className="flex flex-row items-center justify-between mr-2">
-                  <span className="text-sm font-"></span>
-                </span>
+                </div>
+                <div className="flex flex-row justify-between px-2">
+                  <span className="flex flex-row items-center justify-between mr-2">
+                    <span className="text-sm font-"></span>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </>
       )}
 

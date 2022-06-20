@@ -424,14 +424,19 @@ export const getBlocksByPhase = async (
   snapshot,
   error
 ) => {
-  const getAllPhasesQuery = await query(
-    collection(db, 'blocks'),
-    where('projectId', '==', projectId),
-    where('phaseId', '==', phaseId),
-    orderBy('created', 'asc'),
-    limit(20)
-  )
-  return onSnapshot(getAllPhasesQuery, snapshot, error)
+  try {
+    const getAllPhasesQuery = await query(
+      collection(db, 'blocks'),
+      where('projectId', '==', projectId),
+      where('phaseId', '==', phaseId),
+      orderBy('created', 'asc'),
+      limit(20)
+    )
+    return onSnapshot(getAllPhasesQuery, snapshot, error)
+  } catch (error) {
+    console.log('error at getBlocksByPhase ', error, projectId, phaseId)
+    return error
+  }
 }
 
 export const getPaymentSchedule = async (
@@ -1139,8 +1144,8 @@ export const deleteBankAccount = async (
   enqueueSnackbar
 ) => {
   try {
-    await deleteDoc(doc(db, 'spark_project_docs', uid))
-    enqueueSnackbar('Payment deleted successfully', {
+    await deleteDoc(doc(db, 'spark_BankDetails', uid))
+    enqueueSnackbar('Bank Acount deleted successfully', {
       variant: 'success',
     })
   } catch (error) {

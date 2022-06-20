@@ -12,10 +12,21 @@ import {
 } from 'src/context/dbQueryFirebase'
 import { unitsCancellation } from 'src/constants/projects'
 
-const AdditionalChargesForm = ({ title, data }) => {
+const AdditionalChargesForm = ({ title, data, source }) => {
   const [tableData, setTableData] = useState([])
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
+  const [editOpitionsObj, setEditOptions] = useState({})
+
+  useEffect(() => {
+    if (source === 'projectManagement') {
+      setEditOptions({
+        onRowAdd: async (newData) => await handleRowAdd(newData),
+        onRowUpdate: async (newData) => await handleRowUpdate(newData),
+        onRowDelete: async (oldData) => await handleRowDelete(oldData),
+      })
+    }
+  }, [source])
   const { enqueueSnackbar } = useSnackbar()
 
   const columns = [
@@ -220,11 +231,8 @@ const AdditionalChargesForm = ({ title, data }) => {
               width: 'auto',
               justifyCenter: 'center',
             }}
-            editable={{
-              onRowAdd: async (newData) => await handleRowAdd(newData),
-              onRowUpdate: async (newData) => await handleRowUpdate(newData),
-              onRowDelete: async (oldData) => await handleRowDelete(oldData),
-            }}
+            source={source}
+            editable={editOpitionsObj}
           />
         </div>
         <div>

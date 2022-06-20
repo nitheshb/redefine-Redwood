@@ -3,7 +3,13 @@ import { ToWords } from 'to-words'
 const toWords = new ToWords({
   localeCode: 'en-IN',
 })
-const ProjectStatsCard = ({ kind, iconP, feedData, bg, currency }) => {
+const ProjectStatsCard = ({
+  kind,
+  iconP,
+  feedData,
+  bg,
+  currency,
+}) => {
   return (
     <div
       className="drop-shadow-md min-w-full z-10 flex flex-col  max-w-md p-4 mx-auto my-0 rounded-lg "
@@ -75,6 +81,7 @@ const ProjectStatsCard = ({ kind, iconP, feedData, bg, currency }) => {
                   >
                     <span className="italic">
                       {toWords.convert(data.v, { currency: currency })}
+
                     </span>
                   </span>
                   <div
@@ -84,6 +91,7 @@ const ProjectStatsCard = ({ kind, iconP, feedData, bg, currency }) => {
                 </div>
                 <span className="text-[16px] font-medium text-gray-900">
                   {data.v.toLocaleString('en-IN')}
+
                 </span>
               </div>
             </li>

@@ -13,6 +13,7 @@ const Blockdetails = ({
   pId,
   projectDetails,
   phaseDetails,
+  source,
 }) => {
   console.log('piddd is ', pId, blocks, phaseFeed)
   const [selBlock, setSelBlock] = useState({})
@@ -20,10 +21,17 @@ const Blockdetails = ({
 
   const [viewUnitStatusA, setViewUnitStatusA] = useState([
     'Available',
-    'Blocked',
-    'Booked',
-    'Total',
+    // 'Blocked',
+    // 'Booked',
+    // 'Total',
   ])
+  const [editOpitionsObj, setEditOptions] = useState(false)
+
+  useEffect(() => {
+    if (source === 'projectManagement') {
+      setViewUnitStatusA(['Available', 'Blocked', 'Booked', 'Total'])
+    }
+  }, [source])
 
   useEffect(() => {
     if (blocks.length > 0) {
@@ -68,44 +76,46 @@ const Blockdetails = ({
               />
             </li>
           )}
-          <li>
-            <div
-              className="flex justify-center items-center font-semibold mt-3 border rounded-md p-1  border-[#FE4066] text-[#FE4066] hover:bg-[#FE4066]  hover:text-white  cursor-pointer"
-              onClick={() => {
-                setOpenAddBlock(!openAddBlock)
-              }}
-            >
-              {/* <img className="w-12 h-12 mr-2" alt="" src="/l1.png"></img> */}
-              <button
+          {source === 'projectManagement' && (
+            <li>
+              <div
+                className="flex justify-center items-center font-semibold mt-3 border rounded-md p-1  border-[#FE4066] text-[#FE4066] hover:bg-[#FE4066]  hover:text-white  cursor-pointer"
                 onClick={() => {
-                  // setSliderInfo({
-                  //   open: true,
-                  //   title: 'Add Block',
-                  //   sliderData: {
-                  //     phase,
-                  //     block: {},
-                  //   },
-                  //   widthClass: 'max-w-2xl',
-                  // })
+                  setOpenAddBlock(!openAddBlock)
                 }}
-                className={
-                  'flex   cursor-pointer items-center h-6 px-3 text-[14px] font-semibold  rounded-full '
-                }
               >
-                {openAddBlock ? (
-                  <>
-                    <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                    Cancel
-                  </>
-                ) : (
-                  <>
-                    <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                    Add block
-                  </>
-                )}
-              </button>
-            </div>
-          </li>
+                {/* <img className="w-12 h-12 mr-2" alt="" src="/l1.png"></img> */}
+                <button
+                  onClick={() => {
+                    // setSliderInfo({
+                    //   open: true,
+                    //   title: 'Add Block',
+                    //   sliderData: {
+                    //     phase,
+                    //     block: {},
+                    //   },
+                    //   widthClass: 'max-w-2xl',
+                    // })
+                  }}
+                  className={
+                    'flex   cursor-pointer items-center h-6 px-3 text-[14px] font-semibold  rounded-full '
+                  }
+                >
+                  {openAddBlock ? (
+                    <>
+                      <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                      Cancel
+                    </>
+                  ) : (
+                    <>
+                      <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                      Add block
+                    </>
+                  )}
+                </button>
+              </div>
+            </li>
+          )}
           {blocks.map((block) => {
             return (
               <li
@@ -135,6 +145,7 @@ BlockFeed */}
         selBlock={selBlock}
         projectDetails={projectDetails}
         phaseDetails={phaseDetails}
+        source={source}
       />
     </div>
   )

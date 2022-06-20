@@ -6,30 +6,25 @@ import { PencilIcon, EyeIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import PieChartProject from '../comps/pieChartProject'
 
-const projectFeedData = [
-  { k: 'Total', v: 125, pic: '' },
-  { k: 'Sold', v: 5, pic: '' },
-  { k: 'Booked', v: 25, pic: '' },
-  { k: 'Available', v: 85, pic: '' },
-  { k: 'Hold', v: 10, pic: '' },
-]
-const unitFeedData = [
-  { k: 'Total', v: 137500, pic: '' },
-  { k: 'Sold', v: 5500, pic: '' },
-  { k: 'Booked', v: 27500, pic: '' },
-  { k: 'Available', v: 93500, pic: '' },
-  { k: 'Hold', v: 11000, pic: '' },
-]
-const valueFeedData = [
-  { k: 'Total', v: 543125000, pic: '' },
-  { k: 'Sold', v: 21725000, pic: '' },
-  { k: 'Booked', v: 108625000, pic: '' },
-  { k: 'Collected', v: 369325000, pic: '' },
-  { k: 'Balance', v: 43450000, pic: '' },
-]
-
 const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   const {
+    totalValue,
+    soldValue,
+    availValue,
+    bookValue,
+    blockValue,
+    holdValue,
+    totalArea,
+    soldArea,
+    availArea,
+    bookArea,
+    blockArea,
+    holdArea,
+    totalUnitCount,
+    soldUnitCount,
+    availableCount,
+    bookUnitCount,
+    blockUnitCount,
     area,
     builderName,
     location,
@@ -42,8 +37,30 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
     { k: 'Builder', v: builderName, pic: '/builder2.png' },
     { k: 'Type', v: projectType?.name, pic: '/a1.png' },
     { k: 'Location', v: location, pic: '/map.png' },
-    { k: 'Area', v: `${area} sqft`, pic: '/x.png' },
+    { k: 'Area', v: `${totalArea} sqft`, pic: '/x.png' },
     { k: 'Phases', v: 0, pic: '/p1.png' },
+  ]
+
+  const areaFeedData = [
+    { k: 'Total', totalArea: 125, pic: '' },
+    { k: 'Sold', v: soldArea, pic: '' },
+    { k: 'Booked', v: bookArea || 0, pic: '' },
+    { k: 'Available', v: availArea || 0, pic: '' },
+    { k: 'Hold', v: blockArea || 0, pic: '' },
+  ]
+  const unitFeedData = [
+    { k: 'Total', v: totalUnitCount || 0, pic: '' },
+    { k: 'Sold', v: soldUnitCount || 0, pic: '' },
+    { k: 'Booked', v: bookUnitCount || 0, pic: '' },
+    { k: 'Available', v: availableCount || 0, pic: '' },
+    { k: 'Hold', v: blockUnitCount || 0, pic: '' },
+  ]
+  const valueFeedData = [
+    { k: 'Total', v: totalValue || 0, pic: '' },
+    { k: 'Sold', v: soldValue || 0, pic: '' },
+    { k: 'Booked', v: bookValue || 0, pic: '' },
+    { k: 'Collected', v: availValue || 0, pic: '' },
+    { k: 'Blocked', v: blockValue || 0, pic: '' },
   ]
 
   // const [unitsView, setUnitsView] = useState(false)
@@ -189,6 +206,7 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                 feedData={unitFeedData}
                 bg="#ebf9f9"
                 currency={false}
+                projectData={project}
               />
             </span>
 
@@ -199,23 +217,21 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                 feedData={valueFeedData}
                 bg="#f3f5ff"
                 currency={true}
+                projectData={project}
               />
             </span>
             {/* <span>
               <ProjectStatsCard
                 kind="Area"
                 iconP="/m4.png"
-                feedData={unitFeedData}
+                feedData={areaFeedData}
                 bg="#f3f5ff"
                 currency={true}
               />
             </span> */}
 
             <span>
-              <section
-                className="flex "
-                style={{ width: '580px', height: '270px' }}
-              >
+              <section className="flex " style={{ height: '270px' }}>
                 <PieChartProject />
               </section>
             </span>

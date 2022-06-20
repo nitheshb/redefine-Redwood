@@ -26,6 +26,7 @@ const ProjectEditPage = () => {
           docSnapshot.data()
         )
         setProject(projects[0])
+        console.log('set project value is ', projects[0])
       },
       () =>
         setProject({
@@ -79,7 +80,10 @@ const ProjectEditPage = () => {
                     setIsEditProjectOpen(true)
                   }}
                 />
-                <ProjPhaseHome projectDetails={project} />
+                <ProjPhaseHome
+                  projectDetails={project}
+                  source="projectManagement"
+                />
               </>
             ) : (
               <DummyBodyLayout />

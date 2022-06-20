@@ -13,11 +13,22 @@ import {
   deletePayment,
 } from 'src/context/dbQueryFirebase'
 
-const PaymentScheduleForm = ({ title, data }) => {
+const PaymentScheduleForm = ({ title, data, source }) => {
   const [tableData, setTableData] = useState([])
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
   const { enqueueSnackbar } = useSnackbar()
+  const [editOpitionsObj, setEditOptions] = useState({})
+
+  useEffect(() => {
+    if (source === 'projectManagement') {
+      setEditOptions({
+        onRowAdd: async (newData) => await handleRowAdd(newData),
+        onRowUpdate: async (newData) => await handleRowUpdate(newData),
+        onRowDelete: async (oldData) => await handleRowDelete(oldData),
+      })
+    }
+  }, [source])
 
   const columns = [
     {
@@ -219,11 +230,7 @@ const PaymentScheduleForm = ({ title, data }) => {
               width: 'auto',
               justifyCenter: 'center',
             }}
-            editable={{
-              onRowAdd: async (newData) => await handleRowAdd(newData),
-              onRowUpdate: async (newData) => await handleRowUpdate(newData),
-              onRowDelete: async (oldData) => await handleRowDelete(oldData),
-            }}
+            editable={editOpitionsObj}
           />
         </div>
 
