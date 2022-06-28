@@ -55,32 +55,45 @@ const UnitsStatsCard = ({ kind, feedData, bg }) => {
       <div className="flex flex-row justify-between px-2">
         <div>
           <span className="flex flex-row items-center justify-between mr-2">
-            <span className="text-sm text-gray-700 mr-2">Unit Type</span>
-            <span className="text-sm font-semibold">
-              {feedData?.unitType || 0}
+            <span className="text-sm text-gray-700 mr-2 font-semibold">
+              Bed
             </span>
+            <span className="text-sm ">{kind?.bed_rooms || 0}</span>
           </span>
           <span className="flex flex-row items-center justify-between mr-2">
-            <span className="text-sm text-gray-700 mr-2">Unit No:</span>
-            <span className="text-sm font-semibold">
-              {feedData?.unitNo || 0}
+            <span className="text-sm text-gray-700 mr-2 font-semibold">
+              Bath
             </span>
+            <span className="text-sm ">{kind?.bath_rooms || 0}</span>
+          </span>
+          <span className="flex flex-row items-center justify-between mr-2">
+            <span className="text-sm text-gray-700 mr-2 font-semibold">
+              Carpet
+            </span>
+            <span className="text-sm">{kind?.bath_rooms || 0}</span>
           </span>
         </div>
         <div>
           <span className="flex flex-row items-center justify-between mr-2">
-            <span className="text-sm text-gray-700 mr-2">
+            <span className="text-sm text-gray-700 mr-2 font-semibold">
+              Rate
+              <span className="text-[10px] text-black-500">/sqft</span>
+            </span>
+            <span className="text-sm ">{kind?.rate_per_sqft || 0}</span>
+          </span>
+          <span className="flex flex-row items-center justify-between mr-2">
+            <span className="text-sm text-gray-700 mr-2 font-semibold">
+              Facing
+              <span className="text-[10px] text-black-500"></span>
+            </span>
+            <span className="text-sm ">{kind?.facing || 0}</span>
+          </span>
+          <span className="flex flex-row items-center justify-between mr-2">
+            <span className="text-sm text-gray-700 mr-2 font-semibold">
               SBA
               <span className="text-[10px] text-black-500">(sqft)</span>
             </span>
-            <span className="text-sm font-semibold">{feedData?.sba || 0}</span>
-          </span>
-          <span className="flex flex-row items-center justify-between mr-2">
-            <span className="text-sm text-gray-700 mr-2">
-              Rate
-              <span className="text-[10px] text-black-500">(sqft)</span>
-            </span>
-            <span className="text-sm font-semibold">{feedData?.rate || 0}</span>
+            <span className="text-sm ">{kind?.super_built_up_area || 0}</span>
           </span>
         </div>
 

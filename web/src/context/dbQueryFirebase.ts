@@ -518,6 +518,14 @@ export const addLead = async (data, by, msg) => {
   return
 }
 
+export const addCustomer = async (data, by, enqueueSnackbar, resetForm) => {
+  await addDoc(collection(db, 'spark_customer'), data)
+  enqueueSnackbar('Customer Details added successfully', {
+    variant: 'success',
+  })
+  resetForm()
+  return
+}
 export const addUnit = async (data, by, msg) => {
   const x = await addDoc(collection(db, 'spark_units'), data)
   await console.log('x value is', x, x.id)

@@ -11,6 +11,7 @@ import {
   RefreshIcon,
   BanIcon,
   SelectorIcon,
+  DotsVerticalIcon,
   CheckIcon,
 } from '@heroicons/react/solid'
 
@@ -20,16 +21,27 @@ export default function DropCompUnitStatus({
   setStatusFun,
   viewUnitStatusA,
   pickCustomViewer,
+  filteredUnits,
+  pickedValue,
 }) {
   return (
     <div className="text-right inline-block ml-7 mt-[-5px]">
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="inline-flex justify-center w-full px-0 py-0 text-sm font-semibold text-black-500 bg- rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-            <span className=" text-[12px] tracking-wide text-[#0091ae] ">
-              {type?.toLocaleUpperCase()}
-            </span>
-            <ChevronDownIcon className="w-5 h-5 mr-3 mt-[1px] inline text-[#058527]" />
+            {type != 'unitMode' && (
+              <>
+                <span className=" text-[12px] tracking-wide text-[#0091ae] ">
+                  {type?.toLocaleUpperCase()}
+                </span>
+                <ChevronDownIcon className="w-5 h-5 mr-3 mt-[1px] inline text-[#058527]" />
+              </>
+            )}
+            {type === 'unitMode' && (
+              <>
+                <DotsVerticalIcon className="w-3 h-3  mt-[1px] inline " />
+              </>
+            )}
           </Menu.Button>
         </div>
         <Transition
@@ -45,325 +57,195 @@ export default function DropCompUnitStatus({
             <div className="px-1 py-1 ">
               {type === 'Price' && (
                 <>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active
-                            ? 'bg-violet-500 text-white rounded-md'
-                            : 'text-gray-900'
-                        } group flex  items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'negotiation')}
-                      >
-                        {active ? (
-                          <CurrencyRupeeIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <CurrencyRupeeIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
+                  {['Any', 10, 20, 30, 40, 50, 60, 70, 80].map(
+                    (viewData, i) => (
+                      <Menu.Item key={i}>
+                        {({ active }) => (
+                          <button
+                            className={`${
+                              active
+                                ? 'bg-violet-500 text-white rounded-md'
+                                : 'text-gray-900'
+                            } group flex  items-center w-full px-2 py-2 text-sm`}
+                            onClick={() => setStatusFun(id, viewData)}
+                          >
+                            {active ? (
+                              <CurrencyRupeeIcon
+                                className="w-5 h-5 mr-2"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <CurrencyRupeeIcon
+                                className="w-5 h-5 mr-2 text-violet-500"
+                                aria-hidden="true"
+                              />
+                            )}
+                            {`< ${viewData} lakhs`}
+                          </button>
                         )}
-                        {`<20 lakh`}
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active
-                            ? 'bg-violet-500 text-white rounded-md'
-                            : 'text-gray-900'
-                        } group flex  items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'negotiation')}
-                      >
-                        {active ? (
-                          <CurrencyRupeeIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <CurrencyRupeeIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        {`<30 lakh`}
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active
-                            ? 'bg-violet-500 text-white rounded-md'
-                            : 'text-gray-900'
-                        } group flex  items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'negotiation')}
-                      >
-                        {active ? (
-                          <CurrencyRupeeIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <CurrencyRupeeIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        {`<40 lakh`}
-                      </button>
-                    )}
-                  </Menu.Item>
+                      </Menu.Item>
+                    )
+                  )}
                 </>
               )}
               {type === 'Size' && (
                 <>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        35,397 sqft
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        59,895 sqft
-                      </button>
-                    )}
-                  </Menu.Item>
+                  {['Any', 35397, 59895].map((viewData, i) => (
+                    <Menu.Item key={i}>
+                      {({ active }) => (
+                        <button
+                          className={`${
+                            active
+                              ? 'bg-violet-500 text-white'
+                              : 'text-gray-900'
+                          } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                          onClick={() => setStatusFun(id, viewData)}
+                        >
+                          {active ? (
+                            <DuplicateActiveIcon
+                              className="w-5 h-5 mr-2"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <DuplicateInactiveIcon
+                              className="w-5 h-5 mr-2 text-violet-500"
+                              aria-hidden="true"
+                            />
+                          )}
+                          {`${viewData} sqft`}
+                        </button>
+                      )}
+                    </Menu.Item>
+                  ))}
                 </>
               )}
-              {type === 'Size' && (
+              {type === 'bedrooms' && (
                 <>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        1 Bhk
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        2 Bhk
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        3 Bhk
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        4 Bhk
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitdone')}
-                      >
-                        {active ? (
-                          <DuplicateActiveIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <DuplicateInactiveIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        5 Bhk
-                      </button>
-                    )}
-                  </Menu.Item>
+                  {['Any', 1, 2, 3, 4].map((viewData, i) => (
+                    <Menu.Item key={i}>
+                      {({ active }) => (
+                        <button
+                          className={`${
+                            active
+                              ? 'bg-violet-500 text-white'
+                              : 'text-gray-900'
+                          } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                          onClick={() => setStatusFun(id, viewData)}
+                        >
+                          {active ? (
+                            <DuplicateActiveIcon
+                              className="w-5 h-5 mr-2"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <DuplicateInactiveIcon
+                              className="w-5 h-5 mr-2 text-violet-500"
+                              aria-hidden="true"
+                            />
+                          )}
+                          {viewData} Bhk
+                          <div className="absolute right-0 pr-4">
+                            {viewData === 'Any'
+                              ? filteredUnits.length
+                              : filteredUnits.filter(
+                                  (dat) => dat['bed_rooms'] === viewData
+                                ).length}
+                          </div>
+                        </button>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </>
+              )}
+              {type === 'bathrooms' && (
+                <>
+                  {['Any', 1, 2, 3, 4].map((viewData, i) => (
+                    <Menu.Item key={i}>
+                      {({ active }) => (
+                        <button
+                          className={`${
+                            active
+                              ? 'bg-violet-500 text-white'
+                              : 'text-gray-900'
+                          } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                          onClick={() => setStatusFun(id, viewData)}
+                        >
+                          {active ? (
+                            <DuplicateActiveIcon
+                              className="w-5 h-5 mr-2"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <DuplicateInactiveIcon
+                              className="w-5 h-5 mr-2 text-violet-500"
+                              aria-hidden="true"
+                            />
+                          )}
+                          {viewData} Bathroom
+                          <div className="absolute right-0 pr-4">
+                            {viewData === 'Any'
+                              ? filteredUnits.length
+                              : filteredUnits.filter(
+                                  (dat) => dat['bath_rooms'] === viewData
+                                ).length}
+                          </div>
+                        </button>
+                      )}
+                    </Menu.Item>
+                  ))}
                 </>
               )}
 
               {type === 'Status' && (
                 <>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'new')}
-                      >
-                        {active ? (
-                          <FireIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <FireIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
+                  {['Any', 'Available', 'Booked', 'Blocked'].map(
+                    (viewData, i) => (
+                      <Menu.Item key={i}>
+                        {({ active }) => (
+                          <button
+                            className={`${
+                              active ||
+                              (pickedValue.length != 3 &&
+                                pickedValue.includes(
+                                  viewData?.toLocaleLowerCase()
+                                )) ||
+                              (pickedValue.length === 3 && viewData === 'Any')
+                                ? 'bg-violet-500 text-white'
+                                : 'text-gray-900'
+                            } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                            onClick={() => setStatusFun(id, viewData)}
+                          >
+                            {active ||
+                            (pickedValue.length != 3 &&
+                              pickedValue.includes(
+                                viewData?.toLocaleLowerCase()
+                              )) ||
+                            (pickedValue.length === 3 && viewData === 'Any') ? (
+                              <FireIcon
+                                className="w-5 h-5 mr-2"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <FireIcon
+                                className="w-5 h-5 mr-2 text-violet-500"
+                                aria-hidden="true"
+                              />
+                            )}{' '}
+                            {viewData}{' '}
+                            <div className="absolute right-0 pr-4">
+                              {viewData === 'Any'
+                                ? filteredUnits.length
+                                : filteredUnits.filter(
+                                    (dat) =>
+                                      dat['Status'] ===
+                                      viewData?.toLocaleLowerCase()
+                                  ).length}
+                            </div>
+                          </button>
                         )}
-                        Available
-                      </button>
-                    )}
-                  </Menu.Item>
-
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'booked')}
-                      >
-                        {active ? (
-                          <BadgeCheckIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <BadgeCheckIcon
-                            className="w-5 h-5 mr-2 text-green-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        Booked
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                        onClick={() => setStatusFun(id, 'visitcancel')}
-                      >
-                        {active ? (
-                          <BanIcon
-                            className="w-5 h-5 mr-2"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <BanIcon
-                            className="w-5 h-5 mr-2 text-violet-500"
-                            aria-hidden="true"
-                          />
-                        )}
-                        Blocked
-                      </button>
-                    )}
-                  </Menu.Item>
+                      </Menu.Item>
+                    )
+                  )}
                 </>
               )}
 
@@ -403,9 +285,11 @@ export default function DropCompUnitStatus({
               {type === 'Facing' && (
                 <>
                   {[
+                    'Any',
                     'East',
                     'West',
                     'South',
+                    'North',
                     'South-East',
                     'South-West',
                     'North-East',
@@ -415,20 +299,72 @@ export default function DropCompUnitStatus({
                       {({ active }) => (
                         <button
                           className={`${
-                            active
-                              ? 'bg-violet-500 text-white rounded-md'
+                            active ||
+                            (pickedValue.length != 8 &&
+                              pickedValue.includes(
+                                viewData?.toLocaleLowerCase()
+                              )) ||
+                            (pickedValue.length === 8 && viewData === 'Any')
+                              ? 'bg-violet-500 text-white'
                               : 'text-gray-900'
-                          } group flex  items-center w-full px-2 py-2 text-sm`}
-                          onClick={() => setStatusFun(id, 'negotiation')}
+                          } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                          onClick={() =>
+                            setStatusFun(id, viewData?.toLocaleLowerCase())
+                          }
                         >
-                          {active ? (
-                            <CurrencyRupeeIcon
+                          {active ||
+                          (pickedValue.length != 8 &&
+                            pickedValue.includes(
+                              viewData?.toLocaleLowerCase()
+                            )) ||
+                          (pickedValue.length === 8 && viewData === 'Any') ? (
+                            <FireIcon
                               className="w-5 h-5 mr-2"
                               aria-hidden="true"
                             />
                           ) : (
-                            <CurrencyRupeeIcon
+                            <FireIcon
                               className="w-5 h-5 mr-2 text-violet-500"
+                              aria-hidden="true"
+                            />
+                          )}{' '}
+                          {viewData}
+                          <div className="absolute right-0 pr-4">
+                            {viewData === 'Any'
+                              ? filteredUnits.length
+                              : filteredUnits.filter(
+                                  (dat) =>
+                                    dat['facing']?.toLocaleLowerCase() ===
+                                    viewData?.toLocaleLowerCase()
+                                ).length}
+                          </div>
+                        </button>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </>
+              )}
+              {type === 'unitMode' && (
+                <>
+                  {['Quotation', 'Block', 'Book', 'Edit'].map((viewData, i) => (
+                    <Menu.Item key={i}>
+                      {({ active }) => (
+                        <button
+                          className={`${
+                            active
+                              ? 'bg-violet-500 text-white rounded-sm'
+                              : 'text-gray-900'
+                          } group flex  items-center w-full px-2 py-2 text-sm`}
+                          onClick={() => pickCustomViewer(viewData)}
+                        >
+                          {viewUnitStatusA?.includes(viewData) ? (
+                            <CheckIcon
+                              className="h-5 w-5 mr-2"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <CheckIcon
+                              className="w-5 h-5 mr-2 text-transparent"
                               aria-hidden="true"
                             />
                           )}

@@ -3,13 +3,17 @@ import { useState } from 'react'
 import { IconButton, Menu, MenuItem, styled } from '@mui/material'
 import { MoreVert, Edit, AddBusiness } from '@mui/icons-material'
 import SiderForm from './SiderForm/SiderForm'
+import DropCompUnitStatus from './dropDownUnitStatus'
 
 const CustomMenuItem = styled(MenuItem)(() => ({
   fontSize: '0.85rem',
 }))
 
-const UnitsSmallViewCard = ({ kind, feedData, bg }) => {
+const UnitsSmallViewCard = ({ kind, feedData, bg,  setSelUnitDetails,
+  setShowCostSheetWindow,
+  setSelMode, }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selOptionIs, setSelOptionIs] = useState("")
   const open = Boolean(anchorEl)
   const [sliderInfo, setSliderInfo] = useState({
     open: false,
@@ -26,19 +30,26 @@ const UnitsSmallViewCard = ({ kind, feedData, bg }) => {
   }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('was this from here' )
     setAnchorEl(event.currentTarget)
   }
   const handleClose = async (menuItem) => {
-    setAnchorEl(null)
-    if (menuItem === 'edit') {
-      setSliderInfo({
-        open: true,
-        title: 'Edit Block',
-        sliderData: {
-          block: feedData,
-        },
-      })
-    }
+    console.log('iam here',menuItem )
+    setShowCostSheetWindow(true)
+    setSelMode(menuItem)
+    setSelUnitDetails(kind)
+
+
+    // setAnchorEl(null)
+    // if (menuItem === 'edit') {
+    //   setSliderInfo({
+    //     open: true,
+    //     title: 'Edit Block',
+    //     sliderData: {
+    //       block: feedData,
+    //     },
+    //   })
+    // }
   }
   return (
     <div
@@ -49,9 +60,11 @@ const UnitsSmallViewCard = ({ kind, feedData, bg }) => {
         <h3 className="m-0 ml-2 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
           #{kind?.unit_no}
         </h3>
-        <IconButton onClick={handleClick}>
-          <MoreVert sx={{ fontSize: '1rem' }} />
-        </IconButton>
+        <DropCompUnitStatus
+            type={'unitMode'}
+            id={'id'}
+            pickCustomViewer={handleClose}
+          />
       </div>
       <div className="flex flex-row justify-between px-2">
         <span className="flex flex-row items-center justify-between mr-2">
@@ -61,57 +74,15 @@ const UnitsSmallViewCard = ({ kind, feedData, bg }) => {
           </span>
         </span>
 
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <CustomMenuItem onClick={() => handleClose('edit')}>
-            <Edit className="mr-1" sx={{ fontSize: '1rem' }} />
-            Edit
-          </CustomMenuItem>
-        </Menu>
+
       </div>
-      <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <CustomMenuItem onClick={() => handleClose('Quotation')}>
-            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
-            Quotation
-          </CustomMenuItem>
-          <CustomMenuItem onClick={() => handleClose('Block')}>
-            <Edit className="mr-1" sx={{ fontSize: '1rem' }} />
-            Block
-          </CustomMenuItem>
-          <CustomMenuItem onClick={() => handleClose('Book')}>
-            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
-            Book
-          </CustomMenuItem>
-          <CustomMenuItem onClick={() => handleClose('edit')}>
-            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
-            Edit
-          </CustomMenuItem>
-          <CustomMenuItem onClick={() => handleClose('Delete')}>
-            <AddBusiness className="mr-1" sx={{ fontSize: '1rem' }} />
-            Delete
-          </CustomMenuItem>
-        </Menu>
-      <SiderForm
+
+      {/* <SiderForm
         open={sliderInfo.open}
         setOpen={handleSliderClose}
         title={sliderInfo.title}
         data={sliderInfo.sliderData}
-      />
+      /> */}
     </div>
   )
 }

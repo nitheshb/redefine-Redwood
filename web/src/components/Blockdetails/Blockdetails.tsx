@@ -14,6 +14,9 @@ const Blockdetails = ({
   projectDetails,
   phaseDetails,
   source,
+  setSelUnitDetails,
+  setShowCostSheetWindow,
+  setSelMode,
 }) => {
   console.log('piddd is ', pId, blocks, phaseFeed)
   const [selBlock, setSelBlock] = useState({})
@@ -129,6 +132,8 @@ const Blockdetails = ({
                   bg={selBlock?.uid === block?.uid ? '#efefef' : '#fef7f7'}
                   setSelBlock={setSelBlock}
                   viewUnitStatusA={viewUnitStatusA}
+                  source={source}
+
                 />
               </li>
             )
@@ -146,6 +151,9 @@ BlockFeed */}
         projectDetails={projectDetails}
         phaseDetails={phaseDetails}
         source={source}
+        setShowCostSheetWindow={setShowCostSheetWindow}
+        setSelUnitDetails={setSelUnitDetails}
+        setSelMode={setSelMode}
       />
     </div>
   )

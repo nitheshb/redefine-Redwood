@@ -68,6 +68,7 @@ import AssigedToDropComp from './assignedToDropComp'
 import Loader from './Loader/Loader'
 import { VerticalAlignBottom } from '@mui/icons-material'
 import ProjPhaseHome from './ProjPhaseHome/ProjPhaseHome'
+import AddBookingForm from './bookingForm'
 
 // interface iToastInfo {
 //   open: boolean
@@ -788,6 +789,7 @@ export default function CustomerProfileSideView({
             </div>
           </div>
         </div> */}
+
         {unitsViewMode && (
           <>
             <ProjPhaseHome

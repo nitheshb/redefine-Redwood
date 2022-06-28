@@ -260,3 +260,56 @@ export const banksList = [
     label: 'kotakmahindra',
   },
 ]
+
+export const apartUnitChargesMock = [
+  {
+    name: 'unit_cost_charges',
+    category: 'Unit Cost',
+    val: '₹12000',
+  },
+  {
+    name: 'car_parking_charges',
+    category: 'Car Parking',
+    val: '₹12000',
+  },
+  {
+    name: 'electric_or_Sweage_Charges',
+    category: 'Electricity/Water Sweage',
+    val: '₹12000',
+  },
+  {
+    name: 'maintenance_charges',
+    category: 'Maintenance Charges',
+    val: '₹12000',
+  },
+  {
+    name: 'powerbackup_charges',
+    category: 'Power Back-up Charges',
+    val: '₹12000',
+  },
+  {
+    name: 'maintenanace_desposit',
+    category: 'Maintenance Deposit',
+    val: '₹12000',
+  },
+  {
+    name: 'clubhouse_membership_charges',
+    category: 'Club House Membership',
+    val: '₹12000',
+  },
+  {
+    name: 'permium_charges',
+    category: 'Premium',
+    val: '₹12000',
+  },
+  {
+    name: 'legal_doc_charges',
+    category: 'Legal Documentation Charges',
+    val: '₹12000',
+  },
+  {
+    name: 'other_charges',
+    category: 'Other Charges',
+    val: '₹12000',
+  },
+]

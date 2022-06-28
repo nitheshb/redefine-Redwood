@@ -13,6 +13,7 @@ const BlockStatsCards = ({
   bg,
   setSelBlock,
   viewUnitStatusA,
+
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)

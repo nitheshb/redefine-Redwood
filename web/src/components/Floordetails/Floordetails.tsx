@@ -41,6 +41,9 @@ const Floordetails = ({
   BlockFeed,
   selBlock,
   source,
+  setSelUnitDetails,
+  setShowCostSheetWindow,
+  setSelMode,
 }) => {
   const {
     totalValue,
@@ -104,6 +107,24 @@ const Floordetails = ({
   const [reportFeed, setReportFeed] = useState(unitStatsData)
   const [blocksViewFeature, setBlocksViewFeature] = useState('Units')
   const [unitShrink, setUnitShrink] = useState(true)
+  const [filteredUnits, setFilteredUnits] = useState([])
+  const [filStatus, setFilStatus] = useState(['available', 'booked', 'blocked'])
+  const [filBedRooms, setFilBedRooms] = useState([1, 2, 3, 4])
+  const [filBathrooms, setFilBathrooms] = useState([1, 2, 3, 4])
+
+  const [filSuperBuildUpArea, setFilSuperBuiltUpArea] = useState([35397, 59895])
+
+  const [filRatePerSqft, setFilRatePerSqft] = useState(12000000000000)
+  const [filFacing, setFilFacing] = useState([
+    'east',
+    'west',
+    'south',
+    'north',
+    'south-east',
+    'south-west',
+    'north-east',
+    'north-west',
+  ])
 
   const [sliderInfo, setSliderInfo] = useState({
     open: false,
@@ -124,6 +145,10 @@ const Floordetails = ({
     setReportFeed(unitStatsData)
     getUnitsFun()
   }, [selBlock])
+
+  useEffect(() => {
+    setFilteredUnits(unitsFeed)
+  }, [unitsFeed])
 
   const data01 = [
     { name: 'Group A', value: 400, fill: '#0088FE' },
@@ -211,6 +236,165 @@ const Floordetails = ({
       color: 'hsl(202, 70%, 50%)',
     },
   ]
+  const makeFilterFun = async (id, value) => {
+    // unitsFeed, setUnitsFeed
+
+    if (id === 'Status') {
+      let x = []
+      if (value === 'Any') {
+        x = ['available', 'booked', 'blocked']
+      } else {
+        await x.push(value?.toLocaleLowerCase())
+      }
+      await setFilStatus(x)
+      await allmakeOverFun(
+        x,
+        filBedRooms,
+        filBathrooms,
+        filSuperBuildUpArea,
+        filRatePerSqft,
+        filFacing
+      )
+      // const y = await unitsFeed?.filter((da) => x.includes(da?.Status))
+      // await setFilteredUnits(y)
+    }
+    if (id === 'facing') {
+      let x = []
+      if (value === 'Any') {
+        x = [
+          'east',
+          'west',
+          'south',
+          'north',
+          'south-east',
+          'south-west',
+          'north-east',
+          'north-west',
+        ]
+      } else {
+        await x.push(value?.toLocaleLowerCase())
+      }
+      await setFilFacing(x)
+      await allmakeOverFun(
+        filStatus,
+        filBedRooms,
+        filBathrooms,
+        filSuperBuildUpArea,
+        filRatePerSqft,
+        x
+      )
+    }
+    if (id === 'bed_rooms') {
+      let x = []
+      if (value === 'Any') {
+        x = [1, 2, 3, 4]
+      } else {
+        await x.push(value)
+      }
+      await setFilBedRooms(x)
+      await allmakeOverFun(
+        filStatus,
+        x,
+        filBathrooms,
+        filSuperBuildUpArea,
+        filRatePerSqft,
+        filFacing
+      )
+    }
+    if (id === 'bath_rooms') {
+      let x = []
+      if (value === 'Any') {
+        x = [1, 2, 3, 4]
+      } else {
+        await x.push(value)
+      }
+      await setFilBathrooms(x)
+      await allmakeOverFun(
+        filStatus,
+        filBedRooms,
+        x,
+        filSuperBuildUpArea,
+        filRatePerSqft,
+        filFacing
+      )
+    }
+    if (id === 'super_built_up_area') {
+      let x = []
+      if (value === 'Any') {
+        x = [35397, 59895]
+      } else {
+        await x.push(value)
+      }
+      setFilSuperBuiltUpArea(x)
+      await allmakeOverFun(
+        filStatus,
+        filBedRooms,
+        filBathrooms,
+        x,
+        filRatePerSqft,
+        filFacing
+      )
+    }
+    if (id === 'rate_per_sqft') {
+      let x = 0
+      if (value === 'Any') {
+        x = 12000000000000
+      } else {
+        x = value
+      }
+      setFilRatePerSqft(x)
+      await allmakeOverFun(
+        filStatus,
+        filBedRooms,
+        filBathrooms,
+        filSuperBuildUpArea,
+        value,
+        filFacing
+      )
+    }
+
+    // console.log(
+    //   'filtered stuff is ',
+    //   x,
+    //   filBedRooms,
+    //   unitsFeed[0]['bed_rooms'],
+    //   filFacing,
+    //   filStatus,
+    //   unitsFeed[0]['Status'],
+    //   filStatus.includes(unitsFeed[0]['Status']),
+    //   value,
+    //   unitsFeed[0][id] == value
+    // )
+    // console.log('id==>', id, value)
+  }
+  const allmakeOverFun = async (
+    Status,
+    bed_rooms,
+    bath_rooms,
+    super_built_up_area,
+    rate_per_sqft,
+    facing
+  ) => {
+    const y = await unitsFeed?.filter((da) => {
+      console.log(
+        'what is this',
+        Status,
+        Status.includes(da?.Status),
+        bed_rooms.includes(da?.bed_rooms),
+        bed_rooms,
+        da?.bed_rooms
+      )
+      return (
+        facing.includes(da?.facing.toLocaleLowerCase()) &&
+        Status.includes(da?.Status) &&
+        bed_rooms.includes(da?.bed_rooms) &&
+        // bath_rooms.includes(da?.bath_rooms) &&
+        // super_built_up_area.includes(da?.super_built_up_area) &&
+        da?.rate_per_sqft < rate_per_sqft
+      )
+    })
+    await setFilteredUnits(y)
+  }
   const selReportFun = async (data) => {
     setReportFeed(data)
   }
@@ -225,7 +409,7 @@ const Floordetails = ({
           const x = docSnapshot.data()
           const { staDA } = x
           y.push(x)
-          console.log('fetched details are', x)
+          console.log('fetched units are', x)
         })
         y.sort((a, b) => a.unit_no - b.unit_no)
         setUnitsFeed(y)
@@ -441,31 +625,55 @@ const Floordetails = ({
       {blocksViewFeature === 'Units' && (
         <>
           <div className="flex justify-between items-center mt-6">
-            <section className="flex flex-row">
+            <section className="flex flex-row max-w-full">
               <p className="text-sm font-semibold text-[#0091ae]">
                 FloorView{' '}
                 <span className="text-[#0091ae]">{selBlock?.blockName}-</span>
                 {unitsFeed.length}
+                {filteredUnits.length}
               </p>
               <DropCompUnitStatus
                 type={'Status'}
-                id={'id'}
-                setStatusFun={setUnitShrink}
+                id={'Status'}
+                setStatusFun={makeFilterFun}
+                filteredUnits={filteredUnits}
+                pickedValue={filStatus}
+              />
+
+              <DropCompUnitStatus
+                type={'bedrooms'}
+                id={'bed_rooms'}
+                setStatusFun={makeFilterFun}
+                filteredUnits={filteredUnits}
+                pickedValue={filBedRooms}
+              />
+              <DropCompUnitStatus
+                type={'bathrooms'}
+                id={'bath_rooms'}
+                setStatusFun={makeFilterFun}
+                filteredUnits={filteredUnits}
+                pickedValue={filBathrooms}
               />
               <DropCompUnitStatus
                 type={'Size'}
-                id={'id'}
-                setStatusFun={setUnitShrink}
+                id={'super_built_up_area'}
+                setStatusFun={makeFilterFun}
+                filteredUnits={filteredUnits}
+                pickedValue={filSuperBuildUpArea}
               />
               <DropCompUnitStatus
                 type={'Price'}
-                id={'id'}
-                setStatusFun={setUnitShrink}
+                id={'rate_per_sqft'}
+                setStatusFun={makeFilterFun}
+                filteredUnits={filteredUnits}
+                pickedValue={filRatePerSqft}
               />
               <DropCompUnitStatus
                 type={'Facing'}
-                id={'id'}
-                setStatusFun={setUnitShrink}
+                id={'facing'}
+                setStatusFun={makeFilterFun}
+                filteredUnits={filteredUnits}
+                pickedValue={filFacing}
               />
             </section>
             <section className="flex">
@@ -503,24 +711,27 @@ const Floordetails = ({
                   <section>
                     Fl-{floorDat}
                     <div className="mt-6">
-                      {unitsFeed
-                        ?.filter((da) => da?.floor === i)
-                        .map((data) => {
+                      {filteredUnits
+                        ?.filter((da) => da?.floor == i)
+                        .map((data, index) => {
                           return unitShrink ? (
                             <div
                               className="p-2 mb-1  mx-1 inline-block"
-                              key={data}
+                              key={index}
                             >
                               <UnitsSmallViewCard
                                 kind={data}
                                 feedData={unitFeedData}
                                 bg="#fef7f7"
+                                setShowCostSheetWindow={setShowCostSheetWindow}
+                                setSelUnitDetails={setSelUnitDetails}
+                                setSelMode={setSelMode}
                               />
                             </div>
                           ) : (
                             <div
                               className="p-2 mb-1  mx-1 inline-block"
-                              key={data}
+                              key={index}
                             >
                               <UnitsStatsCard
                                 kind={data}

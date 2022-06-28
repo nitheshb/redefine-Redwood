@@ -19,9 +19,7 @@ export const TextField = ({ label, ...props }) => {
       /> */}
       <input
         className={` ${meta.touched && meta.error && 'is-invalid'} ${
-          field.name === 'blockName'
-            ? 'rounded-xs'
-            : ' h-10 rounded-md '
+          field.name === 'blockName' ? 'rounded-xs' : ' h-10 rounded-md '
         }
            w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] px-4`}
         {...field}
