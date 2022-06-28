@@ -1,3 +1,20 @@
+// const CrmHomePage = () => {
+//   return (
+//     <>
+//       <MetaTags title="CrmHome" description="CrmHome page" />
+
+//       <h1>CrmHomePage</h1>
+//       <p>
+//         Find me in <code>./web/src/pages/CrmHomePage/CrmHomePage.tsx</code>
+//       </p>
+//       <p>
+//         My default route is named <code>crmHome</code>, link to me with `
+//         <Link to={routes.crmHome()}>CrmHome</Link>`
+//       </p>
+//     </>
+//   )
+// }
+
 import { useState, useEffect } from 'react'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
@@ -12,7 +29,7 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 
-const HomePage = () => {
+const CrmHomePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false)
   const [project, setProject] = useState({})
@@ -335,7 +352,7 @@ const HomePage = () => {
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
           <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
-            <HeadSideBar pgName={'home'} />
+            <HeadSideBar pgName={'crmModule'} />
             <HeadSideBarDetailView
               pgName={'leadsManager'}
               sourceLink={'projectsScreen'}
@@ -842,5 +859,4 @@ const HomePage = () => {
     </>
   )
 }
-
-export default HomePage
+export default CrmHomePage

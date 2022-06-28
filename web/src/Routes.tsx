@@ -5,6 +5,7 @@
 import { Router, Route } from '@redwoodjs/router'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
+import FinanceHomePagePage from './pages/FinanceHomePagePage/FinanceHomePagePage'
 
 const defaultRoutes = () => {
   return (
@@ -15,11 +16,19 @@ const defaultRoutes = () => {
       <Route path="/admin/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
       <Route path="/admin/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
       <Route path="/admin/project-module" page={ProjectModulePage} name="projectModule" />
+      <Route path="/admin/crm-module" page={CrmHomePage} name="crmModule" />
+      <Route path="/admin/finance-module" page={FinanceHomePagePage} name="financeModule" />
+      <Route path="/admin/legal-module" page={LegalHomePage} name="legalModule" />
+      <Route path="/admin/erp-account" page={ErpAccountHomePage} name="erpAccount" />
       <Route path="/users-admin" page={UsersAdminPage} name="usersAdmin" />
       <Route path="/leads-manager" page={LeadsManagerPage} name="leadsManager" />
       <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
       <Route path="/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
       <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
+      <Route path="/legal-module" page={LegalHomePage} name="legalModule" />
+      <Route path="/finance-module" page={FinanceHomePagePage} name="financeModule" />
+      <Route path="/crm-module" page={CrmHomePage} name="crmModule" />
+      <Route path="/erp-account" page={ErpAccountHomePage} name="erpAccount" />
     </>
   )
 }
@@ -36,6 +45,10 @@ const Routes = () => {
         <Route path="/admin/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
         <Route path="/admin/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
         <Route path="/admin/project-module" page={ProjectModulePage} name="projectModule" />
+        <Route path="/admin/crm-module" page={CrmHomePage} name="crmModule" />
+        <Route path="/admin/finance-module" page={FinanceHomePagePage} name="financeModule" />
+        <Route path="/admin/legal-module" page={LegalHomePage} name="legalModule" />
+        <Route path="/admin/erp-account" page={ErpAccountHomePage} name="erpAccount" />
       </>
     )
   } else if (user?.role?.includes(USER_ROLES.HR_MANAGER) || user?.role?.includes(USER_ROLES.HR_EXECUTIVE)) {
@@ -54,8 +67,13 @@ const Routes = () => {
   } else if (user?.role?.includes(USER_ROLES.CRM_MANAGER) || user?.role?.includes(USER_ROLES.CRM_EXECUTIVE)) {
     UpdatedRoutes = (
       <>
-        <Route path="/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
-        <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
+        <Route path="/crm-module" page={ProjectModulePage} name="crmModule" />
+      </>
+    )
+  } else if (user?.role?.includes(USER_ROLES.FINANCE_MANAGER) || user?.role?.includes(USER_ROLES.FINANCE_EXECUTIVE)) {
+    UpdatedRoutes = (
+      <>
+        <Route path="/finance-module" page={ProjectModulePage} name="financeModule" />
       </>
     )
   } else {
@@ -70,6 +88,10 @@ const Routes = () => {
 
   return (
     <Router>
+      <Route path="/erp-account-home" page={ErpAccountHomePage} name="erpAccountHome" />
+      <Route path="/legal-home" page={LegalHomePage} name="legalHome" />
+      <Route path="/crm-home" page={CrmHomePage} name="crmHome" />
+      <Route path="/finance-home-page" page={FinanceHomePagePage} name="financeHomePage" />
       {UpdatedRoutes}
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/" page={LoginPage} name="login" />

@@ -1,11 +1,11 @@
 import { render } from '@redwoodjs/testing/web'
 
-import LeadsManagerPage from './LeadsManagerPage'
+import ErpAccountHomePage from './ErpAccountHomePage'
 
-describe('LeadsManagerPage', () => {
+describe('ErpAccountHomePage', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<LeadsManagerPage />)
+      render(<ErpAccountHomePage />)
     }).not.toThrow()
   })
 })

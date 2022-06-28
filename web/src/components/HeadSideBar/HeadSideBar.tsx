@@ -98,8 +98,11 @@ const HeadSideBar = (props) => {
       </Link>
 
       <Link
-        className="flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300"
-        to={routes.leadsManager()}
+        className={
+          'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300 ' +
+          (pgName === 'crmModule' ? 'bg-gray-300' : '')
+        }
+        to={routes.crmModule()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -116,10 +119,36 @@ const HeadSideBar = (props) => {
           />
         </svg>
       </Link>
+      <Link
+        className={
+          'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300 ' +
+          (pgName === 'financeModule' ? 'bg-gray-300' : '')
+        }
+        to={routes.financeModule()}
+      >
 
-      <a
-        className="flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300"
-        href="#"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </Link>
+
+      <Link
+        className={
+          'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300 ' +
+          (pgName === 'legalModule' ? 'bg-gray-300' : '')
+        }
+        to={routes.legalModule()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +164,8 @@ const HeadSideBar = (props) => {
             d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
           />
         </svg>
-      </a>
+      </Link>
+
       <Link
         className={
           'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 rounded hover:bg-gray-300 ' +
@@ -145,9 +175,13 @@ const HeadSideBar = (props) => {
       >
         <UserGroupIcon className="h-5 w-5 " aria-hidden="true" />
       </Link>
-      <a
-        className="flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 mt-auto rounded hover:bg-gray-300"
-        href="#"
+
+      <Link
+        className={
+          'flex items-center justify-center flex-shrink-0 w-10 h-10 mt-4 mt-auto rounded hover:bg-gray-300 ' +
+          (pgName === 'erpAccount' ? 'bg-gray-300' : '')
+        }
+        to={routes.erpAccount()}
       >
         <svg
           className="w-5 h-5"
@@ -163,7 +197,7 @@ const HeadSideBar = (props) => {
             d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-      </a>
+      </Link>
     </div>
   )
 }

@@ -5,6 +5,8 @@ export const USER_ROLES = {
   LEGAL_EXECUTIVE: 'legal-executive',
   CRM_MANAGER: 'crm-manager',
   CRM_EXECUTIVE: 'crm-executive',
+  FINANCE_MANAGER: 'finance-manager',
+  FINANCE_EXECUTIVE: 'finance-executive',
   HR_MANAGER: 'hr-manager',
   HR_EXECUTIVE: 'hr-executive',
   SUPPORT_MANAGER: 'support-manager',
