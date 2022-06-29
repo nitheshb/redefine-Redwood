@@ -22,7 +22,7 @@ export const DEPARTMENT_LIST = [
   { label: 'Select the Dept', value: '' },
   { label: 'Admin', value: 'admin' },
   { label: 'CRM', value: 'crm' },
-  { label: 'Extra', value: 'extra' },
+  { label: 'Finance', value: 'finance' },
   { label: 'Helper', value: 'helper' },
   { label: 'HR', value: 'hr' },
   { label: 'Legal', value: 'legal' },
@@ -47,6 +47,16 @@ export const ROLES_LIST = [
   },
   { label: 'CRM manager', value: USER_ROLES.CRM_MANAGER, dept: 'crm' },
   { label: 'CRM executive', value: USER_ROLES.CRM_EXECUTIVE, dept: 'crm' },
+  {
+    label: 'Finance manager',
+    value: USER_ROLES.FINANCE_MANAGER,
+    dept: 'finance',
+  },
+  {
+    label: 'Finance executive',
+    value: USER_ROLES.FINANCE_EXECUTIVE,
+    dept: 'finance',
+  },
   { label: 'HR manager', value: USER_ROLES.HR_MANAGER, dept: 'hr' },
   { label: 'HR executive', value: USER_ROLES.HR_EXECUTIVE, dept: 'hr' },
   {

@@ -9,6 +9,7 @@ import {
   getLeadsByStatus,
   getLedsData1,
 } from 'src/context/dbQueryFirebase'
+import FinanceTableBody from './financeTableBody'
 
 const tableData2 = [
   {
@@ -435,7 +436,7 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
   },
 }))
 
-const LLeadsTableView = ({
+const FinanceTableView = ({
   setisImportLeadsOpen,
   selUserProfileF,
   leadsFetchedData,
@@ -487,11 +488,7 @@ const LLeadsTableView = ({
           ]
         : leadsTyper === 'archieveLeads'
         ? archieveTab
-        :  [
-            { lab: 'Booked', val: 'booked' },
-            // { lab: 'Not Interested', val: 'notinterested' },
-            // { lab: 'Dead', val: 'dead' },
-          ]
+        : financeTab
     settabHeadFieldsA(tabHeadFieldsA1)
 
     leadsTyper === 'inProgress'
@@ -571,7 +568,7 @@ const LLeadsTableView = ({
               </ul>
             </div>
             {/*  Data Table */}
-            <LLeadsTableBody
+            <FinanceTableBody
               data={filterTable}
               handleDelete={handleDelete}
               selStatus={value}
@@ -585,4 +582,4 @@ const LLeadsTableView = ({
   )
 }
 
-export default LLeadsTableView
+export default FinanceTableView

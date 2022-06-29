@@ -11,6 +11,7 @@ import { ResponsiveBar } from '@nivo/bar'
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
+import FinanceTransactionsHome from 'src/components/TableComp/FinanceTransactionsHome'
 
 const FinanceHomePagePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -349,7 +350,7 @@ const FinanceHomePagePage = () => {
                 <div className="container h-full rounded-3xl">
                   <div className="flex flex-row h-full">
                     <div className="flex flex-col w-full mx-16">
-                      <div className="flex flex-col bg-white px-10 rounded-bl-3xl rounded-br-3xl">
+                      <div className="flex flex-col bg-[#F5F4F4] px-10 rounded-bl-3xl rounded-br-3xl">
                         <div className="flex flex-row items-center py-6">
                           <span className="app-color-blue font-bold text-xs mr-2">
                             Finance Dashboard
@@ -373,33 +374,33 @@ const FinanceHomePagePage = () => {
                                 className="flex flex-col app-bg-gradient-blue  w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
                                 style={{
                                   background:
-                                    'linear-gradient(to bottom left, #2d55dc, #18317C)',
+                                    'linear-gradient(to bottom left, #d7b391, #966D47)',
                                 }}
                               >
-                                <span className="text-white font-bold mb-auto">
+                                <span className="text-[#e9e2e2] font-bold mb-auto">
                                   Total
                                 </span>
                                 <span className="flex flex-row">
-                                  <span className="text-white text-xs  mt-[12px] min-w[68px] w-full">
+                                  <span className="text-[#e9e2e2] text-xs  mt-[12px] min-w[68px] w-full">
                                     In Review
                                   </span>
-                                  <span className="text-white text-2xl ml-2 font-semibold text-right">
+                                  <span className="text-[#e9e2e2] text-2xl ml-2 font-semibold text-right">
                                     28
                                   </span>
                                 </span>
                                 <span className="flex flex-row mt-1">
-                                  <span className="text-white text-xs  mt-[12px] min-w[68px] w-full">
+                                  <span className="text-[#e9e2e2] text-xs  mt-[12px] min-w[68px] w-full">
                                     Cleared
                                   </span>
-                                  <span className="text-white text-2xl font-semibold">
+                                  <span className="text-[#e9e2e2] text-2xl font-semibold">
                                     28
                                   </span>
                                 </span>
                                 <span className="flex flex-row mt-1">
-                                  <span className="text-white text-xs mt-[12px] min-w[68px] w-full">
+                                  <span className="text-[#e9e2e2] text-xs mt-[12px] min-w[68px] w-full">
                                     Uncleared
                                   </span>
-                                  <span className="text-white text-2xl  ml-2 font-semibold">
+                                  <span className="text-[#e9e2e2] text-2xl  ml-2 font-semibold">
                                     28
                                   </span>
                                 </span>
@@ -408,34 +409,34 @@ const FinanceHomePagePage = () => {
                                 className="flex flex-col app-bg-gradient-blue w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
                                 style={{
                                   background:
-                                    'linear-gradient(to bottom left, #2d55dc, #18317C)',
+                                    'linear-gradient(to bottom left, #D0B8A1, #966D47)',
                                 }}
                               >
-                                <span className="text-white font-bold mb-auto">
+                                <span className="text-black font-bold mb-auto">
                                   Cheques
                                 </span>
                                 <span className="flex flex-row">
-                                  <span className="text-white text-2xl font-semibold">
-                                    14
-                                  </span>
-                                  <span className="text-white text-xs ml-2 mt-[12px]">
+                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
                                     In Review
                                   </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-white text-2xl font-semibold">
+                                  <span className="text-black text-2xl ml-2 font-semibold text-right">
                                     14
                                   </span>
-                                  <span className="text-white text-xs ml-2 mt-[12px]">
+                                </span>
+                                <span className="flex flex-row mt-1">
+                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
                                     Cleared
                                   </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-white text-2xl font-semibold">
+                                  <span className="text-black text-2xl font-semibold">
                                     14
                                   </span>
-                                  <span className="text-white text-xs ml-2 mt-[12px]">
+                                </span>
+                                <span className="flex flex-row mt-1">
+                                  <span className="text-black text-xs mt-[12px] min-w[68px] w-full">
                                     Uncleared
+                                  </span>
+                                  <span className="text-black text-2xl  ml-2 font-semibold">
+                                    14
                                   </span>
                                 </span>
                               </div>
@@ -443,34 +444,34 @@ const FinanceHomePagePage = () => {
                                 className="flex flex-col app-bg-gradient-blue w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
                                 style={{
                                   background:
-                                    'linear-gradient(to bottom left, #2d55dc, #18317C)',
+                                    'linear-gradient(to bottom left, #D0B8A1, #966D47)',
                                 }}
                               >
-                                <span className="text-white font-bold mb-auto">
+                                <span className="text-black font-bold mb-auto">
                                   Bank
                                 </span>
                                 <span className="flex flex-row">
-                                  <span className="text-white text-2xl font-semibold">
-                                    14
-                                  </span>
-                                  <span className="text-white text-xs ml-2 mt-[12px]">
+                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
                                     In Review
                                   </span>
+                                  <span className="text-black text-2xl ml-2 font-semibold text-right">
+                                    28
+                                  </span>
                                 </span>
                                 <span className="flex flex-row mt-1">
-                                  <span className="text-white text-2xl font-semibold">
-                                    14
-                                  </span>
-                                  <span className="text-white text-xs ml-2 mt-[12px]">
+                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
                                     Cleared
                                   </span>
+                                  <span className="text-black text-2xl font-semibold">
+                                    28
+                                  </span>
                                 </span>
                                 <span className="flex flex-row mt-1">
-                                  <span className="text-white text-2xl font-semibold">
-                                    14
-                                  </span>
-                                  <span className="text-white text-xs ml-2 mt-[12px]">
+                                  <span className="text-black text-xs mt-[12px] min-w[68px] w-full">
                                     Uncleared
+                                  </span>
+                                  <span className="text-black text-2xl  ml-2 font-semibold">
+                                    28
                                   </span>
                                 </span>
                               </div>
@@ -527,7 +528,7 @@ const FinanceHomePagePage = () => {
                                     </svg>
                                   </div>
                                   <span className="font-semibold">
-                                    +₹6 320.15
+                                    ₹6 320.15
                                   </span>
                                 </div>
                               </div>
@@ -552,16 +553,14 @@ const FinanceHomePagePage = () => {
                                       ></path>
                                     </svg>
                                   </div>
-                                  <span className="font-semibold">
-                                    -₹919.60
-                                  </span>
+                                  <span className="font-semibold">₹919.60</span>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-row px-10 py-12">
+                      <div className="flex flex-row px-10 py-12 mt-[42px] rounded-3xl bg-[#F2EBE6]">
                         {/* <div className="flex flex-col w-8/12">
                           <div className="flex flex-row items-center justify-between">
                             <span className="text-lg font-semibold">
@@ -601,16 +600,16 @@ const FinanceHomePagePage = () => {
                           </div>
                         </div> */}
 
-                        <div className="flex flex-col w-8/12">
+                        <div className="flex flex-col w-10/12 ml-[73px]">
                           <div className="flex flex-row justify-between items-center">
                             <span className="text-lg font-semibold">
-                              Latest transaction
+                              Waiting For Review List
                             </span>
                             <span className="text-xs font-semibold app-color-blue">
-                              Check all
+                              Action
                             </span>
                           </div>
-                          <div className="flex flex-row my-7">
+                          <div className="flex flex-row my-7 border-b pb-6  border-[#e0cfcf]">
                             <div className="flex w-10 h-10 justify-center items-center border-2 rounded-md">
                               <svg
                                 className="w-5 h-5"
@@ -629,7 +628,21 @@ const FinanceHomePagePage = () => {
                             </div>
                             <div className="flex flex-col ml-3">
                               <span className="font-semibold text-sm app-color-black">
+                                Aakash Raj
+                              </span>
+                              <span className="font-semibold text-sm app-color-black">
+                                52346673647
+                              </span>
+                              <span className="font-semibold text-sm app-color-black">
                                 HDFC-Silk Board Branch Layout
+                              </span>
+                            </div>
+                            <div className="flex flex-col ml-auto items-end">
+                              <span className="font-semibold text-sm app-color-black">
+                                ₹120000.00
+                              </span>
+                              <span className="font-semibold text-xs app-color-gray-2">
+                                31 Mar 2019
                               </span>
                               <span className="font-semibold text-xs app-color-blue">
                                 Transaction
@@ -637,14 +650,13 @@ const FinanceHomePagePage = () => {
                             </div>
                             <div className="flex flex-col ml-auto items-end">
                               <span className="font-semibold text-sm app-color-black">
-                                -₹120.00
+                                Cleared
                               </span>
                               <span className="font-semibold text-xs app-color-gray-2">
-                                31 Mar 2019
+                                Un Cleared
                               </span>
                             </div>
                           </div>
-                          <div className="h-px w-full app-bg-gray-2"></div>
                           <div className="flex flex-row my-7">
                             <div className="flex w-10 h-10 justify-center items-center border-2 rounded-md">
                               <svg
@@ -664,23 +676,38 @@ const FinanceHomePagePage = () => {
                             </div>
                             <div className="flex flex-col ml-3">
                               <span className="font-semibold text-sm app-color-black">
+                                Srija M
+                              </span>
+                              <span className="font-semibold text-sm app-color-black">
+                                52346673647
+                              </span>
+                              <span className="font-semibold text-sm app-color-black">
                                 Bank of Baroda-Hsr Layout
+                              </span>
+                            </div>
+                            <div className="flex flex-col ml-auto items-end">
+                              <span className="font-semibold text-sm app-color-green">
+                                ₹5 000.00
+                              </span>
+                              <span className="font-semibold text-xs app-color-gray-2">
+                                30 Mar 2022
                               </span>
                               <span className="font-semibold text-xs app-color-blue">
                                 Cheque
                               </span>
                             </div>
                             <div className="flex flex-col ml-auto items-end">
-                              <span className="font-semibold text-sm app-color-green">
-                                +₹5 000.00
+                              <span className="font-semibold text-sm app-color-black">
+                                Received
                               </span>
-                              <span className="font-semibold text-xs app-color-gray-2">
-                                30 Mar 2022
+                              <span className="font-semibold text-xs app-color-gray-2 mt-1">
+                                Pending
                               </span>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <FinanceTransactionsHome leadsTyper={'financeModule'} />
                     </div>
                   </div>
                 </div>
