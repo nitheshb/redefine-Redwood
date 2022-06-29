@@ -67,13 +67,26 @@ const Routes = () => {
   } else if (user?.role?.includes(USER_ROLES.CRM_MANAGER) || user?.role?.includes(USER_ROLES.CRM_EXECUTIVE)) {
     UpdatedRoutes = (
       <>
-        <Route path="/crm-module" page={ProjectModulePage} name="crmModule" />
+        <Route path="/crm-module" page={CrmHomePage} name="crmModule" />
       </>
     )
   } else if (user?.role?.includes(USER_ROLES.FINANCE_MANAGER) || user?.role?.includes(USER_ROLES.FINANCE_EXECUTIVE)) {
     UpdatedRoutes = (
       <>
-        <Route path="/finance-module" page={ProjectModulePage} name="financeModule" />
+        <Route path="/finance-module" page={FinanceHomePagePage} name="financeModule" />
+      </>
+    )
+  } else if (user?.role?.includes(USER_ROLES.LEGAL_MANAGER) || user?.role?.includes(USER_ROLES.LEGAL_EXECUTIVE)) {
+    UpdatedRoutes = (
+      <>
+        <Route path="/legal-module" page={LegalHomePage} name="legalModule" />
+      </>
+    )
+  } else if (user?.role?.includes(USER_ROLES.PROJECT_MANAGER) || user?.role?.includes(USER_ROLES.PROJECT_EXECUTIVE)) {
+    console.log('sales executive')
+    UpdatedRoutes = (
+      <>
+        <Route path="/home" page={HomePage} name="home" />
       </>
     )
   } else {

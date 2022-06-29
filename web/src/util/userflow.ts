@@ -10,6 +10,11 @@ export const navigateBasedOnUser = async (uid) => {
   if (userData.roles.includes(USER_ROLES.ADMIN)) {
     navigate(routes.home(), { replace: true })
   } else if (
+    userData.roles.includes(USER_ROLES.PROJECT_MANAGER) ||
+    userData.roles.includes(USER_ROLES.PROJECT_EXECUTIVE)
+  ) {
+    navigate(routes.home(), { replace: true })
+  } else if (
     userData.roles.includes(USER_ROLES.SALES_MANAGER) ||
     userData.roles.includes(USER_ROLES.SALES_EXECUTIVE)
   ) {
@@ -23,7 +28,17 @@ export const navigateBasedOnUser = async (uid) => {
     userData.roles.includes(USER_ROLES.CRM_MANAGER) ||
     userData.roles.includes(USER_ROLES.CRM_EXECUTIVE)
   ) {
-    navigate(routes.projectModule(), { replace: true })
+    navigate(routes.crmModule(), { replace: true })
+  } else if (
+    userData.roles.includes(USER_ROLES.FINANCE_MANAGER) ||
+    userData.roles.includes(USER_ROLES.FINANCE_EXECUTIVE)
+  ) {
+    navigate(routes.financeModule(), { replace: true })
+  } else if (
+    userData.roles.includes(USER_ROLES.LEGAL_MANAGER) ||
+    userData.roles.includes(USER_ROLES.LEGAL_EXECUTIVE)
+  ) {
+    navigate(routes.legalModule(), { replace: true })
   } else {
     userData.roles && navigate(routes.accessDenied(), { replace: true })
   }
