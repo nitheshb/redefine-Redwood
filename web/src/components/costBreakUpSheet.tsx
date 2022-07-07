@@ -5,7 +5,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Dialog } from '@headlessui/react'
 import { useState, useEffect, createRef } from 'react'
-import Pdf from 'react-to-pdf'
 import jsPDF from 'jspdf'
 import { renderToString } from 'react-dom/server'
 import { RadioGroup } from '@headlessui/react'
