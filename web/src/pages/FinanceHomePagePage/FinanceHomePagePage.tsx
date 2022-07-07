@@ -12,6 +12,7 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import FinanceTransactionsHome from 'src/components/TableComp/FinanceTransactionsHome'
+import CrmHome from 'src/components/A_CRMcomp/CrmHome'
 
 const FinanceHomePagePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -346,220 +347,228 @@ const FinanceHomePagePage = () => {
             />
 
             <div className="flex-grow mx-4  my- border-t  items-center overflow-y-auto  h-[98%]  px-300  py-300">
-              {viewable === 'Payments' && (
-                <div className="container h-full rounded-3xl">
-                  <div className="flex flex-row h-full">
-                    <div className="flex flex-col w-full mx-16">
-                      <div className="flex flex-col bg-[#F5F4F4] px-10 rounded-bl-3xl rounded-br-3xl">
-                        <div className="flex flex-row items-center py-6">
-                          <span className="app-color-blue font-bold text-xs mr-2">
-                            Finance Dashboard
-                          </span>
-                          <span className="mr-2"></span>
-                          <span className="mr-auto font-bold text-xs app-color-black"></span>
-                          <span className="font-bold text-xs app-color-gray"></span>
-                        </div>
-                        <div className="flex flex-row pb-10">
-                          <div className="flex flex-col w-8/12">
-                            <div className="flex flex-row items-center py-4">
-                              <span className="text-lg font-semibold mr-auto">
-                                All Project Accounts
-                              </span>
-                              <div className="rounded w-2 h-2 mx-1 app-bg-black"></div>
-                              <div className="rounded w-2 h-2 mx-1 app-bg-gray-2"></div>
-                              <div className="rounded w-2 h-2 mx-1 app-bg-gray-2"></div>
-                            </div>
-                            <div className="flex flex-row">
-                              <div
-                                className="flex flex-col app-bg-gradient-blue  w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
-                                style={{
-                                  background:
-                                    'linear-gradient(to bottom left, #d7b391, #966D47)',
-                                }}
-                              >
-                                <span className="text-[#e9e2e2] font-bold mb-auto">
-                                  Total
-                                </span>
-                                <span className="flex flex-row">
-                                  <span className="text-[#e9e2e2] text-xs  mt-[12px] min-w[68px] w-full">
-                                    In Review
-                                  </span>
-                                  <span className="text-[#e9e2e2] text-2xl ml-2 font-semibold text-right">
-                                    28
-                                  </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-[#e9e2e2] text-xs  mt-[12px] min-w[68px] w-full">
-                                    Cleared
-                                  </span>
-                                  <span className="text-[#e9e2e2] text-2xl font-semibold">
-                                    28
-                                  </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-[#e9e2e2] text-xs mt-[12px] min-w[68px] w-full">
-                                    Uncleared
-                                  </span>
-                                  <span className="text-[#e9e2e2] text-2xl  ml-2 font-semibold">
-                                    28
-                                  </span>
-                                </span>
-                              </div>
-                              <div
-                                className="flex flex-col app-bg-gradient-blue w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
-                                style={{
-                                  background:
-                                    'linear-gradient(to bottom left, #D0B8A1, #966D47)',
-                                }}
-                              >
-                                <span className="text-black font-bold mb-auto">
-                                  Cheques
-                                </span>
-                                <span className="flex flex-row">
-                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
-                                    In Review
-                                  </span>
-                                  <span className="text-black text-2xl ml-2 font-semibold text-right">
-                                    14
-                                  </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
-                                    Cleared
-                                  </span>
-                                  <span className="text-black text-2xl font-semibold">
-                                    14
-                                  </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-black text-xs mt-[12px] min-w[68px] w-full">
-                                    Uncleared
-                                  </span>
-                                  <span className="text-black text-2xl  ml-2 font-semibold">
-                                    14
-                                  </span>
-                                </span>
-                              </div>
-                              <div
-                                className="flex flex-col app-bg-gradient-blue w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
-                                style={{
-                                  background:
-                                    'linear-gradient(to bottom left, #D0B8A1, #966D47)',
-                                }}
-                              >
-                                <span className="text-black font-bold mb-auto">
-                                  Bank
-                                </span>
-                                <span className="flex flex-row">
-                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
-                                    In Review
-                                  </span>
-                                  <span className="text-black text-2xl ml-2 font-semibold text-right">
-                                    28
-                                  </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
-                                    Cleared
-                                  </span>
-                                  <span className="text-black text-2xl font-semibold">
-                                    28
-                                  </span>
-                                </span>
-                                <span className="flex flex-row mt-1">
-                                  <span className="text-black text-xs mt-[12px] min-w[68px] w-full">
-                                    Uncleared
-                                  </span>
-                                  <span className="text-black text-2xl  ml-2 font-semibold">
-                                    28
-                                  </span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="w-px app-bg-gray-2 mx-12"></div>
-                          <div className="flex flex-col w-4/12 justify-between">
-                            <div className="flex flex-row items-center py-6">
-                              <span className="mr-auto text-lg font-semibold">
-                                Balance
-                              </span>
-                              <span className="text-sm font-semibold">
-                                Last month
-                              </span>
-                              <svg
-                                className="w-6 h-6 font-bold ml-2 app-color-blue"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M19 9l-7 7-7-7"
-                                ></path>
-                              </svg>
-                            </div>
-                            <span className="app-color-blue text-4xl font-semibold">
-                              ₹5 400.55
+              {(viewable === 'Today1' || viewable === 'Home') && (
+                <CrmHome leadsTyper={undefined} />
+              )}
+              {viewable === 'Dashboard' && (
+                <div className="flex flex-row h-full">
+                  <div className="flex flex-col w-full mx-16 ">
+                    <div className="flex flex-col bg-[#F5F4F4] px-10 rounded-bl-3xl rounded-br-3xl">
+                      <div className="flex flex-row items-center py-6">
+                        <span className="app-color-blue font-bold text-xs mr-2">
+                          Finance Dashboard
+                        </span>
+                        <span className="mr-2"></span>
+                        <span className="mr-auto font-bold text-xs app-color-black"></span>
+                        <span className="font-bold text-xs app-color-gray"></span>
+                      </div>
+                      <div className="flex flex-row pb-10">
+                        <div className="flex flex-col w-8/12">
+                          <div className="flex flex-row items-center py-4">
+                            <span className="text-lg font-semibold mr-auto">
+                              All Project Accounts
                             </span>
-                            <span className="app-color-blue text-sm font-semibold"></span>
-                            <div className="flex flex-row">
-                              <div className="flex flex-col w-1/2">
-                                <span className="text-xs app-color-gray font-semibold mb-2">
+                            <div className="rounded w-2 h-2 mx-1 app-bg-black"></div>
+                            <div className="rounded w-2 h-2 mx-1 app-bg-gray-2"></div>
+                            <div className="rounded w-2 h-2 mx-1 app-bg-gray-2"></div>
+                          </div>
+                          <div className="flex flex-row">
+                            <div
+                              className="flex flex-col app-bg-gradient-blue  w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
+                              style={{
+                                background:
+                                  'linear-gradient(to bottom left, #d7b391, #966D47)',
+                              }}
+                            >
+                              <span className="text-[#e9e2e2] font-bold mb-auto">
+                                Total
+                              </span>
+                              <span className="flex flex-row">
+                                <span className="text-[#e9e2e2] text-xs  mt-[12px] min-w[68px] w-full">
+                                  In Review
+                                </span>
+                                <span className="text-[#e9e2e2] text-2xl ml-2 font-semibold text-right">
+                                  28
+                                </span>
+                              </span>
+                              <span className="flex flex-row mt-1">
+                                <span className="text-[#e9e2e2] text-xs  mt-[12px] min-w[68px] w-full">
                                   Cleared
                                 </span>
-                                <div className="flex flex-row items-center">
-                                  <div className="flex flex-row w-7 h-7 app-bg-gray-2 justify-center items-center rounded-full mr-2">
-                                    <svg
-                                      className="w-4 h-4 transform rotate-45 app-color-green"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                                      ></path>
-                                    </svg>
-                                  </div>
-                                  <span className="font-semibold">
-                                    ₹6 320.15
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="flex flex-col w-1/2">
-                                <span className="text-xs app-color-gray font-semibold mb-2">
-                                  Pending
+                                <span className="text-[#e9e2e2] text-2xl font-semibold">
+                                  28
                                 </span>
-                                <div className="flex flex-row items-center">
-                                  <div className="transform rotate-90 flex flex-row w-7 h-7 app-bg-gray-2 justify-center items-center rounded-full mr-2">
-                                    <svg
-                                      className="w-4 h-4 transform rotate-45 app-color-red"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M5 10l7-7m0 0l7 7m-7-7v18"
-                                      ></path>
-                                    </svg>
-                                  </div>
-                                  <span className="font-semibold">₹919.60</span>
+                              </span>
+                              <span className="flex flex-row mt-1">
+                                <span className="text-[#e9e2e2] text-xs mt-[12px] min-w[68px] w-full">
+                                  Uncleared
+                                </span>
+                                <span className="text-[#e9e2e2] text-2xl  ml-2 font-semibold">
+                                  28
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              className="flex flex-col app-bg-gradient-blue w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
+                              style={{
+                                background:
+                                  'linear-gradient(to bottom left, #D0B8A1, #966D47)',
+                              }}
+                            >
+                              <span className="text-black font-bold mb-auto">
+                                Cheques
+                              </span>
+                              <span className="flex flex-row">
+                                <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
+                                  In Review
+                                </span>
+                                <span className="text-black text-2xl ml-2 font-semibold text-right">
+                                  14
+                                </span>
+                              </span>
+                              <span className="flex flex-row mt-1">
+                                <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
+                                  Cleared
+                                </span>
+                                <span className="text-black text-2xl font-semibold">
+                                  14
+                                </span>
+                              </span>
+                              <span className="flex flex-row mt-1">
+                                <span className="text-black text-xs mt-[12px] min-w[68px] w-full">
+                                  Uncleared
+                                </span>
+                                <span className="text-black text-2xl  ml-2 font-semibold">
+                                  14
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              className="flex flex-col app-bg-gradient-blue w-1/3 h-44 p-4 rounded-xl app-box-shadow-blue ml-4"
+                              style={{
+                                background:
+                                  'linear-gradient(to bottom left, #D0B8A1, #966D47)',
+                              }}
+                            >
+                              <span className="text-black font-bold mb-auto">
+                                Bank
+                              </span>
+                              <span className="flex flex-row">
+                                <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
+                                  In Review
+                                </span>
+                                <span className="text-black text-2xl ml-2 font-semibold text-right">
+                                  28
+                                </span>
+                              </span>
+                              <span className="flex flex-row mt-1">
+                                <span className="text-black text-xs  mt-[12px] min-w[68px] w-full">
+                                  Cleared
+                                </span>
+                                <span className="text-black text-2xl font-semibold">
+                                  28
+                                </span>
+                              </span>
+                              <span className="flex flex-row mt-1">
+                                <span className="text-black text-xs mt-[12px] min-w[68px] w-full">
+                                  Uncleared
+                                </span>
+                                <span className="text-black text-2xl  ml-2 font-semibold">
+                                  28
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="w-px app-bg-gray-2 mx-12"></div>
+                        <div className="flex flex-col w-4/12 justify-between">
+                          <div className="flex flex-row items-center py-6">
+                            <span className="mr-auto text-lg font-semibold">
+                              Balance
+                            </span>
+                            <span className="text-sm font-semibold">
+                              Last month
+                            </span>
+                            <svg
+                              className="w-6 h-6 font-bold ml-2 app-color-blue"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 9l-7 7-7-7"
+                              ></path>
+                            </svg>
+                          </div>
+                          <span className="app-color-blue text-4xl font-semibold">
+                            ₹5 400.55
+                          </span>
+                          <span className="app-color-blue text-sm font-semibold"></span>
+                          <div className="flex flex-row">
+                            <div className="flex flex-col w-1/2">
+                              <span className="text-xs app-color-gray font-semibold mb-2">
+                                Cleared
+                              </span>
+                              <div className="flex flex-row items-center">
+                                <div className="flex flex-row w-7 h-7 app-bg-gray-2 justify-center items-center rounded-full mr-2">
+                                  <svg
+                                    className="w-4 h-4 transform rotate-45 app-color-green"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M5 10l7-7m0 0l7 7m-7-7v18"
+                                    ></path>
+                                  </svg>
                                 </div>
+                                <span className="font-semibold">₹6 320.15</span>
+                              </div>
+                            </div>
+                            <div className="flex flex-col w-1/2">
+                              <span className="text-xs app-color-gray font-semibold mb-2">
+                                Pending
+                              </span>
+                              <div className="flex flex-row items-center">
+                                <div className="transform rotate-90 flex flex-row w-7 h-7 app-bg-gray-2 justify-center items-center rounded-full mr-2">
+                                  <svg
+                                    className="w-4 h-4 transform rotate-45 app-color-red"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M5 10l7-7m0 0l7 7m-7-7v18"
+                                    ></path>
+                                  </svg>
+                                </div>
+                                <span className="font-semibold">₹919.60</span>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {viewable === 'Payments' && (
+                <div className="container h-full rounded-3xl">
+                  <div className="flex flex-row h-full">
+                    <div className="flex flex-col w-full mx-16">
                       <div className="flex flex-row px-10 py-12 mt-[42px] rounded-3xl bg-[#F2EBE6]">
                         {/* <div className="flex flex-col w-8/12">
                           <div className="flex flex-row items-center justify-between">
@@ -714,59 +723,6 @@ const FinanceHomePagePage = () => {
               )}
             </div>
             <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-[98%]  px-300  py-300">
-              {viewable != 'inProgress' &&
-                viewable != 'Projects Lead Report' &&
-                viewable != 'Campaign Budget Report' &&
-                viewable != 'Bank Accounts' &&
-                viewable != 'Virtual Accounts' &&
-                viewable != 'Payments' && (
-                  <>
-                    <div className="">
-                      <div className="flex items-center justify-between py-2  ">
-                        <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
-                          Projects {viewable}
-                        </span>
-                        <button
-                          onClick={() => setIsNewProjectOpen(true)}
-                          className="flex items-center justify-center h-10 px-4  bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                            />
-                          </svg>
-                          <span className="ml-2 leading-none">Add Project</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {projects.length > 0 ? (
-                      projects.map((project) => (
-                        <ProjectsMHomeBody
-                          key={project.uid}
-                          project={project}
-                          onSliderOpen={() => {
-                            setProject(project)
-                            setIsEditProjectOpen(true)
-                          }}
-                          isEdit={false}
-                        />
-                      ))
-                    ) : (
-                      <DummyBodyLayout />
-                    )}
-                  </>
-                )}
-
               {viewable === 'Projects Lead Report' && (
                 <>
                   <div className="">

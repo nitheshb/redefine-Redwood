@@ -161,6 +161,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       assignedToObj,
       source,
       project,
+      projectId,
     } = data
     // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
 
@@ -172,6 +173,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       Name: name,
       Note: '',
       Project: project,
+      ProjectId: projectId,
       Source: source,
       Status: assignedTo === '' ? 'unassigned' : 'new',
       intype: 'Form',
@@ -286,6 +288,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                 email: '',
                 source: '',
                 project: '',
+                projectId: '',
                 assignedTo: '',
                 budget: '',
                 deptVal: '',
@@ -394,6 +397,8 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                           label="Select Project"
                           className="input mt-3"
                           onChange={(value) => {
+                            console.log('value of project is ', value)
+                            formik.setFieldValue('projectId', value.uid)
                             formik.setFieldValue('project', value.value)
                           }}
                           value={formik.values.project}

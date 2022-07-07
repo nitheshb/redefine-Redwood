@@ -1,9 +1,13 @@
+/* eslint-disable new-cap */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Dialog } from '@headlessui/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createRef } from 'react'
+import Pdf from 'react-to-pdf'
+import jsPDF from 'jspdf'
+import { renderToString } from 'react-dom/server'
 import { RadioGroup } from '@headlessui/react'
 import { Label, InputField, TextAreaField, FieldError } from '@redwoodjs/forms'
 import Select from 'react-select'
@@ -38,6 +42,7 @@ import { TextFieldFlat } from 'src/util/formFields/TextFieldFlatType'
 import { apartUnitChargesMock } from 'src/constants/projects'
 
 const CostBreakUpSheet = ({
+  selMode,
   title,
   projectDetails,
   unitDetails,
@@ -46,6 +51,7 @@ const CostBreakUpSheet = ({
   selUnitDetails,
 }) => {
   const { user } = useAuth()
+  const ref = createRef()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
@@ -93,6 +99,60 @@ const CostBreakUpSheet = ({
 
     return unsubscribe
   }, [])
+  const styles = {
+    fontFamily: 'sans-serif',
+    textAlign: 'center',
+  }
+  const colstyle = {}
+  const tableStyle = {
+    width: '100%',
+  }
+  const Prints = () => (
+    <div>
+      <h3 className="text-blue-600">
+        Time & Materials Statement of Work (SOW)
+      </h3>
+      <h4>General Information</h4>
+      <table
+        id="tab_customers"
+        className="table table-striped"
+        style={tableStyle}
+      >
+        <colgroup>
+          <col span={1} style={colstyle} />
+          <col span={1} style={colstyle} />
+        </colgroup>
+        <thead>
+          <tr className="warning">
+            <th>SOW Creation Date</th>
+            <th>SOW Start Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dec 13, 2017</td>
+            <td>Jan 1, 2018</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        This is a Time and Materials Statement of Work between Northwestern
+        Mutual Life Insurance Company and Infosys with all general terms and
+        conditions as described in the current Master Agreement and its related
+        documents
+      </p>
+    </div>
+  )
+  const downloadPdf = () => {
+    // const doc = new jsPDF('p', 'pt')
+    // doc.text('This is default text', 20, 20)
+    // doc.save('generated.pdf')
+    const string = renderToString(<Prints />)
+    const pdf = new jsPDF('p', 'pt', 'a4')
+    pdf.text('This is default text', 20, 20)
+    pdf.html(string)
+    pdf.save('pdf')
+  }
 
   const aquaticCreatures = [
     { label: 'Select the Project', value: '' },
@@ -281,6 +341,10 @@ const CostBreakUpSheet = ({
   return (
     <>
       <section className="py-20 bg-black">
+        <div className="max-w-5xl w-5xl mx-auto right-0 text-white flex flex-row justify-between">
+          <span></span>
+          <span onClick={() => setShowCostSheetWindow(false)}>Close</span>
+        </div>
         <div className="max-w-5xl mx-auto py-16 bg-white">
           <article className="overflow-hidden">
             <div className="bg-[white] rounded-b-md">
@@ -398,139 +462,164 @@ const CostBreakUpSheet = ({
                 </div>
               </div>
 
-              <AddBookingForm title="Booking Form" />
-
-              <div className="p-9">
-                <p className="text-md font-extrabold tracking-tight uppercase font-body">
-                  COST SHEET
-                </p>
-                <div className="flex flex-col mx-0 mt-8">
-                  <Formik
-                    initialValues={initialState}
-                    validationSchema={validate}
-                    onSubmit={(values, { resetForm }) => {
-                      // onSubmit(values, resetForm)
-                    }}
-                  >
-                    {(formik) => (
-                      <Form>
-                        <table className="min-w-full divide-y divide-slate-500">
-                          <thead>
-                            <tr>
-                              <th
-                                scope="col"
-                                className="py-3.5 pl-3 pr-4 text-left text-sm font-normal text-slate-700 sm:pr-6 md:pr-0 max-w-[100px] w-[49px]"
-                              >
-                                SNo
-                              </th>
-                              <th
-                                scope="col"
-                                colSpan={3}
-                                className="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0"
-                              >
-                                Description
-                              </th>
-
-                              <th
-                                scope="col"
-                                className="py-3.5 pl-3 pr-4 text-right text-sm font-normal text-slate-700 sm:pr-6 md:pr-0"
-                              >
-                                Amount
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {apartUnitChargesMock.map((dat, i) => (
-                              <tr className="border-b border-slate-200" key={i}>
-                                <td
-                                  className="py-4 pl-3 pr-4 text-sm text-center text-slate-500 sm:pr-6 md:pr-0 max-w-[14px]"
-                                  colSpan={1}
+              {['Detail View', 'Quotation', 'Book', 'Block'].includes(
+                selMode
+              ) && (
+                <div className="p-9">
+                  <p className="text-md font-extrabold tracking-tight uppercase font-body">
+                    COST SHEET
+                  </p>
+                  <div className="flex flex-col mx-0 mt-8 px-[150px]">
+                    <Formik
+                      initialValues={initialState}
+                      validationSchema={validate}
+                      onSubmit={(values, { resetForm }) => {
+                        // onSubmit(values, resetForm)
+                      }}
+                    >
+                      {(formik) => (
+                        <Form ref={ref}>
+                          <table className="divide-y divide-slate-500 w-[740px] min-w-[740px] max-w-[740px] overflow-x-auto ">
+                            <thead>
+                              <tr>
+                                <th
+                                  scope="col"
+                                  className="py-3.5 pl-3 pr-4 text-left text-sm font-normal text-slate-700 sm:pr-6 md:pr-0 max-w-[100px] w-[49px]"
                                 >
-                                  {i + 1}
-                                  {')'}
-                                </td>
-                                <td
-                                  className="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0"
+                                  SNo
+                                </th>
+                                <th
+                                  scope="col"
                                   colSpan={3}
+                                  className="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0"
                                 >
-                                  <div className="font-medium text-slate-700">
-                                    {dat?.category}
-                                  </div>
-                                  <div className="mt-0.5 text-slate-500 sm:hidden">
-                                    1 unit at $0.00
-                                  </div>
-                                </td>
+                                  Description
+                                </th>
 
-                                <td className="py-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                                  <TextFieldFlat
-                                    label=""
-                                    name={dat?.name}
-                                    type="number"
-                                  />
+                                <th
+                                  scope="col"
+                                  className="py-3.5 pl-3 pr-4 text-right text-sm font-normal text-slate-700 sm:pr-6 md:pr-0"
+                                >
+                                  Amount
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {apartUnitChargesMock.map((dat, i) => (
+                                <tr
+                                  className="border-b border-slate-200"
+                                  key={i}
+                                >
+                                  <td
+                                    className="py-4 pl-3 pr-4 text-sm text-center text-slate-500 sm:pr-6 md:pr-0 max-w-[14px]"
+                                    colSpan={1}
+                                  >
+                                    {i + 1}
+                                    {')'}
+                                  </td>
+                                  <td
+                                    className="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0"
+                                    colSpan={3}
+                                  >
+                                    <div className="font-medium text-slate-700">
+                                      {dat?.category}
+                                    </div>
+                                    <div className="mt-0.5 text-slate-500 sm:hidden">
+                                      1 unit at $0.00
+                                    </div>
+                                  </td>
+
+                                  <td className="py-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
+                                    <TextFieldFlat
+                                      label=""
+                                      name={dat?.name}
+                                      type="number"
+                                    />
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                            <tfoot>
+                              <tr>
+                                <th
+                                  scope="row"
+                                  colSpan={3}
+                                  className="hidden pt-6 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0"
+                                >
+                                  {'     '} {'Total'}
+                                </th>
+                                <th
+                                  scope="row"
+                                  className="pt-6 pl-4 pr-3 text-sm font-light text-left text-slate-500"
+                                ></th>
+                                <td className="pt-6 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
+                                  ₹ 12,000
                                 </td>
                               </tr>
-                            ))}
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                              <th
-                                scope="row"
-                                colSpan={3}
-                                className="hidden pt-6 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0"
+                            </tfoot>
+                          </table>
+                          <div className="flex flex-col mt-2 p-4 ">
+                            <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">
+                              <button
+                                onClick={() => dialogOpen(false)}
+                                type="button"
+                                className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
                               >
-                                {'     '} {'Total'}
-                              </th>
-                              <th
-                                scope="row"
-                                className="pt-6 pl-4 pr-3 text-sm font-light text-left text-slate-500"
-                              ></th>
-                              <td className="pt-6 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                                ₹ 12,000
-                              </td>
-                            </tr>
-                          </tfoot>
-                        </table>
-                        <div className="flex flex-col mt-2 p-4 ">
-                          <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">
-                            <button
-                              onClick={() => dialogOpen(false)}
-                              type="button"
-                              className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
-                            >
-                              {' '}
-                              Send to WhatsApp{' '}
-                            </button>
-                            <button
-                              onClick={() => dialogOpen(false)}
-                              type="button"
-                              className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
-                            >
-                              {' '}
-                              Download{' '}
-                            </button>
-                            <button
-                              className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-sm hover:shadow-lg hover:bg-green-500"
-                              type="button"
-                              disabled={loading}
-                              // onClick={() => submitFormFun(formik)}
-                            >
-                              {/* {loading && <Loader />} */}
-                              Save
-                            </button>
+                                {' '}
+                                Send to WhatsApp{' '}
+                              </button>
+                              {/* <Pdf targetRef={ref} filename="post.pdf">
+                              {({ toPdf }) => (
+                                <button
+                                  onClick={toPdf}
+                                  type="button"
+                                  className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
+                                >
+                                  {' '}
+                                  Download{' '}
+                                </button>
+                              )}
+                            </Pdf> */}
+                              <button
+                                onClick={() => downloadPdf()}
+                                type="button"
+                                className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
+                              >
+                                {' '}
+                                Download{' '}
+                              </button>
+
+                              <button
+                                className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-sm hover:shadow-lg hover:bg-green-500"
+                                type="button"
+                                disabled={loading}
+                                // onClick={() => submitFormFun(formik)}
+                              >
+                                {/* {loading && <Loader />} */}
+                                Save
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </Form>
-                    )}
-                  </Formik>
+                        </Form>
+                      )}
+                    </Formik>
+                  </div>
                 </div>
-              </div>
-              <AddPaymentDetailsForm
-                title={undefined}
-                dialogOpen={undefined}
-                phase={undefined}
-              />
-              <BlockingUnitForm title="Blocking Form" />
-              <UnitTransactionForm />
+              )}
+              {['Detail View', 'Book', 'Block'].includes(selMode) && (
+                <AddBookingForm title="Booking Form" />
+              )}
+              {['Book'].includes(selMode) && (
+                <AddPaymentDetailsForm
+                  title={undefined}
+                  dialogOpen={undefined}
+                  phase={undefined}
+                />
+              )}
+              {['Block'].includes(selMode) && (
+                <BlockingUnitForm title="Blocking Form" />
+              )}
+              {['Detail View'].includes(selMode) && <UnitTransactionForm />}
               <div className="mt-48 p-9">
                 <div className="border-t pt-9 border-slate-200">
                   <div className="text-sm font-light text-slate-700">

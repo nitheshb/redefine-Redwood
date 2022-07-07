@@ -30,10 +30,12 @@ const SiderForm = ({
   blockDetails,
   widthClass = 'max-w-4xl',
   unitViewerrr,
+  unitsViewMode,
+  setUnitsViewMode
 }) => {
   // dont write too many here
   //  this is for customerProfileSideView
-  const [unitsViewMode, setUnitsViewMode] = useState(false)
+
   return (
     <Transition.Root show={open || false} as={Fragment}>
       <Dialog

@@ -82,3 +82,7 @@ export function getDifferenceInSeconds(date1, date2) {
   const diffInMs = Math.abs(x - date1)
   return parseInt(diffInMs / 1000)
 }
+
+export function formatToPhone(no) {
+  return no?.toString().replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
+}

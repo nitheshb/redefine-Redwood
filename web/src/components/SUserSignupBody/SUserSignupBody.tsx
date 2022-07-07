@@ -101,13 +101,14 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
 
       const config = {
         method: 'post',
-        url: 'https://redefine-functions.azurewebsites.net/api/Redefine_addUser?code=Ojuk8KF6kkxJMoOF4/XZf2kh8WHN5aMtOMlv0bbveJYZrCbRU1C9CA==',
+
+        url: 'https://testredefine.azurewebsites.net/api/Redefine_addUser?code=5OdECsAJBhxoCpmv9tk6hR8bbbgIVJc1O2ZONQtLTuImAzFuGaxqhw==',
         headers: {
           'Content-Type': 'text/plain',
         },
         data,
       }
-
+      // url: 'https://redefine-functions.azurewebsites.net/api/Redefine_addUser?code=Ojuk8KF6kkxJMoOF4/XZf2kh8WHN5aMtOMlv0bbveJYZrCbRU1C9CA==',
       axios(config)
         .then(function (response) {
           if (response.data) {
@@ -137,7 +138,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
           setLoading(false)
           setFormMessage({
             color: 'red',
-            message: error.msg,
+            message: error?.msg || 'Error in creation',
           })
         })
     }
@@ -243,7 +244,6 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
 
                 <div className="md:flex md:flex-row md:space-x-4 w-full text-xs mt-5">
                   <div className="w-full flex flex-col mb-3">
-
                     <TextField
                       label="Aadhar No"
                       name="aadharNo"
@@ -258,7 +258,6 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                       type="text"
                       disabled={editMode}
                     />
-
                   </div>
                 </div>
 

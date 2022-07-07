@@ -267,7 +267,7 @@ const ExecutiveHomePage = () => {
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
-                  Leads Space
+                  Lead Space
                 </h2>
               </div>
               <div className="flex">

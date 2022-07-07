@@ -29,6 +29,7 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import CrmHome from 'src/components/A_CRMcomp/CrmHome'
+import CrmTaskList from 'src/components/A_CRMcomp/CrmTaskList'
 
 const CrmHomePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -362,7 +363,16 @@ const CrmHomePage = () => {
               viewable={viewable}
             />
             <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-[98%]  px-300  py-300">
-              <CrmHome leadsTyper={undefined} />
+              {(viewable === 'Today1' || viewable === 'Home') && (
+                <CrmHome leadsTyper={undefined} />
+              )}
+              {viewable === 'CrmTeamTasks' && (
+                <CrmHome leadsTyper={undefined} />
+              )}
+              {viewable === 'MyCustomers' && <CrmTaskList />}
+              {viewable === 'TeamCustomers' && (
+                <CrmHome leadsTyper={undefined} />
+              )}
 
               {(viewable === 'Bank Accounts' ||
                 viewable === 'Virtual Accounts') && (

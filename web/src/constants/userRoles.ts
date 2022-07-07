@@ -19,14 +19,14 @@ export const USER_ROLES = {
 }
 
 export const DEPARTMENT_LIST = [
-  { label: 'Select the Dept', value: '' },
+  { label: 'Select the Department', value: '' },
   { label: 'Admin', value: 'admin' },
   { label: 'CRM', value: 'crm' },
   { label: 'Finance', value: 'finance' },
   { label: 'Helper', value: 'helper' },
   { label: 'HR', value: 'hr' },
   { label: 'Legal', value: 'legal' },
-  { label: 'project', value: 'project' },
+  { label: 'Project', value: 'project' },
   { label: 'Support', value: 'support' },
   { label: 'Sales', value: 'sales' },
 ]

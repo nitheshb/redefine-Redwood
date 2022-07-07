@@ -210,6 +210,17 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                               </div>
 
                               <hr className="mt-6 border-b-1 border-blueGray-300" />
+                              <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">
+
+                        <button
+                          className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-xs hover:shadow-lg hover:bg-green-500"
+                          type="submit"
+                          disabled={loading}
+                        >
+                          {/* {loading && <Loader />} */}
+                          {'Save'}
+                        </button>
+                      </div>
                             </form>
                           </div>
                         </div>

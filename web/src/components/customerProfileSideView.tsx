@@ -40,6 +40,8 @@ import {
   steamLeadNotes,
   createAttach,
   getCustomerDocs,
+  getAllProjects,
+  updateLeadProject,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
@@ -171,10 +173,16 @@ export default function CustomerProfileSideView({
   const [addSch, setAddSch] = useState(false)
   const [attach, setAttach] = useState(false)
   const [loader, setLoader] = useState(false)
+  const [projectList, setprojectList] = useState([])
+  const [selProjectIs, setSelProjectIs] = useState({
+    projectName: '',
+    uid: '',
+  })
   const {
     id,
     Name,
     Project,
+    ProjectId,
     Source,
     Status,
     by,
@@ -221,6 +229,7 @@ export default function CustomerProfileSideView({
   useEffect(() => {
     setAssignedTo(customerDetails?.assignedTo)
     setAssignerName(customerDetails?.assingedToObj.label)
+    setSelProjectIs({ projectName: Project, uid: ProjectId })
 
     setLeadStatus(Status)
     console.log('assinger to yo yo', customerDetails)
@@ -291,6 +300,7 @@ export default function CustomerProfileSideView({
 
   useEffect(() => {
     getCustomerDocsFun()
+    getProjectsListFun()
   }, [])
 
   const getCustomerDocsFun = () => {
@@ -307,6 +317,26 @@ export default function CustomerProfileSideView({
     )
     return unsubscribe
   }
+
+  const getProjectsListFun = () => {
+    const unsubscribe = getAllProjects(
+      (querySnapshot) => {
+        const projectsListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        setfetchedUsersList(projectsListA)
+        projectsListA.map((user) => {
+          user.label = user.projectName
+          user.value = user.projectName
+        })
+        console.log('fetched proejcts list is', projectsListA)
+        setprojectList(projectsListA)
+      },
+      (error) => setfetchedUsersList([])
+    )
+
+    return unsubscribe
+  }
   useEffect(() => {
     setLeadStatus(Status?.toLowerCase())
   }, [customerDetails])
@@ -317,6 +347,21 @@ export default function CustomerProfileSideView({
     // save assigner Details in db
 
     updateLeadAssigTo(leadDocId, value, by)
+  }
+  const setNewProject = (leadDocId, value) => {
+    console.log('sel pROJECT DETAILS ', value)
+
+    // setProjectName(value.projectName)
+    // setProjectId(value.uid)
+    // save assigner Details in db
+    // projectName
+    const x = {
+      Project: value.projectName,
+      ProjectId: value.uid,
+    }
+    setSelProjectIs(value)
+    updateLeadProject(leadDocId, x)
+    // updateLeadAssigTo(leadDocId, value, by)
   }
 
   const setStatusFun = async (leadDocId, newStatus) => {
@@ -710,7 +755,7 @@ export default function CustomerProfileSideView({
                 {Project}
               </div>
             </section> */}
-            <section className="min-w-[33%] mt-[9px]">
+            <section className="min-w-[93%] max-w-[93%] mt-[9px]">
               <div
                 className="flex flex-row justify-between cursor-pointer"
                 onClick={() => setUnitsViewMode(!unitsViewMode)}
@@ -718,20 +763,29 @@ export default function CustomerProfileSideView({
                 <div className="font-md text-xs text-gray-500 mb-[2] tracking-wide">
                   Project
                 </div>
-                {unitsViewMode ? (
-                  <XIcon
-                    className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <ViewGridIcon
-                    className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
-                    aria-hidden="true"
-                  />
-                )}
+                {selProjectIs?.uid?.length > 4 &&
+                  (unitsViewMode ? (
+                    <XIcon
+                      className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <ViewGridIcon
+                      className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
+                      aria-hidden="true"
+                    />
+                  ))}
               </div>
-              <div className="font-semibold text-sm text-slate-900 tracking-wide overflow-ellipsis overflow-hidden">
-                {Project}
+              <div className="font-semibold text-sm text-slate-900 tracking-wide overflow-ellipsis">
+                {/* {Project} */}
+                {/* projectList */}
+                <AssigedToDropComp
+                  assignerName={selProjectIs?.projectName || Project}
+                  id={id}
+                  align="right"
+                  setAssigner={setNewProject}
+                  usersList={projectList}
+                />
               </div>
             </section>
           </div>
@@ -792,46 +846,7 @@ export default function CustomerProfileSideView({
 
         {unitsViewMode && (
           <>
-            <ProjPhaseHome
-              projectDetails={{
-                availableCount: 3,
-                city: 'Hyderabad',
-                location: 'Hyderabad',
-                builderShare: 100,
-                builder_bank_details: '',
-                uid: 'c4a9b732-5e68-4667-9286-fad7484736a0',
-                landlordShare: '20000',
-                builderGSTno: '124356789901811',
-                totalArea: 1000,
-                totalValue: 3500000,
-                updated: 1655387791516,
-                areaDropDownPrimary: 'acre',
-                totalUnitCount: 3,
-                address: 'Kphb',
-                landlord_bank_details: '',
-                areaTextSecondary: '1',
-                area: 44649,
-                landlordName: 'Venture Developers.pvt',
-                projectType: {
-                  img: '/apart1.svg',
-                  name: 'Apartment',
-                },
-                created: 1647837040685,
-                developmentType: {
-                  name: 'Joint',
-                  img: '/apart1.svg',
-                },
-                areaDropdownSecondary: 'gunta',
-                areaTextPrimary: '1',
-                projectName: 'Vertex apartments',
-                builderBankDocId: 123456778,
-                builderName: 'Brother Builders.pvt',
-                landlordBankDocId: 987654321,
-                state: 'TS',
-                pincode: '500085',
-                editMode: true,
-              }}
-            />
+            <ProjPhaseHome projectDetails={selProjectIs} />
           </>
         )}
         {!unitsViewMode && (

@@ -39,6 +39,7 @@ import {
 } from 'src/util/dateConverter'
 import SiderForm from './SiderForm/SiderForm'
 import Loader from './Loader/Loader'
+import TodoListView from './todoList'
 
 // function createData(
 //   Date,
@@ -360,11 +361,13 @@ export default function TodayLeadsActivitySearchView({
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [rows, setRows] = React.useState([])
-  const [searchKey, setSearchKey] = React.useState('')
+  const [searchKey, setSearchKey] = React.useState(['pending'])
   const [isImportLeadsOpen, setisImportLeadsOpen] = React.useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = React.useState('')
   const [selUserProfile, setSelUserProfile] = React.useState({})
   const [schFetData, setSchFetData] = React.useState([])
+  const [schFetCleanData, setSchFetCleanData] = React.useState([])
+  const [leadByViewLayout, setLeadByViewLayout] = React.useState(true)
 
   React.useEffect(() => {
     console.log('send values is', rowsParent)
@@ -390,18 +393,45 @@ export default function TodayLeadsActivitySearchView({
     // }
   }, [selStatus, rowsParent])
 
-  React.useEffect(() => {
-    console.log('search on is', searchKey)
-    filterSearchString(rows)
-  }, [searchKey])
+  // React.useEffect(() => {
+  //   // console.log('search on is', searchKey)
+  //   // filterSearchString(rows)
+  //   // searchKey
+  //   console.log('my mosket check i s', schFetData)
+  //   if (todaySch) {
+  //     const y = todaySch?.filter((item) => {
+  //       item?.staA.some((r) => schFetData.includes(r))
+  //     })
+  //     setSchFetData(y)
+  //   }
+  // }, [searchKey])
 
   React.useEffect(() => {
     if (todaySch) {
-      setSchFetData(todaySch)
+      console.log('my value is ', todaySch)
+      const streamedTodo = []
+      const y = todaySch?.filter((item) => {
+        console.log('yo you', item?.staA, searchKey)
+        return item?.staA.some((r) => searchKey.includes(r))
+      })
+      console.log('ami cahnged', y)
+      setSchFetData(y)
+      const z = todaySch.map((data1) => {
+        data1['staDA'].map((data2) => {
+          const y = data1[data2]
+          y.uid = data1.uid
+          y.leadUser = data1.leadUser
+          streamedTodo.push(y)
+          console.log('my value is 1', y)
+          return y
+        })
+      })
+      setSchFetCleanData(streamedTodo)
+      console.log('my value is 1', z, streamedTodo)
     } else {
       console.log('my value is ', todaySch)
     }
-  }, [todaySch])
+  }, [todaySch, searchKey])
 
   const filterStuff = async (parent) => {
     const x = await parent.filter((item) => {
@@ -465,7 +495,7 @@ export default function TodayLeadsActivitySearchView({
           </h1>
 
           {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
-          <h2 className="mb-12">
+          <h2 className="">
             You've got{' '}
             <span className="inline-flex text-xl leading-5 font-semibold rounded-full  text-green-800">
               {schFetData.length}
@@ -485,10 +515,10 @@ export default function TodayLeadsActivitySearchView({
                 />
               </div>
               <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-                No Unassigned Leads Found
+                No Tasks Found
               </h3>
               <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                <span className="text-blue-600"> Add New Lead</span>
+                <span className="text-blue-600"> Add New Task</span>
               </time>
             </div>
           )}
@@ -509,102 +539,251 @@ export default function TodayLeadsActivitySearchView({
               </time>
             </div>
           )}
+          {/* searchKey, setSearchKey */}
+          {!leadByViewLayout && todaySch && schFetData.length > 0 && (
+            <TodoListView
+              taskListA={schFetCleanData}
+              setisImportLeadsOpen={undefined}
+              selUserProfileF={undefined}
+              leadsFetchedData={undefined}
+              leadsTyper={undefined}
+              leadByViewLayout={leadByViewLayout}
+              setLeadByViewLayout={setLeadByViewLayout}
+              searchKey={searchKey}
+              setSearchKey={setSearchKey}
+            />
+          )}
 
-          {schFetData.map((dat, index) => {
-            console.log('what am i', dat)
-            const { leadUser, staDA, staA, uid } = dat
-            if (leadUser) {
-              leadUser.id = uid
-            }
-            return (
-              <>
-                <div
-                  key={index}
-                  className="flex-1 px-4 py-2 mb-2  bg-white rounded-md cursor-pointer"
-                  onClick={() => selUserProfileF('User Profile', leadUser)}
-                >
-                  {/* <div className="inline">
-                    <div className="ml-4 mt-4">
-                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
-                        Lead Schedule Details<abbr title="required"></abbr>
-                      </label>
+          {leadByViewLayout && todaySch && schFetData.length > 0 && (
+            <div className=" w-full">
+              <div className="px-4 md:pb-10 pb-7 md:pb-7">
+                <div className="flex items-center justify-between">
+                  <p
+                    tabIndex={0}
+                    className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
+                  ></p>
+                  <section className="flex flex-row">
+                    <span className="inline-flex p-1 border bg-gray-200 rounded-md">
+                      <button
+                        className={`px-2 py-1  rounded ${
+                          leadByViewLayout ? 'bg-white shadow' : ''
+                        }`}
+                        onClick={() => setLeadByViewLayout(true)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 text-gray-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        className={`px-2 py-1  rounded ${
+                          !leadByViewLayout ? 'bg-white shadow' : ''
+                        }`}
+                        onClick={() => setLeadByViewLayout(false)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6 text-gray-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </button>
+                    </span>
+                    <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">
+                      <p>Sort By:</p>
+                      <select
+                        aria-label="select"
+                        className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
+                      >
+                        <option className="text-sm text-indigo-800">
+                          Latest
+                        </option>
+                        <option className="text-sm text-indigo-800">
+                          Oldest
+                        </option>
+                        <option className="text-sm text-indigo-800">
+                          Latest
+                        </option>
+                      </select>
                     </div>
+                  </section>
+                </div>
+              </div>
 
-                    <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
-                  </div> */}
-
-                  <div className="flex  w-full mx-4 py-2 border-b mt-4 ">
-                    <label className="font-semibold text-[#053219] px-4 py-[4px] bg-green-100  text-2xl  mb-1 mr-2  ">
-                      {index + 1}
-                    </label>
-                    {/* <div className="inline">
-                    <div className="ml-4 mt-4">
-                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
-                        Lead Schedule Details<abbr title="required"></abbr>
-                      </label>
-                    </div>
-
-                    <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
-                  </div> */}
-                    <section className="mt-2">
-                      <span className="inline-flex mr-4">
-                        <span className="text-sm  font-light  font text-gray-700 ">
-                          {' '}
-                          {'Client Name'}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1 font-semibold">
-                          {''}
-                          {leadUser?.Name}
-                        </span>
-                      </span>
-                      <span className="inline-flex mr-4">
-                        <span className="text-sm  font-light  font text-gray-700 ">
-                          {' '}
-                          {'Phone No'}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1 font-semibold">
-                          {''}
-                          {leadUser?.Mobile.toString().replace(
-                            /(\d{3})(\d{3})(\d{4})/,
-                            '$1-$2-$3'
-                          )}
-                        </span>
-                      </span>
-                      <span className="inline-flex mr-4">
-                        <span className="text-sm  font-light  font text-gray-700 ">
-                          {' '}
-                          {'Email'}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1 font-semibold">
-                          {''}
-                          {leadUser?.Email}
-                        </span>
-                      </span>
-                      <span className="inline-flex mr-4">
-                        <span className="text-sm  font-light  font text-gray-700 ">
-                          {' '}
-                          {'Status'}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1 font-semibold">
-                          {''}
-                          {leadUser?.Status}
-                        </span>
-                      </span>
-                      <span className="inline-flex mr-4">
-                        <span className="text-sm  font-light  font text-gray-700 ">
-                          {' '}
-                          {'Project'}:{'  '}
-                        </span>
-                        <span className="text-sm ml-1 font-semibold">
-                          {''}
-                          {leadUser?.Project}
-                        </span>
-                      </span>
-                    </section>
+              <div className="bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10">
+                <div className="sm:flex items-center justify-between">
+                  <div className="flex items-center">
+                    <a
+                      className={`rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800`}
+                      onClick={() => setSearchKey(['completed', 'pending'])}
+                    >
+                      <div
+                        className={`py-2 px-8 rounded-full hover:text-indigo-700 hover:bg-indigo-100  ${
+                          searchKey.includes('completed') &&
+                          searchKey.includes('pending')
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        <p>All</p>
+                      </div>
+                    </a>
+                    <a
+                      className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8"
+                      href="javascript:void(0)"
+                      onClick={() => setSearchKey(['completed'])}
+                    >
+                      <div
+                        className={`py-2 px-8 rounded-full hover:text-indigo-700 hover:bg-indigo-100  ${
+                          searchKey.includes('completed') &&
+                          searchKey.length === 1
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        <p>Done</p>
+                      </div>
+                    </a>
+                    <a
+                      className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8"
+                      href="javascript:void(0)"
+                      onClick={() => setSearchKey(['pending'])}
+                    >
+                      <div
+                        className={`py-2 px-8 rounded-full hover:text-indigo-700 hover:bg-indigo-100  ${
+                          searchKey.includes('pending') &&
+                          searchKey.length === 1
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        <p>Pending</p>
+                      </div>
+                    </a>
                   </div>
-                  <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
-                    <div className="flex flex-row  w-full ">
-                      {/* <div className="flex flex-col">
+                  <button className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded">
+                    <p className="text-sm font-medium leading-none text-white">
+                      Add Task
+                    </p>
+                  </button>
+                </div>
+
+                <div className="mt-6">
+                  {schFetData.map((dat, index) => {
+                    console.log('what am i', dat)
+                    const { leadUser, staDA, staA, uid } = dat
+                    if (leadUser) {
+                      leadUser.id = uid
+                    }
+                    return (
+                      <>
+                        <div
+                          key={index}
+                          className="flex-1 px-4 py-2 mt-2  bg-white  cursor-pointer focus:outline-none border border-gray-100 rounded "
+                          onClick={() =>
+                            selUserProfileF('User Profile', leadUser)
+                          }
+                        >
+                          {/* <div className="inline">
+                    <div className="ml-4 mt-4">
+                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                        Lead Schedule Details<abbr title="required"></abbr>
+                      </label>
+                    </div>
+
+                    <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
+                  </div> */}
+
+                          <div className="flex  w-full mx-4 py-2 border-b mt-4 ">
+                            <label className="font-semibold text-[#053219] px-4 py-[4px] bg-green-100  text-2xl  mb-1 mr-2  ">
+                              {index + 1}
+                            </label>
+                            {/* <div className="inline">
+                    <div className="ml-4 mt-4">
+                      <label className="font-semibold text-[#053219]  text-sm  mb-1  ">
+                        Lead Schedule Details<abbr title="required"></abbr>
+                      </label>
+                    </div>
+
+                    <div className="border-t-4 rounded-xl w-16 mt-1 ml-4 border-green-600"></div>
+                  </div> */}
+                            <section className="mt-2">
+                              <span className="inline-flex mr-4">
+                                <span className="text-sm  font-light  font text-gray-700 ">
+                                  {' '}
+                                  {'Client Name'}:{'  '}
+                                </span>
+                                <span className="text-sm ml-1 font-semibold">
+                                  {''}
+                                  {leadUser?.Name}
+                                </span>
+                              </span>
+                              <span className="inline-flex mr-4">
+                                <span className="text-sm  font-light  font text-gray-700 ">
+                                  {' '}
+                                  {'Phone No'}:{'  '}
+                                </span>
+                                <span className="text-sm ml-1 font-semibold">
+                                  {''}
+                                  {leadUser?.Mobile.toString().replace(
+                                    /(\d{3})(\d{3})(\d{4})/,
+                                    '$1-$2-$3'
+                                  )}
+                                </span>
+                              </span>
+                              <span className="inline-flex mr-4">
+                                <span className="text-sm  font-light  font text-gray-700 ">
+                                  {' '}
+                                  {'Email'}:{'  '}
+                                </span>
+                                <span className="text-sm ml-1 font-semibold">
+                                  {''}
+                                  {leadUser?.Email}
+                                </span>
+                              </span>
+                              <span className="inline-flex mr-4">
+                                <span className="text-sm  font-light  font text-gray-700 ">
+                                  {' '}
+                                  {'Status'}:{'  '}
+                                </span>
+                                <span className="text-sm ml-1 font-semibold">
+                                  {''}
+                                  {leadUser?.Status}
+                                </span>
+                              </span>
+                              <span className="inline-flex mr-4">
+                                <span className="text-sm  font-light  font text-gray-700 ">
+                                  {' '}
+                                  {'Project'}:{'  '}
+                                </span>
+                                <span className="text-sm ml-1 font-semibold">
+                                  {''}
+                                  {leadUser?.Project}
+                                </span>
+                              </span>
+                            </section>
+                          </div>
+                          <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
+                            <div className="flex flex-row  w-full ">
+                              {/* <div className="flex flex-col">
                         <svg
                           className="ml-4 mt-10 mr-6 text-center"
                           width="32px"
@@ -637,84 +816,88 @@ export default function TodayLeadsActivitySearchView({
                         </svg>
 
                       </div> */}
-                      <div className="flex flex-col   w-full  ">
-                        {staDA
-                          ?.filter((d) =>
-                            dat[d]['sts'] == 'pending' &&
-                            taskType === 'Today1Team'
-                              ? dat[d]['schTime'] < torrowDate
-                              : taskType === 'Today1'
-                              ? dat[d]['schTime'] < torrowDate
-                              : dat[d]['schTime'] > torrowDate
-                          )
-                          .map((ts, inx) => {
-                            return (
-                              <>
-                                <section
-                                  className="border-b pb-3 pointer w-100 flex flex-col"
-                                  key={inx}
-                                  onClick={() =>
-                                    selUserProfileF('User Profile', leadUser)
-                                  }
-                                >
-                                  <section className="flex  mt-[4px]  items-center justify-between   ">
-                                    <section>
-                                      <span className="px- py-[1px]  min-w-[100px] inline-flex text-xs leading-5 tracking-wide font-bold rounded-full  text-green-800">
-                                        {Math.abs(
-                                          getDifferenceInMinutes(
-                                            dat[ts]['schTime'],
-                                            ''
-                                          )
-                                        ) > 60
-                                          ? Math.abs(
-                                              getDifferenceInMinutes(
-                                                dat[ts]['schTime'],
-                                                ''
-                                              )
-                                            ) > 1440
-                                            ? `${getDifferenceInDays(
-                                                dat[ts]['schTime'],
-                                                ''
-                                              )} Days `
-                                            : `${getDifferenceInHours(
-                                                dat[ts]['schTime'],
-                                                ''
-                                              )} Hours `
-                                          : `${getDifferenceInMinutes(
-                                              dat[ts]['schTime'],
-                                              ''
-                                            )} Min`}{' '}
-                                        {getDifferenceInMinutes(
-                                          dat[ts]['schTime'],
-                                          ''
-                                        ) < 0
-                                          ? 'Due'
-                                          : 'Left'}
-                                      </span>
+                              <div className="flex flex-col   w-full  ">
+                                {staDA
+                                  ?.filter((d) =>
+                                    // dat[d]['sts'] == 'pending' &&
+                                    searchKey.includes(dat[d]['sts']) &&
+                                    taskType === 'Today1Team'
+                                      ? dat[d]['schTime'] < torrowDate
+                                      : taskType === 'Today1'
+                                      ? dat[d]['schTime'] < torrowDate
+                                      : dat[d]['schTime'] > torrowDate
+                                  )
+                                  .map((ts, inx) => {
+                                    return (
+                                      <>
+                                        <section
+                                          className="border-b pb-3 pointer w-100 flex flex-col"
+                                          key={inx}
+                                          onClick={() =>
+                                            selUserProfileF(
+                                              'User Profile',
+                                              leadUser
+                                            )
+                                          }
+                                        >
+                                          <section className="flex  mt-[4px]  items-center justify-between   ">
+                                            <section>
+                                              <span className="px- py-[1px]  min-w-[100px] inline-flex text-xs leading-5 tracking-wide font-bold rounded-full  text-green-800">
+                                                {Math.abs(
+                                                  getDifferenceInMinutes(
+                                                    dat[ts]['schTime'],
+                                                    ''
+                                                  )
+                                                ) > 60
+                                                  ? Math.abs(
+                                                      getDifferenceInMinutes(
+                                                        dat[ts]['schTime'],
+                                                        ''
+                                                      )
+                                                    ) > 1440
+                                                    ? `${getDifferenceInDays(
+                                                        dat[ts]['schTime'],
+                                                        ''
+                                                      )} Days `
+                                                    : `${getDifferenceInHours(
+                                                        dat[ts]['schTime'],
+                                                        ''
+                                                      )} Hours `
+                                                  : `${getDifferenceInMinutes(
+                                                      dat[ts]['schTime'],
+                                                      ''
+                                                    )} Min`}{' '}
+                                                {getDifferenceInMinutes(
+                                                  dat[ts]['schTime'],
+                                                  ''
+                                                ) < 0
+                                                  ? 'Due'
+                                                  : 'Left'}
+                                              </span>
 
-                                      <span className="font-brand  text-md text-blue-800 tracking-wider">
-                                        {' '}
-                                        {dat[ts]['notes']}
-                                      </span>
-                                    </section>
-                                    <section>
-                                      <span className="px-4 py-[4px] bg-green-100 inline-flex text-xs leading-5 font-semibold rounded-full text-green-800">
-                                        {dat[ts]['pri']}
-                                      </span>
-                                      <span className="ml-4 px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
-                                        {dat[ts]['sts']}
-                                      </span>
-                                    </section>
-                                  </section>
-                                </section>
-                              </>
-                            )
-                          })}
-                      </div>
-                    </div>
-                  </div>
+                                              <span className="font-brand  text-md text-blue-800 tracking-wider">
+                                                {' '}
+                                                {dat[ts]['notes']}
+                                              </span>
+                                            </section>
+                                            <section>
+                                              <span className="px-4 py-[4px] bg-green-100 inline-flex text-xs leading-5 font-semibold rounded-full text-green-800">
+                                                {dat[ts]['pri']}
+                                              </span>
+                                              <span className="ml-4 px-4 py-[4px] inline-flex text-xs leading-5 font-semibold rounded-full  text-green-800">
+                                                {dat[ts]['sts']}
+                                              </span>
+                                            </section>
+                                          </section>
+                                        </section>
+                                      </>
+                                    )
+                                  })}
+                              </div>
+                            </div>
+                          </div>
 
-                  {/* <div className="flex items-center justify-between py-2">
+                          {/* <div className="flex items-center justify-between py-2">
                     <small className="text-gray-400">{leadUser?.Date}</small>
                     {console.log('staA is ', staA)}
                     {staA && (
@@ -726,10 +909,14 @@ export default function TodayLeadsActivitySearchView({
                     )}
                     <small className="text-gray-400">{leadUser?.Project}</small>
                   </div> */}
+                        </div>
+                      </>
+                    )
+                  })}
                 </div>
-              </>
-            )
-          })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <SiderForm

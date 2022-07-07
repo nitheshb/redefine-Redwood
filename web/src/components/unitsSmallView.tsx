@@ -34,7 +34,7 @@ const UnitsSmallViewCard = ({ kind, feedData, bg,  setSelUnitDetails,
     setAnchorEl(event.currentTarget)
   }
   const handleClose = async (menuItem) => {
-    console.log('iam here',menuItem )
+    console.log('iam here',menuItem , kind)
     setShowCostSheetWindow(true)
     setSelMode(menuItem)
     setSelUnitDetails(kind)

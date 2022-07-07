@@ -83,7 +83,6 @@ const Routes = () => {
       </>
     )
   } else if (user?.role?.includes(USER_ROLES.PROJECT_MANAGER) || user?.role?.includes(USER_ROLES.PROJECT_EXECUTIVE)) {
-    console.log('sales executive')
     UpdatedRoutes = (
       <>
         <Route path="/home" page={HomePage} name="home" />

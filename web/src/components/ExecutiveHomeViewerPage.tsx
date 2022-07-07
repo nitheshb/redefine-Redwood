@@ -200,10 +200,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
   const [selUserProfile, setSelUserProfile] = useState({})
+  const [leadsFetchedRawData, setLeadsFetchedRawData] = useState([])
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [serialLeadsData, setSerialLeadsData] = useState([])
   const [projectList, setprojectList] = useState([])
-  const [selProjectIs, setSelProject] = useState('all')
+  const [unitsViewMode, setUnitsViewMode] = useState(false)
+
+  const [selProjectIs, setSelProject] = useState('All Projects')
 
   const statusFields = [
     'new',
@@ -260,6 +263,17 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     return unsubscribe
   }, [])
   const [getStatus, setGetStatus] = useState([])
+  useEffect(() => {
+    const x = leadsFetchedRawData
+    console.log('raw max is ', x)
+    if (selProjectIs != 'All Projects') {
+      const y = x.filter((d1) => d1.Project === selProjectIs)
+      setLeadsFetchedData(y)
+    } else {
+      setLeadsFetchedData(x)
+    }
+  }, [selProjectIs])
+
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
     const { access, uid } = user
@@ -274,6 +288,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           })
           // setBoardData
           console.log('my Array data is ', usersListA)
+          await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
           await setLeadsFetchedData(usersListA)
         },
@@ -401,10 +416,12 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
 
   const fSetLeadsType = (type) => {
     setAddLeadsTypes(type)
+    setUnitsViewMode(false)
     setisImportLeadsOpen(true)
   }
   const selUserProfileF = (title, data) => {
     setAddLeadsTypes(title)
+    setUnitsViewMode(false)
     setisImportLeadsOpen(true)
     setSelUserProfile(data)
   }
@@ -419,10 +436,28 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
-                  Leads Space
+                  Sale Leads
                 </h2>
               </div>
               <div className="flex">
+                <div className=" flex flex-col mr-4 h-10 w-40">
+                  <CustomSelect
+                    name="project"
+                    label=""
+                    className="input "
+                    onChange={(value) => {
+                      console.log('changed value is ', value.value)
+                      setSelProject(value.value)
+                      // formik.setFieldValue('project', value.value)
+                    }}
+                    value={selProjectIs}
+                    // options={aquaticCreatures}
+                    options={[
+                      ...[{ label: 'All Projects', value: 'All Projects' }],
+                      ...projectList,
+                    ]}
+                  />
+                </div>
                 {leadsTyper == 'inProgress' && (
                   <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                     <button
@@ -470,7 +505,6 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                   </span>
                 )}
                 <>
-
                   <button
                     onClick={() => fSetLeadsType('Add Lead')}
                     className={`flex items-center ml-5 pl-2 pr-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
@@ -610,6 +644,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
         setOpen={setisImportLeadsOpen}
         title={addLeadsTypes}
         customerDetails={selUserProfile}
+        unitsViewMode={unitsViewMode}
+        setUnitsViewMode={setUnitsViewMode}
       />
     </>
   )

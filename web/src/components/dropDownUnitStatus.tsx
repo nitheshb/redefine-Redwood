@@ -13,6 +13,7 @@ import {
   SelectorIcon,
   DotsVerticalIcon,
   CheckIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/solid'
 
 export default function DropCompUnitStatus({
@@ -346,7 +347,14 @@ export default function DropCompUnitStatus({
               )}
               {type === 'unitMode' && (
                 <>
-                  {['Quotation', 'Block', 'Book', 'Edit'].map((viewData, i) => (
+                  {[
+                    'Unit Details',
+                    'Quotation',
+                    'Block',
+                    'Book',
+                    'Detail View',
+                    'Edit',
+                  ].map((viewData, i) => (
                     <Menu.Item key={i}>
                       {({ active }) => (
                         <button
@@ -357,13 +365,20 @@ export default function DropCompUnitStatus({
                           } group flex  items-center w-full px-2 py-2 text-sm`}
                           onClick={() => pickCustomViewer(viewData)}
                         >
-                          {viewUnitStatusA?.includes(viewData) ? (
-                            <CheckIcon
-                              className="h-5 w-5 mr-2"
+                          {[
+                            'Unit Details',
+                            'Quotation',
+                            'Block',
+                            'Book',
+                            'Detail View',
+                            'Edit',
+                          ]?.includes(viewData) ? (
+                            <DocumentTextIcon
+                              className="h-5 w-5 mr-2 text-violet-500"
                               aria-hidden="true"
                             />
                           ) : (
-                            <CheckIcon
+                            <DocumentTextIcon
                               className="w-5 h-5 mr-2 text-transparent"
                               aria-hidden="true"
                             />

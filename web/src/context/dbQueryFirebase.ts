@@ -1044,6 +1044,10 @@ export const updateLeadStatus = async (leadDocId, newStatus) => {
     Status: newStatus,
   })
 }
+export const updateLeadProject = async (leadDocId, newProjObj) => {
+  console.log('wow it should be here', leadDocId, newProjObj)
+  await updateDoc(doc(db, 'spark_leads', leadDocId), newProjObj)
+}
 export const updateSchLog = async (uid, kId, newStat, schStsA) => {
   const x = `${kId}.sts`
   await updateDoc(doc(db, 'spark_leads_sch', uid), {
