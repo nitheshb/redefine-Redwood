@@ -31,6 +31,7 @@ import {
 } from 'recharts'
 import PieChartProject from '../comps/pieChartProject'
 import DropCompUnitStatus from '../dropDownUnitStatus'
+import { DriveEtaSharp } from '@mui/icons-material'
 
 const Floordetails = ({
   block = 'A',
@@ -236,6 +237,10 @@ const Floordetails = ({
       color: 'hsl(202, 70%, 50%)',
     },
   ]
+  const handleDetailView_Close = async (kind) => {
+    setShowCostSheetWindow(true)
+    setSelUnitDetails(kind)
+  }
   const makeFilterFun = async (id, value) => {
     // unitsFeed, setUnitsFeed
 
@@ -423,10 +428,10 @@ const Floordetails = ({
   }
 
   return (
-    <div className="lg:col-span-10">
-      <div className=" border-gray-800 ">
+    <div className="lg:col-span-10 border ">
+      <div className=" border-gray-800 bg-[#203129]  text-white">
         <ul
-          className="flex justify-  rounded-t-lg border-b"
+          className="flex justify-  rounded-t-lg border-b  "
           id="myTab"
           data-tabs-toggle="#myTabContent"
           role="tablist"
@@ -440,7 +445,7 @@ const Floordetails = ({
                 <button
                   className={`inline-block py-3 px-4 text-sm font-medium text-center rounded-t-lg border-b-2  hover:text-blue hover:border-gray-300   ${
                     blocksViewFeature === d.val
-                      ? 'border-black border-b-3'
+                      ? 'border-red border-b-10 rounded-xs'
                       : 'border-transparent'
                   }`}
                   type="button"
@@ -505,7 +510,7 @@ const Floordetails = ({
                     </button>
                   </section>
 
-                  <div className="grid grid-cols-2 gap-0">
+                  <div className="grid grid-cols-2 gap-0 ">
                     <div className="mt-6">
                       {/* 1 */}
                       <div
@@ -624,231 +629,260 @@ const Floordetails = ({
       )}
       {blocksViewFeature === 'Units' && (
         <>
-          <div className="flex justify-between items-center mt-6">
-            <section className="flex flex-row max-w-full">
-              <p className="text-sm font-semibold text-[#0091ae]">
-                FloorView{' '}
-                <span className="text-[#0091ae]">{selBlock?.blockName}-</span>
-                {unitsFeed.length}
-                {filteredUnits.length}
-              </p>
-              <DropCompUnitStatus
-                type={'Status'}
-                id={'Status'}
-                setStatusFun={makeFilterFun}
-                filteredUnits={filteredUnits}
-                pickedValue={filStatus}
-              />
-
-              <DropCompUnitStatus
-                type={'bedrooms'}
-                id={'bed_rooms'}
-                setStatusFun={makeFilterFun}
-                filteredUnits={filteredUnits}
-                pickedValue={filBedRooms}
-              />
-              <DropCompUnitStatus
-                type={'bathrooms'}
-                id={'bath_rooms'}
-                setStatusFun={makeFilterFun}
-                filteredUnits={filteredUnits}
-                pickedValue={filBathrooms}
-              />
-              <DropCompUnitStatus
-                type={'Size'}
-                id={'super_built_up_area'}
-                setStatusFun={makeFilterFun}
-                filteredUnits={filteredUnits}
-                pickedValue={filSuperBuildUpArea}
-              />
-              <DropCompUnitStatus
-                type={'Price'}
-                id={'rate_per_sqft'}
-                setStatusFun={makeFilterFun}
-                filteredUnits={filteredUnits}
-                pickedValue={filRatePerSqft}
-              />
-              <DropCompUnitStatus
-                type={'Facing'}
-                id={'facing'}
-                setStatusFun={makeFilterFun}
-                filteredUnits={filteredUnits}
-                pickedValue={filFacing}
-              />
-            </section>
-            <section className="flex">
-              <button
-                onClick={() => {
-                  setUnitShrink(!unitShrink)
-                }}
-                className={
-                  'flex cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-md hover:bg-pink-200 hover:text-pink-800 text-green-800 '
-                }
-              >
-                {unitShrink && (
-                  <>
-                    <ArrowsExpandIcon
-                      className="h-3 w-3 mr-1"
-                      aria-hidden="true"
-                    />
-                    Expand
-                  </>
-                )}
-
-                {!unitShrink && (
-                  <>
-                    <PuzzleIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                    Sleek
-                  </>
-                )}
-              </button>
-            </section>
-          </div>
-          <ul>
-            {selBlock?.floorA?.map((floorDat, i) => {
-              return (
-                <li key={i}>
-                  <section>
-                    Fl-{floorDat}
-                    <div className="mt-6">
-                      {filteredUnits
-                        ?.filter((da) => da?.floor == i)
-                        .map((data, index) => {
-                          return unitShrink ? (
-                            <div
-                              className="p-2 mb-1  mx-1 inline-block"
-                              key={index}
-                            >
-                              <UnitsSmallViewCard
-                                kind={data}
-                                feedData={unitFeedData}
-                                bg="#fef7f7"
-                                setShowCostSheetWindow={setShowCostSheetWindow}
-                                setSelUnitDetails={setSelUnitDetails}
-                                setSelMode={setSelMode}
-                              />
-                            </div>
-                          ) : (
-                            <div
-                              className="p-2 mb-1  mx-1 inline-block"
-                              key={index}
-                            >
-                              <UnitsStatsCard
-                                kind={data}
-                                feedData={unitFeedData}
-                                bg="#fef7f7"
-                              />
-                            </div>
-                          )
-                        })}
-                    </div>
-                  </section>
-                </li>
-              )
-            })}
-          </ul>
-          {/* 1 */}
-          {source === 'projectManagement' && (
-            <div className=" z-10 flex flex-row mt-[50px]">
-              <div
-                className=" z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
-                // style={{ backgroundColor: '#fef7f7' }}
-                onClick={() => {
-                  // setSliderInfo({
-                  //   open: true,
-                  //   title: 'Add Unit',
-                  //   sliderData: {
-                  //     phase: {},
-                  //     block: {},
-                  //   },
-                  //   widthClass: 'max-w-2xl',
-                  // })
-                  const { uid, floorA } = selBlock
-                  updateBlock_AddFloor(
-                    uid,
-                    floorA?.length || 0,
-                    enqueueSnackbar
-                  )
-                  console.log('chiru is', selBlock)
-                }}
-              >
-                <div className="flex flex-col items-center justify-between">
-                  <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                  <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                    Add Floor
-                  </h3>
-                  {/* <IconButton onClick={handleClick}>
-          <MoreVert sx={{ fontSize: '1rem' }} />
-        </IconButton> */}
-                </div>
-                <div className="flex flex-row justify-between px-2">
-                  <span className="flex flex-row items-center justify-between mr-2">
-                    <span className="text-sm font-"></span>
+          <section className="bg-white">
+            <div className="flex justify-between items-center pt-6 px-8 bg-white">
+              <div className="flex flex-row max-w-full">
+                <p className="text-sm font-semibold text-[#0091ae]">
+                  <span className="text-gray-700">
+                    {selBlock?.blockName}-Units
                   </span>
-                </div>
+                </p>
               </div>
-              <div
-                className=" cursor-pointer z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
-                // style={{ backgroundColor: '#fef7f7' }}
-                onClick={() => {
-                  setSliderInfo({
-                    open: true,
-                    title: 'Add Unit',
-                    sliderData: {
-                      phase: {},
-                      block: {},
-                    },
-                    widthClass: 'max-w-2xl',
-                  })
-                }}
-              >
-                <div className="flex flex-col items-center justify-between">
-                  <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                  <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                    Add Unit
-                  </h3>
-                  {/* <IconButton onClick={handleClick}>
-          <MoreVert sx={{ fontSize: '1rem' }} />
-        </IconButton> */}
-                </div>
-                <div className="flex flex-row justify-between px-2">
-                  <span className="flex flex-row items-center justify-between mr-2">
-                    <span className="text-sm font-"></span>
-                  </span>
-                </div>
-              </div>
-              {/* 2 */}
-              <div
-                className="cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0  mx-4 rounded-sm inline-block  min-h-[50px]  min-w-[100px] border border-dotted border-black rounded-md"
-                onClick={() => {
-                  setSliderInfo({
-                    open: true,
-                    title: 'Import Units',
-                    sliderData: {
-                      phase: {},
-                      block: {},
-                    },
-                    widthClass: 'max-w-2xl',
-                  })
-                }}
-              >
-                <div className="flex flex-col items-center justify-between">
-                  <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                  <h3 className="m-0  text-sm  mt-1 font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                    Import Units
-                  </h3>
-                  {/* <IconButton onClick={handleClick}>
-          <MoreVert sx={{ fontSize: '1rem' }} />
-        </IconButton> */}
-                </div>
-                <div className="flex flex-row justify-between px-2">
-                  <span className="flex flex-row items-center justify-between mr-2">
-                    <span className="text-sm font-"></span>
-                  </span>
-                </div>
+              <div>
+                <DropCompUnitStatus
+                  type={'Status'}
+                  id={'Status'}
+                  setStatusFun={makeFilterFun}
+                  filteredUnits={filteredUnits}
+                  pickedValue={filStatus}
+                />
+
+                <DropCompUnitStatus
+                  type={'bedrooms'}
+                  id={'bed_rooms'}
+                  setStatusFun={makeFilterFun}
+                  filteredUnits={filteredUnits}
+                  pickedValue={filBedRooms}
+                />
+                <DropCompUnitStatus
+                  type={'bathrooms'}
+                  id={'bath_rooms'}
+                  setStatusFun={makeFilterFun}
+                  filteredUnits={filteredUnits}
+                  pickedValue={filBathrooms}
+                />
+                <DropCompUnitStatus
+                  type={'Size'}
+                  id={'super_built_up_area'}
+                  setStatusFun={makeFilterFun}
+                  filteredUnits={filteredUnits}
+                  pickedValue={filSuperBuildUpArea}
+                />
+                <DropCompUnitStatus
+                  type={'Price'}
+                  id={'rate_per_sqft'}
+                  setStatusFun={makeFilterFun}
+                  filteredUnits={filteredUnits}
+                  pickedValue={filRatePerSqft}
+                />
+                <DropCompUnitStatus
+                  type={'Facing'}
+                  id={'facing'}
+                  setStatusFun={makeFilterFun}
+                  filteredUnits={filteredUnits}
+                  pickedValue={filFacing}
+                />
               </div>
             </div>
-          )}
+
+            <section className="flex flex-row px-12 py-4 justify-between">
+              <span> </span>
+              <section className="flex flex-row">
+                <section className="text-sm mt-[2px]">
+                  showing {filteredUnits.length} in {unitsFeed.length} units
+                </section>
+                <section className="text-sm mt-[2px] ml-4 flex flex-row">
+                  <span className="w-3 h-3 mt-[4px] mr-1 bg-[#E8A190]"></span>{' '}
+                  <span>Available</span>
+                  <span className="w-3 h-3 ml-2 mt-[4px] mr-1 bg-[#D3F6E3]"></span>{' '}
+                  <span>Booked</span>
+                  <span className="w-3 h-3 ml-2 mt-[4px] mr-1 bg-[#E9E9E9]"></span>{' '}
+                  <span>Blocked</span>
+                </section>
+                <section className="flex">
+                  <button
+                    onClick={() => {
+                      setUnitShrink(!unitShrink)
+                    }}
+                    className={
+                      'flex cursor-pointer items-center h-6 px-3 text-xs font-semibold  rounded-md hover:bg-pink-200 hover:text-pink-800 text-green-800 '
+                    }
+                  >
+                    {unitShrink && (
+                      <>
+                        <ArrowsExpandIcon
+                          className="h-3 w-3 mr-1"
+                          aria-hidden="true"
+                        />
+                        Expand
+                      </>
+                    )}
+
+                    {!unitShrink && (
+                      <>
+                        <PuzzleIcon
+                          className="h-3 w-3 mr-1"
+                          aria-hidden="true"
+                        />
+                        Sleek
+                      </>
+                    )}
+                  </button>
+                </section>
+              </section>
+            </section>
+            <ul className="">
+              {selBlock?.floorA?.map((floorDat, i) => {
+                return (
+                  <li className="py-4" key={i}>
+                    <section>
+                      <section className="px-8 bg-red-100 w-[130px] rounded-r-2xl">
+                        Fl-{floorDat}
+                      </section>
+                      <div className=" px-8 mt-6">
+                        {filteredUnits
+                          ?.filter((da) => da?.floor == i)
+                          .map((data, index) => {
+                            return unitShrink ? (
+                              <div
+                                className="p-2 mb-1  mx-1 inline-block"
+                                key={index}
+                                onClick={() => handleDetailView_Close(data)}
+                              >
+                                <UnitsSmallViewCard
+                                  kind={data}
+                                  feedData={unitFeedData}
+                                  bg="#CCFBF1"
+                                  setShowCostSheetWindow={
+                                    setShowCostSheetWindow
+                                  }
+                                  setSelUnitDetails={setSelUnitDetails}
+                                  setSelMode={setSelMode}
+                                />
+                              </div>
+                            ) : (
+                              <div
+                                className="p-2 mb-1  mx-1 inline-block cursor-pointer"
+                                key={index}
+                                onClick={() => handleDetailView_Close(data)}
+                              >
+                                <UnitsStatsCard
+                                  kind={data}
+                                  feedData={unitFeedData}
+                                  bg="#fef7f7"
+                                />
+                              </div>
+                            )
+                          })}
+                      </div>
+                    </section>
+                  </li>
+                )
+              })}
+            </ul>
+            {/* 1 */}
+            {source === 'projectManagement' && (
+              <div className=" z-10 flex flex-row mt-[50px]">
+                <div
+                  className=" z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
+                  // style={{ backgroundColor: '#fef7f7' }}
+                  onClick={() => {
+                    // setSliderInfo({
+                    //   open: true,
+                    //   title: 'Add Unit',
+                    //   sliderData: {
+                    //     phase: {},
+                    //     block: {},
+                    //   },
+                    //   widthClass: 'max-w-2xl',
+                    // })
+                    const { uid, floorA } = selBlock
+                    updateBlock_AddFloor(
+                      uid,
+                      floorA?.length || 0,
+                      enqueueSnackbar
+                    )
+                    console.log('chiru is', selBlock)
+                  }}
+                >
+                  <div className="flex flex-col items-center justify-between">
+                    <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                    <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                      Add Floor
+                    </h3>
+                    {/* <IconButton onClick={handleClick}>
+          <MoreVert sx={{ fontSize: '1rem' }} />
+        </IconButton> */}
+                  </div>
+                  <div className="flex flex-row justify-between px-2">
+                    <span className="flex flex-row items-center justify-between mr-2">
+                      <span className="text-sm font-"></span>
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className=" cursor-pointer z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
+                  // style={{ backgroundColor: '#fef7f7' }}
+                  onClick={() => {
+                    setSliderInfo({
+                      open: true,
+                      title: 'Add Unit',
+                      sliderData: {
+                        phase: {},
+                        block: {},
+                      },
+                      widthClass: 'max-w-2xl',
+                    })
+                  }}
+                >
+                  <div className="flex flex-col items-center justify-between">
+                    <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                    <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                      Add Unit
+                    </h3>
+                    {/* <IconButton onClick={handleClick}>
+          <MoreVert sx={{ fontSize: '1rem' }} />
+        </IconButton> */}
+                  </div>
+                  <div className="flex flex-row justify-between px-2">
+                    <span className="flex flex-row items-center justify-between mr-2">
+                      <span className="text-sm font-"></span>
+                    </span>
+                  </div>
+                </div>
+                {/* 2 */}
+                <div
+                  className="cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0  mx-4 rounded-sm inline-block  min-h-[50px]  min-w-[100px] border border-dotted border-black rounded-md"
+                  onClick={() => {
+                    setSliderInfo({
+                      open: true,
+                      title: 'Import Units',
+                      sliderData: {
+                        phase: {},
+                        block: {},
+                      },
+                      widthClass: 'max-w-2xl',
+                    })
+                  }}
+                >
+                  <div className="flex flex-col items-center justify-between">
+                    <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                    <h3 className="m-0  text-sm  mt-1 font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                      Import Units
+                    </h3>
+                    {/* <IconButton onClick={handleClick}>
+          <MoreVert sx={{ fontSize: '1rem' }} />
+        </IconButton> */}
+                  </div>
+                  <div className="flex flex-row justify-between px-2">
+                    <span className="flex flex-row items-center justify-between mr-2">
+                      <span className="text-sm font-"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
         </>
       )}
 

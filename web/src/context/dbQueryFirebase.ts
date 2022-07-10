@@ -868,7 +868,94 @@ export const updateAccessRoles = async (
     return enqueueSnackbar(e.message, { variant: 'error' })
   }
 }
+export const addPhaseAdditionalCharges = async (
+  uid,
+  chargePayload,
+  enqueueSnackbar
+) => {
+  const usersUpdate = {}
 
+  const uuxid = uuidv4()
+  usersUpdate[uuxid] = chargePayload
+  chargePayload.myId = uuxid
+  try {
+    await updateDoc(doc(db, 'phases', uid), {
+      additonalChargesObj: arrayUnion(chargePayload),
+    })
+    enqueueSnackbar('Charges added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    console.log(' error is here', e)
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+export const updatePhaseAdditionalCharges = async (
+  uid,
+  chargePayloadA,
+  enqueueSnackbar
+) => {
+  try {
+    await updateDoc(doc(db, 'phases', uid), {
+      additonalChargesObj: chargePayloadA,
+    })
+
+    enqueueSnackbar('Charges added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    console.log(' error is here', e)
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+export const addPhasePaymentScheduleCharges = async (
+  uid,
+  chargePayload,
+  enqueueSnackbar
+) => {
+  const usersUpdate = {}
+
+  const uuxid = uuidv4()
+  usersUpdate[uuxid] = chargePayload
+  chargePayload.myId = uuxid
+  try {
+    await updateDoc(doc(db, 'phases', uid), {
+      paymentScheduleObj: arrayUnion(chargePayload),
+    })
+    enqueueSnackbar('Charges added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    console.log(' error is here', e)
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+export const updatePaymentScheduleCharges = async (
+  uid,
+  chargePayloadA,
+  enqueueSnackbar
+) => {
+  try {
+    await updateDoc(doc(db, 'phases', uid), {
+      paymentScheduleObj: chargePayloadA,
+    })
+
+    enqueueSnackbar('Charges added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    console.log(' error is here', e)
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
 export const updateProject = async (
   uid,
   project,
@@ -1028,6 +1115,36 @@ export const updateLeadAssigTo = async (leadDocId, assignedTo, by) => {
     assingedToObj: assignedTo,
     AssignedBy: by,
   })
+
+  return
+  // return await addUserLog({
+  //   s: 's',
+  //   type: 'updateRole',
+  //   subtype: 'updateRole',
+  //   txt: `${email} is updated with ${role}`,
+  //   by,
+  // })
+}
+export const updateLeadCustomerDetailsTo = async (
+  leadDocId,
+  data,
+  by,
+  enqueueSnackbar,
+  resetForm
+) => {
+  try {
+    await updateDoc(doc(db, 'spark_leads', leadDocId), {
+      ...data,
+      AssignedBy: by,
+    })
+    enqueueSnackbar('Customer Details added successfully', {
+      variant: 'success',
+    })
+  } catch (error) {
+    enqueueSnackbar('Customer Details updation failed', {
+      variant: 'error',
+    })
+  }
 
   return
   // return await addUserLog({

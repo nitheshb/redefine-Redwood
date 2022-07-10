@@ -761,7 +761,7 @@ export default function CustomerProfileSideView({
                 onClick={() => setUnitsViewMode(!unitsViewMode)}
               >
                 <div className="font-md text-xs text-gray-500 mb-[2] tracking-wide">
-                  Project
+                  Project {}
                 </div>
                 {selProjectIs?.uid?.length > 4 &&
                   (unitsViewMode ? (
@@ -846,7 +846,10 @@ export default function CustomerProfileSideView({
 
         {unitsViewMode && (
           <>
-            <ProjPhaseHome projectDetails={selProjectIs} />
+            <ProjPhaseHome
+              projectDetails={selProjectIs}
+              leadDetailsObj={customerDetails}
+            />
           </>
         )}
         {!unitsViewMode && (

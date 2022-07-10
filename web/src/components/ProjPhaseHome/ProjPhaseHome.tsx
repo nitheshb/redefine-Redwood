@@ -23,7 +23,12 @@ import CostBreakUpSheet from '../costBreakUpSheet'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 import AssigedToDropComp from '../assignedToDropComp'
 
-const ProjPhaseHome = ({ projectDetails, source, unitDetails }) => {
+const ProjPhaseHome = ({
+  projectDetails,
+  source,
+  unitDetails,
+  leadDetailsObj,
+}) => {
   const [myProjectDetails, setMyProjectDetails] = useState({ uid: '' })
   // phases
   const [phases, setPhases] = useState([])
@@ -33,6 +38,7 @@ const ProjPhaseHome = ({ projectDetails, source, unitDetails }) => {
   // blocks
   const [selPhaseIs, setSelPhaseIs] = useState('')
   const [selPhaseName, setSelPhaseName] = useState('')
+  const [selPhaseObj, setSelPhaseObj] = useState({})
 
   const [blocks, setBlocks] = useState({})
   const [showCostSheetWindow, setShowCostSheetWindow] = useState(false)
@@ -65,20 +71,12 @@ const ProjPhaseHome = ({ projectDetails, source, unitDetails }) => {
 
   useEffect(() => {
     if (uid) {
-
       projId = uid
     } else {
-
       setMyProjectDetails(projectDetails)
       projId = projectDetails?.uid
     }
   }, [projectDetails])
-
-  // useEffect(() => {
-  //   if (!uid) {
-  //     uid = projectDetails?.uid
-  //   }
-  // }, [projectDetails])
 
   const getPhases = async (projectDetails) => {
     setMyProjectDetails(projectDetails)
@@ -101,6 +99,7 @@ const ProjPhaseHome = ({ projectDetails, source, unitDetails }) => {
           if (phases.length > 0) {
             setSelPhaseName(phases?.[0].phaseName)
             setSelPhaseIs(phases?.[0].uid)
+            setSelPhaseObj(phases?.[0])
           }
           console.log('myphases are', phases)
         },
@@ -221,6 +220,8 @@ const ProjPhaseHome = ({ projectDetails, source, unitDetails }) => {
                 <CostBreakUpSheet
                   selMode={selMode}
                   title="Cost Break Up Sheet"
+                  leadDetailsObj={leadDetailsObj}
+                  selPhaseObj={selPhaseObj}
                   unitDetails={unitDetails}
                   projectDetails={myProjectDetails}
                   setShowCostSheetWindow={setShowCostSheetWindow}

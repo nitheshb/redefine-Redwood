@@ -207,6 +207,72 @@ export const unitsCancellation = [
     value: 'percentage',
     label: 'Percentage',
   },
+  {
+    value: 'costpersqft',
+    label: 'Cost Per sqft',
+  },
+]
+export const paymentSheduleCompA = [
+  {
+    value: 'plenth',
+    label: 'Plenth',
+  },
+  {
+    value: 'basement',
+    label: 'Basement',
+  },
+  {
+    value: 'costpersqft',
+    label: 'Cost Per sqft',
+  },
+]
+export const gstValesA = [
+  {
+    value: '0',
+    label: '0%',
+  },
+  {
+    value: '5',
+    label: '5%',
+  },
+  {
+    value: '10',
+    label: '10%',
+  },
+  {
+    value: '12',
+    label: '12%',
+  },
+  {
+    value: '18',
+    label: '18%',
+  },
+]
+export const costSheetAdditionalChargesA = [
+  {
+    value: 'carparking',
+    label: 'Car Parking',
+  },
+  {
+    value: 'electricity_watersewage',
+    label: 'Electricity/Water Sewage',
+  },
+  {
+    value: 'maintenancecharges',
+    label: 'Maintenance Charges',
+  },
+  {
+    value: 'power_backup_charges',
+    label: 'Power Back-up Charges',
+  },
+  {
+    value: 'clubhouse_membership',
+    label: 'Club House Membership',
+  },
+  {
+    value: 'premium',
+    label: 'Premium',
+  },
 ]
 export const bankPreferredType = [
   {

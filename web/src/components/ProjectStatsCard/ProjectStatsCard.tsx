@@ -80,7 +80,7 @@ const ProjectStatsCard = ({
                     }}
                   >
                     <span className="italic">
-                      {toWords.convert(data.v, { currency: currency })}
+                      {toWords?.convert(data?.v || 0, { currency: currency })}
 
                     </span>
                   </span>
@@ -90,7 +90,7 @@ const ProjectStatsCard = ({
                   ></div>
                 </div>
                 <span className="text-[16px] font-medium text-gray-900">
-                  {data.v.toLocaleString('en-IN')}
+                  {data?.v?.toLocaleString('en-IN')}
 
                 </span>
               </div>

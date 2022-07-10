@@ -11,6 +11,8 @@ import {
   createPayment,
   updatePayment,
   deletePayment,
+  addPhasePaymentScheduleCharges,
+  updatePaymentScheduleCharges,
 } from 'src/context/dbQueryFirebase'
 
 const PaymentScheduleForm = ({ title, data, source }) => {
@@ -24,11 +26,18 @@ const PaymentScheduleForm = ({ title, data, source }) => {
     if (source === 'projectManagement') {
       setEditOptions({
         onRowAdd: async (newData) => await handleRowAdd(newData),
-        onRowUpdate: async (newData) => await handleRowUpdate(newData),
+        onRowUpdate: async (newData, oldData) =>
+          await handleRowUpdate(newData, oldData),
         onRowDelete: async (oldData) => await handleRowDelete(oldData),
       })
     }
-  }, [source])
+  }, [source, data, tableData])
+  useEffect(() => {
+    const { phase } = data
+    const { paymentScheduleObj } = phase
+
+    setTableData(paymentScheduleObj)
+  }, [data])
 
   const columns = [
     {
@@ -118,27 +127,27 @@ const PaymentScheduleForm = ({ title, data, source }) => {
     },
   ]
 
-  const getPayments = async () => {
-    const { projectId, uid } = data?.phase || {}
-    const unsubscribe = getPaymentSchedule(
-      { projectId, phaseId: uid },
-      (querySnapshot) => {
-        const response = querySnapshot.docs.map((docSnapshot) =>
-          docSnapshot.data()
-        )
-        setTableData(response)
-      },
-      (e) => {
-        console.log('error', e)
-        setTableData([])
-      }
-    )
-    return unsubscribe
-  }
+  // const getPayments = async () => {
+  //   const { projectId, uid } = data?.phase || {}
+  //   const unsubscribe = getPaymentSchedule(
+  //     { projectId, phaseId: uid },
+  //     (querySnapshot) => {
+  //       const response = querySnapshot.docs.map((docSnapshot) =>
+  //         docSnapshot.data()
+  //       )
+  //       setTableData(response)
+  //     },
+  //     (e) => {
+  //       console.log('error', e)
+  //       setTableData([])
+  //     }
+  //   )
+  //   return unsubscribe
+  // }
 
-  useEffect(() => {
-    getPayments()
-  }, [])
+  // useEffect(() => {
+  //   getPayments()
+  // }, [])
 
   const errors = (formData, isEdit) => {
     //validating the data inputs
@@ -159,16 +168,27 @@ const PaymentScheduleForm = ({ title, data, source }) => {
     return errorList
   }
   //function for updating the existing row details
-  const handleRowUpdate = async (newData) => {
+  const handleRowUpdate = async (newData, oldData) => {
     const errorList = errors(newData, true)
     if (errorList.length < 1) {
+      const { uid, paymentScheduleObj } = data?.phase || {}
       const update = {
         ...newData,
         dueDate: isDate(newData.dueDate)
           ? format(newData.dueDate, 'dd/MM/yyyy')
           : newData.dueDate || null,
       }
-      await updatePayment(newData?.uid, update, enqueueSnackbar)
+
+      console.log('check this stuff', tableData, paymentScheduleObj)
+      const c = await tableData.map((e) => {
+        console.log(e.myId, oldData.myId, e.myId === oldData.myId)
+        if (e.myId === oldData.myId) {
+          return update
+        }
+        return e
+      })
+console.log('check this stuff it', c)
+      await updatePaymentScheduleCharges(uid, c, enqueueSnackbar)
     } else {
       setErrorMessages(errorList)
       setIserror(true)
@@ -177,7 +197,10 @@ const PaymentScheduleForm = ({ title, data, source }) => {
 
   //function for deleting a row
   const handleRowDelete = async (oldData) => {
-    await deletePayment(oldData?.uid, enqueueSnackbar)
+    const { uid } = data?.phase || {}
+    const c = tableData.filter((e) => e.myId != oldData.myId)
+    console.log('check this stuff', c)
+    await updatePaymentScheduleCharges(uid, c, enqueueSnackbar)
   }
 
   //function for adding a new row to the table
@@ -189,11 +212,10 @@ const PaymentScheduleForm = ({ title, data, source }) => {
       const { projectId, uid } = data?.phase || {}
       const update = {
         ...newData,
-        projectId,
-        phaseId: uid,
         dueDate: format(newData.dueDate, 'dd/MM/yyyy'),
       }
-      await createPayment(update, enqueueSnackbar)
+      // await createPayment(update, enqueueSnackbar)
+      await addPhasePaymentScheduleCharges(uid, update, enqueueSnackbar)
     } else {
       setErrorMessages(errorList)
       setIserror(true)
@@ -201,15 +223,15 @@ const PaymentScheduleForm = ({ title, data, source }) => {
   }
 
   return (
-    <div className="h-full flex flex-col mt-6 mb-6 bg-white shadow-xl overflow-y-scroll">
+        <div className="h-full shadow-xl flex flex-col pt-6 mb-6 mt-10 bg-[#F1F5F9] rounded-t overflow-y-scroll">
       <div className="z-10">
-        {/* <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        {/* <Dialog.Title className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
         </Dialog.Title> */}
-        <span className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        <span className="mr-auto ml-3  text-md font-extrabold tracking-tight uppercase font-body ">
           {title}
         </span>
-        <div className="mt-2">
+        <div className="mt-5">
           <MaterialCRUDTable
             title=""
             columns={columns}
@@ -225,6 +247,8 @@ const PaymentScheduleForm = ({ title, data, source }) => {
             }}
             style={{
               padding: '30px',
+              borderRadius: '0px',
+              boxShadow: 'none',
             }}
             actionsCellStyle={{
               width: 'auto',

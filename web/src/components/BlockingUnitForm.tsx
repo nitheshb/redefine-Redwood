@@ -250,78 +250,80 @@ const BlockingUnitForm = ({ title, dialogOpen }) => {
   }
   return (
     <>
-      <div className="flex-col items-center ">
-        <div className="rounded-t bg-white mb-0 px-10 py-6">
-          <div className="text-center flex justify-between">
-            <p className="text-md font-extrabold tracking-tight uppercase font-body">
-              Block Unit
-            </p>
-            <button
-              className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-              type="button"
-            >
-              Settings
-            </button>
-          </div>
-        </div>
-        <div className="mx-10 o mt-10 ">
-          <div className="bg-white p-10 rounded-xl">
-            <h1 className="text-center text-xl font-semibold text-gray-500">
-              How many days you want to block?
-            </h1>
-            <div className="flex flex-wrap justify-center mt-10 space-x-3">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((days, i) => (
-                <option
-                  key={i}
-                  value={days}
-                  onMouseEnter={() => setSelDays(days)}
-                  onClick={() => setSelDays(days)}
-                  className={`${
-                    days === selDays ? 'bg-green-500 text-green-50 ' : ''
-                  } flex items-center justify-center w-10 h-10 bg-gray--100 text-gray-600 hover:bg-green-500 transition duration-150 rounded-full font-bold hover:text-green-50 cursor-pointer`}
+      <section className=" px-4 sm:px-6  z-10 py-1 bg-blueGray-50 flex flex-col rounded-lg bg-white m-4 grid gap-8 grid-cols-1">
+        <div className="w-full  mx-auto ">
+          <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0 ">
+            <div className="rounded-t bg-[#F1F5F9] mb-0 px-6 py-6">
+              <div className="text-center flex justify-between">
+                <p className="text-md font-extrabold tracking-tight uppercase font-body">
+                  Block unit
+                </p>
+                <button
+                  className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                  type="button"
                 >
-                  {days}
-                </option>
-              ))}
-              <span className="mt-[12px] text-sm text-gray-700 ">days</span>
+                  Receipt Download
+                </button>
+              </div>
             </div>
-            <Formik
-              initialValues={initialState}
-              validationSchema={validate}
-              onSubmit={(values, { resetForm }) => {
-                // onSubmit(values, resetForm)
-              }}
-            >
-              {(formik) => (
-                <Form className="mt-8">
-                  <div className="flex justify-center border-2 py-2 px-6 rounded-xl">
-                    <input
-                      type="text"
-                      name="blockReason"
-                      placeholder="Write a blocking reason"
-                      className="w-full outline-none text-gray-700 text-lg"
-                    />
-                    <ErrorMessage
-                      component="div"
-                      name={'blockReason'}
-                      className="error-message text-red-700 text-xs p-1 mx-auto"
-                    />
-                    <button
-                      type="submit"
-                      className="bg-green-500 text-green-50 font-semibold px-6 py-2 rounded-xl text-md"
+            <div className="mx-10 o mt-10 ">
+              <div className="bg-white p-10 rounded-xl">
+                <h1 className="text-center text-xl font-semibold text-gray-500">
+                  How many days you want to block?
+                </h1>
+                <div className="flex flex-wrap justify-center mt-10 space-x-3">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((days, i) => (
+                    <option
+                      key={i}
+                      value={days}
+                      onMouseEnter={() => setSelDays(days)}
+                      onClick={() => setSelDays(days)}
+                      className={`${
+                        days === selDays ? 'bg-green-500 text-green-50 ' : ''
+                      } flex items-center justify-center w-10 h-10 bg-gray--100 text-gray-600 hover:bg-green-500 transition duration-150 rounded-full font-bold hover:text-green-50 cursor-pointer`}
                     >
-                      Block
-                    </button>
-                  </div>
-                  <span className="text-center block mt-6 text-gray-400 text-xl font-semibold">
-                    Blocking unit for {selDays} days
-                  </span>
-                </Form>
-              )}
-            </Formik>
-          </div>
+                      {days}
+                    </option>
+                  ))}
+                  <span className="mt-[12px] text-sm text-gray-700 ">days</span>
+                </div>
+                <Formik
+                  initialValues={initialState}
+                  validationSchema={validate}
+                  onSubmit={(values, { resetForm }) => {
+                    // onSubmit(values, resetForm)
+                  }}
+                >
+                  {(formik) => (
+                    <Form className="mt-8">
+                      <div className="flex justify-center border-2 py-2 px-6 rounded-xl">
+                        <input
+                          type="text"
+                          name="blockReason"
+                          placeholder="Write a blocking reason"
+                          className="w-full outline-none text-gray-700 text-lg"
+                        />
+                        <ErrorMessage
+                          component="div"
+                          name={'blockReason'}
+                          className="error-message text-red-700 text-xs p-1 mx-auto"
+                        />
+                        <button
+                          type="submit"
+                          className="bg-green-500 text-green-50 font-semibold px-6 py-2 rounded-xl text-md"
+                        >
+                          Block
+                        </button>
+                      </div>
+                      <span className="text-center block mt-6 text-gray-400 text-xl font-semibold">
+                        Blocking unit for {selDays} days
+                      </span>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
 
-          {/* <div className="flex justify-end">
+              {/* <div className="flex justify-end">
             <span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -339,8 +341,10 @@ const BlockingUnitForm = ({ title, dialogOpen }) => {
               </svg>
             </span>
           </div> */}
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </>
   )
 }

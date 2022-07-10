@@ -224,7 +224,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
 
   useEffect(() => {
     if (leadsTyper == 'archieveLeads') {
-      const archieveFields1 = ['Review', 'Cleared', 'UnCleared']
+      const archieveFields1 = ['Review', 'Cleared', 'rejected']
       setGetStatus(archieveFields1)
     } else if (leadsTyper == 'inProgress') {
       const archieveFields2 = [
@@ -421,7 +421,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
-                  Finance Space
+                  Accounts Transactions Space
                 </h2>
               </div>
               <div className="flex">
@@ -471,96 +471,304 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                     </button>
                   </span>
                 )}
-                <>
-
-
-                </>
+                <></>
               </div>
             </div>
 
             <MetaTags title="ExecutiveHome" description="ExecutiveHome page" />
 
-            {ready && (
-              <div className="flex flex-row ">
-                <main className="mt-3 flex flex-row overflow-auto max-h-[60%] rounded ">
-                  <div className="flex">
-                    <DragDropContext onDragEnd={onDragEnd}>
-                      {serialLeadsData.map((board, bIndex) => {
-                        const x = leadsFetchedData.filter(
-                          (data) =>
-                            data.Status.toLowerCase() ===
-                            board.name.toLowerCase()
-                        )
-                        console.log('serialLeadsData, ', serialLeadsData)
-                        return (
-                          <div
-                            key={bIndex}
-                            className=" border-[1px]  border-gray-200  bg-[#F5F8FA] w-56"
-                          >
-                            <Droppable droppableId={bIndex.toString()}>
-                              {(provided, snapshot) => (
-                                <div
-                                  {...provided.droppableProps}
-                                  ref={provided.innerRef}
-                                  className={`flex-shrink-0  min-w-150 bg-[#F5F8FA] rounded-md  h-screen ${
-                                    snapshot.isDraggingOver && 'bg-green-100'
-                                  }`}
-                                >
-                                  <div className="flex border-b p-3 ">
-                                    <span className="text-sm  mb-1  ml-1 font-medium text-gray-900">
-                                      {board.name}
-                                    </span>
-                                    <span className="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-indigo-500 bg-white rounded bg-opacity-30">
-                                      {/* {x.length} */}
-                                      {board.items.length}
-                                    </span>
-                                  </div>
-                                  <div>
-                                    {board.items.length > 0 &&
-                                      board.items.map((item, iIndex) => {
-                                        return (
-                                          <div
-                                            key={item.id}
-                                            className="mt-2 ml-2.5 "
-                                            onClick={() => {
-                                              setopenUserProfile(
-                                                !openUserProfile
-                                              )
-                                              console.log('iam clicked1', item)
-                                            }}
-                                          >
-                                            <CardItem
-                                              key={item.id}
-                                              data={item}
-                                              index={iIndex}
-                                            />
-                                          </div>
-                                        )
-                                      })}
-                                    {provided.placeholder}
-                                    {console.log('dragDatga is', board)}
-                                  </div>
-                                </div>
-                              )}
-                            </Droppable>
-                          </div>
-                        )
-                      })}
-                    </DragDropContext>
+            {!ready && (
+              <div className="container overflow-hidden rounded-2xl">
+                <div className="flex flex-col app-bg-white-1  pb-10">
+                  <div className="flex flex-row py-5">
+                    <span className="text-lg font-bold app-color-black"></span>
                   </div>
-                </main>
-                {/* <CustomerProfileSideView openUserProfile={openUserProfile} /> */}
+
+                  <div className="flex flex-row">
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3 rounded-tl-2xl rounded-tr-2xl bg-white active">
+                      <span className="text-xl app-color-blue-1 font-bold">
+                        20
+                      </span>
+                      <span className="text-md app-color-blue-1 font-semibold">
+                        All Transactions
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#3569E7] ">
+                      <span className="text-xl text-white font-bold">05</span>
+                      <span className="text-md text-white font-semibold">
+                        Latest
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#3569E7] ">
+                      <span className="text-xl text-white font-bold">05</span>
+                      <span className="text-md text-white font-semibold">
+                        Reviewing
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#3569E7] ">
+                      <span className="text-xl text-white font-bold">05</span>
+                      <span className="text-md text-white font-semibold">
+                        Cleared
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3 rounded-tl-2xl rounded-tr-2xl bg-[#3569E7] ">
+                      <span className="text-xl text-white font-bold">05</span>
+                      <span className="text-md text-white font-semibold">
+                        Rejected
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-row bg-white p-10 relative">
+                    <table className="w-full">
+                      <thead>
+                        <tr>
+                          <th className="w-28"></th>
+                          <th className="text-left text-xs app-color-black pb-5">
+                            <span className="ml-4">FROM</span>
+                          </th>
+                          <th className="text-left text-xs app-color-black pb-5">
+                            <span className="ml-4">To</span>
+                          </th>
+                          <th className="text-left text-xs app-color-black pb-5">
+                            TRANSACTION DETAILS
+                          </th>
+                          <th className="text-right text-xs app-color-black pb-5">
+                            <span className="mr-10">AMOUNT</span>
+                          </th>
+
+                          <th className="text-left text-xs app-color-black pb-5">
+                            COMMENTS
+                          </th>
+
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          {
+                            fromObj: {
+                              name: 'Vikram Bose',
+                              accountNo: '52346673647',
+                              bankName: 'Andhara Bank',
+                              branch: 'Hsr layout',
+                            },
+                            toAccount: {
+                              name: 'Vertex Apartment',
+                              accountNo: '52346673647',
+                              bankName: 'Andhara Bank',
+                              branch: 'Hsr layout',
+                            },
+                            projDetails: {
+                              projName: 'Vertex Apartments',
+                              projId: 123456,
+                              unitId: 9876,
+                            },
+                            amount: 123000,
+                            mode: 'Neft/Imps',
+                            transactionNo: 12334,
+                            demandNo: 3456,
+                            transactionDate: '12-july-2022',
+                            dated: '12-july-2022',
+                            status: 'inreveiw',
+                          },
+                          {
+                            fromObj: {
+                              name: 'Varun Bose',
+                              accountNo: '52346673647',
+                              bankName: 'Andhara Bank',
+                              branch: 'Hsr layout',
+                            },
+                            toAccount: {
+                              name: 'Green Plots pvt',
+                              accountNo: '52346673647',
+                              bankName: 'HSBC  Bank',
+                              branch: 'silk board layout',
+                            },
+                            projDetails: {
+                              projName: 'Vertex Apartments',
+                              projId: 123456,
+                              unitId: 9876,
+                            },
+                            amount: 120003000,
+                            mode: 'Neft/Imps',
+                            transactionNo: 12334,
+                            demandNo: 3456,
+                            transactionDate: '12-july-2022',
+                            dated: '12-july-2022',
+                            status: 'inreview',
+                          },
+                          {
+                            fromObj: {
+                              name: 'Sujith',
+                              accountNo: '52346673647',
+                              bankName: 'Andhara Bank',
+                              branch: 'Hsr layout',
+                            },
+                            toAccount: {
+                              name: 'SRR Homes pvt',
+                              accountNo: '52346673647',
+                              bankName: 'ICICI  Bank',
+                              branch: 'Hsr layout',
+                            },
+                            projDetails: {
+                              projName: 'Vertex Apartments',
+                              projId: 123456,
+                              unitId: 9876,
+                            },
+                            amount: 123000,
+                            mode: 'Neft/Imps',
+                            transactionNo: 12334,
+                            demandNo: 3456,
+                            transactionDate: '12-july-2022',
+                            dated: '12-july-2022',
+                            status: 'cleared',
+                          },
+                          {
+                            fromObj: {
+                              name: 'Smitha Raj',
+                              accountNo: '52346673647',
+                              bankName: 'Andhara Bank',
+                              branch: 'Hsr layout',
+                            },
+                            toAccount: {
+                              name: 'Vertex Apartments Pvt',
+                              accountNo: '52346673647',
+                              bankName: 'Andhara Bank',
+                              branch: 'Hsr layout',
+                            },
+                            projDetails: {
+                              projName: 'Vertex Apartments',
+                              projId: 123456,
+                              unitId: 9876,
+                            },
+                            amount: 123000,
+                            mode: 'Neft/Imps',
+                            transactionNo: 12334,
+                            demandNo: 3456,
+                            transactionDate: '12-july-2022',
+                            dated: '12-july-2022',
+                            status: 'rejected',
+                          },
+                        ].map((dat, i) => (
+                          <tr
+                            className="app-border-1 border-y border-slate-200 my-2 py-2 h-[120px]"
+                            key={i}
+                          >
+                            <td>
+                              <div className="flex justify-center text-right items-center rounded-md w-8 h-8 app-bg-yellow-2 app-color-yellow-1 text-lg font-semibold">
+                                {i + 1}
+                              </div>
+                              <div
+                                className={`${
+                                  dat?.status === 'cleared'
+                                    ? 'bg-green-700'
+                                    : dat?.status === 'rejected'
+                                    ? 'bg-yellow-600'
+                                    : 'bg-violet-600'
+                                }   w-24 text-xs font-semibold px-3 py-0.5 rounded-br-md rounded-tl-md text-white`}
+                              >
+                                {dat?.status?.toLocaleUpperCase()}
+                              </div>
+                            </td>
+                            <td>
+                              <div className="flex flex-row py-3 ml-4">
+                                <div className="mr-2 w-[3px] rounded-2xl  bg-violet-300 "></div>
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-sm app-color-black">
+                                    {dat?.fromObj.name}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.fromObj.accountNo}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.fromObj.bankName}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.fromObj.branch}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="flex flex-row ml-4 py-3">
+                                <div className="mr-2 w-[3px] rounded-2xl bg-violet-300  "></div>
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-sm app-color-black">
+                                    {dat?.toAccount.name}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.toAccount.accountNo}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.toAccount.bankName}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.toAccount.branch}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="flex flex-row py-3">
+                                {/* <div className="mr-2 w-[3px]  bg-gray-100 "></div> */}
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-sm app-color-black">
+                                    {dat?.mode}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.transactionNo}
+                                  </span>
+                                  <span className="font-normal text-xs app-color-gray-1">
+                                    {dat?.dated}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-right">
+                              <span className="text-right font-semibold text-sm app-color-gray-1 mr-10">
+                                Rs {dat?.amount}
+                              </span>
+                            </td>
+
+                            <td>
+                              <span className="ml-3 font-semibold text-md app-color-gray-1">
+                                NA
+                              </span>
+                            </td>
+                            <td>
+                              <svg
+                                className="w-6 h-6 app-color-blue-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                                ></path>
+                              </svg>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
 
-            {!ready && (
+            {/* {!ready && (
               <FinanceTableView
                 leadsFetchedData={leadsFetchedData}
                 setisImportLeadsOpen={setisImportLeadsOpen}
                 selUserProfileF={selUserProfileF}
                 leadsTyper={leadsTyper}
               />
-            )}
+            )} */}
           </div>
         </div>
       </div>

@@ -9,8 +9,14 @@ import {
   createAdditonalCharges,
   updateAdditionalCharges,
   deleteAdditionalCharge,
+  addPhaseAdditionalCharges,
+  updatePhaseAdditionalCharges,
 } from 'src/context/dbQueryFirebase'
-import { unitsCancellation } from 'src/constants/projects'
+import {
+  costSheetAdditionalChargesA,
+  gstValesA,
+  unitsCancellation,
+} from 'src/constants/projects'
 
 const AdditionalChargesForm = ({ title, data, source }) => {
   const [tableData, setTableData] = useState([])
@@ -22,32 +28,63 @@ const AdditionalChargesForm = ({ title, data, source }) => {
     if (source === 'projectManagement') {
       setEditOptions({
         onRowAdd: async (newData) => await handleRowAdd(newData),
-        onRowUpdate: async (newData) => await handleRowUpdate(newData),
+        onRowUpdate: async (newData, oldData) =>
+          await handleRowUpdate(newData, oldData),
         onRowDelete: async (oldData) => await handleRowDelete(oldData),
       })
     }
-  }, [source])
-  const { enqueueSnackbar } = useSnackbar()
+  }, [source, data, tableData])
 
+  useEffect(() => {
+    const { phase } = data
+    const { additonalChargesObj } = phase
+
+    setTableData(additonalChargesObj)
+  }, [data])
+
+  const { enqueueSnackbar } = useSnackbar()
+  const defaultValue = (options, value) => {
+    return (
+      (options
+        ? options.find((option) => option.value === value?.value)
+        : '') || ''
+    )
+  }
   const columns = [
     {
       title: 'Charges For*',
-      field: 'chargesFor',
+      field: 'component',
       headerStyle: {
         padding: '0.25rem',
       },
       cellStyle: {
         padding: '0.25rem',
       },
-      editComponent: ({ value, onChange }) => (
-        <input
-          placeholder="Charges For"
-          className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
-          autoComplete="off"
-          onChange={(e) => onChange(e.target.value)}
-          value={value}
-        />
-      ),
+      render: (rowData) => {
+        return rowData?.component?.label
+      },
+      editComponent: ({ value, onChange, rowData }) => {
+        return (
+          <Select
+            name="component"
+            onChange={(value_x) => {
+              onChange(value_x)
+            }}
+            options={costSheetAdditionalChargesA}
+            value={defaultValue(costSheetAdditionalChargesA, value)}
+            className="text-md mr-2"
+          />
+        )
+      },
+      // editComponent: ({ value, onChange }) => (
+      //   <input
+      //     placeholder="Charges For"
+      //     className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
+      //     autoComplete="off"
+      //     onChange={(e) => onChange(e.target.value)}
+      //     value={value}
+      //   />
+      // ),
     },
     {
       title: 'Units*',
@@ -59,7 +96,7 @@ const AdditionalChargesForm = ({ title, data, source }) => {
         padding: '0.25rem',
       },
       render: (rowData) => rowData?.units?.label,
-      editComponent: ({ onChange }) => {
+      editComponent: ({ value, onChange, rowData }) => {
         return (
           <Select
             name="Chargesdropdown"
@@ -67,6 +104,7 @@ const AdditionalChargesForm = ({ title, data, source }) => {
               onChange(value)
             }}
             options={unitsCancellation}
+            value={defaultValue(unitsCancellation, value)}
             className="text-md mr-2"
           />
         )
@@ -106,6 +144,30 @@ const AdditionalChargesForm = ({ title, data, source }) => {
       },
     },
     {
+      title: 'GST*',
+      field: 'gst',
+      headerStyle: {
+        padding: '0.25rem',
+      },
+      cellStyle: {
+        padding: '0.25rem',
+      },
+      render: (rowData) => rowData?.gst?.label,
+      editComponent: ({ value, onChange, rowData }) => {
+        return (
+          <Select
+            name="Chargesdropdown"
+            onChange={(value_x) => {
+              onChange(value_x)
+            }}
+            options={gstValesA}
+            value={defaultValue(gstValesA, value)}
+            className="text-md mr-2"
+          />
+        )
+      },
+    },
+    {
       title: 'Description*',
       field: 'description',
       headerStyle: {
@@ -126,75 +188,93 @@ const AdditionalChargesForm = ({ title, data, source }) => {
     },
   ]
 
-  const getCharges = async () => {
-    const { projectId, uid } = data?.phase || {}
-    const unsubscribe = getAdditionalCharges(
-      { projectId, phaseId: uid },
-      (querySnapshot) => {
-        const response = querySnapshot.docs.map((docSnapshot) =>
-          docSnapshot.data()
-        )
-        setTableData(response)
-      },
-      (e) => {
-        console.log('error', e)
-        setTableData([])
-      }
-    )
-    return unsubscribe
-  }
+  // const getCharges = async () => {
+  //   const { projectId, uid } = data?.phase || {}
 
-  useEffect(() => {
-    getCharges()
-  }, [])
+  //   const unsubscribe = getAdditionalCharges(
+  //     { projectId, phaseId: uid },
+  //     (querySnapshot) => {
+  //       const response = querySnapshot.docs.map((docSnapshot) =>
+  //         docSnapshot.data()
+  //       )
+  //       console.log('before', response)
+
+  //       setTableData(response)
+  //     },
+  //     (e) => {
+  //       console.log('error', e)
+  //       setTableData([])
+  //     }
+  //   )
+  //   return unsubscribe
+  // }
+
+  // useEffect(() => {
+  //   getCharges()
+  // }, [])
 
   const errors = (formData) => {
     //validating the data inputs
     const errorList = []
-    if (!formData.chargesFor) {
+    if (!formData.component) {
       errorList.push("Try Again, You didn't enter the Charges For field")
+    }
+    if (!formData.units) {
+      errorList.push("Try Again, You didn't enter the Units field")
     }
     if (!formData.charges) {
       errorList.push("Try Again, You didn't enter the Charges field")
     }
-
-    if (!formData.description) {
-      errorList.push("Try Again, description field can't be blank")
+    if (!formData.gst) {
+      errorList.push("Try Again, You didn't enter the gst field")
     }
+
+    // if (!formData.description) {
+    //   errorList.push("Try Again, description field can't be blank")
+    // }
     return errorList
   }
   //function for updating the existing row details
-  const handleRowUpdate = async (newData) => {
-    const errorList = errors(newData)
-    if (errorList.length < 1) {
-      const update = {
-        ...newData,
+  const handleRowUpdate = async (newData, oldData) => {
+    const { uid, additonalChargesObj } = data?.phase || {}
+
+    console.log('check this stuff', tableData, additonalChargesObj)
+    const c = await tableData.map((e) => {
+      console.log(e.myId, oldData.myId, e.myId === oldData.myId)
+      if (e.myId === oldData.myId) {
+        return newData
       }
-      await updateAdditionalCharges(newData?.uid, update, enqueueSnackbar)
-    } else {
-      setErrorMessages(errorList)
-      setIserror(true)
-    }
+      return e
+    })
+    console.log('check this stuff', tableData, c)
+    await updatePhaseAdditionalCharges(uid, c, enqueueSnackbar)
   }
 
   //function for deleting a row
   const handleRowDelete = async (oldData) => {
-    await deleteAdditionalCharge(oldData?.uid, enqueueSnackbar)
+    const { uid } = data?.phase || {}
+    const c = tableData.filter((e) => e.myId != oldData.myId)
+    console.log('check this stuff', c)
+    await updatePhaseAdditionalCharges(uid, c, enqueueSnackbar)
+    // await deleteAdditionalCharge(oldData?.uid, enqueueSnackbar)
   }
 
   //function for adding a new row to the table
   const handleRowAdd = async (newData) => {
+    console.log('newData is', newData)
+
     setIserror(false)
     setErrorMessages([])
     const errorList = errors(newData)
     if (errorList.length < 1) {
+      console.log('newData is inside yo', newData)
       const { projectId, uid } = data?.phase || {}
-      const update = {
+
+      const additonalChargesObj = {
         ...newData,
-        projectId,
-        phaseId: uid,
       }
-      await createAdditonalCharges(update, enqueueSnackbar)
+      // await createAdditonalCharges(additonalChargesObj, enqueueSnackbar)
+      await addPhaseAdditionalCharges(uid, additonalChargesObj, enqueueSnackbar)
     } else {
       setErrorMessages(errorList)
       setIserror(true)
@@ -202,22 +282,24 @@ const AdditionalChargesForm = ({ title, data, source }) => {
   }
 
   return (
-    <div className="h-full flex flex-col pt-6 mb-6 bg-white shadow-xl overflow-y-scroll">
+    <div className="h-full shadow-xl flex flex-col pt-6 mb-6 mt-10 bg-[#F1F5F9] rounded-t overflow-y-scroll">
       <div className="z-10">
         {/* <Dialog.Title className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
         </Dialog.Title> */}
-        <span className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        <span className="mr-auto ml-3  text-md font-extrabold tracking-tight uppercase font-body ">
           {title}
         </span>
-        <div className="mt-2 min">
+
+        <div className="mt-5 min">
           <MaterialCRUDTable
             title=""
             columns={columns}
             data={tableData}
             options={{
               headerStyle: {
-                borderBottomWidth: '3px',
+                borderRadius: 0,
+                borderBottomWidth: '2px',
               },
               actionsColumnIndex: -1,
               paging: false,
@@ -226,6 +308,8 @@ const AdditionalChargesForm = ({ title, data, source }) => {
             }}
             style={{
               padding: '30px',
+              borderRadius: '0px',
+              boxShadow: 'none',
             }}
             actionsCellStyle={{
               width: 'auto',

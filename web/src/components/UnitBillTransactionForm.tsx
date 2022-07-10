@@ -103,7 +103,7 @@ function UnitTransactionForm() {
                 {[
                   { category: 'Unit Cost', val: '₹12000' },
                   { category: 'Car Parking', val: '₹12000' },
-                  { category: 'Electricity/Water Sweage', val: '₹12000' },
+                  { category: 'Electricity/Water Sewage', val: '₹12000' },
                   { category: 'Maintenance Charges', val: '₹12000' },
                   { category: 'Power Back-up Charges', val: '₹12000' },
                   { category: 'Maintenance Deposit', val: '₹12000' },

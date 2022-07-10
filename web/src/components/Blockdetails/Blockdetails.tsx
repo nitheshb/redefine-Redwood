@@ -56,9 +56,9 @@ const Blockdetails = ({
     }
   }
   return (
-    <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-8 w-full  mt-10">
-      <div className="lg:col-span-2">
-        <section className="flex flex-row justify-between">
+    <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-8 w-full  mt-10 ">
+      <div className="lg:col-span-2 px-2 ">
+        <section className="flex flex-row justify-between bg-[#203129] text-white py-3 px-4">
           <h2 className="text-sm font-semibold">Blocks</h2>
           <DropCompUnitStatus
             type={'View'}
@@ -129,11 +129,15 @@ const Blockdetails = ({
                 <BlockStatsCards
                   kind={block?.blockName}
                   feedData={block}
-                  bg={selBlock?.uid === block?.uid ? '#efefef' : '#fef7f7'}
+                  bg={selBlock?.uid === block?.uid ? '#203129' : '#fef7f7'}
+                  txtColor={
+                    selBlock?.uid === block?.uid
+                      ? 'text-white'
+                      : 'text-gray-700'
+                  }
                   setSelBlock={setSelBlock}
                   viewUnitStatusA={viewUnitStatusA}
                   source={source}
-
                 />
               </li>
             )

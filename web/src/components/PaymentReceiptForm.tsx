@@ -92,11 +92,11 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
   }
 
   return (
-    <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
+    <div className="">
       <div className="px-4 sm:px-6  z-10">
-        <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        {/* <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}
-        </Dialog.Title>
+        </Dialog.Title> */}
       </div>
 
       <div className="grid gap-8 grid-cols-1">
@@ -115,9 +115,9 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                     {/* Phase Details */}
 
                     <section className=" py-1 bg-blueGray-50">
-                      <div className="w-full px-4 mx-auto mt-6">
+                      <div className="w-full px-4 mx-auto ">
                         <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
-                          <div className="rounded-t bg-white mb-0 px-6 py-6">
+                          <div className="rounded-t bg-[#F1F5F9] mb-0 px-6 py-6">
                             <div className="text-center flex justify-between">
                               <p className="text-md font-extrabold tracking-tight uppercase font-body">
                                 Payment Entry
@@ -139,26 +139,8 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                 <div className="w-full lg:w-6/12 px-4">
                                   <div className="relative w-full mb-3">
                                     <TextField2
-                                      label="Date"
-                                      name="date"
-                                      type="text"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="w-full lg:w-6/12 px-4">
-                                  <div className="relative w-full mb-3">
-                                    <TextField2
                                       label="Amount"
                                       name="amount"
-                                      type="text"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="w-full lg:w-6/12 px-4">
-                                  <div className="relative w-full mb-3">
-                                    <TextField2
-                                      label="Pay to"
-                                      name="payto"
                                       type="text"
                                     />
                                   </div>
@@ -172,55 +154,46 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                     />
                                   </div>
                                 </div>
-                              </div>
 
-                              <hr className="mt-6 border-b-1 border-blueGray-300" />
-
-                              <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                                Cheque Information
-                              </h6>
-                              <div className="flex flex-wrap">
-                                <div className="w-full lg:w-12/12 px-4">
+                                <div className="w-full lg:w-6/12 px-4">
                                   <div className="relative w-full mb-3">
                                     <TextField2
-                                      label="Drawn on Bank"
-                                      name="drawnonbank"
+                                      label="Cheque No/Reference No"
+                                      name="payto"
                                       type="text"
                                     />
                                   </div>
                                 </div>
-                                <div className="w-full lg:w-4/12 px-4">
-                                  <div className="relative w-full mb-3">
-                                    <TextField2
-                                      label="Cheque No"
-                                      name="chequeno"
-                                      type="text"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="w-full lg:w-4/12 px-4">
+                                <div className="w-full lg:w-6/12 px-4">
                                   <div className="relative w-full mb-3">
                                     <TextField2
                                       label="Dated"
-                                      name="dated"
+                                      name="payto"
+                                      type="text"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="w-full lg:w-6/12 px-4">
+                                  <div className="relative w-full mb-3">
+                                    <TextField2
+                                      label="Paid To"
+                                      name="mode"
                                       type="text"
                                     />
                                   </div>
                                 </div>
                               </div>
-
                               <hr className="mt-6 border-b-1 border-blueGray-300" />
                               <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">
-
-                        <button
-                          className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-xs hover:shadow-lg hover:bg-green-500"
-                          type="submit"
-                          disabled={loading}
-                        >
-                          {/* {loading && <Loader />} */}
-                          {'Save'}
-                        </button>
-                      </div>
+                                <button
+                                  className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-xs hover:shadow-lg hover:bg-green-500"
+                                  type="submit"
+                                  disabled={loading}
+                                >
+                                  {/* {loading && <Loader />} */}
+                                  {'Save'}
+                                </button>
+                              </div>
                             </form>
                           </div>
                         </div>

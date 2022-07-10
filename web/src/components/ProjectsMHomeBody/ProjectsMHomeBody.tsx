@@ -220,7 +220,7 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                 projectData={project}
               />
             </span>
-            {/* <span>
+            <span>
               <ProjectStatsCard
                 kind="Area"
                 iconP="/m4.png"
@@ -228,13 +228,13 @@ const ProjectsMHomeBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                 bg="#f3f5ff"
                 currency={true}
               />
-            </span> */}
+            </span>
 
-            <span>
+            {/* <span>
               <section className="flex " style={{ height: '270px' }}>
                 <PieChartProject />
               </section>
-            </span>
+            </span> */}
           </div>
           {/* {unitsView && (
             <div className="grid grid-cols-1 gap-7 mt-10">

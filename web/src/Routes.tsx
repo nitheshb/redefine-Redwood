@@ -34,9 +34,18 @@ const defaultRoutes = () => {
 }
 const Routes = () => {
   const { user } = useAuth()
+  console.log('user yo yo is ', user)
 
   let UpdatedRoutes = defaultRoutes()
-  if (user?.role?.includes(USER_ROLES.ADMIN)) {
+  if (user?.role == null) {
+    console.log('user yo yo is it is ', user)
+    UpdatedRoutes = (
+      <>
+        <Route path="/login" page={LoginPage} name="login" />
+      </>
+    )
+  } else
+   if (user?.role?.includes(USER_ROLES.ADMIN)) {
     UpdatedRoutes = (
       <>
         <Route path="/admin/home" page={HomePage} name="home" />
@@ -90,6 +99,7 @@ const Routes = () => {
     )
   } else {
     if (user?.role) {
+      console.log('user yo yo is am i here')
       UpdatedRoutes = (
         <>
           <Route path="/access-denied" page={AccessDeniedPage} name="accessDenied" />

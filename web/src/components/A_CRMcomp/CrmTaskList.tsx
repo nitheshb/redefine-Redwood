@@ -421,7 +421,7 @@ const CrmTaskList = ({ leadsTyper }) => {
             <div className="flex items-center justify-between py-2 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
-                  Finance Space
+                  CRM Space
                 </h2>
               </div>
               <div className="flex">
@@ -554,9 +554,7 @@ const CrmTaskList = ({ leadsTyper }) => {
               <div className="container overflow-hidden rounded-2xl">
                 <div className="flex flex-col app-bg-white-1  pb-10">
                   <div className="flex flex-row py-5">
-                    <span className="text-lg font-bold app-color-black">
-                      Home
-                    </span>
+                    <span className="text-lg font-bold app-color-black"></span>
                   </div>
 
                   <div className="flex flex-row">
@@ -565,13 +563,25 @@ const CrmTaskList = ({ leadsTyper }) => {
                         06
                       </span>
                       <span className="text-md app-color-blue-1 font-semibold">
-                        All
+                        My Customers
                       </span>
                     </div>
                     <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#346EE1]">
                       <span className="text-xl text-white font-bold">02</span>
                       <span className="text-md text-white font-semibold">
-                        Finance
+                        New
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#346EE1]">
+                      <span className="text-xl text-white font-bold">02</span>
+                      <span className="text-md text-white font-semibold">
+                        Aggrement
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#3569E7] ">
+                      <span className="text-xl text-white font-bold">05</span>
+                      <span className="text-md text-white font-semibold">
+                        Demands
                       </span>
                     </div>
                     <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#3569E7] ">
@@ -584,6 +594,12 @@ const CrmTaskList = ({ leadsTyper }) => {
                       <span className="text-xl text-white font-bold">05</span>
                       <span className="text-md text-white font-semibold">
                         Legal
+                      </span>
+                    </div>
+                    <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#346EE1]">
+                      <span className="text-xl text-white font-bold">02</span>
+                      <span className="text-md text-white font-semibold">
+                        Queries
                       </span>
                     </div>
                     <div className="flex flex-col w-40 h-[60px] bg-white pl-5 py-1 mr-3  rounded-tl-2xl rounded-tr-2xl bg-[#A0b4d6]">
@@ -606,13 +622,13 @@ const CrmTaskList = ({ leadsTyper }) => {
                           <th></th>
                           <th></th>
                           <th className="text-left text-xs app-color-black pb-5">
-                            PATIENT
+                            CUSTOMER DETAILS
                           </th>
                           <th className="text-left text-xs app-color-black pb-5">
                             CONTACT
                           </th>
                           <th className="text-left text-xs app-color-black pb-5">
-                            APPOINTMENT
+                            DATE
                           </th>
                           <th className="text-left text-xs app-color-black pb-5">
                             WAITED

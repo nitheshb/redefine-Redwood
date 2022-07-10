@@ -30,9 +30,9 @@ export const TextField2 = ({ label, ...props }) => {
 
       <input
         className={` ${meta.touched && meta.error && 'is-invalid'} ${
-          field.name === 'blockName' ? '' : ' h-10  '
+          field.name === 'blockName' ? '' : ' h-8  '
         }
-           w-full min-w-full text-sm flex bg-grey-lighter text-grey-darker  border border-[#cccccc] px-4`}
+           w-full min-w-full text-sm flex bg-grey-lighter text-grey-darker font-light border px-4`}
         {...field}
         {...props}
         autoComplete="off"
