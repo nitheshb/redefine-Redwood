@@ -4,16 +4,19 @@ import { Alert, AlertTitle } from '@mui/lab'
 import DatePicker from 'react-datepicker'
 import { format, parse, isDate } from 'date-fns'
 import { useSnackbar } from 'notistack'
+import Select from 'react-select'
+
 // import { Edit, DeleteOutline } from '@material-ui/icons'
 import { MaterialCRUDTable } from 'src/components/MaterialCRUDTable'
 import {
   getPaymentSchedule,
-  createPayment,
+  createPaymentSheduleComp,
   updatePayment,
   deletePayment,
   addPhasePaymentScheduleCharges,
   updatePaymentScheduleCharges,
 } from 'src/context/dbQueryFirebase'
+import { paymentScheduleA } from 'src/constants/projects'
 
 const PaymentScheduleForm = ({ title, data, source }) => {
   const [tableData, setTableData] = useState([])
@@ -37,8 +40,16 @@ const PaymentScheduleForm = ({ title, data, source }) => {
     const { paymentScheduleObj } = phase
 
     setTableData(paymentScheduleObj)
+    console.log('payment', paymentScheduleObj)
   }, [data])
 
+  const defaultValue = (options, value) => {
+    return (
+      (options
+        ? options.find((option) => option.value === value?.value)
+        : '') || ''
+    )
+  }
   const columns = [
     {
       title: 'Stage*',
@@ -49,15 +60,22 @@ const PaymentScheduleForm = ({ title, data, source }) => {
       cellStyle: {
         padding: '0.25rem',
       },
-      editComponent: ({ value, onChange }) => (
-        <input
-          placeholder="Stage"
-          className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
-          autoComplete="off"
-          onChange={(e) => onChange(e.target.value)}
-          value={value}
-        />
-      ),
+      render: (rowData) => {
+        return rowData?.stage?.label
+      },
+      editComponent: ({ value, onChange, rowData }) => {
+        return (
+          <Select
+            name="component"
+            onChange={(value_x) => {
+              onChange(value_x)
+            }}
+            options={paymentScheduleA}
+            value={defaultValue(paymentScheduleA, value)}
+            className="text-md mr-2"
+          />
+        )
+      },
     },
     {
       title: 'Percentage*',
@@ -73,9 +91,7 @@ const PaymentScheduleForm = ({ title, data, source }) => {
           placeholder="percentage"
           className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
           autoComplete="off"
-          onChange={(e) =>
-            onChange(parseInt(e.target.value) > 100 ? 100 : e.target.value)
-          }
+          onChange={(e) => onChange(e.target.value)}
           value={value}
           type="number"
           max="100"
@@ -83,8 +99,8 @@ const PaymentScheduleForm = ({ title, data, source }) => {
       ),
     },
     {
-      title: 'Description*',
-      field: 'description',
+      title: 'Zero Day*',
+      field: 'zeroDay',
       headerStyle: {
         padding: '0.25rem',
       },
@@ -93,14 +109,35 @@ const PaymentScheduleForm = ({ title, data, source }) => {
       },
       editComponent: ({ value, onChange }) => (
         <input
-          placeholder="Description"
+          placeholder="Days"
           className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
           autoComplete="off"
           onChange={(e) => onChange(e.target.value)}
           value={value}
+          type="number"
+          max="100"
         />
       ),
     },
+    // {
+    //   title: 'Description*',
+    //   field: 'description',
+    //   headerStyle: {
+    //     padding: '0.25rem',
+    //   },
+    //   cellStyle: {
+    //     padding: '0.25rem',
+    //   },
+    //   editComponent: ({ value, onChange }) => (
+    //     <input
+    //       placeholder="Description"
+    //       className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
+    //       autoComplete="off"
+    //       onChange={(e) => onChange(e.target.value)}
+    //       value={value}
+    //     />
+    //   ),
+    // },
     {
       title: 'Due date*',
       field: 'dueDate',
@@ -159,12 +196,12 @@ const PaymentScheduleForm = ({ title, data, source }) => {
       errorList.push("Try Again, You didn't enter the Percentage field")
     }
 
-    if (!formData.description) {
-      errorList.push("Try Again, description field can't be blank")
-    }
-    if (!isEdit && !isDate(formData.dueDate)) {
-      errorList.push("Try Again, You didn't enter valid date")
-    }
+    // if (!formData.description) {
+    //   errorList.push("Try Again, description field can't be blank")
+    // }
+    // if (!isEdit && !isDate(formData.dueDate)) {
+    //   errorList.push("Try Again, You didn't enter valid date")
+    // }
     return errorList
   }
   //function for updating the existing row details
@@ -187,7 +224,7 @@ const PaymentScheduleForm = ({ title, data, source }) => {
         }
         return e
       })
-console.log('check this stuff it', c)
+      console.log('check this stuff it', c)
       await updatePaymentScheduleCharges(uid, c, enqueueSnackbar)
     } else {
       setErrorMessages(errorList)
@@ -223,7 +260,7 @@ console.log('check this stuff it', c)
   }
 
   return (
-        <div className="h-full shadow-xl flex flex-col pt-6 mb-6 mt-10 bg-[#F1F5F9] rounded-t overflow-y-scroll">
+    <div className="h-full shadow-xl flex flex-col pt-6 mb-6 mt-10 bg-[#F1F5F9] rounded-t overflow-y-scroll">
       <div className="z-10">
         {/* <Dialog.Title className="font-semibold text-xl mr-auto ml-3 text-[#053219]">
           {title}

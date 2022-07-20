@@ -30,6 +30,9 @@ import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import CrmHome from 'src/components/A_CRMcomp/CrmHome'
 import CrmTaskList from 'src/components/A_CRMcomp/CrmTaskList'
+import FinanceTransactionsHome from 'src/components/TableComp/FinanceTransactionsHome'
+import CrmBucketList from 'src/components/TableComp/CrmBuckets'
+import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
 
 const CrmHomePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -369,9 +372,21 @@ const CrmHomePage = () => {
               {viewable === 'CrmTeamTasks' && (
                 <CrmHome leadsTyper={undefined} />
               )}
+              {viewable === 'unitsInventory' && (
+                <ProjectsUnitInventory
+                  project={{
+                    projectName: 'Projects',
+                  }}
+                  isEdit={undefined}
+                />
+              )}
+              {viewable === 'CrmBuckets' && (
+                <CrmBucketList leadsTyper={'financeModule'} />
+              )}
+
               {viewable === 'MyCustomers' && <CrmTaskList />}
               {viewable === 'TeamCustomers' && (
-                <CrmHome leadsTyper={undefined} />
+                <FinanceTransactionsHome leadsTyper={'financeModule'} />
               )}
 
               {(viewable === 'Bank Accounts' ||

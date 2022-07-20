@@ -33,7 +33,12 @@ import {
 } from 'src/util/axiosWhatAppApi'
 import { TextField2 } from 'src/util/formFields/TextField2'
 
-const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
+const AddBookingForm = ({
+  title,
+  leadDetailsObj2,
+  selUnitDetails,
+  dialogOpen,
+}) => {
   const { user } = useAuth()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
@@ -59,8 +64,8 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
     return unsubscribe
   }, [])
   useEffect(() => {
-    console.log('new customer object', leadDetailsObj)
-  }, [leadDetailsObj])
+    console.log('new customer object', leadDetailsObj2)
+  }, [leadDetailsObj2])
 
   useEffect(() => {
     const unsubscribe = getAllProjects(
@@ -243,50 +248,59 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
     { label: 'Direct Contact', value: 'directcontact' },
     { label: 'CP Skagen', value: 'cpskagen' },
   ]
-
+  const { uid } = selUnitDetails
   const initialState = {
-    customerName1: leadDetailsObj?.Name || '',
+    customerName1:
+      leadDetailsObj2?.customerDetailsObj?.customerName1 ||
+      leadDetailsObj2?.Name ||
+      '',
     customerName2:
-      leadDetailsObj?.secondaryCustomerDetailsObj?.customerName2 || '',
-    co_Name1: leadDetailsObj?.customerDetailsObj?.co_Name1 || '',
-    co_Name2: leadDetailsObj?.secondaryCustomerDetailsObj?.co_Name2 || '',
-    phoneNo1: leadDetailsObj?.Mobile || '',
-    phoneNo2: leadDetailsObj?.secondaryCustomerDetailsObj?.phoneNo2 || '',
+      leadDetailsObj2?.secondaryCustomerDetailsObj?.customerName2 || '',
+    co_Name1: leadDetailsObj2?.customerDetailsObj?.co_Name1 || '',
+    co_Name2: leadDetailsObj2?.secondaryCustomerDetailsObj?.co_Name2 || '',
+    phoneNo1:
+      leadDetailsObj2?.customerDetailsObj?.phoneNo1 ||
+      leadDetailsObj2?.Mobile ||
+      '',
+    phoneNo2: leadDetailsObj2?.secondaryCustomerDetailsObj?.phoneNo2 || '',
     email1:
-      leadDetailsObj?.Email || leadDetailsObj?.customerDetailsObj?.email1 || '',
-    email2: leadDetailsObj?.secondaryCustomerDetailsObj?.email2 || '',
-    dob1: leadDetailsObj?.customerDetailsObj?.dob1 || '',
-    dob2: leadDetailsObj?.secondaryCustomerDetailsObj?.dob2 || '',
-    marital1: leadDetailsObj?.customerDetailsObj?.marital1 || '',
-    marital2: leadDetailsObj?.secondaryCustomerDetailsObj?.marital2 || '',
-    panNo1: leadDetailsObj?.customerDetailsObj?.panNo1 || '',
-    panNo2: leadDetailsObj?.secondaryCustomerDetailsObj?.panNo2 || '',
-    panDocUrl1: leadDetailsObj?.customerDetailsObj?.panDocUrl1 || '',
+      leadDetailsObj2?.customerDetailsObj?.email1 ||
+      leadDetailsObj2?.Email ||
+      '',
+    email2: leadDetailsObj2?.secondaryCustomerDetailsObj?.email2 || '',
+    dob1: leadDetailsObj2?.customerDetailsObj?.dob1 || '',
+    dob2: leadDetailsObj2?.secondaryCustomerDetailsObj?.dob2 || '',
+    marital1: leadDetailsObj2?.customerDetailsObj?.marital1 || '',
+    marital2: leadDetailsObj2?.secondaryCustomerDetailsObj?.marital2 || '',
+    panNo1: leadDetailsObj2?.customerDetailsObj?.panNo1 || '',
+    panNo2: leadDetailsObj2?.secondaryCustomerDetailsObj?.panNo2 || '',
+    panDocUrl1: leadDetailsObj2?.customerDetailsObj?.panDocUrl1 || '',
 
-    panDocUrl2: leadDetailsObj?.secondaryCustomerDetailsObj?.panDocUrl2 || '',
-    aadharNo1: leadDetailsObj?.customerDetailsObj?.aadharNo1 || '',
-    aadharNo2: leadDetailsObj?.secondaryCustomerDetailsObj?.aadharNo2 || '',
-    aadharUrl1: leadDetailsObj?.customerDetailsObj?.aadharUrl1 || '',
-    aadharUrl2: leadDetailsObj?.secondaryCustomerDetailsObj?.aadharUrl2 || '',
-    occupation1: leadDetailsObj?.customerDetailsObj?.occupation1 || '',
-    companyName1: leadDetailsObj?.customerDetailsObj?.companyName1 || '',
+    panDocUrl2: leadDetailsObj2?.secondaryCustomerDetailsObj?.panDocUrl2 || '',
+    aadharNo1: leadDetailsObj2?.customerDetailsObj?.aadharNo1 || '',
+    aadharNo2: leadDetailsObj2?.secondaryCustomerDetailsObj?.aadharNo2 || '',
+    aadharUrl1: leadDetailsObj2?.customerDetailsObj?.aadharUrl1 || '',
+    aadharUrl2: leadDetailsObj2?.secondaryCustomerDetailsObj?.aadharUrl2 || '',
+    occupation1: leadDetailsObj2?.customerDetailsObj?.occupation1 || '',
+    companyName1: leadDetailsObj2?.customerDetailsObj?.companyName1 || '',
 
-    occupation2: leadDetailsObj?.secondaryCustomerDetailsObj?.occupation2 || '',
+    occupation2:
+      leadDetailsObj2?.secondaryCustomerDetailsObj?.occupation2 || '',
     companyName2:
-      leadDetailsObj?.secondaryCustomerDetailsObj?.companyName2 || '',
+      leadDetailsObj2?.secondaryCustomerDetailsObj?.companyName2 || '',
 
     aggrementAddress:
-      leadDetailsObj?.aggrementDetailsObj?.aggrementAddress || '',
-    industry: leadDetailsObj?.industry || '',
-    designation: leadDetailsObj?.designation || '',
-    annualIncome: leadDetailsObj?.annualIncome || '',
-    leadSource: leadDetailsObj?.leadSource || '',
-    sourceOfPay: leadDetailsObj?.sourceOfPay || '',
-    purpose: leadDetailsObj?.purpose || '',
-    bookingSource: leadDetailsObj?.bookingSource || '',
+      leadDetailsObj2?.aggrementDetailsObj?.aggrementAddress || '',
+    industry: leadDetailsObj2?.industry || '',
+    designation: leadDetailsObj2?.designation || '',
+    annualIncome: leadDetailsObj2?.annualIncome || '',
+    leadSource: leadDetailsObj2[`${uid}_otherInfo`]?.leadSource,
+    sourceOfPay: leadDetailsObj2[`${uid}_otherInfo`]?.sourceOfPay,
+    purpose: leadDetailsObj2[`${uid}_otherInfo`]?.purpose || '',
+    bookingSource: leadDetailsObj2?.bookingSource || '',
     bookedBy:
-      leadDetailsObj?.bookedBy || leadDetailsObj?.assingedToObj?.label || '',
-    purchasePurpose: leadDetailsObj?.purchasePurpose || '',
+      leadDetailsObj2?.bookedBy || leadDetailsObj2?.assingedToObj?.label || '',
+    purchasePurpose: leadDetailsObj2?.purchasePurpose || '',
   }
 
   const validateSchema = Yup.object({
@@ -345,8 +359,9 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
       bookedBy,
       purchasePurpose,
     } = data
+    const { uid } = selUnitDetails
     const customerDetailsObj = {
-      customerName: customerName1,
+      customerName1: customerName1,
       co_Name1: co_Name1,
       phoneNo1: phoneNo1,
       email1: email1,
@@ -377,22 +392,21 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
       aggrementAddress,
     }
 
+    const xData = {}
+    xData[`${uid}${'_source_of_pay'}`] = { self: 20, bank: 80 } // sourceOfPay
+    xData[`${uid}${'_otherInfo'}`] = { leadSource, sourceOfPay, purpose }
+
     const updateDoc = {
       customerDetailsObj,
       secondaryCustomerDetailsObj,
       aggrementDetailsObj,
-      leadSource,
-      sourceOfPay,
-      purpose,
-      bookingSource,
-      bookedBy,
-      purchasePurpose,
+      ...xData,
       industry,
       designation,
       annualIncome,
     }
-    const { id } = leadDetailsObj
-    console.log('did you find my id', id, leadDetailsObj)
+    const { id } = leadDetailsObj2
+    console.log('did you find my id', id, leadDetailsObj2)
 
     updateLeadCustomerDetailsTo(
       id,
@@ -428,6 +442,7 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
           <div className="flex flex-col rounded-lg bg-white m-4">
             <div className="mt-0">
               <Formik
+                enableReinitialize={true}
                 initialValues={initialState}
                 validationSchema={validateSchema}
                 onSubmit={(values, { resetForm }) => {
@@ -441,11 +456,11 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
 
                       <section className=" py-1 bg-blueGray-50">
                         <div className="w-full px-4 mx-auto ">
-                          <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
+                          <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-[#F9FBFB] border-0">
                             <div className="rounded-t bg-[#F1F5F9] mb-0 px-6 py-6">
                               <div className="text-center flex justify-between">
                                 <p className="text-md font-extrabold tracking-tight uppercase font-body">
-                                  Payment Entry
+                                  Customer Details
                                 </p>
                                 {/* <button
                                   className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
@@ -461,6 +476,7 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
                         text-teal-700
                         border duration-200 ease-in-out
                         border-teal-100 transition"
+                                    type="button"
                                   >
                                     {'>'}
                                   </button>
@@ -471,6 +487,7 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
         text-teal-700
         border duration-200 ease-in-out
         border-teal-100 transition"
+                                    type="button"
                                   >
                                     {'<'}{' '}
                                   </button>
@@ -478,189 +495,219 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
                               </div>
                             </div>
                             <div className="flex-auto px-4 lg:px-4 py-10 pt-0 mt-4">
-                              <section className="border lg:px-4 py-6">
+                              <section className=" lg:px-2 py-6">
                                 <div className="flex flex-wrap">
-                                  <div className="w-full lg:w-6/12 px-4 border-r">
-                                    <div className="w-full flex flex-row">
-                                      <div className="w-3 h-3 mt-[16px] bg-teal-500"></div>
-                                      <div className="w-2 h-3 ml-[1px]  mt-[16px] bg-teal-500"></div>
-                                      <div className="w-1 h-3 ml-[1px] mr-1 mt-[16px] bg-teal-500"></div>
-                                      <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase ">
-                                        First Applicant Personal Details
-                                      </h6>
+                                  <section
+                                    className="w-full flex p-4 rounded-md   mt- bg-[#fff] hover:shadow-2xl"
+                                    style={{
+                                      boxShadow: '0 1px 12px #f2f2f2',
+                                    }}
+                                  >
+                                    <div className="w-full lg:w-6/12 px-4 border-r">
+                                      <div className="w-full flex flex-row">
+                                        <div className="w-3 h-3 mt-[16px] bg-teal-500"></div>
+                                        <div className="w-2 h-3 ml-[1px]  mt-[16px] bg-teal-500"></div>
+                                        <div className="w-1 h-3 ml-[1px] mr-1 mt-[16px] bg-teal-500"></div>
+                                        <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase ">
+                                          First Applicant Personal Details
+                                        </h6>
+                                      </div>
+                                      <div className="flex flex-wrap">
+                                        <div className="w-full lg:w-12/12 ">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Customer Name*"
+                                              name="customerName1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                       
+
+                                        <div className="w-full lg:w-12/12">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Son/Daughter/Wife of"
+                                              name="co_Name1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-4/12 px-">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Phone No"
+                                              name="phoneNo1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Email"
+                                              name="email1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-4/12 ">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Date Of Birth"
+                                              name="dob1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Marital Status"
+                                              name="marital1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+
+                                        {/* <section
+                                        className="w-full  rounded-md  mt-6 bg-[#fff]"
+                                        style={{
+                                          boxShadow: '0 1px 12px #f2f2f2',
+                                        }}
+                                      > */}
+
+                                        {/* </section> */}
+                                      </div>
                                     </div>
-                                    <div className="flex flex-wrap">
-                                      <div className="w-full lg:w-12/12 ">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Customer Name*"
-                                            name="customerName1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-
-                                      <div className="w-full lg:w-12/12">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Son/Daughter/Wife of"
-                                            name="co_Name1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-4/12 px-">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Phone No"
-                                            name="phoneNo1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Email"
-                                            name="email1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-4/12 ">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Date Of Birth"
-                                            name="dob1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Marital Status"
-                                            name="marital1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
+                                    <div className="w-full lg:w-6/12 px-4 mt">
+                                      {/* add here */}
 
                                       <div className="w-full flex flex-row">
-                                        <div className="w-3 h-3 mt-[16px] rounded-full bg-teal-500"></div>
-                                        <div className="w-2 h-2 ml-[1px] rounded-md mt-[18px] bg-teal-500"></div>
-                                        <div className="w-1 h-1 ml-[1px] rounded-md mr-1 mt-[20px] bg-teal-500"></div>
+                                        <div className="w-3 h-3 mt-[16px] bg-teal-500"></div>
+                                        <div className="w-2 h-3 ml-[1px]  mt-[16px] bg-teal-500"></div>
+                                        <div className="w-1 h-3 ml-[1px] mr-1 mt-[16px] bg-teal-500"></div>
                                         <h6 className="w-full lg:w-12/12 text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
                                           First Applicant Proofs
                                         </h6>
                                       </div>
-                                      <div className="w-full lg:w-4/12 px-">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="PAN No"
-                                            name="panNo1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="PAN upload"
-                                            name="panDocUrl1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-4/12 px-">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Aadhar No"
-                                            name="aadharNo1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Aadhar Upload"
-                                            name="aadharUrl1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="w-full lg:w-6/12 px-4">
-                                    <div className="w-full flex flex-row">
-                                      <div className="w-3 h-3 mt-[16px] bg-teal-500"></div>
-                                      <div className="w-2 h-3 ml-[1px]  mt-[16px] bg-teal-500"></div>
-                                      <div className="w-1 h-3 ml-[1px] mr-1 mt-[16px] bg-teal-500"></div>
-                                      <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase ">
-                                        Second Applicant Personal Details
-                                      </h6>
-                                    </div>
-                                    <div className="flex flex-wrap">
-                                      <div className="w-full lg:w-12/12 ">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Customer Name*"
-                                            name="customerName2"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-
-                                      <div className="w-full lg:w-12/12">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Son/Daughter/Wife of"
-                                            name="co_Name2"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-4/12 px-">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Phone No"
-                                            name="phoneNo2"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Email"
-                                            name="email2"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-4/12 ">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Date Of Birth"
-                                            name="dob2"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-
-                                      <div className="w-full lg:w-8/12 pl-4 ">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Marital Status"
-                                            name="marital2"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-
                                       <div className="w-full flex flex-row">
+                                        <div className="w-full lg:w-4/12 px-">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="PAN No"
+                                              name="panNo1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="PAN upload"
+                                              name="panDocUrl1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="w-full flex flex-row">
+                                        <div className="w-full lg:w-4/12 px-">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Aadhar No"
+                                              name="aadharNo1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Aadhar Upload"
+                                              name="aadharUrl1"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </section>
+                                  <section
+                                    className="w-full flex p-4 rounded-md   mt-6  bg-[#fff]"
+                                    style={{ boxShadow: '0 1px 12px #f2f2f2' }}
+                                  >
+                                    <div className="w-full lg:w-6/12 px-4 border-r-2 ">
+                                      <div className="w-full flex flex-row">
+                                        <div className="w-3 h-3 mt-[16px] rounded-full bg-teal-500"></div>
+                                        <div className="w-2 h-2 ml-[1px] rounded-md mt-[18px] bg-teal-500"></div>
+                                        <div className="w-1 h-1 ml-[1px] rounded-md mr-1 mt-[20px] bg-teal-500"></div>
+                                        <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase ">
+                                          Second Applicant Personal Details
+                                        </h6>
+                                      </div>
+                                      <div className="flex flex-wrap">
+                                        <div className="w-full lg:w-12/12 ">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Customer Name*"
+                                              name="customerName2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+
+                                        <div className="w-full lg:w-12/12">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Son/Daughter/Wife of"
+                                              name="co_Name2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-4/12 px-">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Phone No"
+                                              name="phoneNo2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Email"
+                                              name="email2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-4/12 ">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Date Of Birth"
+                                              name="dob2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+
+                                        <div className="w-full lg:w-8/12 pl-4 ">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Marital Status"
+                                              name="marital2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="w-full lg:w-6/12 px-4 ">
+                                      <div className="w-full flex flex-row ">
                                         <div className="w-3 h-3 mt-[16px] rounded-md bg-teal-500"></div>
                                         <div className="w-2 h-2 ml-[1px] rounded-md mt-[18px] bg-teal-500"></div>
                                         <div className="w-1 h-1 ml-[1px] rounded-md mr-1 mt-[20px] bg-teal-500"></div>
@@ -668,131 +715,147 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
                                           Second Applicant Proofs
                                         </h6>
                                       </div>
-                                      <div className="w-full lg:w-4/12 px-">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="PAN No"
-                                            name="panNo2"
-                                            type="text"
-                                          />
+                                      <div className="w-full flex flex-row">
+                                        <div className="w-full lg:w-4/12 px-">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="PAN No"
+                                              name="panNo2"
+                                              type="text"
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="PAN upload"
+                                              name="panDocUrl2"
+                                              type="text"
+                                            />
+                                          </div>
                                         </div>
                                       </div>
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="PAN upload"
-                                            name="panDocUrl2"
-                                            type="text"
-                                          />
+                                      <div className="w-full flex flex-row">
+                                        <div className="w-full lg:w-4/12 px-">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Aadhar No"
+                                              name="aadharNo2"
+                                              type="text"
+                                            />
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="w-full lg:w-4/12 px-">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Aadhar No"
-                                            name="aadharNo1"
-                                            type="text"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="w-full lg:w-8/12 pl-4">
-                                        <div className="relative w-full mb-3">
-                                          <TextField2
-                                            label="Aadhar Upload"
-                                            name="aadharNo2"
-                                            type="text"
-                                          />
+                                        <div className="w-full lg:w-8/12 pl-4">
+                                          <div className="relative w-full mb-3 mt-2">
+                                            <TextField2
+                                              label="Aadhar Upload"
+                                              name="aadharUrl2"
+                                              type="text"
+                                            />
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </section>
                                 </div>
 
-                                <hr className="mt-6 border-b-1 border-blueGray-300" />
-
-                                <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                                  Agreement Information
-                                </h6>
-                                <div className="flex flex-wrap">
-                                  <div className="w-full lg:w-12/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="Address"
-                                        name="aggrementAddress"
-                                        type="text"
-                                      />
+                                {/* <hr className="mt-6 border-b-1 border-blueGray-300" /> */}
+                                <section
+                                  className="rounded-md  p-4 mt-6 bg-[#fff]"
+                                  style={{ boxShadow: '0 1px 12px #f2f2f2' }}
+                                >
+                                  <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                                    Agreement Information
+                                  </h6>
+                                  <div className="flex flex-wrap">
+                                    <div className="w-full lg:w-12/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="Address"
+                                          name="aggrementAddress"
+                                          type="text"
+                                        />
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                                <hr className="mt-6 border-b-1 border-blueGray-300" />
-
-                                <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                                  Professional Information
-                                </h6>
-                                <div className="flex flex-wrap">
-                                  <div className="w-full lg:w-4/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="Industry"
-                                        name="industry"
-                                        type="text"
-                                      />
+                                </section>
+                                {/* <hr className="mt-6 border-b-1 border-blueGray-300" /> */}
+                                <section
+                                  className="rounded-md  p-4 mt-6 bg-[#fff]"
+                                  style={{ boxShadow: '0 1px 12px #f2f2f2' }}
+                                >
+                                  <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                                    Professional Information
+                                  </h6>
+                                  <div className="flex flex-wrap">
+                                    <div className="w-full lg:w-4/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="Industry"
+                                          name="industry"
+                                          type="text"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="w-full lg:w-4/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="Job Designation"
+                                          name="designation"
+                                          type="text"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="w-full lg:w-4/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="Annual Income"
+                                          name="annualIncome"
+                                          type="text"
+                                        />
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="w-full lg:w-4/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="Job Designation"
-                                        name="designation"
-                                        type="text"
-                                      />
+                                </section>
+                                {/* <hr className="mt-6 border-b-1 border-blueGray-300" /> */}
+                                <section
+                                  className="rounded-md  p-4 mt-6 bg-[#fff]"
+                                  style={{ boxShadow: '0 1px 12px #f2f2f2' }}
+                                >
+                                  <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                                    Other Information
+                                  </h6>
+                                  <div className="flex flex-wrap">
+                                    <div className="w-full lg:w-12/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="How do you come to know about this project?"
+                                          name="leadSource"
+                                          type="text"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="w-full lg:w-12/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="Source of payment/source"
+                                          name="sourceOfPay"
+                                          type="text"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="w-full lg:w-12/12 px-4">
+                                      <div className="relative w-full mb-3">
+                                        <TextField2
+                                          label="Purpose of purchase"
+                                          name="purpose"
+                                          type="text"
+                                        />
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="w-full lg:w-4/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="Annual Income"
-                                        name="annualIncome"
-                                        type="text"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr className="mt-6 border-b-1 border-blueGray-300" />
-
-                                <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                                  Other Information
-                                </h6>
-                                <div className="flex flex-wrap">
-                                  <div className="w-full lg:w-12/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="How do you come to know about this project?"
-                                        name="leadSource"
-                                        type="text"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="w-full lg:w-12/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="Source of payment/source"
-                                        name="sourceOfPay"
-                                        type="text"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="w-full lg:w-12/12 px-4">
-                                    <div className="relative w-full mb-3">
-                                      <TextField2
-                                        label="Purpose of purchase"
-                                        name="purpose"
-                                        type="text"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr className="mt-6 border-b-1 border-blueGray-300" />
+                                </section>
+                                {/* <hr className="mt-6 border-b-1 border-blueGray-300" />
 
                                 <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
                                   Source Of Booking
@@ -825,7 +888,7 @@ const AddBookingForm = ({ title, leadDetailsObj, dialogOpen }) => {
                                       />
                                     </div>
                                   </div>
-                                </div>
+                                </div> */}
 
                                 <hr className="mt-6 border-b-1 border-blueGray-300" />
                                 <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">

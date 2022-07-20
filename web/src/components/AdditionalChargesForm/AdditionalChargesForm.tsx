@@ -50,6 +50,7 @@ const AdditionalChargesForm = ({ title, data, source }) => {
         : '') || ''
     )
   }
+  // paymentScheduleA
   const columns = [
     {
       title: 'Charges For*',

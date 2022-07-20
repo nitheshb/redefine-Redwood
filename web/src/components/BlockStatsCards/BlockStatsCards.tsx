@@ -77,7 +77,7 @@ const BlockStatsCards = ({
           <span className="flex flex-row items-center justify-between mt-2">
             <span className={`${txtColor} text-sm }`}>Blocked</span>
             <span>
-              <span className="text-sm font">
+              <span className={`${txtColor} text-sm `}>
                 {feedData?.blockedCount || 0}
               </span>
             </span>
@@ -86,7 +86,7 @@ const BlockStatsCards = ({
         {viewUnitStatusA.includes('Booked') && (
           <span className="flex flex-row items-center justify-between mt-2 border-b">
             <span className={`${txtColor} text-sm }`}>Booked</span>
-            <span className="text-sm font">
+            <span className={`${txtColor} text-sm `}>
               {feedData?.totalBookedCount || 0}
             </span>
           </span>
@@ -100,7 +100,7 @@ const BlockStatsCards = ({
         {viewUnitStatusA.includes('Total') && (
           <span className="flex flex-row items-center justify-between mt-2">
             <span className={`${txtColor} text-sm font-semibold`}>Total</span>
-            <span className="text-sm font-semibold">
+            <span className={`${txtColor} text-sm `}>
               {feedData?.totalUnitCount || 0}
             </span>
           </span>

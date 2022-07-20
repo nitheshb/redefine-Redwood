@@ -12,6 +12,7 @@ import LeadsTeamReportBody from 'src/components/LeadsTeamReportBody'
 import MyAttedanceHomeBody from 'src/components/myAttedanceHomeBody'
 import MyPayHomeBody from 'src/components/myPayHomeBody'
 import MyLeadsReportHome from 'src/components/myLeadsReportHome'
+import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
 
 const LeadsManagerPage = () => {
   const [showSideBar, setShowSideBar] = useState(true)
@@ -67,6 +68,15 @@ const LeadsManagerPage = () => {
               {viewable === 'UpcomingTeam' && (
                 <TodayLeadsHomePage taskType={viewable} />
               )}
+              {viewable === 'unitsInventory' && (
+                <ProjectsUnitInventory
+                  project={{
+                    projectName: 'Projects',
+                  }}
+                  isEdit={undefined}
+                />
+              )}
+
               {viewable === 'LeadsManagerHome' && <LeadsManagementHome />}
               {viewable === 'Team Lead Report' && (
                 <LeadsTeamReportBody

@@ -18,7 +18,7 @@ export const TextFieldFlat = ({ label, ...props }) => {
         className={` ${meta.touched && meta.error && 'is-invalid'} ${
           field.name === 'blockName' ? '' : '   '
         }
-          text-right text-sm  bg-grey-lighter text-grey-darker  border-bottom border-[#cccccc]`}
+          text-right text-sm  bg-grey-lighter text-gray-darker font-medium border-bottom border-[#cccccc]`}
         {...field}
         {...props}
         autoComplete="off"

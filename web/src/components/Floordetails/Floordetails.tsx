@@ -412,6 +412,7 @@ const Floordetails = ({
         setUnitsFeed([])
         const projects = querySnapshot.docs.map(async (docSnapshot) => {
           const x = docSnapshot.data()
+          x.uid = docSnapshot.id
           const { staDA } = x
           y.push(x)
           console.log('fetched units are', x)
@@ -630,7 +631,7 @@ const Floordetails = ({
       {blocksViewFeature === 'Units' && (
         <>
           <section className="bg-white">
-            <div className="flex justify-between items-center pt-6 px-8 bg-white">
+            <div className="flex justify-between items-center mt-6 px-4 bg-white border-y py-2">
               <div className="flex flex-row max-w-full">
                 <p className="text-sm font-semibold text-[#0091ae]">
                   <span className="text-gray-700">
@@ -685,13 +686,21 @@ const Floordetails = ({
               </div>
             </div>
 
-            <section className="flex flex-row px-12 py-4 justify-between">
+            <section className="flex flex-row px-6 py-4 justify-between">
               <span> </span>
               <section className="flex flex-row">
-                <section className="text-sm mt-[2px]">
-                  showing {filteredUnits.length} in {unitsFeed.length} units
+                <section className="text-sm mt-[2px] pr-2 font-blue text-[13px] italic">
+                  <span className="font-blue text-[13px] italic">showing</span>{' '}
+                  <span className="font-semibold font-blue">
+                    {filteredUnits.length}
+                  </span>{' '}
+                  in{' '}
+                  <span className="font-semibold font-blue">
+                    {unitsFeed.length}
+                  </span>{' '}
+                  units
                 </section>
-                <section className="text-sm mt-[2px] ml-4 flex flex-row">
+                <section className="text-sm mt-[2px] px-2 rounded flex flex-row border">
                   <span className="w-3 h-3 mt-[4px] mr-1 bg-[#E8A190]"></span>{' '}
                   <span>Available</span>
                   <span className="w-3 h-3 ml-2 mt-[4px] mr-1 bg-[#D3F6E3]"></span>{' '}

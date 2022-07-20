@@ -13,18 +13,15 @@ import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
   getAllProjects,
+  getCrmUnitsByStatus,
   getFinanceTransactionsByStatus,
-  getLeadsByStatus,
-  getLeadsByStatusUser,
-  updateLeadAssigTo,
-  updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import SiderForm from '../SiderForm/SiderForm'
-import CardItem from '../leadsCard'
+
 import FinanceTableView from './financeTableView'
 
-const FinanceTransactionsHome = ({ leadsTyper }) => {
+const CrmBucketList = ({ leadsTyper }) => {
   const { user } = useAuth()
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
@@ -40,13 +37,16 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
   const [serialLeadsData, setSerialLeadsData] = useState([])
   const [projectList, setprojectList] = useState([])
 
-  const [value, setValue] = useState('latest')
+  const [value, setValue] = useState('all')
   const tabHeadFieldsA = [
-    { lab: 'All Transactions', val: 'all' },
-    { lab: 'Latest', val: 'latest' },
-    { lab: 'Reviewing', val: 'reviewing' },
-    { lab: 'Cleared', val: 'cleared' },
-    { lab: 'Rejected', val: 'rejected' },
+    { lab: 'All Units', val: 'all' },
+    { lab: 'Just Booked', val: 'booked' },
+    { lab: 'Agreement', val: 'agreementing' },
+    { lab: 'Demands', val: 'demands' },
+    { lab: 'Payments', val: 'payments' },
+    { lab: 'Registerd', val: 'registering' },
+    { lab: 'Queries', val: 'queries' },
+    { lab: 'Legal', val: 'legal' },
   ]
   useEffect(() => {
     getLeadsDataFun()
@@ -56,7 +56,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
     return parent.filter((item) => {
       if (searchKey === 'all') {
         return item
-      } else if (item.status.toLowerCase() === searchKey.toLowerCase()) {
+      } else if (item?.Status?.toLowerCase() === searchKey.toLowerCase()) {
         console.log('All1', item)
         return item
       }
@@ -68,7 +68,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
     const { access, uid } = user
 
     if (access?.includes('manage_leads')) {
-      const unsubscribe = getFinanceTransactionsByStatus(
+      const unsubscribe = getCrmUnitsByStatus(
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
             const x = docSnapshot.data()
@@ -83,11 +83,12 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
         },
         {
           status: [
-            'latest',
-            'reviewing',
-            'cleared',
-            'rejected',
-            '',
+            'booked',
+            'agreementing',
+            'registering',
+            'demands',
+            'payments',
+            'queries',
             // 'booked',
           ],
         },
@@ -95,7 +96,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
       )
       return unsubscribe
     } else {
-      const unsubscribe = getFinanceTransactionsByStatus(
+      const unsubscribe = getCrmUnitsByStatus(
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
             const x = docSnapshot.data()
@@ -110,11 +111,12 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
         {
           uid: uid,
           status: [
-            'new',
-            'review',
-            'cleared',
-            'rejected',
-            '',
+            'booked',
+            'agreementing',
+            'registering',
+            'demands',
+            'payments',
+            'queries',
             // 'booked',
           ],
         },
@@ -154,15 +156,15 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
         <div className="">
           <div
             className="
-            "
+            p-6"
           >
-            <div className="flex items-center justify-between py-2 px-6 bg-white ">
+            <div className="flex items-center justify-between py-2  ">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 leading-light py-2 ">
-                  Accounts Transactions Space
+                <h2 className="text-xl font-semibold text-gray-900 leading-light py-2 ">
+                  CRM Task Buckets
                 </h2>
               </div>
-              <div className="flex px-6">
+              <div className="flex ">
                 {leadsTyper == 'inProgress' && (
                   <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                     <button
@@ -257,157 +259,26 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                         <tr>
                           <th className="w-28"></th>
                           <th className="text-left text-xs app-color-black pb-3">
-                            <span className="ml-4">FROM</span>
+                            <span className="ml-4">UNIT DETAILS</span>
                           </th>
                           <th className="text-left text-xs app-color-black pb-3">
-                            <span className="ml-4">To</span>
+                            <span className="ml-4">CUSTOMER DETAILS</span>
                           </th>
                           <th className="text-left text-xs app-color-black pb-3">
-                            TRANSACTION DETAILS
+                            TOTAL PAYABLE
                           </th>
                           <th className="text-right text-xs app-color-black pb-3">
-                            <span className="mr-10">AMOUNT</span>
+                            <span className="mr-10">BALANCE</span>
                           </th>
 
                           <th className="text-left text-xs app-color-black pb-3">
-                            COMMENTS
+                            DUE BY
                           </th>
 
                           <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        {[
-                          {
-                            fromObj: {
-                              name: 'Vikram Bose',
-                              accountNo: '52346673647',
-                              bankName: 'Andhara Bank',
-                              branch: 'Hsr layout',
-                            },
-                            toAccount: {
-                              name: 'Vertex Apartment',
-                              accountNo: '52346673647',
-                              bankName: 'Andhara Bank',
-                              branch: 'Hsr layout',
-                            },
-                            projDetails: {
-                              projName: 'Vertex Apartments',
-                              projId: 123456,
-                              unitId: 9876,
-                            },
-                            amount: 123000,
-                            mode: 'Neft/Imps',
-                            transactionNo: 12334,
-                            demandNo: 3456,
-                            transactionDate: '12-july-2022',
-                            dated: '12-july-2022',
-                            status: 'inreveiw',
-                          },
-                        ].map((dat, i) => (
-                          <tr
-                            className="app-border-1 border-y border-slate-200 my-2 py-2 h-[120px]"
-                            key={i}
-                          >
-                            <td>
-                              <div className="flex justify-center text-right items-center rounded-md w-8 h-8 app-bg-yellow-2 app-color-yellow-1 text-lg font-semibold">
-                                {i + 1}
-                              </div>
-                              <div
-                                className={`${
-                                  dat?.status === 'cleared'
-                                    ? 'bg-green-700'
-                                    : dat?.status === 'rejected'
-                                    ? 'bg-yellow-600'
-                                    : 'bg-violet-600'
-                                }   w-24 text-xs font-semibold px-3 py-0.5 rounded-br-md rounded-tl-md text-white`}
-                              >
-                                {dat?.status?.toLocaleUpperCase()}
-                              </div>
-                            </td>
-                            <td>
-                              <div className="flex flex-row py-3 ml-4">
-                                <div className="mr-2 w-[3px] rounded-2xl  bg-violet-300 "></div>
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-sm app-color-black">
-                                    {dat?.fromObj.name || 'Vikram Bose'}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {'52346673647'}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.fromObj.bankName}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.fromObj.branch}
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="flex flex-row ml-4 py-3">
-                                <div className="mr-2 w-[3px] rounded-2xl bg-violet-300  "></div>
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-sm app-color-black">
-                                    {dat?.toAccount.name}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.toAccount.accountNo}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.toAccount.bankName}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.toAccount.branch}
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="flex flex-row py-3">
-                                {/* <div className="mr-2 w-[3px]  bg-gray-100 "></div> */}
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-sm app-color-black">
-                                    {dat?.mode}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.transactionNo}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.dated}
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="text-right">
-                              <span className="text-right font-semibold text-sm app-color-gray-1 mr-10">
-                                Rs {dat?.amount}
-                              </span>
-                            </td>
-
-                            <td>
-                              <span className="ml-3 font-semibold text-md app-color-gray-1">
-                                NA
-                              </span>
-                            </td>
-                            <td>
-                              <svg
-                                className="w-6 h-6 app-color-blue-3"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                                ></path>
-                              </svg>
-                            </td>
-                          </tr>
-                        ))}
                         {leadsFetchedData.map((dat, i) => (
                           <tr
                             className="app-border-1 border-y border-slate-200 my-2 py-2 h-[120px]"
@@ -427,7 +298,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                                     : 'bg-violet-600'
                                 }   w-24 text-xs font-semibold px-3 py-0.5 rounded-br-md rounded-tl-md text-white`}
                               >
-                                {dat?.status?.toLocaleUpperCase()}
+                                {dat?.Status?.toLocaleUpperCase()}
                               </div>
                             </td>
                             <td>
@@ -435,16 +306,13 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                                 <div className="mr-2 w-[3px] rounded-2xl  bg-violet-300 "></div>
                                 <div className="flex flex-col">
                                   <span className="font-semibold text-sm app-color-black">
-                                    {dat?.fromObj?.name || 'Vikram Bose'}
+                                    {dat?.unit_no}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.fromObj?.accountNo || '52346673647'}
+                                    {dat?.super_built_up_area}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.fromObj?.bankName || 'Andhara Bank'}
-                                  </span>
-                                  <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.fromObj?.branch || 'Hsr layout'}
+                                    {dat?.cs?.newSqftPrice}
                                   </span>
                                 </div>
                               </div>
@@ -454,16 +322,16 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                                 <div className="mr-2 w-[3px] rounded-2xl bg-violet-300  "></div>
                                 <div className="flex flex-col">
                                   <span className="font-semibold text-sm app-color-black">
-                                    {dat?.toAccount?.name || 'Vertex Apartment'}
+                                    {dat?.customerDetailsObj?.customerName1}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.toAccount?.accountNo || '52346673647'}
+                                    {dat?.customerDetailsObj?.phoneNo1}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.toAccount?.bankName || 'Andhara Bank'}
+                                    {dat?.customerDetailsObj?.email1}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.toAccount?.branch || 'Hsr layout'}
+                                    {dat?.customerDetailsObj?.branch}
                                   </span>
                                 </div>
                               </div>
@@ -473,10 +341,10 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                                 {/* <div className="mr-2 w-[3px]  bg-gray-100 "></div> */}
                                 <div className="flex flex-col">
                                   <span className="font-semibold text-sm app-color-black">
-                                    {dat?.mode}
+                                    {dat?.total_unit_cost || 0}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
-                                    {dat?.chequeno}
+                                    {dat?.total_unit_cost}
                                   </span>
                                   <span className="font-normal text-xs app-color-gray-1">
                                     {dat?.dated}
@@ -485,9 +353,17 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                               </div>
                             </td>
                             <td className="text-right">
-                              <span className="text-right font-semibold text-sm app-color-gray-1 mr-10">
-                                Rs {dat?.amount}
-                              </span>
+                              <div className="flex flex-col">
+                                <span className="text-right font-semibold text-sm app-color-gray-1 mr-10">
+                                  Rs {dat?.total_demand_cost || 0}
+                                </span>
+                                <span className="text-right font-semibold text-sm app-color-gray-1 mr-10">
+                                  Rs {dat?.total_review_amount || 0}
+                                </span>
+                                <span className="text-right font-semibold text-sm app-color-gray-1 mr-10">
+                                  Rs {dat?.total_paid_cost || 0}
+                                </span>
+                              </div>
                             </td>
 
                             <td>
@@ -519,26 +395,17 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
                 </div>
               </div>
             )}
-
-            {/* {!ready && (
-              <FinanceTableView
-                leadsFetchedData={leadsFetchedData}
-                setisImportLeadsOpen={setisImportLeadsOpen}
-                selUserProfileF={selUserProfileF}
-                leadsTyper={leadsTyper}
-              />
-            )} */}
           </div>
         </div>
       </div>
       <SiderForm
         open={isImportLeadsOpen}
         setOpen={setisImportLeadsOpen}
-        title={'Transaction'}
+        title={'CrmUnitSideView'}
         customerDetails={selUserProfile}
       />
     </>
   )
 }
 
-export default FinanceTransactionsHome
+export default CrmBucketList

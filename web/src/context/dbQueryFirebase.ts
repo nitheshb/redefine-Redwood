@@ -117,6 +117,28 @@ export const getLeadsByStatus = (snapshot, data, error) => {
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
+// get finance transactions
+export const getFinanceTransactionsByStatus = (snapshot, data, error) => {
+  const { status } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_fincance'),
+    where('status', 'in', status)
+  )
+  console.log('hello ', status, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+// get finance transactions
+export const getCrmUnitsByStatus = (snapshot, data, error) => {
+  const { status } = data
+
+  const itemsQuery = query(
+    collection(db, 'spark_units'),
+    where('Status', 'in', status)
+  )
+  console.log('hello ', status, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
 // get leads only of a user
 export const getLeadsByStatusUser = (snapshot, data, error) => {
   const { status, uid } = data
@@ -739,8 +761,64 @@ export const createBlock = async (element, enqueueSnackbar, resetForm) => {
     })
   }
 }
+export const addPaymentReceivedEntry = async (
+  unitDocId,
+  customerDetails,
+  paymentDetails,
+  createdByDept,
+  by,
+  enqueueSnackbar
+) => {
+  try {
+    const updated = {
+      ...customerDetails,
+      ...paymentDetails,
+      createdByDept,
+      status: 'review',
+      against: 'unit',
+      unitId: unitDocId,
+      created: Timestamp.now().toMillis(),
+    }
+    // const ref = doc(db, 'spark_fincance', unitDocId)
+    const x = await addDoc(collection(db, 'spark_fincance'), updated)
 
-export const createPayment = async (element, enqueueSnackbar) => {
+    enqueueSnackbar('Customer added successfully', {
+      variant: 'success',
+    })
+    return x.id
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+export const createBookedCustomer = async (
+  unitDocId,
+  element,
+  by,
+  enqueueSnackbar
+) => {
+  console.log('unite data is', unitDocId)
+  try {
+    const updated = {
+      ...element,
+      uid: unitDocId,
+      created: Timestamp.now().toMillis(),
+    }
+    const ref = doc(db, 'spark_customers', unitDocId)
+    await setDoc(ref, updated, { merge: true })
+    // const x = await addDoc(collection(db, 'spark_customers'), updated)
+    enqueueSnackbar('Customer added successfully', {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
+}
+
+export const createPaymentSheduleComp = async (element, enqueueSnackbar) => {
   try {
     const uid = uuidv4()
     const updated = {
@@ -1133,14 +1211,80 @@ export const updateLeadCustomerDetailsTo = async (
   resetForm
 ) => {
   try {
+    console.log('data is', leadDocId, data)
+
     await updateDoc(doc(db, 'spark_leads', leadDocId), {
       ...data,
-      AssignedBy: by,
     })
     enqueueSnackbar('Customer Details added successfully', {
       variant: 'success',
     })
   } catch (error) {
+    console.log('customer details updation failed', error, {
+      ...data,
+    })
+    enqueueSnackbar('Customer Details updation failed', {
+      variant: 'error',
+    })
+  }
+
+  return
+}
+export const updateLeadCostSheetDetailsTo = async (
+  leadDocId,
+  data,
+  by,
+  enqueueSnackbar,
+  resetForm
+) => {
+  try {
+    console.log('data is cost sheet', leadDocId, data)
+
+    await updateDoc(doc(db, 'spark_leads', leadDocId), {
+      ...data,
+    })
+    enqueueSnackbar('Cost Sheet Updated for Customer', {
+      variant: 'success',
+    })
+  } catch (error) {
+    console.log('Filed updated Cost sheet', error, {
+      ...data,
+    })
+    enqueueSnackbar('Customer Details updation failed', {
+      variant: 'error',
+    })
+  }
+
+  return
+  // return await addUserLog({
+  //   s: 's',
+  //   type: 'updateRole',
+  //   subtype: 'updateRole',
+  //   txt: `${email} is updated with ${role}`,
+  //   by,
+  // })
+}
+export const updateUnitAsBooked = async (
+  unitId,
+  leadDocId,
+  data,
+  by,
+  enqueueSnackbar,
+  resetForm
+) => {
+  try {
+    console.log('data is cost sheet', leadDocId, data)
+
+    await updateDoc(doc(db, 'spark_units', unitId), {
+      ...data,
+    })
+    enqueueSnackbar('Cost Sheet Updated for Customer', {
+      variant: 'success',
+    })
+  } catch (error) {
+    console.log('Filed updated Cost sheet', error, {
+      ...data,
+    })
     enqueueSnackbar('Customer Details updation failed', {
       variant: 'error',
     })

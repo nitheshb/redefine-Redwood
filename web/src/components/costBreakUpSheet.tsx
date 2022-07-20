@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable new-cap */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -12,6 +13,8 @@ import { Label, InputField, TextAreaField, FieldError } from '@redwoodjs/forms'
 import Select from 'react-select'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
+import { useSnackbar } from 'notistack'
+
 import NumberFormat from 'react-number-format'
 
 import { TextField } from 'src/util/formFields/TextField'
@@ -24,6 +27,7 @@ import {
   checkIfLeadAlreadyExists,
   getAllProjects,
   steamUsersListByRole,
+  updateLeadCostSheetDetailsTo,
 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { Timestamp } from 'firebase/firestore'
@@ -39,19 +43,21 @@ import AddPaymentDetailsForm from './PaymentReceiptForm'
 import { TextField2 } from 'src/util/formFields/TextField2'
 import { TextFieldFlat } from 'src/util/formFields/TextFieldFlatType'
 import { apartUnitChargesMock } from 'src/constants/projects'
+import PaymentScheduleSheet from './paymentScheduleSheet'
 
 const CostBreakUpSheet = ({
   selMode,
   title,
-  leadDetailsObj,
+  leadDetailsObj1,
   projectDetails,
   selPhaseObj,
+  selUnitDetails,
   unitDetails,
   dialogOpen,
   setShowCostSheetWindow,
-  selUnitDetails,
 }) => {
   const { user } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
   const ref = createRef()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [costSheetA, setCostSheetA] = useState([])
@@ -60,12 +66,24 @@ const CostBreakUpSheet = ({
   const [initialValuesA, setInitialValuesA] = useState({})
   const [newSqftPrice, setNewSqftPrice] = useState(0)
   const [onStep, setOnStep] = useState('costsheet')
+  const [soldPrice, setSoldPrice] = useState(0)
+
+  useEffect(() => {
+    console.log('new customer object', leadDetailsObj1)
+    if (leadDetailsObj1) {
+      console.log('it exists')
+    } else {
+      leadDetailsObj1 = {}
+    }
+  }, [leadDetailsObj1])
 
   useEffect(() => {
     console.log('phase details are ', selPhaseObj)
-    const { additonalChargesObj, paymentScheduleObj } = selPhaseObj
-    console.log('unit details', unitDetails)
-    setNewSqftPrice(selUnitDetails?.rate_per_sqft)
+    const { additonalChargesObj, payment_scheduleObj } = selPhaseObj
+    console.log('unit details', selUnitDetails)
+    const { uid } = selUnitDetails
+    const y = leadDetailsObj1[`${uid}_cs`]?.newSqftPrice || ''
+
     const x = [
       {
         myId: '1',
@@ -77,8 +95,10 @@ const CostBreakUpSheet = ({
           value: 'unit_cost_charges',
           label: 'Unit Cost',
         },
-        charges:
-          selUnitDetails?.super_built_up_area * selUnitDetails?.rate_per_sqft,
+        charges: Number.isFinite(y)
+          ? selUnitDetails?.super_built_up_area * y
+          : selUnitDetails?.super_built_up_area * selUnitDetails?.rate_per_sqft,
+        // charges: y,
         gst: {
           label: '0',
           value: '0',
@@ -86,7 +106,24 @@ const CostBreakUpSheet = ({
       },
     ]
     // const x = costSheetA
-    const merged = [...x, ...additonalChargesObj]
+    let merged = []
+    try {
+      if (leadDetailsObj1) {
+        if (leadDetailsObj1[`${uid}_cs`]['costSheetA']) {
+          const removeFulCostFieldA = leadDetailsObj1[`${uid}_cs`][
+            'costSheetA'
+          ].filter((dat) => dat?.component?.value != 'unit_cost_charges')
+          merged = [...x, ...removeFulCostFieldA]
+          console.log('pending here todo')
+        } else {
+          merged = [...x, ...additonalChargesObj]
+        }
+      }
+    } catch (error) {
+      console.log('error at feching the leadDetails Obj')
+      merged = [...x, ...additonalChargesObj]
+    }
+
     const initformValues = {}
     merged.map((d) => {
       const x = d['component']['value']
@@ -98,7 +135,7 @@ const CostBreakUpSheet = ({
 
     setCostSheetA(merged)
     console.log('phase details are ', merged, costSheetA)
-  }, [selPhaseObj])
+  }, [selPhaseObj, leadDetailsObj1])
 
   // useEffect(() => {
   //   console.log('value os costsheet', costSheetA)
@@ -201,56 +238,6 @@ const CostBreakUpSheet = ({
     pdf.save('pdf')
   }
 
-  const aquaticCreatures = [
-    { label: 'Select the Project', value: '' },
-    { label: 'Subha Ecostone', value: 'subhaecostone' },
-    { label: 'Esperanza', value: 'esperanza' },
-    { label: 'Nakshatra Township', value: 'nakshatratownship' },
-  ]
-  // const usersList = [
-  //   { label: 'User1', value: 'User1' },
-  //   { label: 'User2', value: 'User2' },
-  //   { label: 'User3', value: 'User3' },
-  // ]
-  const budgetList = [
-    { label: 'Select Customer Budget', value: '' },
-    { label: '5 - 10 Lacs', value: 'Bangalore,KA' },
-    { label: '10 - 20 Lacs', value: 'Cochin,KL' },
-    { label: '20 - 30 Lacs', value: 'Mumbai,MH' },
-    { label: '30 - 40 Lacs', value: 'Mumbai,MH' },
-    { label: '40 - 50 Lacs', value: 'Mumbai,MH' },
-    { label: '50 - 60 Lacs', value: 'Mumbai,MH' },
-    { label: '60 - 70 Lacs', value: 'Mumbai,MH' },
-    { label: '70 - 80 Lacs', value: 'Mumbai,MH' },
-    { label: '80 - 90 Lacs', value: 'Mumbai,MH' },
-    { label: '90 - 100 Lacs', value: 'Mumbai,MH' },
-    { label: '1.0 Cr - 1.1 Cr', value: 'Mumbai,MH' },
-    { label: '1.1 Cr - 1.2 Cr', value: 'Mumbai,MH' },
-    { label: '1.2 Cr - 1.3 Cr', value: 'Mumbai,MH' },
-    { label: '1.3 Cr - 1.4 Cr', value: 'Mumbai,MH' },
-    { label: '1.4 Cr - 1.5 Cr', value: 'Mumbai,MH' },
-    { label: '1.5 + Cr', value: 'Mumbai,MH' },
-  ]
-
-  const plans = [
-    {
-      name: 'Apartment',
-      img: '/apart1.svg',
-    },
-    {
-      name: 'Plots',
-      img: '/plot.svg',
-    },
-    {
-      name: 'WeekendVillas',
-      img: '/weekend.svg',
-    },
-    {
-      name: 'Villas',
-      img: '/villa.svg',
-    },
-  ]
-
   const devTypeA = [
     {
       name: 'Outright',
@@ -276,100 +263,72 @@ const CostBreakUpSheet = ({
   const devTypeSel = async (sel) => {
     await setdevType(sel)
   }
-  const onSubmitFun = async (data, resetForm) => {
-    console.log(data)
-    setLoading(true)
 
-    const {
-      email,
-      name,
-      mobileNo,
-      assignedTo,
-      assignedToObj,
-      source,
-      project,
-    } = data
-    // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
-
-    const foundLength = await checkIfLeadAlreadyExists('spark_leads', mobileNo)
-    const leadData = {
-      Date: Timestamp.now().toMillis(),
-      Email: email,
-      Mobile: mobileNo,
-      Name: name,
-      Note: '',
-      Project: project,
-      Source: source,
-      Status: assignedTo === '' ? 'unassigned' : 'new',
-      intype: 'Form',
-      assignedTo: assignedToObj?.value || '',
-      assingedToObj: {
-        department: assignedToObj?.department || [],
-        email: assignedToObj?.email || '',
-        label: assignedToObj?.label || '',
-        name: assignedToObj?.name || '',
-        namespace: 'spark',
-        roles: assignedToObj?.roles || [],
-        uid: assignedToObj?.value || '',
-        value: assignedToObj?.value || '',
-      },
-      by: user?.email,
-    }
-    console.log('user is ', user)
-    if (foundLength?.length > 0) {
-      console.log('foundLENGTH IS ', foundLength)
-      setFormMessage('User Already Exists with Ph No')
-      setLoading(false)
-    } else {
-      console.log('foundLENGTH IS empty ', foundLength)
-
-      // proceed to copy
-      await addLead(
-        leadData,
-        user?.email,
-        `lead created and assidged to ${assignedTo}`
-      )
-
-      await sendWhatAppTextSms(
-        mobileNo,
-        `Thank you ${name} for choosing the world className ${
-          project || 'project'
-        }`
-      )
-
-      // msg2
-      await sendWhatAppMediaSms(mobileNo)
-      const smg =
-        assignedTo === ''
-          ? 'You Interested will be addressed soon... U can contact 9123456789 mean while'
-          : 'we have assigned dedicated manager to you. Mr.Ram as ur personal manager'
-
-      // msg3
-      sendWhatAppTextSms(mobileNo, smg)
-      resetForm()
-      setFormMessage('Saved Successfully..!')
-      setLoading(false)
-    }
-  }
-
-  const deptList = [
-    { label: 'Select the Source', value: '' },
-    { label: 'Google Adwords', value: 'googleadwords' },
-    { label: 'Facebook Ad', value: 'facebookad' },
-    { label: 'Instragram Ad', value: 'instragramad' },
-    { label: 'Magic Bricks', value: 'magicbricks' },
-    { label: 'Direct Contact', value: 'directcontact' },
-    { label: 'CP Skagen', value: 'cpskagen' },
-  ]
   const initialState = initialValuesA
   const validate = Yup.object({
-    blockReason: Yup.number()
-      .max(15, 'Must be 15 characters or less')
-      .required('Name is Required'),
+    // blockReason: Yup.number()
+    //   .max(15, 'Must be 15 characters or less')
+    //   .required('Name is Required'),
   })
   const resetter = () => {
     setSelected({})
     setFormMessage('')
+  }
+
+  const calTotal = (costSheetA, formik) => {
+    const total = costSheetA.reduce(
+      (partialSum, obj) =>
+        partialSum + Number(formik.values[`${obj['component'].value}`]),
+      0
+    )
+    setSoldPrice(total)
+    return total
+  }
+  const onSubmit = async (data, resetForm) => {
+    console.log('customer sheet form', costSheetA, selUnitDetails, data)
+
+    const { uid } = selUnitDetails
+    const { id } = leadDetailsObj1
+    // const x = {
+    //   myId: '2',
+    //   units: {
+    //     value: 'fixedcost',
+    //     label: 'Fixed cost',
+    //   },
+    //   component: {
+    //     value: 'ratePerSqft',
+    //     label: 'sqftCost',
+    //   },
+    //   charges: Number(newSqftPrice),
+    //   gst: {
+    //     label: '0',
+    //     value: '0',
+    //   },
+    // }
+
+    const newCostSheetA = costSheetA.map((dat) => {
+      dat.charges = data[dat?.component?.value]
+      return dat
+    })
+    console.log('customer sheet form new values is', newCostSheetA)
+    // newCostSheetA.push(x)
+    // i need unit_uID & unit details
+    const xData = {}
+
+    xData[`${uid}${'_cs'}`] = {
+      oldUnitDetailsObj: selUnitDetails,
+      newSqftPrice: Number(newSqftPrice),
+      soldPrice: Number(soldPrice),
+      costSheetA: newCostSheetA,
+    }
+
+    updateLeadCostSheetDetailsTo(
+      id,
+      xData,
+      'nitheshreddy.email@gmail.com',
+      enqueueSnackbar,
+      resetForm
+    )
   }
   return (
     <>
@@ -401,9 +360,10 @@ const CostBreakUpSheet = ({
                 <p className="text-md font-extrabold tracking-tight uppercase font-body">
                   Unit Details
                 </p>
-                <div className="flex w-full mt-4">
-                  <div className="ml-1 grid grid-cols-7 gap-12">
-                    {/* <div className="text-sm font-light text-slate-500">
+                <section className="border p-4 mt-4 px-8 rounded border-[#e5e7eb] bg-[#e3f7ff]">
+                  <div className="flex w-full mt-4">
+                    <div className="ml-1 grid grid-cols-7 gap-12">
+                      {/* <div className="text-sm font-light text-slate-500">
                       <p className="text-sm font-normal text-slate-700">
                         Invoice Detail:
                       </p>
@@ -418,83 +378,136 @@ const CostBreakUpSheet = ({
                       </p>
                     </div> */}
 
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Unit Number
-                      </p>
-                      <p>{selUnitDetails?.unit_no}</p>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Unit Number
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.unit_no}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Block
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.Block || 'NA'}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Unit Area
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.super_built_up_area || 'NA'}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Facing
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.facing || 'NA'}
+                        </p>
+                      </div>
 
-                      <p className="mt-2 text-sm font-normal text-slate-700">
-                        Unit Dim
-                      </p>
-                      <p>{selUnitDetails?.super_built_up_area}</p>
-                    </div>
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Block
-                      </p>
-                      <p>{selUnitDetails?.Block || 'NA'}</p>
-
-                      <p className="mt-2 text-sm font-normal text-slate-700">
-                        Floor
-                      </p>
-                      <p>{selUnitDetails?.floor || 'NA'}</p>
-                    </div>
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Unit Area
-                      </p>
-                      <p>{selUnitDetails?.super_built_up_area || 'NA'}</p>
-
-                      <p className="mt-2 text-sm font-normal text-slate-700">
-                        Built Up Area
-                      </p>
-                      <p>{selUnitDetails?.builtup_area}</p>
-                    </div>
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Facing
-                      </p>
-                      <p>{selUnitDetails?.facing || 'NA'}</p>
-
-                      <p className="mt-2 text-sm font-normal text-slate-700">
-                        Rate Per Sqft
-                      </p>
-                      <p>{selUnitDetails?.rate_per_sqft || 'NA'}</p>
-                    </div>
-
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Carpet Area
-                      </p>
-                      <p>{selUnitDetails?.carpet_area || 'NA'}</p>
-
-                      <p className="mt-2 text-sm font-normal text-slate-700">
-                        Car Parking
-                      </p>
-                      <p>{selUnitDetails?.carparking || 'NA'}</p>
-                    </div>
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Bed Rooms
-                      </p>
-                      <p>{selUnitDetails?.bed_rooms || 'NA'}</p>
-
-                      <p className="mt-2 text-sm font-normal text-slate-700">
-                        Bath Rooms
-                      </p>
-                      <p>{selUnitDetails?.bath_rooms || 'NA'}</p>
-                    </div>
-                    <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Premium
-                      </p>
-                      <p>{selUnitDetails?.premium || 'NA'}</p>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Carpet Area
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.carpet_area || 'NA'}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Bed Rooms
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.bed_rooms || 'NA'}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="text-sm font-normal text-gray-500">
+                          Premium
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.premium || 'NA'}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  <div className="flex w-full mt-8">
+                    <div className="ml-1 grid grid-cols-7 gap-12">
+                      {/* <div className="text-sm font-light text-slate-500">
+                      <p className="text-sm font-normal text-slate-700">
+                        Invoice Detail:
+                      </p>
+                      <p>Unwrapped</p>
+                      <p>Fake Street 123</p>
+                      <p>San Javier</p>
+                      <p
+                        onClick={() => setShowCostSheetWindow(false)}
+                        className="text-blue-500 cursor-pointer"
+                      >
+                        Close
+                      </p>
+                    </div> */}
+
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="mt-2 text-sm font-normal text-gray-500">
+                          Unit Dim
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.super_built_up_area}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="mt-2 text-sm font-normal text-gray-500">
+                          Floor
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.floor || 'NA'}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="mt-2 text-sm font-normal text-gray-500">
+                          Built Up Area
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.builtup_area}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="mt-2 text-sm font-normal text-gray-500">
+                          Rate Per Sqft
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.rate_per_sqft || 'NA'}
+                        </p>
+                      </div>
+
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="mt-2 text-sm font-normal text-gray-500">
+                          Car Parking
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.carparking || 'NA'}
+                        </p>
+                      </div>
+                      <div className="text-sm font-light text-slate-500">
+                        <p className="mt-2 text-sm font-normal text-gray-500">
+                          Bath Rooms
+                        </p>
+                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                          {selUnitDetails?.bath_rooms || 'NA'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
               </div>
-              <div className="p-5">
+              <div className="p-5 mt-8">
                 <div className="mx-4 p-4">
                   <div className="flex items-center">
                     <div
@@ -579,6 +592,48 @@ const CostBreakUpSheet = ({
                         }`}
                       >
                         Customer details
+                      </div>
+                    </div>
+                    <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
+                    <div
+                      className={`flex items-center  relative ${
+                        ['payment_sch'].includes(onStep)
+                          ? 'text-white'
+                          : 'text-teal-600'
+                      }`}
+                      onClick={() => moveStep('payment_sch')}
+                    >
+                      <div
+                        className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 ${
+                          ['payment_sch'].includes(onStep)
+                            ? 'bg-teal-600 border-teal-600'
+                            : 'border-teal-600'
+                        } `}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="100%"
+                          height="100%"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="feather feather-mail "
+                        >
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                      </div>
+                      <div
+                        className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
+                          ['payment_sch'].includes(onStep)
+                            ? 'text-teal-600'
+                            : 'text-gray-500'
+                        }`}
+                      >
+                        Payment Schedule
                       </div>
                     </div>
                     <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
@@ -688,163 +743,177 @@ const CostBreakUpSheet = ({
                       </button>
                     </div>
                   </section>
-                  <div className="flex flex-col mx-0 bg-[#F1F5F9] ">
+                  <div className="flex flex-col mx-0 bg-[#F8FAFC] ">
                     <div className="px-9 py-10">
                       <Formik
                         enableReinitialize={true}
                         initialValues={initialState}
                         validationSchema={validate}
                         onSubmit={(values, { resetForm }) => {
-                          // onSubmit(values, resetForm)
+                          console.log('i was clicked')
+                          onSubmit(values, resetForm)
                         }}
                       >
                         {(formik) => (
                           <Form ref={ref}>
-                            <table className="divide-y divide-slate-500 w-full overflow-x-auto ">
-                              <thead>
-                                <tr>
-                                  <th
-                                    scope="col"
-                                    className="py-3.5 pl-3 pr-4 text-left text-sm font-bold uppercase text-slate-700 sm:pr-6 md:pr-0 max-w-[100px] w-[49px]"
-                                  >
-                                    SNo
-                                  </th>
-                                  <th
-                                    scope="col"
-                                    colSpan={3}
-                                    className="py-3.5 pl-4 pr-3 text-left text-sm font-bold uppercase text-slate-700 sm:pl-6 md:pl-0"
-                                  >
-                                    Description
-                                  </th>
-
-                                  <th
-                                    scope="col"
-                                    className="py-3.5 pl-3 pr-4 text-right text-sm font-bold uppercase text-slate-700 sm:pr-6 md:pr-0"
-                                  >
-                                    Amount
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {costSheetA?.map((d1, inx) => (
-                                  <tr
-                                    className="border-b border-slate-200"
-                                    key={inx}
-                                  >
-                                    <td
-                                      className="py-4 pl-3 pr-4 text-sm text-center text-slate-500 sm:pr-6 md:pr-0 max-w-[14px]"
-                                      colSpan={1}
+                            <section
+                              className="bg-[#fff] p-2 rounded-md "
+                              style={{
+                                boxShadow: '0 1px 12px #f2f2f2',
+                              }}
+                            >
+                              <table className="divide-y divide-slate-500 w-full overflow-x-auto ">
+                                <thead>
+                                  <tr>
+                                    <th
+                                      scope="col"
+                                      className="py-3.5 pl-3 pr-4 text-left text-sm font-bold uppercase text-slate-700 sm:pr-6 md:pr-0 max-w-[100px] w-[49px]"
                                     >
-                                      {inx + 1}
-                                      {')'}
-                                    </td>
-                                    <td
-                                      className="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0"
+                                      SNo
+                                    </th>
+                                    <th
+                                      scope="col"
                                       colSpan={3}
+                                      className="py-3.5 pl-4 pr-3 text-left text-sm font-bold uppercase text-slate-700 sm:pl-6 md:pl-0"
                                     >
-                                      <div className="font-medium text-slate-700">
-                                        {d1?.component?.label}{' '}
-                                      </div>
-                                      <div className="mt-0.5 text-slate-500 sm:hidden">
-                                        1 unit at $0.00
-                                      </div>
-                                    </td>
+                                      Description
+                                    </th>
 
-                                    <td className="py-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                                      {d1?.component?.value ===
-                                      'unit_cost_charges' ? (
-                                        <>
-                                          <div className="flex flex-row align-right text-right justify-end">
-                                            {
-                                              selUnitDetails?.super_built_up_area
-                                            }{' '}
-                                            *
-                                            <TextFieldFlat
-                                              label=""
-                                              className
-                                              name="ratePerSqft"
-                                              onChange={(e) => {
-                                                // setNewSqftPrice(e.target.value)
-                                                console.log(
-                                                  'changed value is',
-                                                  e.target.value
-                                                )
-                                                formik.setFieldValue(
-                                                  'unit_cost_charges',
-                                                  selUnitDetails?.super_built_up_area *
-                                                    e.target.value
-                                                )
-                                                // console.log(
-                                                //   'what is =it',
-                                                //   value.value
-                                                // )
-                                                // formik.setFieldValue(
-                                                //   `${d1?.component?.value}`,
-                                                //   value
-                                                // )
-                                              }}
-                                              value={
-                                                formik.values[
-                                                  `unit_cost_charges`
-                                                ] /
+                                    <th
+                                      scope="col"
+                                      className="py-3.5 pl-3 pr-4 text-right text-sm font-bold uppercase text-slate-700 sm:pr-6 md:pr-0"
+                                    >
+                                      Amount
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {costSheetA?.map((d1, inx) => (
+                                    <tr
+                                      className="border-b border-[#e5e7eb]"
+                                      key={inx}
+                                    >
+                                      <td
+                                        className="py-4 pl-3 pr-4 text-sm text-center text-slate-500 sm:pr-6 md:pr-0 max-w-[14px]"
+                                        colSpan={1}
+                                      >
+                                        {inx + 1}
+                                        {')'}
+                                      </td>
+                                      <td
+                                        className="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0"
+                                        colSpan={3}
+                                      >
+                                        <div className=" text-gray-700">
+                                          {d1?.component?.label}{' '}
+                                        </div>
+                                        <div className="mt-0.5 text-slate-500 sm:hidden">
+                                          1 unit at $0.00
+                                        </div>
+                                      </td>
+
+                                      <td className="py-4 pl-3 pr-4 text-sm text-right text-gray-800 font-medium sm:pr-6 md:pr-0">
+                                        {d1?.component?.value ===
+                                        'unit_cost_charges' ? (
+                                          <>
+                                            <div className="flex flex-row align-right text-right justify-end">
+                                              {
                                                 selUnitDetails?.super_built_up_area
+                                              }{' '}
+                                              *
+                                              <TextFieldFlat
+                                                label=""
+                                                className
+                                                name="ratePerSqft"
+                                                onChange={(e) => {
+                                                  // setNewSqftPrice(e.target.value)
+                                                  console.log(
+                                                    'changed value is',
+                                                    e.target.value
+                                                  )
+                                                  formik.setFieldValue(
+                                                    'unit_cost_charges',
+                                                    selUnitDetails?.super_built_up_area *
+                                                      e.target.value
+                                                  )
+                                                  setNewSqftPrice(
+                                                    e.target.value
+                                                  )
+                                                  // formik.setFieldValue(
+                                                  //   'ratePerSqft',
+                                                  //   e.target.value
+                                                  // )
+                                                  // console.log(
+                                                  //   'what is =it',
+                                                  //   value.value
+                                                  // )
+                                                  // formik.setFieldValue(
+                                                  //   `${d1?.component?.value}`,
+                                                  //   value
+                                                  // )
+                                                }}
+                                                value={
+                                                  formik.values[
+                                                    `unit_cost_charges`
+                                                  ] /
+                                                  selUnitDetails?.super_built_up_area
+                                                }
+                                                // value={newSqftPrice}
+                                                type="number"
+                                              />
+                                              <TextFieldFlat
+                                                className="hidden"
+                                                label=""
+                                                name={d1?.component?.value}
+                                                // onChange={(value) => {
+                                                //   console.log('what is =it', value.value)
+                                                //   formik.setFieldValue(
+                                                //     `${d1?.component?.value}`,
+                                                //     value
+                                                //   )
+                                                // }}
+                                                // value={
+                                                //   formik.values[`${d1?.component?.value}`]
+                                                // }
+                                                // value={d1?.charges}
+                                                type="number"
+                                              />
+                                              {'='}
+                                              {
+                                                formik.values[
+                                                  `${d1?.component?.value}`
+                                                ]
                                               }
-                                              // value={newSqftPrice}
-                                              type="number"
-                                            />
-                                            <TextFieldFlat
-                                              className="hidden"
-                                              label=""
-                                              name={d1?.component?.value}
-                                              // onChange={(value) => {
-                                              //   console.log('what is =it', value.value)
-                                              //   formik.setFieldValue(
-                                              //     `${d1?.component?.value}`,
-                                              //     value
-                                              //   )
-                                              // }}
-                                              // value={
-                                              //   formik.values[`${d1?.component?.value}`]
-                                              // }
-                                              // value={d1?.charges}
-                                              type="number"
-                                            />
-                                            {'='}
-                                            {
-                                              formik.values[
-                                                `${d1?.component?.value}`
-                                              ]
-                                            }
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <TextFieldFlat
-                                          label=""
-                                          name={d1?.component?.value}
-                                          // onChange={(value) => {
-                                          //   console.log('what is =it', value.value)
-                                          //   formik.setFieldValue(
-                                          //     `${d1?.component?.value}`,
-                                          //     value
-                                          //   )
-                                          // }}
-                                          // value={
-                                          //   formik.values[`${d1?.component?.value}`]
-                                          // }
-                                          // value={d1?.charges}
-                                          type="number"
-                                        />
-                                      )}
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <TextFieldFlat
+                                            label=""
+                                            name={d1?.component?.value}
+                                            // onChange={(value) => {
+                                            //   console.log('what is =it', value.value)
+                                            //   formik.setFieldValue(
+                                            //     `${d1?.component?.value}`,
+                                            //     value
+                                            //   )
+                                            // }}
+                                            // value={
+                                            //   formik.values[`${d1?.component?.value}`]
+                                            // }
+                                            // value={d1?.charges}
+                                            type="number"
+                                          />
+                                        )}
 
-                                      {/* <TextField
+                                        {/* <TextField
                                       label="Floor*"
                                       name={d1?.component?.value}
                                       // type="number"
                                     /> */}
-                                    </td>
-                                  </tr>
-                                ))}
-                                {/* {apartUnitChargesMock.map((dat, i) => (
+                                      </td>
+                                    </tr>
+                                  ))}
+                                  {/* {apartUnitChargesMock.map((dat, i) => (
                                 <tr
                                   className="border-b border-slate-200"
                                   key={i}
@@ -877,39 +946,37 @@ const CostBreakUpSheet = ({
                                   </td>
                                 </tr>
                               ))} */}
-                              </tbody>
-                              <tfoot>
-                                <tr>
-                                  <th
-                                    scope="row"
-                                    colSpan={3}
-                                    className="hidden pt-6 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0"
-                                  >
-                                    {'     '} {'Total'}
-                                  </th>
-                                  <th
-                                    scope="row"
-                                    className="pt-6 pl-4 pr-3 text-sm font-light text-left text-slate-500"
-                                  ></th>
-                                  <td className="pt-6 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                                    ₹{' '}
-                                    {costSheetA.reduce(
-                                      (partialSum, obj) =>
-                                        partialSum +
-                                        Number(
-                                          formik.values[
-                                            `${obj['component'].value}`
-                                          ]
-                                        ),
-                                      0
-                                    )}
-                                    {/* {costSheetA.reduce(function (acc, obj) {
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th
+                                      scope="row"
+                                      colSpan={3}
+                                      className="hidden pt-6 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0"
+                                    >
+                                      {'     '}
+                                    </th>
+                                    <th
+                                      scope="row"
+                                      className="pt-6 pl-4 pr-3 text-sm font-light text-left text-slate-500"
+                                    ></th>
+                                    <td className="pt-6 pl-3 pr-4 text-sm text-right text-gray-800 sm:pr-6 md:pr-0">
+                                      <span className="font-semibold mr-4">
+                                        Total {'   '}
+                                      </span>
+                                      <span className="text-[#1A9E75] font-medium">
+                                        {' '}
+                                        ₹ {calTotal(costSheetA, formik)}
+                                      </span>
+
+                                      {/* {costSheetA.reduce(function (acc, obj) {
                                     return acc + obj.x
                                   }, 0)} */}
-                                  </td>
-                                </tr>
-                              </tfoot>
-                            </table>
+                                    </td>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </section>
                             <div className="flex flex-col mt-2 p-4 ">
                               <div className="mt-5 text-right md:space-x-3 md:block flex flex-col-reverse mb-6">
                                 <button
@@ -943,7 +1010,7 @@ const CostBreakUpSheet = ({
 
                                 <button
                                   className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-sm hover:shadow-lg hover:bg-green-500"
-                                  type="button"
+                                  type="submit"
                                   disabled={loading}
                                   // onClick={() => submitFormFun(formik)}
                                 >
@@ -959,19 +1026,33 @@ const CostBreakUpSheet = ({
                   </div>
                 </div>
               )}
+              {/* PaymentScheduleSheet */}
+              {['payment_sch', 'allsheets'].includes(onStep) && (
+                <PaymentScheduleSheet
+                  title="Booking Form"
+                  leadDetailsObj2={leadDetailsObj1}
+                  selUnitDetails={selUnitDetails}
+                  phase={selPhaseObj}
+                  soldPrice={soldPrice}
+                />
+              )}
               {['customerDetails', 'allsheets'].includes(onStep) && (
                 <AddBookingForm
                   title="Booking Form"
-                  leadDetailsObj={leadDetailsObj}
+                  selUnitDetails={selUnitDetails}
+                  leadDetailsObj2={leadDetailsObj1}
                 />
               )}
               {['booksheet', 'allsheets'].includes(onStep) && (
                 <AddPaymentDetailsForm
                   title={'undefined'}
                   dialogOpen={undefined}
-                  phase={undefined}
+                  phase={selPhaseObj}
+                  leadDetailsObj2={leadDetailsObj1}
+                  selUnitDetails={selUnitDetails}
                 />
               )}
+
               {['blocksheet'].includes(onStep) && (
                 <BlockingUnitForm title="Blocking Form" />
               )}

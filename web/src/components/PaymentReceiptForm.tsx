@@ -23,68 +23,131 @@ import {
 import { AreaConverter } from 'src/components/AreaConverter'
 import {
   addBankAccount,
+  addPaymentReceivedEntry,
   addVirtualAccount,
+  createBookedCustomer,
   createPhase,
+  updateLeadStatus,
   updatePhase,
+  updateUnitAsBooked,
 } from 'src/context/dbQueryFirebase'
 import { TextField2 } from 'src/util/formFields/TextField2'
+import { arrayUnion } from 'firebase/firestore'
 
-const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
+const AddPaymentDetailsForm = ({
+  title,
+  selUnitDetails,
+  leadDetailsObj2,
+  dialogOpen,
+  phase,
+}) => {
   const [loading, setLoading] = useState(false)
   const [openAreaFields, setOpenAreaFields] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { uid } = useParams()
+  const bankData = {}
 
   const onSubmit = async (data, resetForm) => {
+    // get booking details, leadId, unitDetails,
+    //  from existing object send values of
+    //  booking
+    // copy unit data as it is
+    // copy lead data as it is
+    //  unit details
+
+    // 1)Make an entry to finance Table {source: ''}
+    // 2)Create new record in Customer Table
+    // 3)Update unit record with customer record and mark it as booked
+    // 4)update lead status to book
+
+    //   const x = await addDoc(collection(db, 'spark_leads'), data)
+    // await console.log('x value is', x, x.id)
+
+    const { uid } = selUnitDetails
+    const { id, purpose, customerDetailsObj, secondaryCustomerDetailsObj } =
+      leadDetailsObj2
+
+    // 1)Make an entry to finance Table {source: ''}
+    const x1 = await addPaymentReceivedEntry(
+      uid,
+      { leadId: id },
+      data,
+      'leadsPage',
+      'nitheshreddy.email@gmail.com',
+      enqueueSnackbar
+    )
+
+    // 2)Create new record in Customer Table
+    const x2 = await createBookedCustomer(
+      uid,
+      {
+        leadId: id,
+        ...customerDetailsObj,
+        secondaryCustomerDetailsObj,
+        assets: arrayUnion(uid),
+        [`${uid}_cs`]: leadDetailsObj2[`${uid}_cs`],
+        [`${uid}_ps`]: phase?.paymentScheduleObj || {},
+        [`${uid}_unitDetails`]: selUnitDetails || {},
+
+        //paymentScheduleObj
+      },
+      'nitheshreddy.email@gmail.com',
+      enqueueSnackbar
+    )
+
+    return
+    // 3)Update unit record with customer record and mark it as booked
+
+    // customerDetailsObj
+    const otherData = leadDetailsObj2[`${uid}_others`]
+    const unitUpdate = {
+      leadId: id,
+      Status: 'booked',
+      customerDetailsObj,
+      secondaryCustomerDetailsObj: secondaryCustomerDetailsObj || {},
+      ...otherData,
+    }
+    unitUpdate[`cs`] = leadDetailsObj2[`${uid}_cs`]
+
+    updateUnitAsBooked(
+      uid,
+      id,
+      unitUpdate,
+      'nitheshreddy.email@gmail.com',
+      enqueueSnackbar,
+      resetForm
+    )
+
+    // 4)update lead status to book
+    // updateLeadStatus(leadDocId, newStatus)
+    updateLeadStatus(id, 'booked')
+
+
     const updatedData = {
       ...data,
     }
-
-    setLoading(true)
-    if (title === 'Bank Accounts' || title === 'Add New Account') {
-      await addBankAccount(
-        updatedData,
-        'nithe.nithesh@gmail.com',
-        'bankAccount Creation',
-        enqueueSnackbar,
-        resetForm
-      )
-      console.log('bank details are', updatedData, loading)
-      await setLoading(false)
-      await dialogOpen(false)
-    } else if (title === 'Virtual Accounts') {
-      await addVirtualAccount(
-        updatedData,
-        'nithe.nithesh@gmail.com',
-        'virtural Creation'
-      )
-      await setLoading(false)
-    }
-    // if (bankData?.editMode) {
-    //   await updatePhase(bankData.uid, updatedData, enqueueSnackbar)
-    // } else {
-    //   await createPhase(updatedData, enqueueSnackbar, resetForm)
-    // }
+    console.log('submit data i s', updatedData)
   }
 
   const initialState = {
-    date: bankData?.date || '',
     amount: bankData?.amount || '',
-    payto: bankData?.payto || '',
+
     mode: bankData?.mode || '',
-    drawnonbank: bankData?.drawnonbank || '',
+    payto: bankData?.payto || '',
     chequeno: bankData?.chequeno || '',
     dated: bankData?.dated || '',
+    bookingSource: '',
+    bookedBy: '',
   }
 
   const validateSchema = Yup.object({
-    date: Yup.string().required('Bank Required'),
-    amount: Yup.string().required('Required'),
-    payto: Yup.string().required('Required'),
-    mode: Yup.string().required('Bank Required'),
-    drawnonbank: Yup.string().required('Required'),
-    chequeno: Yup.string().required('Required'),
-    dated: Yup.string().required('Required'),
+    // date: Yup.string().required('Bank Required'),
+    // amount: Yup.string().required('Required'),
+    // payto: Yup.string().required('Required'),
+    // mode: Yup.string().required('Bank Required'),
+    // drawnonbank: Yup.string().required('Required'),
+    // chequeno: Yup.string().required('Required'),
+    // dated: Yup.string().required('Required'),
   })
 
   const submitFormFun = (formik) => {
@@ -103,6 +166,7 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
         <div className="flex flex-col rounded-lg bg-white m-4">
           <div className="mt-0">
             <Formik
+              enableReinitialize={true}
               initialValues={initialState}
               validationSchema={validateSchema}
               onSubmit={(values, { resetForm }) => {
@@ -130,8 +194,8 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                               </button>
                             </div>
                           </div>
-                          <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                            <form>
+                          <div className="flex-auto px-4 lg:px-10 py-10 pt-4">
+                            <section>
                               <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
                                 Booking Amount Details
                               </h6>
@@ -141,7 +205,7 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                     <TextField2
                                       label="Amount"
                                       name="amount"
-                                      type="text"
+                                      type="number"
                                     />
                                   </div>
                                 </div>
@@ -159,7 +223,7 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                   <div className="relative w-full mb-3">
                                     <TextField2
                                       label="Cheque No/Reference No"
-                                      name="payto"
+                                      name="chequeno"
                                       type="text"
                                     />
                                   </div>
@@ -168,7 +232,7 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                   <div className="relative w-full mb-3">
                                     <TextField2
                                       label="Dated"
-                                      name="payto"
+                                      name="dated"
                                       type="text"
                                     />
                                   </div>
@@ -177,7 +241,32 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                   <div className="relative w-full mb-3">
                                     <TextField2
                                       label="Paid To"
-                                      name="mode"
+                                      name="paidTo"
+                                      type="text"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <hr className="mt-6 border-b-1 border-blueGray-300" />
+
+                              <h6 className="text-blueGray-400 text-sm mt-3 pt-4 mb-6 font-bold uppercase">
+                                Source Of Booking
+                              </h6>
+                              <div className="flex flex-wrap">
+                                <div className="w-full lg:w-12/12 px-4">
+                                  <div className="relative w-full mb-3">
+                                    <TextField2
+                                      label="Source"
+                                      name="bookingSource"
+                                      type="text"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="w-full lg:w-12/12 px-4">
+                                  <div className="relative w-full mb-3">
+                                    <TextField2
+                                      label="Booked By"
+                                      name="bookedBy"
                                       type="text"
                                     />
                                   </div>
@@ -191,10 +280,10 @@ const AddPaymentDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
                                   disabled={loading}
                                 >
                                   {/* {loading && <Loader />} */}
-                                  {'Save'}
+                                  {'Book'}
                                 </button>
                               </div>
-                            </form>
+                            </section>
                           </div>
                         </div>
                       </div>

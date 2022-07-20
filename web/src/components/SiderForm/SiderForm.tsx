@@ -13,6 +13,10 @@ import MoreDetailsPhaseForm from '../MoreDetailsPhaseForm/MoreDetailsPhaseForm'
 import AddUnit from '../AddUnit'
 import { pid } from 'process'
 import AddBankDetailsForm from '../addBankDetailsForm'
+import TransactionUpdateSideView from '../transactionUpdateSideView'
+import ProjPhaseHome from '../ProjPhaseHome/ProjPhaseHome'
+import InventoryViewSideForm from '../DialogFormBody/InventoryViewSideView'
+import CrmUnitSideView from '../crmUnitSideView'
 
 const SiderForm = ({
   open,
@@ -31,7 +35,7 @@ const SiderForm = ({
   widthClass = 'max-w-4xl',
   unitViewerrr,
   unitsViewMode,
-  setUnitsViewMode
+  setUnitsViewMode,
 }) => {
   // dont write too many here
   //  this is for customerProfileSideView
@@ -145,6 +149,8 @@ const SiderForm = ({
                     title={title}
                     dialogOpen={setOpen}
                     pId={pId}
+                    myPhase={undefined}
+                    myBlock={undefined}
                   />
                 )}
                 {title === 'Add Lead' && (
@@ -159,11 +165,31 @@ const SiderForm = ({
                     setUnitsViewMode={setUnitsViewMode}
                   />
                 )}
+                {title === 'Project Inventory' && (
+                  <InventoryViewSideForm
+                    title={title}
+                    projectDetails={projectDetails}
+                  />
+                  // <ProjPhaseHome
+                  //   projectDetails={projectDetails}
+                  //   leadDetailsObj={undefined}
+                  //   source={undefined}
+                  //   unitDetails={undefined}
+                  // />
+                )}
                 {title === 'Additional Charges' && (
-                  <AdditionalChargesForm title={title} data={data} />
+                  <AdditionalChargesForm
+                    title={title}
+                    data={data}
+                    source={undefined}
+                  />
                 )}
                 {title === 'Payment Schedule' && (
-                  <PaymentScheduleForm title={title} data={data} />
+                  <PaymentScheduleForm
+                    title={title}
+                    data={data}
+                    source={undefined}
+                  />
                 )}
                 {title === 'More Details' && (
                   <MoreDetailsPhaseForm
@@ -214,6 +240,24 @@ const SiderForm = ({
                     title={title}
                     dialogOpen={setOpen}
                     phase={data}
+                  />
+                )}
+                {title === 'Transaction' && (
+                  <TransactionUpdateSideView
+                    openUserProfile={false}
+                    customerDetails={customerDetails}
+                    unitViewerrr={unitViewerrr}
+                    unitsViewMode={unitsViewMode}
+                    setUnitsViewMode={setUnitsViewMode}
+                  />
+                )}
+                {title === 'CrmUnitSideView' && (
+                  <CrmUnitSideView
+                    openUserProfile={false}
+                    customerDetails={customerDetails}
+                    unitViewerrr={unitViewerrr}
+                    unitsViewMode={unitsViewMode}
+                    setUnitsViewMode={setUnitsViewMode}
                   />
                 )}
               </div>

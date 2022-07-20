@@ -274,6 +274,40 @@ export const costSheetAdditionalChargesA = [
     label: 'Premium',
   },
 ]
+export const paymentScheduleA = [
+  {
+    value: 'Booking',
+    label: 'Booking Amount',
+  },
+  {
+    value: 'executionofats_atb',
+    label: 'Execution of ATS & ATB',
+  },
+  {
+    value: 'maintenancecharges',
+    label: 'Execution of Sale Deed',
+  },
+  {
+    value: 'power_backup_charges',
+    label: 'Plinth Beam',
+  },
+  {
+    value: 'firstfloorslab',
+    label: 'First Floor Slab',
+  },
+  {
+    value: 'secondfloorslab',
+    label: 'Second Floor Slab',
+  },
+  {
+    value: 'blockwork',
+    label: 'Block Work',
+  },
+  {
+    value: 'possession',
+    label: 'Possession',
+  },
+]
 export const bankPreferredType = [
   {
     value: 'Rera Account',

@@ -11,6 +11,7 @@ import { ResponsiveBar } from '@nivo/bar'
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
+import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
 
 const HomePage = () => {
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -348,7 +349,8 @@ const HomePage = () => {
                 viewable != 'Projects Lead Report' &&
                 viewable != 'Campaign Budget Report' &&
                 viewable != 'Bank Accounts' &&
-                viewable != 'Virtual Accounts' && (
+                viewable != 'Virtual Accounts' &&
+                viewable != 'unitsInventory' && (
                   <>
                     <div className="">
                       <div className="flex items-center justify-between py-2  ">
@@ -584,6 +586,14 @@ const HomePage = () => {
                     </section>
                   </div>
                 </>
+              )}
+              {viewable === 'unitsInventory' && (
+                <ProjectsUnitInventory
+                  project={{
+                    projectName: 'Projects',
+                  }}
+                  isEdit={undefined}
+                />
               )}
 
               {(viewable === 'Bank Accounts' ||

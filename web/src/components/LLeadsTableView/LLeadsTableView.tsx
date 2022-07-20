@@ -487,7 +487,7 @@ const LLeadsTableView = ({
           ]
         : leadsTyper === 'archieveLeads'
         ? archieveTab
-        :  [
+        : [
             { lab: 'Booked', val: 'booked' },
             // { lab: 'Not Interested', val: 'notinterested' },
             // { lab: 'Dead', val: 'dead' },
@@ -545,16 +545,25 @@ const LLeadsTableView = ({
                   return (
                     <li key={i} className="mr-2" role="presentation">
                       <button
-                        className={`inline-block py-4 px-4 text-sm font-medium text-center text-gray-500 rounded-t-lg border-b-2  hover:text-gray-600 hover:border-blue-600 dark:text-gray-400 dark:hover:text-gray-300  ${
+                        className={`inline-block py-4 px-4 text-sm font-medium text-center text-[#7F8EA4] rounded-t-lg border-b-2  hover:text-gray-600 hover:border-[#1A91EB] dark:text-gray-400 dark:hover:text-gray-300  ${
                           value === d.val
-                            ? 'border-blue-600 text-gray-800'
+                            ? 'border-[#1A91EB] text-gray-800'
                             : 'border-transparent'
                         }`}
                         type="button"
                         role="tab"
                         onClick={() => setValue(d.val)}
                       >
-                        {`${d.lab} `}
+                        <span
+                          className={`${
+                            value === d.val
+                              ? 'text-[#1A91EB] text-gray-800'
+                              : ''
+                          }`}
+                        >
+                          {' '}
+                          {`${d.lab} `}
+                        </span>
                         <span className="bg-gray-100 px-2 py-1 rounded-full">
                           {rowsCounter(leadsFetchedData, d.val).length}
                         </span>

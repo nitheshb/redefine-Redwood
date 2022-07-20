@@ -30,6 +30,7 @@ const ProjPhaseHome = ({
   leadDetailsObj,
 }) => {
   const [myProjectDetails, setMyProjectDetails] = useState({ uid: '' })
+  const [leadDetailsObj1, setLeadDetailsObj1] = useState({})
   // phases
   const [phases, setPhases] = useState([])
   const [phasesList, setPhasesList] = useState([])
@@ -68,6 +69,12 @@ const ProjPhaseHome = ({
 
   const { uid } = useParams()
   let projId
+
+  useEffect(() => {
+    console.log('new customer object', leadDetailsObj)
+    setLeadDetailsObj1(leadDetailsObj)
+  }, [leadDetailsObj])
+  
 
   useEffect(() => {
     if (uid) {
@@ -220,7 +227,7 @@ const ProjPhaseHome = ({
                 <CostBreakUpSheet
                   selMode={selMode}
                   title="Cost Break Up Sheet"
-                  leadDetailsObj={leadDetailsObj}
+                  leadDetailsObj1={leadDetailsObj1}
                   selPhaseObj={selPhaseObj}
                   unitDetails={unitDetails}
                   projectDetails={myProjectDetails}

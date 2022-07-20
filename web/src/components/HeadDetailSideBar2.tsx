@@ -7,7 +7,7 @@ import { Link, routes } from '@redwoodjs/router'
 import { spawnSync } from 'child_process'
 import { useEffect, useState } from 'react'
 import { useAuth } from 'src/context/firebase-auth-context'
-const HeadSideBarDetailView = ({
+const HeadSideBarDetailView2 = ({
   pgName,
   sourceLink,
   showSideView1,
@@ -34,42 +34,51 @@ const HeadSideBarDetailView = ({
   return (
     <div className="flex flex-col items-left w-16 min-w-[226px]   bg-white bg-opacity-75 bg-[#f0f3ff] ">
       <div className="bg-[#f0f3ff] overflow-auto">
-        <div className="pl-4 mr-6 border-l h-screen ">
-          <ul className="mt-6 pt-4">
-            {/* <li className="relative">
-              <span
-                className={
-                  'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                  (pgName === 'home' ? 'bg-gray-300' : '')
-                }
-                onClick={() => {
-                  showSideView1()
-                }}
-              >
-                <span className="flex items-center">
-                  <span style={{ color: '#058527' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24">
-                      <g fill="currentColor" fillRule="nonzero">
-                        <path
-                          d="M10 14.5a2 2 0 104 0h5.5V18a1.5 1.5 0 01-1.5 1.5H6A1.5 1.5 0 014.5 18v-3.5H10z"
-                          opacity="0.1"
-                        ></path>
-                        <path d="M8.062 4h7.876a2 2 0 011.94 1.515l2.062 8.246a2 2 0 01.06.485V18a2 2 0 01-2 2H6a2 2 0 01-2-2v-3.754a2 2 0 01.06-.485l2.06-8.246A2 2 0 018.061 4zm0 1a1 1 0 00-.97.757L5.03 14.004a1 1 0 00-.03.242V18a1 1 0 001 1h12a1 1 0 001-1v-3.754a1 1 0 00-.03-.242l-2.06-8.247A1 1 0 0015.94 5H8.061zM12 17.25A2.75 2.75 0 019.295 15H7a.5.5 0 110-1h2.75a.5.5 0 01.5.5 1.75 1.75 0 003.5 0 .5.5 0 01.5-.5H17a.5.5 0 110 1h-2.295A2.75 2.75 0 0112 17.25z"></path>
-                      </g>
-                    </svg>
-                  </span>
-                  <span className="text-sm pl-1">All</span>
-                </span>
-                <span className="flex ml-auto items-bottom">
-                  <span
-                    // style={{ color: '#058527' }}
-                    className="flex ml-auto items-bottom text-xs mt-2"
-                  >
-                    27
-                  </span>
-                </span>
-              </span>
-            </li> */}
+        <div className="pl-4 mr-6 mt-6 border-l h-screen">
+          <span
+            style={{ marginLeft: '-43px' }}
+            className="relative z-10 flex items-center text-xl font-extrabold leading-none text-[#141446] select-none pl-0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="88"
+              height="32"
+              viewBox="0 0 1 28"
+              fill="none"
+              className="injected-svg"
+              data-src="/images/logo/cubejs-logo.svg"
+            >
+              <path
+                d="M22.1337 7.03243L11.8594 1V5.17391L22.1336 11.1804L22.1337 7.03243Z"
+                fill="#FF6492"
+              ></path>
+              <path
+                d="M22.1336 11.1823L19.0513 13.0019L11.8574 8.78565L7.74692 11.1857L4.66406 9.49917L11.8593 5.17578L22.1336 11.1823Z"
+                fill="#141446"
+              ></path>
+              <path
+                d="M7.74692 11.1826L4.66406 9.49609V12.9988L7.74692 11.1826Z"
+                fill="#A14474"
+              ></path>
+              <path
+                d="M1.58105 18.9676L11.8572 13L22.1334 18.9676L11.8572 25L1.58105 18.9676Z"
+                fill="#141446"
+              ></path>
+              <path
+                d="M22.1336 14.8259L11.8574 8.71875V12.9998L22.1336 18.9674L22.1336 14.8259Z"
+                fill="#FF6492"
+              ></path>
+              <path
+                d="M4.66391 13V9.4973L11.8592 5.17391V1L1.58105 7.03243V18.9676L11.8573 13V8.71892L4.66391 13Z"
+                fill="#7A77FF"
+              ></path>
+            </svg>
+            <span className="ml-" style={{ marginLeft: '-11px' }}>
+              {' '}
+              Redefine Erp.
+            </span>
+          </span>
+          <ul className=" pt-4">
             {sourceLink != 'projectsScreen' && (
               <>
                 <span
@@ -230,11 +239,11 @@ const HeadSideBarDetailView = ({
                   <span
                     className={
                       'flex items-center text-sm py-1  h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                      (viewable === 'CrmBuckets'
+                      (viewable === 'MyCustomers'
                         ? 'text-blue-600 text-md font-semibold '
                         : '')
                     }
-                    onClick={() => setViewable('CrmBuckets')}
+                    onClick={() => setViewable('MyCustomers')}
                   >
                     <span className="flex items-center">
                       <span style={{ color: '#692fc2' }}>
@@ -896,82 +905,6 @@ const HeadSideBarDetailView = ({
                 </ul>
               </li>
             )}
-            {[
-              'crmModule',
-              'leadsScreen',
-              'financeModule',
-              'projectsScreen',
-            ].includes(sourceLink) && (
-              <li className="relative">
-                <Link
-                  className={
-                    'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                    (pgName === 'home' ? 'bg-gray-300' : '')
-                  }
-                  to={routes.home()}
-                >
-                  <span className="flex items-center ml-1">
-                    <span className="text-md font-bold pl-1 ">Inventory</span>
-                  </span>
-                  <span className="flex ml-auto items-bottom">
-                    <span
-                      // style={{ color: '#058527' }}
-                      className="flex ml-auto items-bottom text-xs mt-2"
-                    ></span>
-                  </span>
-                </Link>
-                <ul className="px-1">
-                  {' '}
-                  <li className="relative">
-                    <span
-                      className={
-                        'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                        (pgName === 'home' ? 'bg-gray-300' : '') +
-                        (viewable === 'unitsInventory'
-                          ? 'text-blue-600 text-md font-semibold '
-                          : '')
-                      }
-                      onClick={() => setViewable('unitsInventory')}
-                    >
-                      <span className="flex items-center">
-                        <span style={{ color: '#eb8909' }}>
-                          <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              opacity="0.1"
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M13 6.5A1.5 1.5 0 0114.5 5h3A1.5 1.5 0 0119 6.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 0113 9.5v-3zM6.5 13A1.5 1.5 0 005 14.5v3A1.5 1.5 0 006.5 19h3a1.5 1.5 0 001.5-1.5v-3A1.5 1.5 0 009.5 13h-3zm8 0a1.5 1.5 0 00-1.5 1.5v3a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-3zm-8-8A1.5 1.5 0 005 6.5v3A1.5 1.5 0 006.5 11h3A1.5 1.5 0 0011 9.5v-3A1.5 1.5 0 009.5 5h-3z"
-                              fill="currentColor"
-                            ></path>
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M17.5 6h-3a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5zm-3-1A1.5 1.5 0 0013 6.5v3a1.5 1.5 0 001.5 1.5h3A1.5 1.5 0 0019 9.5v-3A1.5 1.5 0 0017.5 5h-3zm-8 9h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5A1.5 1.5 0 016.5 13h3a1.5 1.5 0 011.5 1.5v3A1.5 1.5 0 019.5 19h-3A1.5 1.5 0 015 17.5v-3zm9.5-.5h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3a1.5 1.5 0 01-1.5-1.5v-3zM6.5 6h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zM5 6.5A1.5 1.5 0 016.5 5h3A1.5 1.5 0 0111 6.5v3A1.5 1.5 0 019.5 11h-3A1.5 1.5 0 015 9.5v-3z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
-                        </span>
-
-                        <span className="text-sm pl-[6px]">
-                          Projects Inventory
-                        </span>
-                      </span>
-                      <span className="flex ml-auto items-bottom">
-                        <span
-                          // style={{ color: '#058527' }}
-                          className="flex ml-auto items-bottom text-xs mt-1"
-                        ></span>
-                      </span>
-                    </span>
-                  </li>
-                </ul>
-              </li>
-            )}
             {['financeModule', 'projectsScreen'].includes(sourceLink) && (
               <li className="relative">
                 <Link
@@ -1038,7 +971,6 @@ const HeadSideBarDetailView = ({
                       </span>
                     </span>
                   </li>
-                  
                   <li className="relative">
                     <span
                       className={
@@ -1742,7 +1674,7 @@ const HeadSideBarDetailView = ({
   )
 }
 
-export default HeadSideBarDetailView
+export default HeadSideBarDetailView2
 
 // ExecutiveHomePage
 //  <HeadSideBar pgName={'executiveHome'} />
