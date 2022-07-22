@@ -8,11 +8,13 @@ export const navigateBasedOnUser = async (uid) => {
     return false
   }
   if (userData.roles.includes(USER_ROLES.ADMIN)) {
+    console.log('where am i ')
     navigate(routes.home(), { replace: true })
   } else if (
     userData.roles.includes(USER_ROLES.PROJECT_MANAGER) ||
     userData.roles.includes(USER_ROLES.PROJECT_EXECUTIVE)
   ) {
+    console.log('where am i 2')
     navigate(routes.home(), { replace: true })
   } else if (
     userData.roles.includes(USER_ROLES.SALES_MANAGER) ||

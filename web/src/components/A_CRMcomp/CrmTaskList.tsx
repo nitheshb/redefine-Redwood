@@ -11,13 +11,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
-import {
-  getAllProjects,
-  getLeadsByStatus,
-  getLeadsByStatusUser,
-  updateLeadAssigTo,
-  updateLeadStatus,
-} from 'src/context/dbQueryFirebase'
+import { getAllProjects, updateLeadStatus } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import SiderForm from '../SiderForm/SiderForm'
 import CardItem from '../leadsCard'
@@ -189,6 +183,7 @@ const BoardData = [
 // }
 const CrmTaskList = ({ leadsTyper }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -218,9 +213,6 @@ const CrmTaskList = ({ leadsTyper }) => {
     'booked',
   ]
   const archieveFields = ['Dead', 'RNR', 'blocked', 'notinterested']
-  useEffect(() => {
-    getLeadsDataFun()
-  }, [])
 
   useEffect(() => {
     if (leadsTyper == 'archieveLeads') {
@@ -244,6 +236,7 @@ const CrmTaskList = ({ leadsTyper }) => {
 
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -262,87 +255,6 @@ const CrmTaskList = ({ leadsTyper }) => {
     return unsubscribe
   }, [])
   const [getStatus, setGetStatus] = useState([])
-  const getLeadsDataFun = async () => {
-    console.log('login role detials', user)
-    const { access, uid } = user
-
-    if (access?.includes('manage_leads')) {
-      const unsubscribe = getLeadsByStatus(
-        async (querySnapshot) => {
-          const usersListA = querySnapshot.docs.map((docSnapshot) => {
-            const x = docSnapshot.data()
-            x.id = docSnapshot.id
-            return x
-          })
-          // setBoardData
-          console.log('my Array data is ', usersListA)
-          await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
-        },
-        {
-          status:
-            leadsTyper === 'inProgress'
-              ? [
-                  'new',
-                  'followup',
-                  'unassigned',
-                  'visitfixed',
-                  '',
-                  'visitdone',
-                  'visitcancel',
-                  'negotiation',
-                  'reassign',
-                  'RNR',
-                  // 'booked',
-                ]
-              : leadsTyper === 'booked'
-              ? ['booked']
-              : archieveFields,
-        },
-        (error) => setLeadsFetchedData([])
-      )
-      return unsubscribe
-    } else {
-      const unsubscribe = getLeadsByStatusUser(
-        async (querySnapshot) => {
-          const usersListA = querySnapshot.docs.map((docSnapshot) => {
-            const x = docSnapshot.data()
-            x.id = docSnapshot.id
-            return x
-          })
-          // setBoardData
-          console.log('my Array data is ', usersListA)
-          await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
-        },
-        {
-          uid: uid,
-          status:
-            leadsTyper === 'inProgress'
-              ? [
-                  'new',
-                  'followup',
-                  'unassigned',
-                  'visitfixed',
-                  'visitcancel',
-                  '',
-                  'visitdone',
-                  'negotiation',
-                  'reassign',
-                  'RNR',
-                  // 'booked',
-                ]
-              : leadsTyper === 'booked'
-              ? ['booked']
-              : archieveFields,
-        },
-        (error) => setLeadsFetchedData([])
-      )
-      return unsubscribe
-    }
-
-    // await console.log('leadsData', leadsData)
-  }
 
   const serealizeData = (array) => {
     // let newData =
@@ -370,6 +282,7 @@ const CrmTaskList = ({ leadsTyper }) => {
     )
 
     updateLeadStatus(
+      orgId,
       re.draggableId,
       statusFields[parseInt(re.destination.droppableId)]
     )

@@ -15,10 +15,8 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
-  addLead,
-  addLeadScheduler,
+
   addUnit,
-  checkIfLeadAlreadyExists,
   checkIfUnitAlreadyExists,
   getAllProjects,
   steamUsersListByRole,
@@ -40,6 +38,7 @@ const AddUnit = ({
   blockDetails,
 }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
@@ -47,6 +46,7 @@ const AddUnit = ({
   const [blockList, setblockList] = useState([])
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -67,6 +67,7 @@ const AddUnit = ({
   }, [])
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -238,7 +239,7 @@ const AddUnit = ({
       console.log('foundLENGTH IS empty ', foundLength)
 
       // proceed to copy
-      await addUnit(leadData, user?.email, `Unit Created by form `)
+      await addUnit(orgId, leadData, user?.email, `Unit Created by form `)
 
       // msg2
       resetForm()

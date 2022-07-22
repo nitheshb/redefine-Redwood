@@ -23,6 +23,7 @@ const HeadSideBarDetailView = ({
   const { user } = useAuth()
   // const { access } = user
   // const access = user?.access
+  console.log('user i youy===>>>>>>>.', user)
   const [access, setUserAccess] = useState([])
   useEffect(() => {
     if (user) {
@@ -555,12 +556,12 @@ const HeadSideBarDetailView = ({
                       </span>
                       <span className="text-sm pl-1">Hold</span>
                     </span>
-                    <span className="flex ml-auto items-bottom">
+                    {/* <span className="flex ml-auto items-bottom">
                       <span
                         // style={{ color: '#058527' }}
                         className="flex ml-auto items-bottom text-xs mt-2"
                       ></span>
-                    </span>
+                    </span> */}
                   </span>
                 </li>
               </>
@@ -908,7 +909,7 @@ const HeadSideBarDetailView = ({
                     'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.home()}
+                  // to={routes.home()}
                 >
                   <span className="flex items-center ml-1">
                     <span className="text-md font-bold pl-1 ">Inventory</span>
@@ -1038,7 +1039,6 @@ const HeadSideBarDetailView = ({
                       </span>
                     </span>
                   </li>
-                  
                   <li className="relative">
                     <span
                       className={
@@ -1242,7 +1242,7 @@ const HeadSideBarDetailView = ({
                   'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden   border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                   (pgName === 'home' ? 'bg-gray-300' : '')
                 }
-                to={routes.home()}
+                // to={routes.home()}
               >
                 <span className="flex items-center ml-">
                   <span className="text-md font-bold pl-1 ">Reports</span>
@@ -1408,7 +1408,7 @@ const HeadSideBarDetailView = ({
                     'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.home()}
+                  // to={routes.home()}
                 >
                   <span className="flex items-center ml-1">
                     <span className="text-md font-bold pl-1 ">HR</span>

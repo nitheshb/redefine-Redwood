@@ -4,11 +4,7 @@ import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
 import uniqueId from '../../util/generatedId'
-import {
-  getAllLeads,
-  getLeadsByStatus,
-  getLedsData1,
-} from 'src/context/dbQueryFirebase'
+
 import FinanceTableBody from './financeTableBody'
 
 const tableData2 = [

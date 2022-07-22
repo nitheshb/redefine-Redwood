@@ -22,9 +22,6 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
-  addLead,
-  addLeadScheduler,
-  checkIfLeadAlreadyExists,
   getAllProjects,
   steamUsersListByRole,
   updateLeadCostSheetDetailsTo,
@@ -57,6 +54,7 @@ const CostBreakUpSheet = ({
   setShowCostSheetWindow,
 }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const { enqueueSnackbar } = useSnackbar()
   const ref = createRef()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
@@ -143,6 +141,7 @@ const CostBreakUpSheet = ({
 
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -163,6 +162,7 @@ const CostBreakUpSheet = ({
   }, [])
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -323,6 +323,7 @@ const CostBreakUpSheet = ({
     }
 
     updateLeadCostSheetDetailsTo(
+      orgId,
       id,
       xData,
       'nitheshreddy.email@gmail.com',

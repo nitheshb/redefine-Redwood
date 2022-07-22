@@ -16,9 +16,7 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
-  addCustomer,
   addLead,
-  addLeadScheduler,
   updateLeadCustomerDetailsTo,
   checkIfLeadAlreadyExists,
   getAllProjects,
@@ -40,11 +38,14 @@ const AddBookingForm = ({
   dialogOpen,
 }) => {
   const { user } = useAuth()
+  const { orgId } = user
+
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -69,6 +70,7 @@ const AddBookingForm = ({
 
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -195,7 +197,7 @@ const AddBookingForm = ({
         email: assignedToObj?.email || '',
         label: assignedToObj?.label || '',
         name: assignedToObj?.name || '',
-        namespace: 'spark',
+        namespace: orgId,
         roles: assignedToObj?.roles || [],
         uid: assignedToObj?.value || '',
         value: assignedToObj?.value || '',
@@ -212,6 +214,7 @@ const AddBookingForm = ({
 
       // proceed to copy
       await addLead(
+        orgId,
         leadData,
         user?.email,
         `lead created and assidged to ${assignedTo}`
@@ -409,6 +412,7 @@ const AddBookingForm = ({
     console.log('did you find my id', id, leadDetailsObj2)
 
     updateLeadCustomerDetailsTo(
+      orgId,
       id,
       updateDoc,
       'nitheshreddy.email@gmail.com',
@@ -422,6 +426,7 @@ const AddBookingForm = ({
 
     // setLoading(true)
     // addCustomer(
+      // orgId,
     //   updatedData,
     //   'nithe.nithesh@gmail.com',
     //   enqueueSnackbar,
@@ -522,7 +527,7 @@ const AddBookingForm = ({
                                             />
                                           </div>
                                         </div>
-                                       
+
 
                                         <div className="w-full lg:w-12/12">
                                           <div className="relative w-full mb-3 mt-2">

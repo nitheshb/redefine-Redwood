@@ -13,9 +13,6 @@ import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
   getAllProjects,
-  getLeadsByStatus,
-  getLeadsByStatusUser,
-  updateLeadAssigTo,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
@@ -23,7 +20,6 @@ import SiderForm from '../SiderForm/SiderForm'
 import CardItem from '../leadsCard'
 import FinanceTableView from '../TableComp/financeTableView'
 import CRMTableView from './CrmTableLayout'
-
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
@@ -191,6 +187,7 @@ const BoardData = [
 // }
 const CrmHome = ({ leadsTyper }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -220,9 +217,6 @@ const CrmHome = ({ leadsTyper }) => {
     'booked',
   ]
   const archieveFields = ['Dead', 'RNR', 'blocked', 'notinterested']
-  useEffect(() => {
-    getLeadsDataFun()
-  }, [])
 
   useEffect(() => {
     if (leadsTyper == 'archieveLeads') {
@@ -246,6 +240,7 @@ const CrmHome = ({ leadsTyper }) => {
 
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -264,87 +259,6 @@ const CrmHome = ({ leadsTyper }) => {
     return unsubscribe
   }, [])
   const [getStatus, setGetStatus] = useState([])
-  const getLeadsDataFun = async () => {
-    console.log('login role detials', user)
-    const { access, uid } = user
-
-    if (access?.includes('manage_leads')) {
-      const unsubscribe = getLeadsByStatus(
-        async (querySnapshot) => {
-          const usersListA = querySnapshot.docs.map((docSnapshot) => {
-            const x = docSnapshot.data()
-            x.id = docSnapshot.id
-            return x
-          })
-          // setBoardData
-          console.log('my Array data is ', usersListA)
-          await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
-        },
-        {
-          status:
-            leadsTyper === 'inProgress'
-              ? [
-                  'new',
-                  'followup',
-                  'unassigned',
-                  'visitfixed',
-                  '',
-                  'visitdone',
-                  'visitcancel',
-                  'negotiation',
-                  'reassign',
-                  'RNR',
-                  // 'booked',
-                ]
-              : leadsTyper === 'booked'
-              ? ['booked']
-              : archieveFields,
-        },
-        (error) => setLeadsFetchedData([])
-      )
-      return unsubscribe
-    } else {
-      const unsubscribe = getLeadsByStatusUser(
-        async (querySnapshot) => {
-          const usersListA = querySnapshot.docs.map((docSnapshot) => {
-            const x = docSnapshot.data()
-            x.id = docSnapshot.id
-            return x
-          })
-          // setBoardData
-          console.log('my Array data is ', usersListA)
-          await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
-        },
-        {
-          uid: uid,
-          status:
-            leadsTyper === 'inProgress'
-              ? [
-                  'new',
-                  'followup',
-                  'unassigned',
-                  'visitfixed',
-                  'visitcancel',
-                  '',
-                  'visitdone',
-                  'negotiation',
-                  'reassign',
-                  'RNR',
-                  // 'booked',
-                ]
-              : leadsTyper === 'booked'
-              ? ['booked']
-              : archieveFields,
-        },
-        (error) => setLeadsFetchedData([])
-      )
-      return unsubscribe
-    }
-
-    // await console.log('leadsData', leadsData)
-  }
 
   const serealizeData = (array) => {
     // let newData =
@@ -372,6 +286,7 @@ const CrmHome = ({ leadsTyper }) => {
     )
 
     updateLeadStatus(
+      orgId,
       re.draggableId,
       statusFields[parseInt(re.destination.droppableId)]
     )
@@ -421,7 +336,6 @@ const CrmHome = ({ leadsTyper }) => {
             p-6"
           >
             <div className="flex items-center justify-between py ">
-
               <div className="flex">
                 {leadsTyper == 'inProgress' && (
                   <span className="inline-flex p-1 border bg-gray-200 rounded-md">
@@ -469,10 +383,7 @@ const CrmHome = ({ leadsTyper }) => {
                     </button>
                   </span>
                 )}
-                <>
-
-
-                </>
+                <></>
               </div>
             </div>
 

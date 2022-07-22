@@ -11,14 +11,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
-import {
-  getAllProjects,
-  getFinanceTransactionsByStatus,
-  getLeadsByStatus,
-  getLeadsByStatusUser,
-  updateLeadAssigTo,
-  updateLeadStatus,
-} from 'src/context/dbQueryFirebase'
+import { getFinanceTransactionsByStatus } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import SiderForm from '../SiderForm/SiderForm'
 import CardItem from '../leadsCard'
@@ -26,6 +19,7 @@ import FinanceTableView from './financeTableView'
 
 const FinanceTransactionsHome = ({ leadsTyper }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -69,6 +63,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
 
     if (access?.includes('manage_leads')) {
       const unsubscribe = getFinanceTransactionsByStatus(
+        orgId,
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
             const x = docSnapshot.data()
@@ -96,6 +91,7 @@ const FinanceTransactionsHome = ({ leadsTyper }) => {
       return unsubscribe
     } else {
       const unsubscribe = getFinanceTransactionsByStatus(
+        orgId,
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
             const x = docSnapshot.data()

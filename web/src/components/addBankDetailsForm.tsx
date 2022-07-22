@@ -27,10 +27,13 @@ import {
   createPhase,
   updatePhase,
 } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const AddBankDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
+  const { user } = useAuth()
+
+ const { orgId } = user
   const [loading, setLoading] = useState(false)
-  const [openAreaFields, setOpenAreaFields] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { uid } = useParams()
 
@@ -42,6 +45,7 @@ const AddBankDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
     setLoading(true)
     if (title === 'Bank Accounts' || title === 'Add New Account') {
       await addBankAccount(
+        orgId,
         updatedData,
         'nithe.nithesh@gmail.com',
         'bankAccount Creation',
@@ -53,6 +57,7 @@ const AddBankDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
       await dialogOpen(false)
     } else if (title === 'Virtual Accounts') {
       await addVirtualAccount(
+        orgId, 
         updatedData,
         'nithe.nithesh@gmail.com',
         'virtural Creation'

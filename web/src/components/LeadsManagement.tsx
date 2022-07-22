@@ -11,6 +11,7 @@ import SiderForm from './SiderForm/SiderForm'
 
 const LeadsManagementHome = () => {
   const { user } = useAuth()
+  const { orgId } = user
   const [isImportLeadsOpen, setisImportLeadsOpen] = useState(false)
   const [value, setValue] = useState('new')
   const [tableData, setTableData] = useState([])
@@ -43,6 +44,7 @@ const LeadsManagementHome = () => {
   }, [])
   const getLeadsDataFun = async () => {
     const unsubscribe = getLeadsByStatus(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()

@@ -16,7 +16,7 @@ const HeadNavBar = () => {
     setAnchorEl(null)
     if (menuItem === 'Logout') {
       await logout()
-      dispatch(logoutAction())
+      await dispatch(logoutAction())
     }
   }
 
@@ -142,6 +142,8 @@ const HeadNavBar = () => {
             <Typography variant="body2">{user?.displayName}</Typography>
             <Typography variant="caption" className="text-gray-500">
               {user?.role?.[0]}
+              {user?.orgId || user?.orgName}
+              {user?.uid}
             </Typography>
           </Box>
         </Box>

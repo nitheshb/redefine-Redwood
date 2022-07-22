@@ -7,6 +7,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === 'USER_LOGOUT') {
+    console.log('which one is first')
     return appReducer(undefined, action)
   }
   return appReducer(state, action)

@@ -17,23 +17,12 @@ import {
   statesList,
 } from 'src/constants/projects'
 import { AreaConverter } from 'src/components/AreaConverter'
-import {
-  createProject,
-  steamBankDetailsList,
-  updateProject,
-} from 'src/context/dbQueryFirebase'
+
 import AddBankDetailsForm from '../addBankDetailsForm'
 import ProjPhaseHome from '../ProjPhaseHome/ProjPhaseHome'
 
 const InventoryViewSideForm = ({ title, projectDetails }) => {
-  const [addNewBankStuff, setAddNewBankStuff] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [openAreaFields, setOpenAreaFields] = useState(false)
-  const [bankDetailsA, setBankDetailsA] = useState([])
-  const [existingBuildBankId, setNowBuilderBankDocId] = useState('')
-  const [existingLandBankId, setNowLandLordBankDocId] = useState('')
-  const [builerShare, setBuilderShare] = useState(100)
-  const [landLordShare, setLandLordShare] = useState(0)
+  
   const { enqueueSnackbar } = useSnackbar()
 
   return (

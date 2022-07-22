@@ -25,13 +25,8 @@ import toast from 'react-hot-toast'
 
 import {
   addLeadScheduler,
-  addSchedulerLog,
   updateSch,
   deleteSchLog,
-  steamLeadActivityLog,
-  steamLeadPhoneLog,
-  steamLeadScheduleLog,
-  steamUsersList,
   steamUsersListByRole,
   updateLeadAssigTo,
   updateLeadStatus,
@@ -42,7 +37,6 @@ import {
   getCustomerDocs,
   getAllProjects,
   updateLeadProject,
-  steamLeadById,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
@@ -136,6 +130,7 @@ export default function CrmUnitSideView({
 }) {
   console.log('customer Details', customerDetails)
   const { user } = useAuth()
+  const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
 
@@ -209,6 +204,7 @@ export default function CrmUnitSideView({
 
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -264,29 +260,7 @@ export default function CrmUnitSideView({
 
     if (fet === 'appoint') {
       return
-    }
-    //  else if (fet === 'ph') {
-    //   const unsubscribe = steamLeadPhoneLog(
-    //     (doc) => {
-    //       console.log('my total fetched list is yo yo 1', doc.data())
-    //       const usersList = doc.data()
-    //       const usersListA = []
-
-    //       Object.entries(usersList).forEach((entry) => {
-    //         const [key, value] = entry
-    //         usersListA.push(value)
-    //         console.log('my total fetched list is 3', `${key}: ${value}`)
-    //       })
-    //       console.log('my total fetched list is', usersListA.length)
-    //       // setLeadsFetchedActivityData(usersListA)
-    //     },
-    //     {
-    //       uid: id,
-    //     },
-    //     (error) => setLeadsFetchedActivityData([])
-    //   )
-    // }
-    else {
+    } else {
       leadsActivityFetchedData.map((data) => {
         console.log('value of filtered feature count before', data)
       })
@@ -306,16 +280,13 @@ export default function CrmUnitSideView({
   }, [leadsActivityFetchedData, selFeature])
 
   useEffect(() => {
-    getLeadsDataFun()
-  }, [])
-
-  useEffect(() => {
     getCustomerDocsFun()
     getProjectsListFun()
   }, [])
 
   const getCustomerDocsFun = () => {
     const unsubscribe = getCustomerDocs(
+      orgId,
       id,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
@@ -331,6 +302,7 @@ export default function CrmUnitSideView({
 
   const getProjectsListFun = () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -357,7 +329,7 @@ export default function CrmUnitSideView({
     setAssignedTo(value.value)
     // save assigner Details in db
 
-    updateLeadAssigTo(leadDocId, value, by)
+    updateLeadAssigTo(orgId,leadDocId, value, by)
   }
   const setNewProject = (leadDocId, value) => {
     console.log('sel pROJECT DETAILS ', value)
@@ -371,7 +343,7 @@ export default function CrmUnitSideView({
       ProjectId: value.uid,
     }
     setSelProjectIs(value)
-    updateLeadProject(leadDocId, x)
+    updateLeadProject(orgId,leadDocId, x)
     // updateLeadAssigTo(leadDocId, value, by)
   }
 
@@ -399,90 +371,7 @@ export default function CrmUnitSideView({
   const downloadFile = (url) => {
     window.location.href = url
   }
-  const getLeadsDataFun = async () => {
-    console.log('ami triggered')
-    const unsubscribe = steamLeadActivityLog(
-      (doc) => {
-        console.log('my total fetched list is yo yo ', doc.data())
-        const usersList = doc.data()
-        const usersListA = []
 
-        Object.entries(usersList).forEach((entry) => {
-          const [key, value] = entry
-          usersListA.push(value)
-          console.log('my total fetched list is 3', `${key}: ${value}`)
-        })
-        // for (const key in usersList) {
-        //   if (usersList.hasOwnProperty(key)) {
-        //     console.log(`${key} : ${usersList[key]}`)
-        //     console.log(`my total fetched list is 2 ${usersList[key]}`)
-        //   }
-        // }
-
-        console.log('my total fetched list is', usersListA.length)
-        setLeadsFetchedActivityData(usersListA)
-      },
-      {
-        uid: id,
-      },
-      (error) => setLeadsFetchedActivityData([])
-    )
-
-    //  lead Schedule list
-    steamLeadScheduleLog(
-      (doc) => {
-        console.log('my total fetched list is 1', doc.data())
-        const usersList = doc.data()
-        const usersListA = []
-
-        const sMapStsA = []
-        const { staA, staDA } = usersList
-        console.log('this is what we found', staA)
-        setschStsA(staA)
-        setschStsMA(staDA)
-        // delete usersList['staA']
-        // delete usersList['staDA']
-        Object.entries(usersList).forEach((entry) => {
-          const [key, value] = entry
-          if (['staA', 'staDA'].includes(key)) {
-            if (key === 'staA') {
-              // setschStsA(value)
-            } else if (key === 'staDA') {
-              // sMapStsA = value
-            }
-          } else {
-            usersListA.push(value)
-            // console.log(
-            //   'my total fetched list is 3',
-            //   `${key}: ${JSON.stringify(value)}`
-            // )
-          }
-        })
-        // for (const key in usersList) {
-        //   if (usersList.hasOwnProperty(key)) {
-        //     console.log(`${key} : ${usersList[key]}`)
-        //     console.log(`my total fetched list is 2 ${usersList[key]}`)
-        //   }
-        // }
-
-        console.log('my total fetched list is', usersListA.length)
-        usersListA.sort((a, b) => {
-          return b.ct - a.cr
-        })
-        setLeadsFetchedSchData(
-          usersListA.sort((a, b) => {
-            return a.ct - b.ct
-          })
-        )
-      },
-      {
-        uid: id,
-      },
-      (error) => setLeadsFetchedSchData([])
-    )
-
-    return unsubscribe
-  }
   const getLeadNotesFun = async () => {
     console.log('ami triggered')
     const unsubscribe = steamLeadNotes(
@@ -528,9 +417,9 @@ export default function CrmUnitSideView({
     setschStsA(x)
     // addSchedulerLog(id, data)
     console.log('new one ', schStsA)
-    await addLeadScheduler(id, data, schStsA, '')
+    await addLeadScheduler(orgId, id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(id, tempLeadStatus)
+      updateLeadStatus(orgId,id, tempLeadStatus)
     }
     await setTakTitle('')
     await setAddSch(false)
@@ -548,7 +437,7 @@ export default function CrmUnitSideView({
     const newTm = Timestamp.now().toMillis() + 10800000 + 5 * 3600000
 
     console.log('new one ', schStsA)
-    await updateSch(id, tmId, newTm, schStsA)
+    await updateSch(orgId, id, tmId, newTm, schStsA)
     await setTakTitle('')
     await setAddSch(false)
   }
@@ -567,7 +456,7 @@ export default function CrmUnitSideView({
     x[inx] = 'completed'
     setschStsA(x)
 
-    updateSchLog(id, data.ct, 'completed', schStsA)
+    updateSchLog(orgId,id, data.ct, 'completed', schStsA)
   }
   const delFun = (data) => {
     console.log('clicked schedule is', data)
@@ -579,7 +468,7 @@ export default function CrmUnitSideView({
     setschStsA(x)
     setschStsMA(y)
 
-    deleteSchLog(id, data.ct, 'completed', schStsA, schStsMA)
+    deleteSchLog(orgId, id, data.ct, 'completed', schStsA, schStsMA)
   }
 
   const selFun = () => {
@@ -600,7 +489,7 @@ export default function CrmUnitSideView({
       ct: Timestamp.now().toMillis(),
     }
 
-    await addLeadNotes(id, data)
+    await addLeadNotes(orgId, id, data)
     await setNotesTitle('')
     await setAddNote(false)
   }
@@ -628,7 +517,7 @@ export default function CrmUnitSideView({
         (err) => console.log(err),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            createAttach(url, by, file.name, id, attachType)
+            createAttach(orgId, url, by, file.name, id, attachType)
             console.log('file url i s', url)
             //  save this doc as a new file in spark_leads_doc
           })

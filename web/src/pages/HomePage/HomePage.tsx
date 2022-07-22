@@ -12,8 +12,11 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const HomePage = () => {
+  const { user } = useAuth()
+  const { orgId } = user || {}
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false)
   const [project, setProject] = useState({})
@@ -24,6 +27,7 @@ const HomePage = () => {
 
   const getProjects = async () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()

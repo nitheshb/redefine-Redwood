@@ -11,8 +11,12 @@ import { ResponsiveBar } from '@nivo/bar'
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import { ResponsivePie } from '@nivo/pie'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const PieChartProject = ({ reportPayload }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false)
   const [project, setProject] = useState({})
@@ -23,6 +27,7 @@ const PieChartProject = ({ reportPayload }) => {
 
   const getProjects = async () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()

@@ -4,7 +4,12 @@
 import React, { useEffect, useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import * as Yup from 'yup'
-import { addUserLog, updateUserRole } from 'src/context/dbQueryFirebase'
+import {
+  addUserLog,
+  checkIfUserAlreadyExists,
+  createUserToWorkReport,
+  updateUserRole,
+} from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { useForm } from 'react-hook-form'
 import { Form, Formik } from 'formik'
@@ -18,7 +23,9 @@ import { DEPARTMENT_LIST, ROLES_LIST } from 'src/constants/userRoles'
 // import SelectSearch from 'react-select-search'
 
 const SUserSignupBody = ({ title, dialogOpen, empData }) => {
-  const { register } = useAuth()
+  const { register, user } = useAuth()
+  const { orgId } = user
+
   const formMethods = useForm()
   const [formMessage, setFormMessage] = useState({
     color: 'green',
@@ -67,36 +74,49 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const onSubmit = async (data) => {
     console.log('check fo this ', data)
     setLoading(true)
-    const { email, myRole, deptVal, name } = data
+    const { empId, email, myRole, deptVal, name, offPh, perPh } = data
 
     if (editMode) {
       updateUserRole(
+        empId,
+        orgId,
         uid,
         deptVal,
         myRole,
         email,
+        offPh,
+        perPh,
         'nitheshreddy.email@gmail.com'
       )
+      //  add docs to report page
+
       setLoading(false)
-      addUserLog({
+      addUserLog(orgId, {
         s: 's',
         type: 'updateRole',
         subtype: 'updateRole',
         txt: `${email} as ${myRole}`,
         by: 'nitheshreddy.email@gmail.com',
       })
+
       setFormMessage({
         color: 'green',
         message: `Role is updated Successfully`,
       })
     } else {
       const data = JSON.stringify({
+        empId: empId,
         email: email,
         name: name,
         password: 'redefine@123',
         dept: deptVal,
         role: myRole,
-        orgName: 'spark',
+        orgName: 'Maa Homes',
+        orgId: 'maahomes',
+        userStatus: 'active',
+        orgStatus: 'active',
+        offPh: offPh,
+        perPh: perPh,
       })
 
       const config = {
@@ -110,13 +130,42 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
       }
       // url: 'https://redefine-functions.azurewebsites.net/api/Redefine_addUser?code=Ojuk8KF6kkxJMoOF4/XZf2kh8WHN5aMtOMlv0bbveJYZrCbRU1C9CA==',
       axios(config)
-        .then(function (response) {
+        .then(async function (response) {
           if (response.data) {
             setLoading(false)
-            const { success, msg, payload } = response['data']
+            const { success, msg, payload } = await response['data']
+            // const { id } = payload
+            console.log('user payload is ', response)
 
             if (success) {
-              addUserLog({
+              const docDetailsIs = await checkIfUserAlreadyExists(
+                'users',
+                email
+              )
+
+              console.log('docDetailsIs', docDetailsIs, docDetailsIs[0]['uid'])
+              updateUserRole(
+                empId,
+                orgId,
+                docDetailsIs[0]['uid'],
+                deptVal,
+                myRole,
+                email,
+                offPh,
+                perPh,
+                'nitheshreddy.email@gmail.com'
+              )
+              const x = {
+                name,
+                empId,
+                email,
+                uid: docDetailsIs[0]['uid'],
+                userStatus: 'active',
+                orgStatus: 'active',
+              }
+              createUserToWorkReport(`${orgId}_W_Reports`, x)
+              createUserToWorkReport(`${orgId}_W_AReports`, x)
+              addUserLog(orgId, {
                 s: 's',
                 type: 'addUser',
                 subtype: 'addUser',
@@ -124,7 +173,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                 by: 'nitheshreddy.email@gmail.com',
               })
             }
-            formMethods.reset()
+            await formMethods.reset()
             setFormMessage({
               color: success ? 'green' : 'red',
               message: success
@@ -143,8 +192,14 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         })
     }
   }
-
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
   const validate = Yup.object({
+    // empId: Yup.number()
+    //   .positive()
+    //   .min(3, 'Must be atleast 3 digits')
+    //   .max(15, 'Must be 8 characters or less')
+    //   .required('Required'),
     name: Yup.string()
       .max(15, 'Must be 15 characters or less')
       .required('Required'),
@@ -158,6 +213,14 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
     // confirmPassword: Yup.string()
     //   .oneOf([Yup.ref('password'), null], 'Password must match')
     //   .required('Confirm password is required'),
+    // offPh: Yup.string()
+    //   .matches(phoneRegExp, 'Phone number is not valid')
+    //   .min(10, 'to short')
+    //   .max(10, 'to long'),
+    // perPh: Yup.string()
+    //   .matches(phoneRegExp, 'Phone number is not valid')
+    //   .min(10, 'to short')
+    //   .max(10, 'to long'),
     deptVal: Yup.string()
       // .oneOf(['Admin', 'CRM'], 'Required Dept')
       .required('Req Dept'),
@@ -173,9 +236,13 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         </Dialog.Title>
       </div>
       {formMessage.message && (
-        <p className={`text-lg text-${formMessage.color}-500 text-center my-3`}>
-          {formMessage.message}
-        </p>
+        <div className=" w-full bg-[#E9F6ED] ml-9 mr-9 ">
+          <p
+            className={`text-lg text-${formMessage.color}-500 text-left px-6 my-3`}
+          >
+            {formMessage.message}
+          </p>
+        </div>
       )}
       <div className="grid gap-8 grid-cols-1 mx-10 flex flex-col">
         <Formik
@@ -184,6 +251,9 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
             email: email,
             deptVal: department,
             myRole: '',
+            empId: 10,
+            perPh: '',
+            offPh: '',
           }}
           validationSchema={validate}
           onSubmit={(values) => {
@@ -195,6 +265,12 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
             <div className="mt-16">
               <Form>
                 <TextField
+                  label="Employee Id*"
+                  name="empId"
+                  type="number"
+                  disabled={editMode}
+                />
+                <TextField
                   label="User Name*"
                   name="name"
                   type="text"
@@ -204,6 +280,18 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                   label="Email Id*"
                   name="email"
                   type="email"
+                  disabled={editMode}
+                />
+                <TextField
+                  label="Official Phone Number*"
+                  name="offPh"
+                  type="text"
+                  disabled={editMode}
+                />
+                <TextField
+                  label="Personal Phone Number*"
+                  name="perPh"
+                  type="text"
                   disabled={editMode}
                 />
                 <CustomSelect

@@ -23,8 +23,11 @@ import {
   updateProject,
 } from 'src/context/dbQueryFirebase'
 import AddBankDetailsForm from '../addBankDetailsForm'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const DialogFormBody = ({ title, dialogOpen, project }) => {
+  const { user } = useAuth()
+  const { orgId } = user
   const [selected, setSelected] = useState(
     project?.projectType || projectPlans[0]
   )
@@ -94,6 +97,7 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
     setLoading(true)
     if (project?.editMode) {
       await updateProject(
+        orgId,
         project.uid,
         updatedData,
         existingBuildBankId,
@@ -101,7 +105,7 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
         enqueueSnackbar
       )
     } else {
-      await createProject(updatedData, enqueueSnackbar, resetForm)
+      await createProject(orgId, updatedData, enqueueSnackbar, resetForm)
     }
     setLoading(false)
   }
@@ -111,7 +115,9 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
   }
 
   useEffect(() => {
+
     const unsubscribe = steamBankDetailsList(
+      orgId,
       (querySnapshot) => {
         const addNewSetUp = [{ value: 'addNewOption', label: 'Add New' }]
         const bankA = querySnapshot.docs.map((docSnapshot) => {

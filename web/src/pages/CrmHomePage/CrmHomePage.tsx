@@ -33,8 +33,12 @@ import CrmTaskList from 'src/components/A_CRMcomp/CrmTaskList'
 import FinanceTransactionsHome from 'src/components/TableComp/FinanceTransactionsHome'
 import CrmBucketList from 'src/components/TableComp/CrmBuckets'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const CrmHomePage = () => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false)
   const [project, setProject] = useState({})
@@ -45,6 +49,7 @@ const CrmHomePage = () => {
 
   const getProjects = async () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()

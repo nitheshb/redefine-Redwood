@@ -96,7 +96,10 @@ export default function AuthContextProvider({ children }) {
   const authenticate = useCallback(
     async (currentUser) => {
       const additionalUserInfo = await getUser(currentUser.uid)
-      const access = await getSelectedRoleAccess(additionalUserInfo?.roles[0])
+      const access = await getSelectedRoleAccess(
+        additionalUserInfo?.orgId,
+        additionalUserInfo?.roles[0]
+      )
 
       const user = {
         uid: currentUser.uid,
@@ -106,6 +109,8 @@ export default function AuthContextProvider({ children }) {
         phone: currentUser.phoneNumber,
         token: currentUser.uid,
         role: additionalUserInfo?.roles,
+        orgId: additionalUserInfo?.orgId,
+        orgName: additionalUserInfo?.orgName,
         access,
       }
       console.log('----user--', user)
@@ -167,6 +172,7 @@ export default function AuthContextProvider({ children }) {
   function logout() {
     deAuthenticate()
     navigate(routes.login(), { replace: true })
+    console.log('was this triggered')
     return signOut(auth)
   }
 

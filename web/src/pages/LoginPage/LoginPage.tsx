@@ -46,8 +46,17 @@ const LoginPage = () => {
         setloginErrorMsg('Something went wrong')
       }
     } catch (error) {
+      console.log('error is ', error)
+      const { code, message, name } = error
+      console.log('error is message ', code, message, name, code === undefined)
       setloginError(true)
-      setloginErrorMsg('Invalid Username/Password')
+      if (code === undefined) {
+        setloginErrorMsg('Please try again')
+      } else if (code === 'auth/wrong-password') {
+        setloginErrorMsg('Invalid Username/Password')
+      } else {
+        setloginErrorMsg('Contact Admin')
+      }
     }
     setloader(false)
   }
@@ -189,7 +198,7 @@ const LoginPage = () => {
                   Log in
                 </Submit>
               </Form>
-
+              {/*
               <div className="pt-4 ">
                 <div className="font-light text-center text-gray-500 ">
                   <span className=" font-sm">Not registered yet?</span>
@@ -200,7 +209,7 @@ const LoginPage = () => {
                     Create an Account
                   </a>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

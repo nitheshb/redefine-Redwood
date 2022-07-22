@@ -406,6 +406,7 @@ const Floordetails = ({
   const getUnitsFun = async () => {
     console.log('get dataf un is ', selBlock, selBlock?.uid)
     const todoData = await getUnits(
+      
       (querySnapshot) => {
         let pro
         const y = []

@@ -2,7 +2,7 @@
 // directories are supported, and should be uppercase. Each subdirectory will be
 // prepended onto the component name.
 
-import { Router, Route } from '@redwoodjs/router'
+import { Router, Route, Redirect } from '@redwoodjs/router'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import FinanceHomePagePage from './pages/FinanceHomePagePage/FinanceHomePagePage'
@@ -10,7 +10,7 @@ import FinanceHomePagePage from './pages/FinanceHomePagePage/FinanceHomePagePage
 const defaultRoutes = () => {
   return (
     <>
-      <Route path="/admin/home" page={HomePage} name="home" />
+      {/* <Route path="/admin/home" page={HomePage} name="home" />
       <Route path="/admin/users-admin" page={UsersAdminPage} name="usersAdmin" />
       <Route path="/admin/leads-manager" page={LeadsManagerPage} name="leadsManager" />
       <Route path="/admin/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
@@ -22,12 +22,12 @@ const defaultRoutes = () => {
       <Route path="/admin/erp-account" page={ErpAccountHomePage} name="erpAccount" />
       <Route path="/users-admin" page={UsersAdminPage} name="usersAdmin" />
       <Route path="/leads-manager" page={LeadsManagerPage} name="leadsManager" />
-      <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" />
+      <Route path="/leads-caller-board" page={LeadsCallerBoardPage} name="leadsCallerBoard" /> */}
       <Route path="/project-edit/{uid}" page={ProjectEditPage} name="projectEdit" />
       <Route path="/project-module" page={ProjectModulePage} name="projectModule" />
-      <Route path="/legal-module" page={LegalHomePage} name="legalModule" />
+      {/* <Route path="/legal-module" page={LegalHomePage} name="legalModule" />
       <Route path="/finance-module" page={FinanceHomePagePage} name="financeModule" />
-      <Route path="/crm-module" page={CrmHomePage} name="crmModule" />
+      <Route path="/crm-module" page={CrmHomePage} name="crmModule" /> */}
       <Route path="/erp-account" page={ErpAccountHomePage} name="erpAccount" />
     </>
   )
@@ -44,8 +44,8 @@ const Routes = () => {
         <Route path="/login" page={LoginPage} name="login" />
       </>
     )
-  } else
-   if (user?.role?.includes(USER_ROLES.ADMIN)) {
+    // return <Redirect to="/login" />
+  } else if (user?.role?.includes(USER_ROLES.ADMIN)) {
     UpdatedRoutes = (
       <>
         <Route path="/admin/home" page={HomePage} name="home" />
@@ -99,7 +99,7 @@ const Routes = () => {
     )
   } else {
     if (user?.role) {
-      console.log('user yo yo is am i here')
+      console.log('user yo yo is am i here role issue')
       UpdatedRoutes = (
         <>
           <Route path="/access-denied" page={AccessDeniedPage} name="accessDenied" />
@@ -115,7 +115,9 @@ const Routes = () => {
       <Route path="/crm-home" page={CrmHomePage} name="crmHome" />
       <Route path="/finance-home-page" page={FinanceHomePagePage} name="financeHomePage" />
       {UpdatedRoutes}
-      <Route path="/login" page={LoginPage} name="login" />
+
+  
+      <Route path="/admin/login" page={LoginPage} name="login" />
       <Route path="/" page={LoginPage} name="login" />
       <Route notfound page={NotFoundPage} />
     </Router>

@@ -16,8 +16,6 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
-  addCustomer,
-  addLead,
   addLeadScheduler,
   updateLeadCustomerDetailsTo,
   checkIfLeadAlreadyExists,
@@ -43,6 +41,7 @@ const PaymentScheduleSheet = ({
   soldPrice,
 }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
@@ -54,6 +53,7 @@ const PaymentScheduleSheet = ({
 
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -78,6 +78,7 @@ const PaymentScheduleSheet = ({
 
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -321,6 +322,7 @@ const PaymentScheduleSheet = ({
     console.log('did you find my id', id, leadDetailsObj2)
 
     updateLeadCustomerDetailsTo(
+      orgId,
       id,
       updateDoc,
       'nitheshreddy.email@gmail.com',
@@ -425,7 +427,6 @@ const PaymentScheduleSheet = ({
                                                 Description
                                               </th>
 
-
                                               <th
                                                 scope="col"
                                                 className="py-3.5 pl-3 pr-8 text-right text-sm font-bold uppercase text-slate-700 sm:pr-6 md:pr-0"
@@ -465,7 +466,6 @@ const PaymentScheduleSheet = ({
                                                       1 unit at $0.00
                                                     </div>
                                                   </td>
-
 
                                                   <td className="py-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
                                                     {d1?.stage?.value ===

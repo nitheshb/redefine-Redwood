@@ -4,33 +4,22 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/outline'
 import { useSnackbar } from 'notistack'
-import { documentId } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
-import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
-import Floordetails from 'src/components/Floordetails/Floordetails'
 import {
-  deleteAsset,
   deleteBankAccount,
-  getPlanDiagramByPhase,
   steamBankDetailsList,
   steamVirtualAccountsList,
 } from 'src/context/dbQueryFirebase'
 import SiderForm from './SiderForm/SiderForm'
-const AllBankDetailsView = ({
-  title,
-  blocks = [],
-  phaseFeed,
-  pId,
-  projectDetails,
-  phaseDetails,
-  data,
-}) => {
+import { useAuth } from 'src/context/firebase-auth-context'
+const AllBankDetailsView = ({ title, pId, data }) => {
+  const { user } = useAuth()
+  const { orgId } = user
   const { enqueueSnackbar } = useSnackbar()
   const [bankDetialsA, setGetBankDetailsA] = useState([])
-  const [showAssetLink, setShowAssetLink] = useState('')
 
   const [sliderInfo, setSliderInfo] = useState({
     open: false,
@@ -52,8 +41,10 @@ const AllBankDetailsView = ({
     getBankDetails()
   }, [])
   const getBankDetails = async () => {
+    const { orgId } = user
     if (title === 'Bank Accounts') {
       const unsubscribe = steamBankDetailsList(
+        orgId,
         (querySnapshot) => {
           const response = querySnapshot.docs.map((docSnapshot) => {
             return { ...docSnapshot.data(), ...{ docId: docSnapshot.id } }
@@ -68,6 +59,7 @@ const AllBankDetailsView = ({
       return unsubscribe
     } else if (title === 'Virtual Accounts') {
       const unsubscribe = steamVirtualAccountsList(
+        orgId,
         (querySnapshot) => {
           const response = querySnapshot.docs.map((docSnapshot) => {
             return { ...docSnapshot.data(), ...{ docId: docSnapshot.id } }
@@ -92,7 +84,7 @@ const AllBankDetailsView = ({
         }
       )
     } else {
-      deleteBankAccount(docId, '', '', '', enqueueSnackbar)
+      deleteBankAccount(orgId, docId, '', '', '', enqueueSnackbar)
     }
   }
 

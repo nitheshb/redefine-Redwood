@@ -6,7 +6,6 @@ import { array, object, string } from 'yup'
 import { MultipleFileUploadField } from './MultipleFileUploadField'
 import { parse } from 'papaparse'
 import csv from 'csvtojson'
-import { addLead, getLedsData } from '../../context/dbQueryFirebase'
 
 export default function LeadsDropHomes({
   title,
@@ -33,7 +32,7 @@ export default function LeadsDropHomes({
           // const records = input.data
           await setexistingCols((existing) => [...existing, ...input.data])
           // let x =   await getLedsData()
-          // await addLead(existingCols)
+
           console.log('Finished:', existingCols)
         },
       })
@@ -93,7 +92,6 @@ export default function LeadsDropHomes({
                       ...input.data,
                     ])
                     // let x =   await getLedsData()
-                    // await addLead(existingCols)
                     console.log('Finished:', existingCols)
                   },
                 })

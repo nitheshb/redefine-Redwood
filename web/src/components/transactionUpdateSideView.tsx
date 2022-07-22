@@ -42,7 +42,6 @@ import {
   getCustomerDocs,
   getAllProjects,
   updateLeadProject,
-  steamLeadById,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
@@ -135,6 +134,7 @@ export default function TransactionUpdateSideView({
 }) {
   console.log('customer Details', customerDetails)
   const { user } = useAuth()
+  const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
 
@@ -208,6 +208,7 @@ export default function TransactionUpdateSideView({
 
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -265,7 +266,7 @@ export default function TransactionUpdateSideView({
       return
     }
     //  else if (fet === 'ph') {
-    //   const unsubscribe = steamLeadPhoneLog(
+    //   const unsubscribe = steamLeadPhoneLog(orgId,
     //     (doc) => {
     //       console.log('my total fetched list is yo yo 1', doc.data())
     //       const usersList = doc.data()
@@ -315,6 +316,7 @@ export default function TransactionUpdateSideView({
 
   const getCustomerDocsFun = () => {
     const unsubscribe = getCustomerDocs(
+      orgId,
       id,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
@@ -330,6 +332,7 @@ export default function TransactionUpdateSideView({
 
   const getProjectsListFun = () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -356,7 +359,7 @@ export default function TransactionUpdateSideView({
     setAssignedTo(value.value)
     // save assigner Details in db
 
-    updateLeadAssigTo(leadDocId, value, by)
+    updateLeadAssigTo(orgId,leadDocId, value, by)
   }
   const setNewProject = (leadDocId, value) => {
     console.log('sel pROJECT DETAILS ', value)
@@ -370,7 +373,7 @@ export default function TransactionUpdateSideView({
       ProjectId: value.uid,
     }
     setSelProjectIs(value)
-    updateLeadProject(leadDocId, x)
+    updateLeadProject(orgId,leadDocId, x)
     // updateLeadAssigTo(leadDocId, value, by)
   }
 
@@ -401,6 +404,7 @@ export default function TransactionUpdateSideView({
   const getLeadsDataFun = async () => {
     console.log('ami triggered')
     const unsubscribe = steamLeadActivityLog(
+      orgId,
       (doc) => {
         console.log('my total fetched list is yo yo ', doc.data())
         const usersList = doc.data()
@@ -429,6 +433,7 @@ export default function TransactionUpdateSideView({
 
     //  lead Schedule list
     steamLeadScheduleLog(
+      orgId,
       (doc) => {
         console.log('my total fetched list is 1', doc.data())
         const usersList = doc.data()
@@ -527,9 +532,9 @@ export default function TransactionUpdateSideView({
     setschStsA(x)
     // addSchedulerLog(id, data)
     console.log('new one ', schStsA)
-    await addLeadScheduler(id, data, schStsA, '')
+    await addLeadScheduler(orgId,id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(id, tempLeadStatus)
+      updateLeadStatus(orgId,id, tempLeadStatus)
     }
     await setTakTitle('')
     await setAddSch(false)
@@ -547,7 +552,7 @@ export default function TransactionUpdateSideView({
     const newTm = Timestamp.now().toMillis() + 10800000 + 5 * 3600000
 
     console.log('new one ', schStsA)
-    await updateSch(id, tmId, newTm, schStsA)
+    await updateSch(orgId, id, tmId, newTm, schStsA)
     await setTakTitle('')
     await setAddSch(false)
   }
@@ -566,7 +571,7 @@ export default function TransactionUpdateSideView({
     x[inx] = 'completed'
     setschStsA(x)
 
-    updateSchLog(id, data.ct, 'completed', schStsA)
+    updateSchLog(orgId, id, data.ct, 'completed', schStsA)
   }
   const delFun = (data) => {
     console.log('clicked schedule is', data)
@@ -578,7 +583,7 @@ export default function TransactionUpdateSideView({
     setschStsA(x)
     setschStsMA(y)
 
-    deleteSchLog(id, data.ct, 'completed', schStsA, schStsMA)
+    deleteSchLog(orgId,id, data.ct, 'completed', schStsA, schStsMA)
   }
 
   const selFun = () => {
@@ -599,7 +604,7 @@ export default function TransactionUpdateSideView({
       ct: Timestamp.now().toMillis(),
     }
 
-    await addLeadNotes(id, data)
+    await addLeadNotes(orgId, id, data)
     await setNotesTitle('')
     await setAddNote(false)
   }
@@ -627,7 +632,7 @@ export default function TransactionUpdateSideView({
         (err) => console.log(err),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            createAttach(url, by, file.name, id, attachType)
+            createAttach(orgId,url, by, file.name, id, attachType)
             console.log('file url i s', url)
             //  save this doc as a new file in spark_leads_doc
           })

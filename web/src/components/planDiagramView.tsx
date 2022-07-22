@@ -11,6 +11,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
 import Floordetails from 'src/components/Floordetails/Floordetails'
 import { deleteAsset, getPlanDiagramByPhase } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 import SiderForm from './SiderForm/SiderForm'
 const PlanDiagramView = ({
   title,
@@ -22,6 +23,9 @@ const PlanDiagramView = ({
   data,
   source,
 }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   console.log('piddd is ', pId, blocks, phaseFeed, data)
   const [planDiagramsA, setPlanDiagramsA] = useState([])
   const [showAssetLink, setShowAssetLink] = useState('')
@@ -65,6 +69,7 @@ const PlanDiagramView = ({
   }, [pId, title])
   const getPlanDiagrams = async (phaseId, type) => {
     const unsubscribe = getPlanDiagramByPhase(
+      orgId,
       { pId: pId, phaseId, type: type },
       (querySnapshot) => {
         const response = querySnapshot.docs.map((docSnapshot) => {
@@ -83,7 +88,7 @@ const PlanDiagramView = ({
     console.log('assert details ', docId)
     // create a delete query for assetDetails
     // where url = assetDetails?.url
-    deleteAsset(docId, '', '', '')
+    deleteAsset(orgId, docId, '', '', '')
   }
 
   const url =

@@ -4,8 +4,12 @@ import { motion } from 'framer-motion'
 import { deleteUser, steamUsersList } from 'src/context/dbQueryFirebase'
 import { TrashIcon } from '@heroicons/react/outline'
 import StyledButton from 'src/components/RoundedButton'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const UserManageTable = ({ editEmployeeFun }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [filterData, setFilterData] = useState([])
   const [selDept, setSelDept] = useState('')
@@ -32,6 +36,7 @@ const UserManageTable = ({ editEmployeeFun }) => {
   }, [selDept, leadsFetchedData])
   const getLeadsDataFun = async () => {
     const unsubscribe = steamUsersList(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -124,6 +129,12 @@ const UserManageTable = ({ editEmployeeFun }) => {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
+                    Emp Id
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Dept
                   </th>
                   <th
@@ -169,6 +180,12 @@ const UserManageTable = ({ editEmployeeFun }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
+                        {person.empId}
+                      </div>
+
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
                         {person.title}
                       </div>
                       <div className="text-sm text-gray-500">
@@ -193,6 +210,7 @@ const UserManageTable = ({ editEmployeeFun }) => {
                         className="w-5 h-5 ml-[18px] mb-[4px] inline cursor-pointer"
                         onClick={() =>
                           deleteUser(
+                            orgId,
                             person?.uid,
                             'nithe.nithesh@gmail.com',
                             person?.email,

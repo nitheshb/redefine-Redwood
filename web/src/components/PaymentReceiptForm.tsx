@@ -22,17 +22,14 @@ import {
 } from 'src/constants/projects'
 import { AreaConverter } from 'src/components/AreaConverter'
 import {
-  addBankAccount,
   addPaymentReceivedEntry,
-  addVirtualAccount,
   createBookedCustomer,
-  createPhase,
   updateLeadStatus,
-  updatePhase,
   updateUnitAsBooked,
 } from 'src/context/dbQueryFirebase'
 import { TextField2 } from 'src/util/formFields/TextField2'
 import { arrayUnion } from 'firebase/firestore'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const AddPaymentDetailsForm = ({
   title,
@@ -41,6 +38,8 @@ const AddPaymentDetailsForm = ({
   dialogOpen,
   phase,
 }) => {
+  const { user } = useAuth()
+  const { orgId } = user
   const [loading, setLoading] = useState(false)
   const [openAreaFields, setOpenAreaFields] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
@@ -69,6 +68,7 @@ const AddPaymentDetailsForm = ({
 
     // 1)Make an entry to finance Table {source: ''}
     const x1 = await addPaymentReceivedEntry(
+      orgId,
       uid,
       { leadId: id },
       data,
@@ -79,6 +79,7 @@ const AddPaymentDetailsForm = ({
 
     // 2)Create new record in Customer Table
     const x2 = await createBookedCustomer(
+      orgId,
       uid,
       {
         leadId: id,
@@ -110,6 +111,7 @@ const AddPaymentDetailsForm = ({
     unitUpdate[`cs`] = leadDetailsObj2[`${uid}_cs`]
 
     updateUnitAsBooked(
+      orgId,
       uid,
       id,
       unitUpdate,
@@ -120,8 +122,7 @@ const AddPaymentDetailsForm = ({
 
     // 4)update lead status to book
     // updateLeadStatus(leadDocId, newStatus)
-    updateLeadStatus(id, 'booked')
-
+    updateLeadStatus(orgId, id, 'booked')
 
     const updatedData = {
       ...data,

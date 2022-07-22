@@ -17,6 +17,9 @@ import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
 import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 
 const FinanceHomePagePage = () => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false)
   const [project, setProject] = useState({})
@@ -27,6 +30,7 @@ const FinanceHomePagePage = () => {
 
   const getProjects = async () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()

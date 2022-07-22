@@ -16,7 +16,7 @@ import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
   addLead,
-  addLeadScheduler,
+
   checkIfLeadAlreadyExists,
   getAllProjects,
   steamUsersListByRole,
@@ -31,11 +31,13 @@ import {
 
 const AddLeadForm = ({ title, dialogOpen }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
+      orgId,
       (querySnapshot) => {
         const usersListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -56,6 +58,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   }, [])
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -183,7 +186,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
         email: assignedToObj?.email || '',
         label: assignedToObj?.label || '',
         name: assignedToObj?.name || '',
-        namespace: 'spark',
+        namespace: orgId,
         roles: assignedToObj?.roles || [],
         uid: assignedToObj?.value || '',
         value: assignedToObj?.value || '',
@@ -200,6 +203,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
 
       // proceed to copy
       await addLead(
+        orgId,
         leadData,
         user?.email,
         `lead created and assidged to ${assignedTo}`

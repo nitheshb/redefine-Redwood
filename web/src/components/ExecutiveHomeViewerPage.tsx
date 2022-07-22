@@ -16,7 +16,6 @@ import {
   getAllProjects,
   getLeadsByStatus,
   getLeadsByStatusUser,
-  updateLeadAssigTo,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
@@ -187,6 +186,7 @@ const BoardData = [
 // }
 const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const { user } = useAuth()
+  const { orgId } = user
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -245,6 +245,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
 
   useEffect(() => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -276,10 +277,11 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
 
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
-    const { access, uid } = user
+    const { access, uid, orgId } = user
 
     if (access?.includes('manage_leads')) {
       const unsubscribe = getLeadsByStatus(
+        orgId,
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
             const x = docSnapshot.data()
@@ -317,6 +319,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
       return unsubscribe
     } else {
       const unsubscribe = getLeadsByStatusUser(
+        orgId,
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
             const x = docSnapshot.data()
@@ -383,6 +386,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     )
 
     updateLeadStatus(
+      orgId,
       re.draggableId,
       statusFields[parseInt(re.destination.droppableId)]
     )

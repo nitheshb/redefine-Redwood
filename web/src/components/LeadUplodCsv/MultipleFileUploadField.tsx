@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-expressions */
 import { Grid, makeStyles } from '@material-ui/core'
 import { useField } from 'formik'
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { Form, Formik } from 'formik'
-import { DocumentAddIcon } from '@heroicons/react/outline'
+import { DownloadIcon } from '@heroicons/react/solid'
 import { parse } from 'papaparse'
 import { FileError, FileRejection, useDropzone } from 'react-dropzone'
 import { SingleFileUploadWithProgress } from './SingleFileUploadWithProgress'
@@ -16,10 +17,14 @@ import {
   checkIfLeadAlreadyExists,
   checkIfUnitAlreadyExists,
   createPhaseAssets,
+  getAllProjects,
+  steamUsersListByRole,
 } from 'src/context/dbQueryFirebase'
 import { TextField } from 'src/util/formFields/TextField'
 import Loader from '../Loader/Loader'
 import { storage } from 'src/context/firebaseConfig'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { Timestamp } from '@firebase/firestore'
 
 let currentId = 0
 
@@ -96,16 +101,55 @@ export function MultipleFileUploadField({
   myBlock,
   source,
 }) {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [_, __, helpers] = useField(name)
   const classes = useStyles()
 
   const [files, setFiles] = useState<UploadableFile[]>([])
   const [fileRecords, setfileRecords] = useState([])
   const [fileName, setFileName] = useState('')
+  const [projectList, setprojectList] = useState([])
+  const [salesTeamList, setSalesTeamList] = useState([])
 
   const [uploadedUrl, setUploadedUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [formMessage, setFormMessage] = useState('')
+
+  useEffect(() => {
+    // get sales Team details
+    if (title === 'Import Leads') {
+      getAllProjects(
+        orgId,
+        async (querySnapshot) => {
+          const usersListA = await querySnapshot.docs.map((docSnapshot) =>
+            docSnapshot.data()
+          )
+          await setprojectList(usersListA)
+          await console.log('fetched users list is', usersListA, projectList)
+        },
+        (error) => setprojectList([])
+      )
+      steamUsersListByRole(
+        orgId,
+        (querySnapshot) => {
+          const usersListA = querySnapshot.docs.map((docSnapshot) =>
+            docSnapshot.data()
+          )
+          usersListA.map((user) => {
+            user.label = user.displayName || user.name
+            user.value = user.uid
+          })
+          console.log('fetched users list is', usersListA)
+
+          setSalesTeamList(usersListA)
+        },
+        (error) => setSalesTeamList([])
+      )
+    }
+  }, [])
+
   const onDrop = useCallback((accFiles: File[], rejFiles: FileRejection[]) => {
     const mappedAcc = accFiles.map((file) => ({
       file,
@@ -157,6 +201,7 @@ export function MultipleFileUploadField({
           }
 
           createPhaseAssets(
+            orgId,
             url,
             'nithe.nithesh@gmail.com',
             fileName || file.name,
@@ -175,7 +220,6 @@ export function MultipleFileUploadField({
       )
     } catch (error) {
       console.log('upload error is ', error)
-      
     }
   }
   function onUpload(file: File, url: string) {
@@ -216,7 +260,7 @@ export function MultipleFileUploadField({
 
           await setfileRecords(serialData)
           // let x =   await getLedsData()
-          // await addLead(existingCols)
+
           await console.log('Finished: records', serialData, fileRecords)
         } else if (['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)) {
           console.log('data os jere', records)
@@ -229,11 +273,44 @@ export function MultipleFileUploadField({
           // check in db if record exists with matched phone Number & email
           const serialData = await Promise.all(
             clean1.map(async (dRow) => {
+              console.log('found row is ', dRow)
               const foundLength = await checkIfLeadAlreadyExists(
                 'spark_leads',
                 dRow['Mobile']
               )
               dRow['mode'] = await makeMode(foundLength)
+              if (dRow['mode'] === 'valid' && dRow['EmpId'] != '') {
+                console.log('found row is 1', dRow)
+                // check & get employee details and push it to dRow
+                // project Id
+                const MatchedValA = await salesTeamList.filter((data) => {
+                  return data.empId == dRow['EmpId']
+                })
+                if (MatchedValA.length === 1) {
+                  console.log('found row is 2', dRow)
+                  dRow['assignedTo'] = MatchedValA[0]['uid']
+                  dRow['assignedToObj'] = {
+                    empId: MatchedValA[0]['empId'],
+                    label: MatchedValA[0]['name'],
+                    name: MatchedValA[0]['name'],
+                  }
+                }
+              }
+
+              if (dRow['Project'] != '') {
+                console.log('found row is 3', dRow, projectList)
+                const projectFilA = projectList.filter((data) => {
+                  console.log('found row is 3.1', data)
+                  return data.projectName == dRow['Project']
+                })
+                if (projectFilA.length >= 1) {
+                  console.log('found row is 4', dRow)
+                  dRow['ProjectId'] = projectFilA[0]['uid']
+                }
+              }
+
+              dRow['CT'] = Timestamp.now().toMillis()
+              console.log('found row is 5', dRow)
               await console.log(
                 'foundLength is',
                 foundLength,
@@ -247,7 +324,7 @@ export function MultipleFileUploadField({
 
           await setfileRecords(serialData)
           // let x =   await getLedsData()
-          // await addLead(existingCols)
+
           await console.log('Finished: records', serialData, fileRecords)
         }
       },
@@ -312,9 +389,18 @@ export function MultipleFileUploadField({
   return (
     <React.Fragment>
       <div className="mx-3" {...getRootProps({ style })}>
+        <div className="w-full flex flex-row justify-between ">
+          <span></span>
+          <a download="unitsTemplate.csv" target="_blank" href="/leadsTemplate">
+            <span className="text-xs text-blue-500">
+              <DownloadIcon className="h-3 w-3 inline-block" /> Template
+            </span>
+          </a>
+        </div>
         <input {...getInputProps()} />
         {/* <DocumentAddIcon className="h-20 w-60 " aria-hidden="true" /> */}
-        <div className="py-8 px-8 flex flex-col items-center">
+        {/* <span>sample template</span> */}
+        <div className="pt-2 pb-8 px-8 flex flex-col items-center">
           <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
             <img
               className="w-[200px] h-[200px] inline"

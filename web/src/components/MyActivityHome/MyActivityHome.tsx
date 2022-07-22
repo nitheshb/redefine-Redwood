@@ -7,42 +7,18 @@ import { ClockIcon } from '@heroicons/react/solid'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
-  deleteUser,
-  getLedsData1,
-  getUsersList,
+
   steamUsersActivityLog,
   steamUsersActivityOfUser,
-  steamUsersList,
 } from 'src/context/dbQueryFirebase'
-import { TrashIcon } from '@heroicons/react/outline'
-import { camalize } from 'src/util/camelCaseConv'
-import { prettyDate, timeConv } from 'src/util/dateConverter'
-import LeadsTeamReportBody from '../LeadsTeamReportBody'
 
-const people = [
-  {
-    name: 'Jane Cooper',
-    title: 'Regional Paradigm Technician',
-    department: 'Optimization',
-    role: 'Admin',
-    email: 'jane.cooper1@gmail.com',
-    reporting: 'nithe.nithesh@gmail.com',
-    image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-  },
-  {
-    name: 'Jane Cooper',
-    title: 'Regional Paradigm Technician',
-    department: 'Optimization',
-    role: 'Admin',
-    email: 'jane.cooper@gmail.com',
-    reporting: 'nithe.nithesh@gmail.com',
-    image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-  },
-  // More people...
-]
+import LeadsTeamReportBody from '../LeadsTeamReportBody'
+import { useAuth } from 'src/context/firebase-auth-context'
+
+
 const MyActivityHome = ({ source }) => {
+  const { user } = useAuth()
+  const { orgId } = user
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [filterData, setFilterData] = useState([])
   const [selDept, setSelDept] = useState('')
@@ -82,6 +58,7 @@ const MyActivityHome = ({ source }) => {
     // await console.log('leadsData', leadsData)
     if (source === 'team') {
       const unsubscribe = steamUsersActivityLog(
+        orgId,
         (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) =>
             docSnapshot.data()
@@ -93,6 +70,7 @@ const MyActivityHome = ({ source }) => {
       return unsubscribe
     } else {
       const unsubscribe = steamUsersActivityOfUser(
+        orgId, 
         (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) =>
             docSnapshot.data()

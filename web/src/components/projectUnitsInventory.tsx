@@ -12,6 +12,7 @@ import ProjectStatsCard from './ProjectStatsCard/ProjectStatsCard'
 import { getAllProjects } from 'src/context/dbQueryFirebase'
 import DummyBodyLayout from './DummyBodyLayout/DummyBodyLayout'
 import SiderForm from './SiderForm/SiderForm'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const projectFeedData = [
   { k: 'Total', v: 125, pic: '' },
@@ -47,6 +48,9 @@ const ProjectsUnitInventory = ({
     projectType,
     uid = 0,
   } = project
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [projects, setProjects] = useState([])
   const [isOpenSideView, setIsOpenSideView] = useState(false)
   const [projectDetails, setProjectDetails] = useState({})
@@ -55,6 +59,7 @@ const ProjectsUnitInventory = ({
   }, [])
   const getProjects = async () => {
     const unsubscribe = getAllProjects(
+      orgId,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -77,7 +82,7 @@ const ProjectsUnitInventory = ({
             <div className="flex items-center flex-shrink-0  px-0  pl-0 border-b border-grey  mb-2">
               <Link
                 className="flex items-center"
-                to={routes.projectEdit({ uid })}
+                // to={routes.projectEdit({ uid })}
               >
                 <img className="w-16 h-16" alt="" src="/apart.svg"></img>
                 <span className="relative z-10 flex items-center w-auto text-3xl font-bold leading-none pl-0 mt-[18px]">

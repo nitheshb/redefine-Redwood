@@ -8,11 +8,8 @@ import { useTranslation } from 'react-i18next' // styled components
 // import uniqueId from '../../util/generatedId'
 import {
   getLeadbyId1,
-  getLedsData1,
   getTodayTodoLeadsData,
-  getTodayTodoLeadsData1,
   getTodayTodoLeadsDataByUser,
-  steamLeadById,
 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import uniqueId from 'src/util/generatedId'
@@ -453,6 +450,7 @@ const TodayLeadsActivityListHomeView = ({
   // useTitle('Data Table V1')
   const { t } = useTranslation()
   const { user } = useAuth()
+  const { orgId } = user
   const [value, setValue] = useState('new')
   const [tableData, setTableData] = useState([])
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
@@ -474,9 +472,9 @@ const TodayLeadsActivityListHomeView = ({
     getLeadsDataFun()
   }, [taskType, user])
   const getLeadsDataFun = async () => {
-    // const leadsData = await getLedsData1()
 
     const uid = user?.uid
+    const { orgId } = user
     if (uid) {
       const torrowDate = new Date(
         +new Date().setHours(0, 0, 0, 0) + 86400000
@@ -484,6 +482,7 @@ const TodayLeadsActivityListHomeView = ({
       if (taskType === 'Today1Team' || taskType === 'UpcomingTeam') {
         console.log('torw date', torrowDate)
         const todoData = await getTodayTodoLeadsData(
+          orgId,
           (querySnapshot) => {
             let pro
             let y = []
@@ -500,7 +499,7 @@ const TodayLeadsActivityListHomeView = ({
               if (y.length > 0) {
                 x.uid = docSnapshot.id
                 // eslint-disable-next-line prefer-const
-                let y1 = await getLeadbyId1(x.uid)
+                let y1 = await getLeadbyId1(orgId, x.uid)
                 await console.log('fetched value is ', x, y)
                 x.leadUser = await y1
                 return x
@@ -535,7 +534,7 @@ const TodayLeadsActivityListHomeView = ({
         )
         await console.log('what are we', todoData)
       } else {
-        const todoData = await getTodayTodoLeadsDataByUser(
+        const todoData = await getTodayTodoLeadsDataByUser(orgId,
           (querySnapshot) => {
             let pro
             let y = []
@@ -552,7 +551,7 @@ const TodayLeadsActivityListHomeView = ({
               if (y.length > 0) {
                 x.uid = docSnapshot.id
                 // eslint-disable-next-line prefer-const
-                let y1 = await getLeadbyId1(x.uid)
+                let y1 = await getLeadbyId1(orgId, x.uid)
                 await console.log('fetched value is ', x, y)
                 x.leadUser = await y1
                 return x
@@ -593,29 +592,6 @@ const TodayLeadsActivityListHomeView = ({
     // getValueByIdFun()
   }, [todaySchL])
 
-  const getValueByIdFun = async () => {
-    todaySchL.map((data) => {
-      const { uid } = data
-
-      const z = steamLeadById(
-        (querySnapshot) => {
-          data.sch = querySnapshot.data()
-
-          console.log('my valu is', data)
-          const x = todaySchL
-          x.push(data)
-
-          // setTodaySchL(x)
-          console.log('checkerrr', todaySchL.length, x)
-          return data
-        },
-        { uid },
-        () => {
-          console.log('error')
-        }
-      )
-    })
-  }
   const handleDelete = async (ids) => {
     const { data } = await axios.post('/api/tableData1/delete', {
       ids,

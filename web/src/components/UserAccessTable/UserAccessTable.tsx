@@ -81,10 +81,11 @@ const UserAccessTable = () => {
   const [settings, setSettings] = useState([])
   const [filterData, setFilterData] = useState([])
   const { user } = useAuth()
+  const { orgId } = user
   const { enqueueSnackbar } = useSnackbar()
 
   const getAllRoleAccessDocs = async () => {
-    const data = await getAllRoleAccess()
+    const data = await getAllRoleAccess(orgId)
     setSettings(data)
   }
   useEffect(() => {
@@ -127,7 +128,7 @@ const UserAccessTable = () => {
       return item
     })
     setSettings(newSettings)
-    await updateAccessRoles(role, newAccess, user, enqueueSnackbar, element)
+    await updateAccessRoles(orgId,role, newAccess, user, enqueueSnackbar, element)
   }
   return (
     <Box className="bg-white pb-4">

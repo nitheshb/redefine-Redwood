@@ -210,6 +210,8 @@ const EnhancedTableToolbar = (props) => {
     setRowsAfterSearchKey(rows)
   }, [rows])
   const { user } = useAuth()
+
+  const { orgId } = user
   const searchKeyField = (e) => {
     // console.log('searched values is ', e.target.value)
     setSearchKey(e.target.value)
@@ -235,7 +237,7 @@ const EnhancedTableToolbar = (props) => {
     // setRows(rowsR)
   }
   const addLeadsToDB = async (records) => {
-    getLedsData1()
+    getLedsData1(orgId)
     const mappedArry = await Promise.all(
       records.map(async (data) => {
         const newData = data
@@ -243,7 +245,7 @@ const EnhancedTableToolbar = (props) => {
         newData['by'] = 'bulk'
         newData['Status'] = 'unassigned'
         console.log('am inside addLeadstoDB', newData)
-        return await addLead(newData, user?.email, 'Lead Created by csv')
+        return await addLead(orgId, newData, user?.email, 'Lead Created by csv')
         console.log('am inside addLeadstoDB')
       })
     )
@@ -259,7 +261,7 @@ const EnhancedTableToolbar = (props) => {
         newData['by'] = 'bulk'
         newData['Status'] = 'available'
         console.log('am inside addLeadstoDB', newData)
-        return await addUnit(newData, user?.email, 'Unit Created by csv')
+        return await addUnit(orgId, newData, user?.email, 'Unit Created by csv')
         console.log('am inside addLeadstoDB')
       })
     )
