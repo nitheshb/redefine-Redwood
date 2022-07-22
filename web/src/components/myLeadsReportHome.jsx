@@ -153,7 +153,7 @@ const MyLeadsReportHome = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       {/* <h1 className="text-lg font-medium">redefine.</h1> */}
                       {/* <img className="w-8 h-8" alt="" src={'/m4.png'}></img> */}
                       <div className="relative z-10 flex items-center w-auto text-md font-bold leading-none pl-0 ml-1 mt-4 ">
-                        {`Lead Stastics of ${user.displayName}  for this Week `}
+                        {`Lead Stastics of ${user.displayName}  for this Week 1 `}
                       </div>
                     </div>
 

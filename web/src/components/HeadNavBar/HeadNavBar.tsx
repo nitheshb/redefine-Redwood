@@ -141,9 +141,7 @@ const HeadNavBar = () => {
           <Box display="flex" flexDirection="column" mr={2}>
             <Typography variant="body2">{user?.displayName}</Typography>
             <Typography variant="caption" className="text-gray-500">
-              {user?.role?.[0]}
-              {user?.orgId || user?.orgName}
-              {user?.uid}
+              {user?.orgName || user?.orgId} - {user?.role?.[0]}
             </Typography>
           </Box>
         </Box>

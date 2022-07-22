@@ -258,7 +258,7 @@ export default function CustomerProfileSideView({
       customerDetails?.assignedToObj?.label
     )
     setAssignedTo(customerDetails?.assignedTo)
-    setAssignerName(customerDetails?.assingedToObj.label)
+    setAssignerName(customerDetails?.assignedToObj?.label)
     setSelProjectIs({ projectName: Project, uid: ProjectId })
 
     setLeadStatus(Status)

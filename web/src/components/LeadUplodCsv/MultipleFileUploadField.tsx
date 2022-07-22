@@ -391,7 +391,11 @@ export function MultipleFileUploadField({
       <div className="mx-3" {...getRootProps({ style })}>
         <div className="w-full flex flex-row justify-between ">
           <span></span>
-          <a download="unitsTemplate.csv" target="_blank" href="/leadsTemplate">
+          <a
+            download="leadTemplate.csv"
+            target="_blank"
+            href="/leadTemplate.csv"
+          >
             <span className="text-xs text-blue-500">
               <DownloadIcon className="h-3 w-3 inline-block" /> Template
             </span>

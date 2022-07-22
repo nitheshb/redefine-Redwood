@@ -267,7 +267,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                 <TextField
                   label="Employee Id*"
                   name="empId"
-                  type="number"
+                  type="text"
                   disabled={editMode}
                 />
                 <TextField

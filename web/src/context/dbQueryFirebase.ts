@@ -422,7 +422,7 @@ export const getAllProjects = async (orgId, snapshot, error) => {
   return onSnapshot(getAllProjectsQuery, snapshot, error)
 }
 
-export const getProjectByUid = async (uid: string, snapshot, error) => {
+export const getProjectByUid = async (orgId, uid: string, snapshot, error) => {
   try {
     const getAllProjectByIdQuery = await query(
       collection(db, `${orgId}_projects`),
@@ -1295,12 +1295,12 @@ export const updateLeadAssigTo = async (orgId, leadDocId, assignedTo, by) => {
   console.log('inside updater ', {
     leadDocId,
     assignedTo: value,
-    assingedToObj: assignedTo,
+    assignedToObj: assignedTo,
     AssignedBy: by,
   })
   await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
     assignedTo: value,
-    assingedToObj: assignedTo,
+    assignedToObj: assignedTo,
     AssignedBy: by,
   })
 

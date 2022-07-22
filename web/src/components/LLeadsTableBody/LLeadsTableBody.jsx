@@ -619,7 +619,7 @@ id: "1" */}
                         searchKey={searchKey}
                         source={row.Assignedto}
                       /> */}
-                      {row?.assingedToObj?.label}
+                      {row?.assignedToObj?.label}
                     </TableCell>
                     <TableCell align="left">
                       <HighlighterStyle

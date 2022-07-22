@@ -182,7 +182,7 @@ const BlockingUnitForm = ({ title, dialogOpen }) => {
       Status: assignedTo === '' ? 'unassigned' : 'new',
       intype: 'Form',
       assignedTo: assignedToObj?.value || '',
-      assingedToObj: {
+      assignedToObj: {
         department: assignedToObj?.department || [],
         email: assignedToObj?.email || '',
         label: assignedToObj?.label || '',

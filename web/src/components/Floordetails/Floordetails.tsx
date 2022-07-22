@@ -32,6 +32,7 @@ import {
 import PieChartProject from '../comps/pieChartProject'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 import { DriveEtaSharp } from '@mui/icons-material'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const Floordetails = ({
   block = 'A',
@@ -65,6 +66,10 @@ const Floordetails = ({
     bookUnitCount,
     blockUnitCount,
   } = selBlock
+
+  const { user } = useAuth()
+
+  const { orgId } = user
   const unitStatsData = [
     {
       id: 'Total',
@@ -406,7 +411,7 @@ const Floordetails = ({
   const getUnitsFun = async () => {
     console.log('get dataf un is ', selBlock, selBlock?.uid)
     const todoData = await getUnits(
-      
+      orgId,
       (querySnapshot) => {
         let pro
         const y = []

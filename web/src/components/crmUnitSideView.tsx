@@ -235,7 +235,7 @@ export default function CrmUnitSideView({
   }, [leadSchFetchedData, selFilterVal])
   useEffect(() => {
     setAssignedTo(customerDetails?.assignedTo)
-    setAssignerName(customerDetails?.assingedToObj?.label)
+    setAssignerName(customerDetails?.assignedToObj?.label)
     setSelProjectIs({ projectName: Project, uid: ProjectId })
 
     setLeadStatus(Status)
@@ -329,7 +329,7 @@ export default function CrmUnitSideView({
     setAssignedTo(value.value)
     // save assigner Details in db
 
-    updateLeadAssigTo(orgId,leadDocId, value, by)
+    updateLeadAssigTo(orgId, leadDocId, value, by)
   }
   const setNewProject = (leadDocId, value) => {
     console.log('sel pROJECT DETAILS ', value)
@@ -343,7 +343,7 @@ export default function CrmUnitSideView({
       ProjectId: value.uid,
     }
     setSelProjectIs(value)
-    updateLeadProject(orgId,leadDocId, x)
+    updateLeadProject(orgId, leadDocId, x)
     // updateLeadAssigTo(leadDocId, value, by)
   }
 
@@ -419,7 +419,7 @@ export default function CrmUnitSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId,id, tempLeadStatus)
+      updateLeadStatus(orgId, id, tempLeadStatus)
     }
     await setTakTitle('')
     await setAddSch(false)
@@ -456,7 +456,7 @@ export default function CrmUnitSideView({
     x[inx] = 'completed'
     setschStsA(x)
 
-    updateSchLog(orgId,id, data.ct, 'completed', schStsA)
+    updateSchLog(orgId, id, data.ct, 'completed', schStsA)
   }
   const delFun = (data) => {
     console.log('clicked schedule is', data)

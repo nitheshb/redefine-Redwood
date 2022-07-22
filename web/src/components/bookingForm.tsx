@@ -192,7 +192,7 @@ const AddBookingForm = ({
       Status: assignedTo === '' ? 'unassigned' : 'new',
       intype: 'Form',
       assignedTo: assignedToObj?.value || '',
-      assingedToObj: {
+      assignedToObj: {
         department: assignedToObj?.department || [],
         email: assignedToObj?.email || '',
         label: assignedToObj?.label || '',
@@ -302,7 +302,7 @@ const AddBookingForm = ({
     purpose: leadDetailsObj2[`${uid}_otherInfo`]?.purpose || '',
     bookingSource: leadDetailsObj2?.bookingSource || '',
     bookedBy:
-      leadDetailsObj2?.bookedBy || leadDetailsObj2?.assingedToObj?.label || '',
+      leadDetailsObj2?.bookedBy || leadDetailsObj2?.assignedToObj?.label || '',
     purchasePurpose: leadDetailsObj2?.purchasePurpose || '',
   }
 

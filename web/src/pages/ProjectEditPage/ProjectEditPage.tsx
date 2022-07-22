@@ -7,6 +7,7 @@ import SiderForm from '../../components/SiderForm/SiderForm'
 import ProjectsMHomeBody from '../../components/ProjectsMHomeBody/ProjectsMHomeBody'
 import ProjPhaseHome from '../../components/ProjPhaseHome/ProjPhaseHome'
 import { getProjectByUid } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const ProjectEditPage = () => {
   const [isAddPhaseOpen, setIsAddPhaseOpen] = useState(false)
@@ -17,9 +18,13 @@ const ProjectEditPage = () => {
   const handleAddPhaseOnClose = () => setIsAddPhaseOpen(false)
   const handleEditProjectClose = () => setIsEditProjectOpen(false)
   const { uid } = useParams()
+  const { user } = useAuth()
+
+  const { orgId } = user
 
   const getProjectDetails = async (id) => {
     const unsubscribe = await getProjectByUid(
+      orgId,
       id,
       (querySnapshot) => {
         const projects = querySnapshot.docs.map((docSnapshot) =>
