@@ -18,6 +18,7 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import axios from 'axios'
 import Loader from '../Loader/Loader'
 import { DEPARTMENT_LIST, ROLES_LIST } from 'src/constants/userRoles'
+import { PhoneNoField } from 'src/util/formFields/phNoField'
 
 // import Select from 'react-select'
 // import SelectSearch from 'react-select-search'
@@ -282,18 +283,29 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                   type="email"
                   disabled={editMode}
                 />
-                <TextField
+                {/* <TextField
                   label="Official Phone Number*"
                   name="offPh"
                   type="text"
                   disabled={editMode}
+                /> */}
+                <PhoneNoField
+                  name="offPh"
+                  label="Official Phone Number*"
+                  className="input"
                 />
-                <TextField
+                {/* <TextField
                   label="Personal Phone Number*"
                   name="perPh"
                   type="text"
                   disabled={editMode}
+                /> */}
+                <PhoneNoField
+                  name="perPh"
+                  label="Personal Phone Number*"
+                  className="input"
                 />
+
                 <CustomSelect
                   name="deptName"
                   label="Department"

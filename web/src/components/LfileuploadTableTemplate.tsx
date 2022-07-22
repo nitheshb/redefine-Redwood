@@ -205,6 +205,7 @@ const EnhancedTableToolbar = (props) => {
   } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
+  const [unitUploadMessage, setUnitUploadMessage] = React.useState('')
 
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
@@ -252,6 +253,8 @@ const EnhancedTableToolbar = (props) => {
     console.log('mappedArry', mappedArry)
   }
   const addUnitsToDB = async (records, pId) => {
+    setUnitUploadMessage('Uploading')
+    // upload successfully
     const mappedArry = await Promise.all(
       records.map(async (data) => {
         const newData = data
@@ -265,6 +268,7 @@ const EnhancedTableToolbar = (props) => {
         console.log('am inside addLeadstoDB')
       })
     )
+    await setUnitUploadMessage('Upload Successfull')
     console.log('mappedArry', mappedArry)
   }
   return (
@@ -322,6 +326,7 @@ const EnhancedTableToolbar = (props) => {
           component="div"
         >
           <span className="ml-3">Showing {rowsAfterSearchKey.length}</span>
+          <span className="ml-3">{unitUploadMessage}</span>
         </Typography>
       )}
 
@@ -333,12 +338,14 @@ const EnhancedTableToolbar = (props) => {
         </Tooltip>
       ) : sourceTab != 'all' && title === 'Import Units' ? (
         <span style={{ display: 'flex' }}>
-          <IconButton
-            aria-label="done"
-            onClick={() => addUnitsToDB(rowsAfterSearchKey, pId)}
-          >
-            <DoneIcon />
-          </IconButton>
+          {unitUploadMessage != '' && (
+            <IconButton
+              aria-label="done"
+              onClick={() => addUnitsToDB(rowsAfterSearchKey, pId)}
+            >
+              <DoneIcon />
+            </IconButton>
+          )}
           <IconButton
             aria-label="done"
             onClick={() => onToggleEditMode(row.id)}
