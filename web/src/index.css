@@ -5,9 +5,15 @@
  * to inject Tailwind's styles into your CSS.
  * For more information, see: https://tailwindcss.com/docs/installation#include-tailwind-in-your-css
  */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+
 /**
  * END --- SETUP TAILWINDCSS EDIT
  */

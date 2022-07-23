@@ -81,5 +81,5 @@ export const ROLES_LIST = [
     value: USER_ROLES.PROJECT_EXECUTIVE,
     dept: 'project',
   },
-  { label: 'Admin', value: USER_ROLES.ADMIN },
+  { label: 'Admin', value: USER_ROLES.ADMIN, dept: 'admin' },
 ]

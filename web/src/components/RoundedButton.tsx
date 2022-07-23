@@ -1,10 +1,12 @@
 import { Button } from '@mui/material'
 import { pink } from '@mui/material/colors'
 
+// py-2 px-8
 const StyledRoundedButton = ({ isCategoryMatched, children, ...props }) => (
   <Button
     sx={{
       borderRadius: '1rem',
+      padding: '0.5rem 2rem',
       border: `1px solid ${pink[400]}`,
       color: `${pink[500]}`,
       fontWeight: 600,

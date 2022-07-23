@@ -348,7 +348,7 @@ const HomePage = () => {
               setViewable={setViewable}
               viewable={viewable}
             />
-            <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-[98%]  px-300  py-300">
+            <div className="flex-grow mx-6  mt-10 items-center overflow-y-auto  h-[98%]  px-300  pt-300">
               {viewable != 'inProgress' &&
                 viewable != 'Projects Lead Report' &&
                 viewable != 'Campaign Budget Report' &&
@@ -357,8 +357,8 @@ const HomePage = () => {
                 viewable != 'unitsInventory' && (
                   <>
                     <div className="">
-                      <div className="flex items-center justify-between py-2  ">
-                        <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
+                      <div className="flex items-center justify-between py-2 pb-8 ">
+                        <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0 font-Playfair">
                           Projects {viewable}
                         </span>
                         <button

@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -55,68 +58,35 @@ const UserManageTable = ({ editEmployeeFun }) => {
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <section className="flex ml-auto mt-[18px]  bg-white   py-4">
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'all'}
-              onClick={() => showOnlyDept('all')}
-            >
-              <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-              All
-            </StyledButton>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'admin'}
-              onClick={() => showOnlyDept('admin')}
-            >
-              ADMIN
-            </StyledButton>
-
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'crm'}
-              onClick={() => showOnlyDept('crm')}
-            >
-              CRM
-            </StyledButton>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'HR'}
-              onClick={() => showOnlyDept('HR')}
-            >
-              HR
-            </StyledButton>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'legal'}
-              onClick={() => showOnlyDept('legal')}
-            >
-              LEGAL
-            </StyledButton>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'project'}
-              onClick={() => showOnlyDept('project')}
-            >
-              PROJECT
-            </StyledButton>
-            <StyledButton
-              variant="outlined"
-              size="small"
-              isCategoryMatched={selDept === 'sales'}
-              onClick={() => showOnlyDept('sales')}
-            >
-              SALES
-            </StyledButton>
+          <section className="flex ml-auto mt-[18px]  bg-white  border-gray-100 py-4 md:py-7 px-4 md:px-8 xl:px-10">
+            {[
+              { label: 'All', val: 'all' },
+              { label: 'Admin', val: 'admin' },
+              { label: 'Crm', val: 'crm' },
+              { label: 'Legal', val: 'legal' },
+              { label: 'Project', val: 'project' },
+              { label: 'Legal', val: 'legal' },
+              { label: 'Sales', val: 'sales' },
+            ].map((dat, index) => (
+              <a
+                key={index}
+                className={`rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800 mr-4`}
+                onClick={() => showOnlyDept(dat.val)}
+              >
+                <div
+                  className={`py-2 px-8 rounded-full hover:text-indigo-700 hover:bg-indigo-100  ${
+                    selDept.includes(dat.val)
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'text-gray-600'
+                  }`}
+                >
+                  {dat.label}
+                </div>
+              </a>
+            ))}
           </section>
-          <div className="shadow overflow-hidden border-b border-gray-200 ">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div className="shadow overflow-hidden border-b border-gray-200  bg-white pb-4 md:py-7 px-4 md:px-8 xl:px-10">
+            <table className="min-w-full divide-y divide-gray-200 ">
               <thead className="bg-gray-50">
                 <tr>
                   <th
@@ -182,7 +152,6 @@ const UserManageTable = ({ editEmployeeFun }) => {
                       <div className="text-sm text-gray-900">
                         {person.empId}
                       </div>
-
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">

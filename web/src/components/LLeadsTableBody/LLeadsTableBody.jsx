@@ -1,7 +1,7 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import { alpha } from '@mui/material/styles'
-import Box from '@mui/material/Box'
+import Section from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -192,11 +192,11 @@ function EnhancedTableHead(props) {
               onClick={createSortHandler(headCell.id)}
               style={{ backgroundColor: '#F7F9FB', color: '#1a91eb' }}
             >
-              <span className="text-[#1a91eb]">{headCell.label}</span>
+              <span className="text-black">{headCell.label}</span>
               {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
+                <Section component="span" sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
+                </Section>
               ) : null}
             </TableSortLabel>
           </TableCell>
@@ -263,6 +263,7 @@ const EnhancedTableToolbar = (props) => {
             ),
         }),
       }}
+      style={{ border: 'none', radius: 0 }}
     >
       <span className="relative  p-1 border">
         <svg
@@ -304,7 +305,9 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          <span className="ml-3">Showing {rowsAfterSearchKey.length}</span>
+          <span className="ml-3 font-light ">
+            Showing {rowsAfterSearchKey.length}
+          </span>
         </Typography>
       )}
       <span style={{ display: 'flex' }}>
@@ -488,7 +491,7 @@ export default function LLeadsTableBody({
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   return (
-    <Box sx={{ width: '100%' }} style={{ border: 'none' }}>
+    <Section sx={{ width: '100%' }} style={{ border: 'none', radius: 0 }}>
       <EnhancedTableToolbar
         numSelected={selected.length}
         selStatus={selStatus}
@@ -645,6 +648,6 @@ id: "1" */}
           </TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </Section>
   )
 }

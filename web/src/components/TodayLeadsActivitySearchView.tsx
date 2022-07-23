@@ -484,14 +484,23 @@ export default function TodayLeadsActivitySearchView({
   const torrowDate = new Date(
     +new Date().setHours(0, 0, 0, 0) + 86400000
   ).getTime()
+
+  const myDate = new Date()
+  const hrs = myDate.getHours()
+
+  let greet
+
+  if (hrs < 12) greet = 'Good Morning'
+  else if (hrs >= 12 && hrs <= 17) greet = 'Good Afternoon'
+  else if (hrs >= 17 && hrs <= 24) greet = 'Good Evening'
   return (
     <>
       <div>
         {/* <Header /> */}
         <div className="flex justify-center items-center text-gray-900 h-6"></div>
         <div className=" px-4 justify-center items-center text-gray-900">
-          <h1 className="box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-wide  text-gray-900 align-baseline border-0 xl:text-3xl xl:tracking-normal md:text-3xl md:tracking-tight">
-            Welcome back, {user?.displayName?.toLocaleUpperCase()}
+          <h1 className="font-Playfair box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-wide  text-gray-900 align-baseline border-0 xl:text-3xl xl:tracking-normal md:text-3xl md:tracking-tight">
+            {greet}, {user?.displayName?.toLocaleUpperCase()}
           </h1>
 
           {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
@@ -514,7 +523,7 @@ export default function TodayLeadsActivitySearchView({
                   src="../note-widget.svg"
                 />
               </div>
-              <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+              <h3 className="mb-1 text-sm font-semibold text-gray-900">
                 No Tasks Found
               </h3>
               <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">

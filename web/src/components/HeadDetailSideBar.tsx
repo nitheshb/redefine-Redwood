@@ -958,7 +958,7 @@ const HeadSideBarDetailView = ({
                           </svg>
                         </span>
 
-                        <span className="text-sm pl-[6px]">
+                        <span className="text-sm pl-[6px] ">
                           Projects Inventory
                         </span>
                       </span>

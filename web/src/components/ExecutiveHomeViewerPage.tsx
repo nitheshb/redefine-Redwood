@@ -437,7 +437,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             className="
             p-6"
           >
-            <div className="flex items-center justify-between py-2 ">
+            <div className="flex items-center justify-between py-2 pb-6 ">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 leading-light">
                   Sale Leads

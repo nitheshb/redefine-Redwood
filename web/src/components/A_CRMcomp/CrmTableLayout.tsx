@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
 import uniqueId from '../../util/generatedId'
 
-
 const tableData2 = [
   {
     id: uniqueId(),
@@ -519,11 +518,11 @@ const CRMTableView = ({
   return (
     <Box pt={2} pb={4}>
       <div className="sm:px-6 w-full">
-        <div className="px-4 md:pb-10 pb-7 md:pb-7">
+        <div className=" md:pb-10 pb-7 md:pb-7">
           <div className="flex items-center justify-between">
             <p
               tabIndex={0}
-              className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
+              className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800 font-Playfair"
             >
               My Tasks
             </p>

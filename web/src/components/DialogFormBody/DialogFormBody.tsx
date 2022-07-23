@@ -115,7 +115,6 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
   }
 
   useEffect(() => {
-
     const unsubscribe = steamBankDetailsList(
       orgId,
       (querySnapshot) => {
@@ -193,7 +192,7 @@ const DialogFormBody = ({ title, dialogOpen, project }) => {
   return (
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
       <div className="px-4 sm:px-6  z-10">
-        <Dialog.Title className=" font-semibold text-xl mr-auto ml-3 text-[#053219]">
+        <Dialog.Title className=" font-semibold text-xl mr-auto ml-3  font-Playfair tracking-wider">
           {title}
         </Dialog.Title>
       </div>

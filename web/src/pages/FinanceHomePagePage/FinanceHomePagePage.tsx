@@ -15,6 +15,7 @@ import FinanceTransactionsHome from 'src/components/TableComp/FinanceTransaction
 import CrmHome from 'src/components/A_CRMcomp/CrmHome'
 import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
 import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const FinanceHomePagePage = () => {
   const { user } = useAuth()

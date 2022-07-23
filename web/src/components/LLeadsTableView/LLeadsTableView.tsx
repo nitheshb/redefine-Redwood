@@ -1,10 +1,9 @@
 import { TabList } from '@mui/lab'
-import { Box, Card, Grid, styled } from '@mui/material'
+import { Box as Section, Card, Grid, styled } from '@mui/material'
 import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
 import uniqueId from '../../util/generatedId'
-
 
 const tableData2 = [
   {
@@ -129,273 +128,6 @@ function createData(
     Note,
   }
 }
-
-const rowsParent = [
-  createData(
-    '1',
-    '23-01-20221',
-    'myName 1',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'new',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '2',
-    '23-01-20221',
-    'myName 2',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'new',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '3',
-    '23-01-20221',
-    'myName 3',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'facebook',
-    'Arun',
-    'inprogress',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '4',
-    '23-01-20221',
-    'myName 4',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'inprogress',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '5',
-    '23-01-20221',
-    'myName 5',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'followup',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '6',
-    '23-01-20221',
-    'myName 6',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'facebook1',
-    'Arun',
-    'followup',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '7',
-    '23-01-20221',
-    'myName 7',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Magic Bricks',
-    'Arun',
-    'visitfixed',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '8',
-    '23-01-20221',
-    'myName 8',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Magic Bricks',
-    'Arun',
-    'visitfixed',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '9',
-    '23-01-20221',
-    'myName 9',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'visitdone',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '10',
-    '23-01-20221',
-    'myName 10',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'visitdone',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '11',
-    '23-01-20221',
-    'myName 11',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'negotiation',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '12',
-    '23-01-20221',
-    'myName 12',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'negotiation',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '13',
-    '23-01-20221',
-    'myName 13',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'reassign',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '14',
-    '23-01-20221',
-    'myName 14',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'reassign',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '15',
-    '23-01-20221',
-    'myName 15',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'RNR',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '16',
-    '23-01-20221',
-    'myName 16',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'RNR',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '17',
-    '23-01-20221',
-    'myName 17',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'booked',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '18',
-    '23-01-20221',
-    'myName 18',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'booked',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '19',
-    '23-01-20221',
-    'myName 19',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'notinterested',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '20',
-    '23-01-20221',
-    'myName 20',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'notinterested',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '21',
-    '23-01-20221',
-    'myName 21',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'dead',
-    'Nakshatra Township',
-    'NA'
-  ),
-  createData(
-    '22',
-    '23-01-20221',
-    'myName 22',
-    '9000000000',
-    'Jessicanewmannhz@Yahoo.Com',
-    'Google',
-    'Arun',
-    'dead',
-    'Nakshatra Township',
-    'NA'
-  ),
-]
 const rowsCounter = (parent, searchKey) => {
   return parent.filter((item) => {
     if (searchKey === 'all') {
@@ -406,7 +138,7 @@ const rowsCounter = (parent, searchKey) => {
     }
   })
 }
-const Wrapper = styled(Box)(() => ({
+const Wrapper = styled(Section)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -414,7 +146,7 @@ const Wrapper = styled(Box)(() => ({
   padding: '0 1.5rem',
   paddingTop: '1rem',
 }))
-const IconWrapper = styled(Box)(({ theme }) => ({
+const IconWrapper = styled(Section)(({ theme }) => ({
   backgroundColor: theme.palette.primary.light,
   width: 40,
   height: 40,
@@ -521,7 +253,7 @@ const LLeadsTableView = ({
     { lab: 'Uncleared', val: 'uncleared' },
   ]
   return (
-    <Box pt={2} pb={4}>
+    <Section pt={2} pb={4}>
       <Card
         sx={{
           boxShadow: 4,
@@ -529,7 +261,7 @@ const LLeadsTableView = ({
       >
         <Grid container>
           <Grid item xs={12}>
-            <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="mb-4 border-b border-gray-200 ">
               {/* bg-[#fdb7b7] */}
               <ul
                 className="flex flex-wrap -mb-px "
@@ -541,7 +273,7 @@ const LLeadsTableView = ({
                   return (
                     <li key={i} className="mr-2" role="presentation">
                       <button
-                        className={`inline-block py-4 px-4 text-sm font-medium text-center text-[#7F8EA4] rounded-t-lg border-b-2  hover:text-gray-600 hover:border-[#1A91EB] dark:text-gray-400 dark:hover:text-gray-300  ${
+                        className={`inline-block py-4 px-4 text-sm font-medium text-center text-[#4f5861] rounded-t-lg border-b-2  hover:text-gray-600 hover:border-[#1A91EB] dark:text-gray-400 dark:hover:text-gray-300  ${
                           value === d.val
                             ? 'border-[#1A91EB] text-gray-800'
                             : 'border-transparent'
@@ -553,7 +285,7 @@ const LLeadsTableView = ({
                         <span
                           className={`${
                             value === d.val
-                              ? 'text-[#1A91EB] text-gray-800'
+                              ? 'text-[#0080ff] text-gray-800'
                               : ''
                           }`}
                         >
@@ -586,7 +318,7 @@ const LLeadsTableView = ({
           </Grid>
         </Grid>
       </Card>
-    </Box>
+    </Section>
   )
 }
 
