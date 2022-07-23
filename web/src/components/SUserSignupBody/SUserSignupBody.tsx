@@ -25,7 +25,7 @@ import { PhoneNoField } from 'src/util/formFields/phNoField'
 
 const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const { register, user } = useAuth()
-  const { orgId } = user
+  const { orgId, orgName } = user
 
   const formMethods = useForm()
   const [formMessage, setFormMessage] = useState({
@@ -75,11 +75,12 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const onSubmit = async (data) => {
     console.log('check fo this ', data)
     setLoading(true)
-    const { empId, email, myRole, deptVal, name, offPh, perPh } = data
+    const { empId, email, orgName, myRole, deptVal, name, offPh, perPh } = data
 
     if (editMode) {
       updateUserRole(
         empId,
+        orgName,
         orgId,
         uid,
         deptVal,
@@ -112,8 +113,8 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         password: 'redefine@123',
         dept: deptVal,
         role: myRole,
-        orgName: 'Maa Homes',
-        orgId: 'maahomes',
+        orgName: orgName,
+        orgId: orgId,
         userStatus: 'active',
         orgStatus: 'active',
         offPh: offPh,
@@ -147,6 +148,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
               console.log('docDetailsIs', docDetailsIs, docDetailsIs[0]['uid'])
               updateUserRole(
                 empId,
+                orgName,
                 orgId,
                 docDetailsIs[0]['uid'],
                 deptVal,
@@ -178,7 +180,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
             setFormMessage({
               color: success ? 'green' : 'red',
               message: success
-                ? `Email ${email} is added Successfully`
+                ? `Email ${email} is added with password redefine@123`
                 : `${email} already in Use`,
             })
           }

@@ -400,7 +400,7 @@ export const getAllRoleAccess = async (orgId) => {
 
 export const getSelectedRoleAccess = async (orgId, role) => {
   const getRolesQueryById = await query(
-    collection(db, `${orgId}_roles_access`),
+    collection(db, `spark_roles_access`),
     where('role', '==', role)
   )
   const records = []
@@ -972,6 +972,7 @@ export const createUserToAttendance = async (element, enqueueSnackbar) => {
 // **********************************************
 export const updateUserRole = async (
   empId,
+  orgName,
   orgId,
   uid,
   dept,
@@ -983,6 +984,7 @@ export const updateUserRole = async (
 ) => {
   await updateDoc(doc(db, 'users', uid), {
     empId: empId,
+    orgName: orgName,
     orgId: orgId,
     department: [dept],
     roles: [role],
