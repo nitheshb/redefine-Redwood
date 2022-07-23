@@ -400,15 +400,21 @@ export default function CustomerProfileSideView({
     setLeadStatus(newStatus)
 
     const arr = ['notinterested', 'visitdone', 'visitcancel']
-    arr.includes(newStatus) ? setFeature('notes') : setFeature('appointments')
-    arr.includes(newStatus) ? setAddNote(true) : setAddSch(true)
-    if (newStatus === 'visitfixed') {
-      await setTakTitle('Schedule a cab ')
-    } else if (newStatus === 'booked') {
-      await setTakTitle('Share the Details with CRM team')
-      await fAddSchedule()
+    if (newStatus === 'visitdone') {
+      setFeature('visitDoneNotes')
+    } else if (newStatus === 'visitcancel') {
+      setFeature('visitCancelNotes')
     } else {
-      setTakTitle(' ')
+      arr.includes(newStatus) ? setFeature('notes') : setFeature('appointments')
+      arr.includes(newStatus) ? setAddNote(true) : setAddSch(true)
+      if (newStatus === 'visitfixed') {
+        await setTakTitle('Schedule a cab ')
+      } else if (newStatus === 'booked') {
+        await setTakTitle('Share the Details with CRM team')
+        await fAddSchedule()
+      } else {
+        setTakTitle(' ')
+      }
     }
 
     //
@@ -508,6 +514,7 @@ export default function CustomerProfileSideView({
   const getLeadNotesFun = async () => {
     console.log('ami triggered')
     const unsubscribe = steamLeadNotes(
+      orgId,
       (doc) => {
         console.log('my total fetched list is yo yo ', doc.data())
         const usersList = doc.data()
@@ -957,7 +964,132 @@ export default function CustomerProfileSideView({
                         <div className="w-full flex flex-col mb-3 mt-2">
                           <CustomSelect
                             name="source"
-                            label="Not Interest Reason*"
+                            label="Not Interested Reason*"
+                            className="input mt-3"
+                            onChange={(value) => {
+                              // formik.setFieldValue('source', value.value)
+                              setNotInterestType(value.value)
+                            }}
+                            value={notInterestType}
+                            options={notInterestOptions}
+                          />
+                        </div>
+
+                        <div className="  outline-none border  rounded p-4 mt-4">
+                          <textarea
+                            value={takNotes}
+                            onChange={(e) => setNotesTitle(e.target.value)}
+                            placeholder="Type & make a notes"
+                            className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                          ></textarea>
+                        </div>
+                        <div className="flex flex-row mt-1">
+                          <button
+                            onClick={() => fAddNotes()}
+                            className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                          >
+                            <span className="ml-1 ">Save</span>
+                          </button>
+                          <button
+                            onClick={() => fAddNotes()}
+                            className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                          >
+                            <span className="ml-1 ">Save & Whats App</span>
+                          </button>
+                          <button
+                            // onClick={() => fSetLeadsType('Add Lead')}
+                            onClick={() => cancelResetStatusFun()}
+                            className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                          >
+                            <span className="ml-1 ">Cancel</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {leadNotesFetchedData.length > 0 && (
+                      <div className="px-4">
+                        <div className="flex justify-between">
+                          <div className="font-md font-medium text-xl mb-4 text-[#053219]">
+                            Notes
+                          </div>
+
+                          <button onClick={() => selFun()}>
+                            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                              <span className="text-blue-600"> Add Notes</span>
+                            </time>
+                          </button>
+                        </div>
+                        <ol className="relative border-l ml-3 border-gray-200  ">
+                          {leadNotesFetchedData.map((data, i) => (
+                            <section key={i} className="">
+                              <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
+                                {/* <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-3 w-3 text-blue-600 "
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                            </svg> */}
+                                <DocumentIcon className=" w-3 h-3" />
+                              </span>
+                              <div className="text-gray-600  m-3 ml-6">
+                                <div className="text-base font-normal">
+                                  <span className="font-medium text-green-900 ">
+                                    {data?.notes}
+                                  </span>{' '}
+                                </div>
+                                <div className="text-sm font-normal">
+                                  {data?.txt}
+                                </div>
+                                <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
+                                  <ClockIcon className=" w-3 h-3" />
+
+                                  <span className="ml-1">added on:</span>
+                                  <span className="text-red-900 ml-1 mr-4">
+                                    {prettyDateTime(data?.ct)}
+                                  </span>
+                                  <span className="ml-2">added by:</span>
+                                  <span className="text-red-900 ml-1 mr-4">
+                                    {data?.by}
+                                  </span>
+                                </span>
+                              </div>
+                            </section>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {selFeature === 'visitDoneNotes' && (
+                  <div className="flex flex-col justify-between border pt-6">
+                    {leadNotesFetchedData.length === 0 && !addNote && (
+                      <div className="py-8 px-8 flex flex-col items-center mt-5">
+                        <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                          <img
+                            className="w-[180px] h-[180px] inline"
+                            alt=""
+                            src="/note-widget.svg"
+                          />
+                        </div>
+                        <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                          No Helpful Notes {addNote}
+                        </h3>
+                        <button onClick={() => selFun()}>
+                          <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                            Better always attach a string
+                            <span className="text-blue-600"> Add Notes</span>
+                          </time>
+                        </button>
+                      </div>
+                    )}
+                    {addNote && (
+                      <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
+                        <div className="w-full flex flex-col mb-3 mt-2">
+                          <CustomSelect
+                            name="source"
+                            label="Site Visit Feedback*"
                             className="input mt-3"
                             onChange={(value) => {
                               // formik.setFieldValue('source', value.value)
@@ -1416,28 +1548,28 @@ export default function CustomerProfileSideView({
                           <div className=" mb-3 flex justify-between">
                             <section>
                               <span
-                                className={`items-center h-6 px-3 py-1 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                                className={`cursor-pointer  items-center h-6 px-3 py-1 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
                       `}
                                 onClick={() => setTakTitle('Call again')}
                               >
                                 Call again
                               </span>
                               <span
-                                className={`items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                                className={`cursor-pointer  items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
                       `}
                                 onClick={() => setTakTitle('Get more details')}
                               >
                                 Get more details
                               </span>
                               <span
-                                className={`items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                                className={`cursor-pointer  items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
                       `}
                                 onClick={() => setTakTitle('Book Cab')}
                               >
                                 Book Cab
                               </span>
                               <span
-                                className={`items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
+                                className={`cursor-pointer  items-center h-6 px-3 py-1 ml-4 mt-1 text-xs font-semibold text-pink-500 bg-pink-100 rounded-full
                       `}
                                 onClick={() => setTakTitle('Share Quotation')}
                               >
@@ -1544,7 +1676,7 @@ export default function CustomerProfileSideView({
                       <div className="flex flex-row mt-4">
                         <button
                           onClick={() => fAddSchedule()}
-                          className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                          className={`flex mt-2 cursor-pointer rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                         >
                           <span className="ml-1 ">Add Schedule</span>
                         </button>
@@ -1611,7 +1743,7 @@ export default function CustomerProfileSideView({
                     </div>
                     <section className="mt-2">
                       <span
-                        className="text-blue-600 inline-block mr-2"
+                        className="text-blue-600 inline-block mr-2 cursor-pointer"
                         onClick={() => setAddSch(true)}
                       >
                         <svg

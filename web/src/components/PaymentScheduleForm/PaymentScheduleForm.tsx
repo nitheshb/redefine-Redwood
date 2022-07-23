@@ -72,13 +72,14 @@ const PaymentScheduleForm = ({ title, data, source }) => {
             }}
             options={paymentScheduleA}
             value={defaultValue(paymentScheduleA, value)}
-            className="text-md mr-2"
+            className="text-md mr-2 z-50"
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         )
       },
     },
     {
-      title: 'Percentage*',
+      title: ' ₹ or % *',
       field: 'percentage',
       headerStyle: {
         padding: '0.25rem',
@@ -87,15 +88,17 @@ const PaymentScheduleForm = ({ title, data, source }) => {
         padding: '0.25rem',
       },
       editComponent: ({ value, onChange }) => (
-        <input
-          placeholder="percentage"
-          className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
-          autoComplete="off"
-          onChange={(e) => onChange(e.target.value)}
-          value={value}
-          type="number"
-          max="100"
-        />
+        <>
+          <input
+            placeholder="percentage"
+            className="w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] rounded-md h-10 px-2"
+            autoComplete="off"
+            onChange={(e) => onChange(e.target.value)}
+            value={value}
+            type="number"
+            max="100"
+          />
+        </>
       ),
     },
     {
@@ -279,7 +282,7 @@ const PaymentScheduleForm = ({ title, data, source }) => {
               },
               actionsColumnIndex: -1,
               paging: false,
-              minBodyHeight: '100%',
+              minBodyHeight: '1000px',
               doubleHorizontalScroll: true,
             }}
             style={{

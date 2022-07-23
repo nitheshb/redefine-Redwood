@@ -126,7 +126,7 @@ const AllBankDetailsView = ({ title, pId, data }) => {
             {bankDetialsA.map((bankDe, i) => {
               return (
                 <section className="m-4 inline-block" key={i}>
-                  <div className="bg-[#f9fafb] p-8 rounded-xl shadow-md shadow-neutral-200 w-96">
+                  <div className="bg-[#FFEDEA] p-8 rounded-xl shadow-md shadow-neutral-200 w-96">
                     <div className=" justify-between mb-4">
                       <div>
                         <div className="flex flex-row justify-between">
@@ -248,9 +248,9 @@ const AllBankDetailsView = ({ title, pId, data }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="text-center tracking-wide cursor-pointer duration-150 hover:bg-neutral-200 py-0.5 bg-[#FF919C] text-white font-semibold rounded-lg mt-3">
+                    {/* <div className="text-center tracking-wide cursor-pointer duration-150 hover:bg-neutral-200 py-0.5 bg-[#FF919C] text-white font-semibold rounded-lg mt-3">
                       Reports
-                    </div>
+                    </div> */}
                   </div>
                 </section>
               )

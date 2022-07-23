@@ -304,7 +304,7 @@ const AdditionalChargesForm = ({ title, data, source }) => {
               },
               actionsColumnIndex: -1,
               paging: false,
-              minBodyHeight: '300px',
+              minBodyHeight: '100px',
               doubleHorizontalScroll: true,
             }}
             style={{

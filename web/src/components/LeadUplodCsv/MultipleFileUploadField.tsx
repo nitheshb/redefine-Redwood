@@ -166,6 +166,7 @@ export function MultipleFileUploadField({
   }, [files])
 
   function uploadFile(file: File) {
+    console.log('cloud it 1 ')
     setLoading(true)
     if (!file) return
     try {
@@ -204,7 +205,7 @@ export function MultipleFileUploadField({
             orgId,
             url,
             'nithe.nithesh@gmail.com',
-            fileName || file.name,
+            fixeName || file.name,
             pId,
             uid,
             type,
@@ -359,7 +360,7 @@ export function MultipleFileUploadField({
       accept: ['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)
         ? '.pdf'
         : '.csv, text/csv',
-      maxSize: 12000 * 1024, // 1200KB
+      maxSize: 40000 * 1024, // 1200KB
     })
 
   const style = useMemo(
@@ -389,18 +390,20 @@ export function MultipleFileUploadField({
   return (
     <React.Fragment>
       <div className="mx-3" {...getRootProps({ style })}>
-        <div className="w-full flex flex-row justify-between ">
-          <span></span>
-          <a
-            download="leadTemplate.csv"
-            target="_blank"
-            href="/leadTemplate.csv"
-          >
-            <span className="text-xs text-blue-500">
-              <DownloadIcon className="h-3 w-3 inline-block" /> Template
-            </span>
-          </a>
-        </div>
+        {title === 'Import Leads' && (
+          <div className="w-full flex flex-row justify-between ">
+            <span></span>
+            <a
+              download="leadTemplate.csv"
+              target="_blank"
+              href="/leadTemplate.csv"
+            >
+              <span className="text-xs text-blue-500">
+                <DownloadIcon className="h-3 w-3 inline-block" /> Template
+              </span>
+            </a>
+          </div>
+        )}
         <input {...getInputProps()} />
         {/* <DocumentAddIcon className="h-20 w-60 " aria-hidden="true" /> */}
         {/* <span>sample template</span> */}

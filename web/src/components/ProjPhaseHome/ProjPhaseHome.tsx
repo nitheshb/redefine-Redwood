@@ -74,7 +74,7 @@ const ProjPhaseHome = ({
     console.log('new customer object', leadDetailsObj)
     setLeadDetailsObj1(leadDetailsObj)
   }, [leadDetailsObj])
-  
+
 
   useEffect(() => {
     if (uid) {

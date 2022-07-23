@@ -799,7 +799,7 @@ const Floordetails = ({
             {source === 'projectManagement' && (
               <div className=" z-10 flex flex-row mt-[50px]">
                 <div
-                  className=" z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
+                  className=" cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
                   // style={{ backgroundColor: '#fef7f7' }}
                   onClick={() => {
                     // setSliderInfo({
