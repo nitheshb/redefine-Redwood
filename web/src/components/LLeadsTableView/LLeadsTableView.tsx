@@ -206,7 +206,7 @@ const LLeadsTableView = ({
             { lab: 'Visit Done', val: 'visitdone' },
             { lab: 'Visit Cancel', val: 'visitcancel' },
             { lab: 'Negotiation', val: 'negotiation' },
-            { lab: 'Reassign', val: 'reassign' },
+            // { lab: 'Reassign', val: 'reassign' },
             // { lab: 'RNR', val: 'RNR' },
             { lab: 'Un Assigned', val: 'unassigned' },
             // { lab: 'Booked', val: 'booked' },
@@ -253,7 +253,7 @@ const LLeadsTableView = ({
     { lab: 'Uncleared', val: 'uncleared' },
   ]
   return (
-    <Section pt={2} pb={4}>
+    <Section pb={4}>
       <Card
         sx={{
           boxShadow: 4,
@@ -261,7 +261,7 @@ const LLeadsTableView = ({
       >
         <Grid container>
           <Grid item xs={12}>
-            <div className="mb-4 border-b border-gray-200 ">
+            <div className="mb-1 border-b border-gray-200 ">
               {/* bg-[#fdb7b7] */}
               <ul
                 className="flex flex-wrap -mb-px "
@@ -283,7 +283,7 @@ const LLeadsTableView = ({
                         onClick={() => setValue(d.val)}
                       >
                         <span
-                          className={`${
+                          className={`font-PlayFair ${
                             value === d.val
                               ? 'text-[#0080ff] text-gray-800'
                               : ''
@@ -292,7 +292,7 @@ const LLeadsTableView = ({
                           {' '}
                           {`${d.lab} `}
                         </span>
-                        <span className="bg-gray-100 px-2 py-1 rounded-full">
+                        <span className="bg-gray-100 text-black px-2 py-1 rounded-full ml-[4px]  ">
                           {rowsCounter(leadsFetchedData, d.val).length}
                         </span>
                         {/*

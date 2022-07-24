@@ -169,11 +169,10 @@ export default function AuthContextProvider({ children }) {
     return confirmPasswordReset(auth, oobCode, newPassword)
   }
 
-  function logout() {
-    deAuthenticate()
-    navigate(routes.login(), { replace: true })
-    console.log('was this triggered')
-    return signOut(auth)
+  async function logout() {
+    await deAuthenticate()
+    await navigate(routes.login(), { replace: true })
+    return await signOut(auth)
   }
 
   function signInWithGoogle() {

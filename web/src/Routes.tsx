@@ -110,14 +110,15 @@ const Routes = () => {
 
   return (
     <Router>
+      {/* <Route path="/admin/home" page={HomePage} name="home" /> */}
       <Route path="/erp-account-home" page={ErpAccountHomePage} name="erpAccountHome" />
       <Route path="/legal-home" page={LegalHomePage} name="legalHome" />
       <Route path="/crm-home" page={CrmHomePage} name="crmHome" />
       <Route path="/finance-home-page" page={FinanceHomePagePage} name="financeHomePage" />
       {UpdatedRoutes}
 
-  
       <Route path="/admin/login" page={LoginPage} name="login" />
+      <Route path="/login" page={LoginPage} name="login" />
       <Route path="/" page={LoginPage} name="login" />
       <Route notfound page={NotFoundPage} />
     </Router>

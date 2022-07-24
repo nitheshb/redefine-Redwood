@@ -29,6 +29,10 @@ const LoginPage = () => {
   )
 
   useEffect(() => {
+    if (user?.uid) {
+      navigateBasedOnUser(user)
+      setloader(false)
+    }
     navigate()
   }, [isAuthenticated, navigate, user?.uid])
 
@@ -39,8 +43,10 @@ const LoginPage = () => {
     const { email, password } = data
     try {
       const res: any = await login(email, password)
+      // after login success user effect will trigger after setting up local with role values
       if (res?.user?.accessToken) {
-        await navigateBasedOnUser(res.user.uid)
+        // const userData = await getUser(res.user.uid)
+        // await navigateBasedOnUser(userData)
       } else {
         setloginError(true)
         setloginErrorMsg('Something went wrong')
@@ -50,6 +56,7 @@ const LoginPage = () => {
       const { code, message, name } = error
       console.log('error is message ', code, message, name, code === undefined)
       setloginError(true)
+      setloader(false)
       if (code === undefined) {
         setloginErrorMsg('Please try again')
       } else if (code === 'auth/wrong-password') {
@@ -58,7 +65,6 @@ const LoginPage = () => {
         setloginErrorMsg('Contact Admin')
       }
     }
-    setloader(false)
   }
   return (
     <>

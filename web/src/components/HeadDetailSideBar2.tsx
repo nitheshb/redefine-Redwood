@@ -912,7 +912,7 @@ const HeadSideBarDetailView2 = ({
                     'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.home()}
+                  // to={routes.home()}
                 >
                   <span className="flex items-center ml-1">
                     <span className="text-md font-bold pl-1 ">Add-ons</span>
@@ -1076,7 +1076,7 @@ const HeadSideBarDetailView2 = ({
                     'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.home()}
+                  // to={routes.home()}
                 >
                   <span className="flex items-center ml-1">
                     <span style={{ color: '#692fc2' }}>
@@ -1174,7 +1174,7 @@ const HeadSideBarDetailView2 = ({
                   'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden   border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                   (pgName === 'home' ? 'bg-gray-300' : '')
                 }
-                to={routes.home()}
+                // to={routes.home()}
               >
                 <span className="flex items-center ml-">
                   <span className="text-md font-bold pl-1 ">Reports</span>
@@ -1340,7 +1340,7 @@ const HeadSideBarDetailView2 = ({
                     'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.home()}
+                  // to={routes.home()}
                 >
                   <span className="flex items-center ml-1">
                     <span className="text-md font-bold pl-1 ">HR</span>
@@ -1532,7 +1532,7 @@ const HeadSideBarDetailView2 = ({
                     'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
                     (pgName === 'home' ? 'bg-gray-300' : '')
                   }
-                  to={routes.home()}
+                  // to={routes.home()}
                 >
                   <span className="flex items-center ml-1">
                     <span style={{ color: '#eb8909' }}>

@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/prop-types */
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import { alpha } from '@mui/material/styles'
@@ -24,6 +26,7 @@ import { visuallyHidden } from '@mui/utils'
 import Highlighter from 'react-highlight-words'
 import CSVDownloader from '../../util/csvDownload'
 import { timeConv, prettyDate } from '../../util/dateConverter'
+import DropCompUnitStatus from '../dropDownUnitStatus'
 
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
@@ -94,22 +97,23 @@ const headCells = [
     label: 'Date',
   },
   {
-    id: 'Currentstatus',
-    numeric: false,
-    disablePadding: false,
-    label: 'Status',
-  },
-  {
     id: 'Clientdetails',
     numeric: false,
     disablePadding: false,
     label: 'Client Details',
   },
   {
+    id: 'Project',
+    numeric: false,
+    disablePadding: false,
+    label: 'Project',
+  },
+
+  {
     id: 'Assigned',
     numeric: false,
     disablePadding: false,
-    label: 'Assigned',
+    label: 'Assigned To',
   },
   {
     id: 'Source',
@@ -118,10 +122,10 @@ const headCells = [
     label: 'Source',
   },
   {
-    id: 'Project',
+    id: 'Currentstatus',
     numeric: false,
     disablePadding: false,
-    label: 'Project',
+    label: 'Status',
   },
 
   {
@@ -141,13 +145,14 @@ function EnhancedTableHead(props) {
     rowCount,
     onRequestSort,
     searchKey,
+    viewUnitStatusA,
   } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
   }
 
   return (
-    <TableHead>
+    <TableHead style={{ height: '10px' }}>
       <TableRow selected={true}>
         <TableCell
           align="center"
@@ -158,7 +163,8 @@ function EnhancedTableHead(props) {
           style={{
             backgroundColor: '#F7F9FB',
             color: '#1a91eb',
-            height: '30px',
+            maxHeight: '10px',
+            height: '10px',
             lineHeight: '10px',
           }}
         >
@@ -174,32 +180,48 @@ function EnhancedTableHead(props) {
           <TableSortLabel>S.No</TableSortLabel>
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'center' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-            style={{
-              backgroundColor: '#F7F9FB',
-              color: '#1a91eb',
-
-              lineHeight: '10px',
-            }}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-              style={{ backgroundColor: '#F7F9FB', color: '#1a91eb' }}
+          <>
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'center' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+              style={{
+                backgroundColor: '#F7F9FB',
+                color: '#1a91eb',
+                height: '10px',
+                maxHeight: '10px',
+                lineHeight: '7px',
+                display:
+                headCell.id != 'Assigned' ? '': ( (viewUnitStatusA.includes('Assigned To')) &&
+                 ( headCell.id === 'Assigned'))
+                    ? ''
+                    : 'none'
+              }}
             >
-              <span className="text-black">{headCell.label}</span>
-              {orderBy === headCell.id ? (
-                <Section component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Section>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+                style={{
+                  backgroundColor: '#F7F9FB',
+                  color: '#1a91eb',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <span className="text-black font-bodyLato">
+                  {headCell.label}
+                </span>
+                {orderBy === headCell.id ? (
+                  <Section component="span" sx={visuallyHidden}>
+                    {order === 'desc'
+                      ? 'sorted descending'
+                      : 'sorted ascending'}
+                  </Section>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          </>
         ))}
       </TableRow>
     </TableHead>
@@ -217,7 +239,16 @@ EnhancedTableHead.propTypes = {
 }
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selStatus, filteredData, setSearchKey, rows } = props
+  const {
+    numSelected,
+    selStatus,
+    filteredData,
+    setSearchKey,
+    rows,
+    viewUnitStatusA,
+    pickCustomViewer,
+    setViewUnitStatusA,
+  } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
 
@@ -251,24 +282,11 @@ const EnhancedTableToolbar = (props) => {
     // setRows(rowsR)
   }
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 2, sm: 2 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-      style={{ border: 'none', radius: 0 }}
-    >
-      <span className="relative  p-1 border">
+    <section className="flex flex-row justify-between pb pt-1 px-3 ">
+      <span className="relative  p- border rounded h-7">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 absolute left-0 ml-1 mt-1"
+          className="h-3 w-3 absolute left-0 ml-1 mt-2"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -284,11 +302,11 @@ const EnhancedTableToolbar = (props) => {
           type="text"
           placeholder={`Search...${selStatus}`}
           onChange={searchKeyField}
-          className="ml-6 bg-transparent focus:border-transparent focus:ring-0 focus-visible:border-transparent focus-visible:ring-0 focus:outline-none"
+          className="ml-6 bg-transparent text-xs focus:border-transparent focus:ring-0 focus-visible:border-transparent focus-visible:ring-0 focus:outline-none"
         />
       </span>
 
-      {numSelected > 0 ? (
+      {/* {numSelected > 0 ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
           color="inherit"
@@ -305,26 +323,44 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          <span className="ml-3 font-light ">
-            Showing {rowsAfterSearchKey.length}
+          <span className="ml-3 pt-[7px] font-light font-bodyLato block text-xs ">
+            <span className="ml-1 mr-1 pt-2 font-thick font-bodyLato text-[12px] text-blue-800">
+              {rowsAfterSearchKey.length}
+            </span>
+            Results{' '}
           </span>
         </Typography>
-      )}
+      )} */}
       <span style={{ display: 'flex' }}>
+      <section className="pt-1">
+        <DropCompUnitStatus
+          type={'show'}
+          id={'id'}
+          setStatusFun={{}}
+          viewUnitStatusA={viewUnitStatusA}
+          pickCustomViewer={pickCustomViewer}
+        />
+        </section>
         <Tooltip title={`Download ${rowsAfterSearchKey.length} Rows`}>
           {/* <IconButton>
             <FileDownloadIcon />
             <CSVDownloader />
           </IconButton> */}
-          <IconButton className="bg-gray-200">
-            <EventNoteTwoToneIcon />
+          <IconButton className="bg-gray-200 ">
+            <EventNoteTwoToneIcon
+              className="h-[20px] w-[20px]"
+              style={{ height: '20px', width: '20px' }}
+            />
           </IconButton>
         </Tooltip>
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton className="bg-gray-200">
-              <DeleteIcon />
+              <DeleteIcon
+                className="h-[20px] w-[20px]"
+                style={{ height: '20px', width: '20px' }}
+              />
             </IconButton>
           </Tooltip>
         ) : (
@@ -334,11 +370,15 @@ const EnhancedTableToolbar = (props) => {
             <CSVDownloader />
           </IconButton> */}
 
-            <CSVDownloader className="mr-6" downloadRows={rowsAfterSearchKey} />
+            <CSVDownloader
+              className="mr-6 h-[20px] w-[20px]"
+              downloadRows={rowsAfterSearchKey}
+              style={{ height: '20px', width: '20px' }}
+            />
           </Tooltip>
         )}
       </span>
-    </Toolbar>
+    </section>
   )
 }
 
@@ -490,6 +530,27 @@ export default function LLeadsTableBody({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
+  const [selBlock, setSelBlock] = React.useState({})
+  const [viewUnitStatusA, setViewUnitStatusA] = React.useState([
+    'Assigned To',
+    // 'Blocked',
+    // 'Booked',
+    // 'Total',
+  ])
+  const pickCustomViewer = (item) => {
+    const newViewer = viewUnitStatusA
+    if (viewUnitStatusA.includes(item)) {
+      const filtered = newViewer.filter(function (value) {
+        return value != item
+      })
+      setViewUnitStatusA(filtered)
+      console.log('reviwed is ', viewUnitStatusA)
+    } else {
+      setViewUnitStatusA([...newViewer, item])
+      console.log('reviwed is add ', viewUnitStatusA)
+    }
+  }
+
   return (
     <Section sx={{ width: '100%' }} style={{ border: 'none', radius: 0 }}>
       <EnhancedTableToolbar
@@ -499,29 +560,36 @@ export default function LLeadsTableBody({
         searchKey={searchKey}
         setSearchKey={setSearchKey}
         rows={rows}
+        viewUnitStatusA={viewUnitStatusA}
+        pickCustomViewer={pickCustomViewer}
+        setViewUnitStatusA={setViewUnitStatusA}
       />
-      <TableContainer sx={{ maxHeight: 640 }}>
-        <Table
-          sx={{ minWidth: 750 }}
-          aria-labelledby="tableTitle"
-          size={dense ? 'small' : 'medium'}
-          stickyHeader
-          aria-label="sticky table"
-        >
-          <EnhancedTableHead
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-            searchkey={searchKey}
-          />
-          <TableBody>
-            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+      <section
+        style={{ borderTop: '1px solid #efefef', background: '#fefafb' }}
+      >
+        <TableContainer sx={{ maxHeight: 640 }}>
+          <Table
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+            size={dense ? 'small' : 'medium'}
+            stickyHeader
+            aria-label="sticky table"
+          >
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+              searchkey={searchKey}
+              viewUnitStatusA={viewUnitStatusA}
+            />
+            <TableBody>
+              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-            {/* {stableSort(rows, getComparator(order, orderBy)).map( */}
-            {/* Assignedto: "Arun"
+              {/* {stableSort(rows, getComparator(order, orderBy)).map( */}
+              {/* Assignedto: "Arun"
 Date: "23-01-20221"
 Email: "Jessicanewmannhz@Yahoo.Com"
 Mobile: "9000000000"
@@ -532,122 +600,217 @@ Source: "Google"
 Status: "new"
 id: "1" */}
 
-            {/* item.Assignedto.toLowerCase().includes(
+              {/* item.Assignedto.toLowerCase().includes(
                     searchKey.toLowerCase()
                   ) || */}
-            {rows
-              .filter((item) => {
-                if (searchKey == '' || !searchKey) {
-                  return item
-                } else if (
-                  item.Email.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Mobile.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Project.toLowerCase().includes(
-                    searchKey.toLowerCase()
-                  ) ||
-                  item.Source.toLowerCase().includes(searchKey.toLowerCase()) ||
-                  item.Status.toLowerCase().includes(searchKey.toLowerCase())
-                ) {
-                  return item
-                }
-              })
-              .slice()
-              .sort(getComparator(order, orderBy))
-              .map((row, index) => {
-                const isItemSelected = isSelected(row.Name)
-                const labelId = `enhanced-table-checkbox-${index}`
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={index}
-                    selected={isItemSelected}
-                  >
-                    <TableCell
-                      align="center"
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="checkbox"
-                      size="small"
+              {rows
+                .filter((item) => {
+                  if (searchKey == '' || !searchKey) {
+                    return item
+                  } else if (
+                    item.Email.toLowerCase().includes(
+                      searchKey.toLowerCase()
+                    ) ||
+                    item.Mobile.toLowerCase().includes(
+                      searchKey.toLowerCase()
+                    ) ||
+                    item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
+                    item.Project.toLowerCase().includes(
+                      searchKey.toLowerCase()
+                    ) ||
+                    item.Source.toLowerCase().includes(
+                      searchKey.toLowerCase()
+                    ) ||
+                    item.Status.toLowerCase().includes(searchKey.toLowerCase())
+                  ) {
+                    return item
+                  }
+                })
+                .slice()
+                .sort(getComparator(order, orderBy))
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row.Name)
+                  const labelId = `enhanced-table-checkbox-${index}`
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={index}
+                      selected={isItemSelected}
+                      style={{cursor: 'pointer'}}
                     >
-                      {index + 1}
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {prettyDate(row.Date).toLocaleString()}
-                    </TableCell>
-                    <TableCell align="left">
-                      <HighlighterStyle
-                        searchKey={searchKey}
-                        source={row.Status.toString()}
-                      />
-                    </TableCell>
-                    <TableCell align="left">
-                      <section>
-                        <div>
-                          <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Name.toString()}
-                          />
-                        </div>
-                        <div>
-                          <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Email.toString()}
-                          />
-                        </div>
-                        <div>
-                          <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Mobile.toString().replace(
-                              /(\d{3})(\d{3})(\d{4})/,
-                              '$1-$2-$3'
-                            )}
-                          />
-                        </div>
-                      </section>
-                    </TableCell>
+                      <TableCell
+                        align="center"
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="checkbox"
+                        size="small"
+                      >
+                        {index + 1}
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        <span className="font-bodyLato">
+                          {prettyDate(row.Date).toLocaleString()}
+                        </span>
+                      </TableCell>
 
-                    <TableCell align="left">
-                      {/* <HighlighterStyle
+                      <TableCell align="left">
+                        <section>
+                          <div>
+
+                            <div
+                className="relative flex flex-col  group"
+                // style={{ alignItems: 'end' }}
+              >
+                <div
+                  className="absolute bottom-0 flex flex-col items-center hidden mb-6 group-hover:flex"
+                  // style={{  width: '300px' }}
+                  style={{  'z-index': '9' }}
+                >
+                  <span
+                    className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
+                    style={{
+                      color: 'black',
+                      background: '#e2c062',
+                      maxWidth: '300px',
+                    }}
+                  >
+                    <div className="italic flex flex-col">
+                    <div className="font-bodyLato">
+                              <HighlighterStyle
+                                searchKey={searchKey}
+                                source={row.Name.toString()}
+                              />
+                            </div>
+                            <div className="font-bodyLato">
+                                <HighlighterStyle
+                                  searchKey={searchKey}
+                                  source={row.Email.toString()}
+                                />
+                             </div>
+                             <div>
+                              <span className="font-bodyLato">
+                                <HighlighterStyle
+                                  searchKey={searchKey}
+                                  source={row.Mobile.toString().replace(
+                                    /(\d{3})(\d{3})(\d{4})/,
+                                    '$1-$2-$3'
+                                  )}
+                                />
+                              </span>
+                            </div>
+
+                    </div>
+                  </span>
+                  <div
+                    className="w-3 h-3  -mt-2 rotate-45 bg-black"
+                    style={{ background: '#e2c062', marginRight: '12px' }}
+                  ></div>
+                </div>
+                <span className="font-bodyLato">
+                              <HighlighterStyle
+                                searchKey={searchKey}
+                                source={row.Name.toString()}
+                              />
+                            </span>
+              </div>
+                          </div>
+                          {viewUnitStatusA.includes('Email Id') && (
+                            <div>
+                              <span className="font-bodyLato">
+                                <HighlighterStyle
+                                  searchKey={searchKey}
+                                  source={row.Email.toString()}
+                                />
+                              </span>
+                            </div>
+                          )}
+                          {viewUnitStatusA.includes('Phone No') && (
+                            <div>
+                              <span className="font-bodyLato">
+                                <HighlighterStyle
+                                  searchKey={searchKey}
+                                  source={row.Mobile.toString().replace(
+                                    /(\d{3})(\d{3})(\d{4})/,
+                                    '$1-$2-$3'
+                                  )}
+                                />
+                              </span>
+                            </div>
+                          )}
+                        </section>
+                      </TableCell>
+                      <TableCell align="left">{row.Project}</TableCell>
+                      {/* display:
+                  viewUnitStatusA.includes('Assigned To') &&
+                  headCell.id === 'Assigned'
+                    ? 'none'
+                    : '', */}
+                      {viewUnitStatusA.includes('Assigned To') && (
+                        <TableCell align="left">
+                          {/* <HighlighterStyle
                         searchKey={searchKey}
                         source={row.Assignedto}
                       /> */}
-                      {row?.assignedToObj?.label}
-                    </TableCell>
-                    <TableCell align="left">
-                      <HighlighterStyle
-                        searchKey={searchKey}
-                        source={row.Source.toString()}
-                      />
-                    </TableCell>
-                    <TableCell align="left">{row.Project}</TableCell>
+                          <span className="font-bodyLato">
+                            {row?.assignedToObj?.label}
+                          </span>
+                        </TableCell>
+                      )}
+                      <TableCell align="middle">
+                        <span className="font-bodyLato">
+                          {/* <HighlighterStyle
+                            searchKey={searchKey}
+                            source={row.Source.toString()}
+                          /> */}
 
-                    <TableCell align="center">{row.Note}</TableCell>
-                  </TableRow>
-                )
-              })}
-            {emptyRows > 0 && (
-              <TableRow
-                style={{
-                  height: (dense ? 33 : 53) * emptyRows,
-                }}
-              >
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                          <img
+                  className="w-[18px] h-[18px] inline"
+                  alt=""
+                  src={`../${row?.Source?.toString() || 'fb'}.svg`}
+                />
+                        </span>
+                      </TableCell>
+
+                      <TableCell align="left">
+
+                        <span className="px-2 uppercase inline-flex text-[10px] leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        <HighlighterStyle
+                            searchKey={searchKey}
+                            source={row.Status.toString()}
+                          />
+                      </span>
+                      </TableCell>
+
+                      <TableCell align="center">
+                        {' '}
+                        <span className="font-bodyLato">{row.Note}</span>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: (dense ? 33 : 53) * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </section>
     </Section>
   )
 }

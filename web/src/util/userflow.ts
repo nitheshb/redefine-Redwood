@@ -2,47 +2,52 @@ import { navigate, routes } from '@redwoodjs/router'
 import { getUser } from 'src/context/dbQueryFirebase'
 import { USER_ROLES } from 'src/constants/userRoles'
 
-export const navigateBasedOnUser = async (uid) => {
-  const userData = await getUser(uid)
+export const navigateBasedOnUser = async (userData) => {
+  console.log('user data stuf s ', userData)
+
   if (!userData) {
+    console.log('where am i 0')
     return false
   }
-  if (userData.roles.includes(USER_ROLES.ADMIN)) {
-    console.log('where am i ')
-    navigate(routes.home(), { replace: true })
+  if (userData.role.includes(USER_ROLES.ADMIN)) {
+    console.log('where am i ', userData)
+    await navigate(routes.home(), { replace: true })
   } else if (
-    userData.roles.includes(USER_ROLES.PROJECT_MANAGER) ||
-    userData.roles.includes(USER_ROLES.PROJECT_EXECUTIVE)
+    userData.role.includes(USER_ROLES.PROJECT_MANAGER) ||
+    userData.role.includes(USER_ROLES.PROJECT_EXECUTIVE)
   ) {
     console.log('where am i 2')
-    navigate(routes.home(), { replace: true })
+    await navigate(routes.home(), { replace: true })
   } else if (
-    userData.roles.includes(USER_ROLES.SALES_MANAGER) ||
-    userData.roles.includes(USER_ROLES.SALES_EXECUTIVE)
+    userData.role.includes(USER_ROLES.SALES_MANAGER) ||
+    userData.role.includes(USER_ROLES.SALES_EXECUTIVE)
   ) {
-    navigate(routes.leadsManager(), { replace: true })
+    console.log('where am i 3')
+    await navigate(routes.leadsManager(), { replace: true })
   } else if (
-    userData.roles.includes(USER_ROLES.HR_MANAGER) ||
-    userData.roles.includes(USER_ROLES.HR_EXECUTIVE)
+    userData.role.includes(USER_ROLES.HR_MANAGER) ||
+    userData.role.includes(USER_ROLES.HR_EXECUTIVE)
   ) {
-    navigate(routes.usersAdmin(), { replace: true })
+    console.log('where am i 4')
+    await navigate(routes.usersAdmin(), { replace: true })
   } else if (
-    userData.roles.includes(USER_ROLES.CRM_MANAGER) ||
-    userData.roles.includes(USER_ROLES.CRM_EXECUTIVE)
+    userData.role.includes(USER_ROLES.CRM_MANAGER) ||
+    userData.role.includes(USER_ROLES.CRM_EXECUTIVE)
   ) {
-    navigate(routes.crmModule(), { replace: true })
+    console.log('where am i 5')
+    await navigate(routes.crmModule(), { replace: true })
   } else if (
-    userData.roles.includes(USER_ROLES.FINANCE_MANAGER) ||
-    userData.roles.includes(USER_ROLES.FINANCE_EXECUTIVE)
+    userData.role.includes(USER_ROLES.FINANCE_MANAGER) ||
+    userData.role.includes(USER_ROLES.FINANCE_EXECUTIVE)
   ) {
-    navigate(routes.financeModule(), { replace: true })
+    await navigate(routes.financeModule(), { replace: true })
   } else if (
-    userData.roles.includes(USER_ROLES.LEGAL_MANAGER) ||
-    userData.roles.includes(USER_ROLES.LEGAL_EXECUTIVE)
+    userData.role.includes(USER_ROLES.LEGAL_MANAGER) ||
+    userData.role.includes(USER_ROLES.LEGAL_EXECUTIVE)
   ) {
-    navigate(routes.legalModule(), { replace: true })
+    await navigate(routes.legalModule(), { replace: true })
   } else {
-    userData.roles && navigate(routes.accessDenied(), { replace: true })
+    userData.role && navigate(routes.accessDenied(), { replace: true })
   }
   return false
 }

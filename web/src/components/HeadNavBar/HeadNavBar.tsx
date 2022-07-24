@@ -15,8 +15,8 @@ const HeadNavBar = () => {
   const handleClose = async (menuItem) => {
     setAnchorEl(null)
     if (menuItem === 'Logout') {
-      await logout()
       await dispatch(logoutAction())
+      await logout()
     }
   }
 

@@ -13,6 +13,8 @@ import MyAttedanceHomeBody from 'src/components/myAttedanceHomeBody'
 import MyPayHomeBody from 'src/components/myPayHomeBody'
 import MyLeadsReportHome from 'src/components/myLeadsReportHome'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
+import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
+import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 
 const LeadsManagerPage = () => {
   const [showSideBar, setShowSideBar] = useState(true)
@@ -35,10 +37,9 @@ const LeadsManagerPage = () => {
         /> */}
 
         <div className="flex flex-col flex-grow">
-          <HeadNavBar />
           <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             {showSideBar && <HeadSideBar pgName={'leadsManager'} />}
-            <HeadSideBarDetailView
+            <HeadSideBarDetailView2
               pgName={'leadsManager'}
               sourceLink={'leadsScreen'}
               showSideBar={showSideBar}
@@ -46,7 +47,8 @@ const LeadsManagerPage = () => {
               setViewable={setViewable}
               viewable={viewable}
             />
-            <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  px-300  py-300">
+            <div className="flex-grow  items-center overflow-y-auto  px-300  py-300">
+              <HeadNavBar2 />
               {viewable === 'inProgress' && (
                 <ExecutiveHomeViewerPage leadsTyper={'inProgress'} />
               )}
