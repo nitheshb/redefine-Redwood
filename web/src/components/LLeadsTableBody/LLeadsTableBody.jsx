@@ -532,7 +532,7 @@ export default function LLeadsTableBody({
 
   const [selBlock, setSelBlock] = React.useState({})
   const [viewUnitStatusA, setViewUnitStatusA] = React.useState([
-    'Assigned To',
+    'Phone No',
     // 'Blocked',
     // 'Booked',
     // 'Total',
