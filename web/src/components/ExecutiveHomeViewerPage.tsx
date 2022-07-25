@@ -236,7 +236,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     updateLeadStatus(
       orgId,
       re.draggableId,
-      statusFields[parseInt(re.destination.droppableId)]
+      statusFields[parseInt(re.destination.droppableId)],
     )
     setBoardData(newBoardData)
   }

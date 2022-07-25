@@ -552,7 +552,7 @@ export default function TransactionUpdateSideView({
     const newTm = Timestamp.now().toMillis() + 10800000 + 5 * 3600000
 
     console.log('new one ', schStsA)
-    await updateSch(orgId, id, tmId, newTm, schStsA)
+    await updateSch(orgId, id, tmId, newTm, schStsA, assignedTo)
     await setTakTitle('')
     await setAddSch(false)
   }

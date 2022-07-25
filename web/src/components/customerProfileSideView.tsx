@@ -552,12 +552,22 @@ export default function CustomerProfileSideView({
 
     const x = schStsA
 
-    console.log('new one ', schStsA, x)
+    console.log(
+      'new one ',
+      tempLeadStatus,
+      startDate,
+      startDate.getTime(),
+      schStsA,
+      x,
+      data.schTime
+    )
+
     x.push('pending')
     setschStsA(x)
     // addSchedulerLog(orgId,id, data)
+    //  get assignedTo Led
     console.log('new one ', schStsA)
-    await addLeadScheduler(orgId, id, data, schStsA, '')
+    await addLeadScheduler(orgId, id, data, schStsA, assignedTo)
     if (Status != tempLeadStatus) {
       updateLeadStatus(orgId, id, tempLeadStatus)
     }
@@ -577,7 +587,7 @@ export default function CustomerProfileSideView({
     const newTm = Timestamp.now().toMillis() + 10800000 + 5 * 3600000
 
     console.log('new one ', schStsA)
-    await updateSch(orgId, id, tmId, newTm, schStsA)
+    await updateSch(orgId, id, tmId, newTm, schStsA, assignedTo)
     await setTakTitle('')
     await setAddSch(false)
   }

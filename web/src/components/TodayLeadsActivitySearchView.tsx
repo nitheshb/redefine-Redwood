@@ -352,6 +352,8 @@ export default function TodayLeadsActivitySearchView({
   rowsParent,
   todaySch,
   taskType,
+  searchKey,
+  setSearchKey,
 }) {
   const { user } = useAuth()
   const [order, setOrder] = React.useState('asc')
@@ -361,7 +363,7 @@ export default function TodayLeadsActivitySearchView({
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [rows, setRows] = React.useState([])
-  const [searchKey, setSearchKey] = React.useState(['pending'])
+
   const [isImportLeadsOpen, setisImportLeadsOpen] = React.useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = React.useState('')
   const [selUserProfile, setSelUserProfile] = React.useState({})
@@ -410,15 +412,85 @@ export default function TodayLeadsActivitySearchView({
     if (todaySch) {
       console.log('my value is ', todaySch)
       const streamedTodo = []
-      const y = todaySch?.filter((item) => {
-        console.log('yo you', item?.staA, searchKey)
-        return item?.staA.some((r) => searchKey.includes(r))
+      let y = []
+      // if (searchKey.includes('pending') || searchKey.includes('upcoming')) {
+      //   y = todaySch
+      //     ?.filter((item) => {
+      //       console.log('yo you', item?.staA, searchKey)
+      //       return item?.staA.some((r) => searchKey.includes(r))
+      //     })
+      //     .filter((d) => {
+      //       console.log('macho', d)
+      //       return d['schTime'] < torrowDate
+      //     })
+      // } else {
+      //   y = todaySch?.filter((item) => {
+      //     console.log('yo you', item?.staA, searchKey)
+      //     return item?.staA.some((r) => searchKey.includes(r))
+      //   })
+      // }
+
+      //  updaing the lookup array to look for pending status when ever user selects upcoming as there is no sta
+
+      let TaskStatusReq = []
+      if (searchKey.includes('upcoming')) {
+        TaskStatusReq = ['pending']
+      } else {
+        TaskStatusReq = searchKey
+      }
+      y = todaySch?.filter((item) => {
+        console.log('yo you', item?.staA, searchKey, TaskStatusReq)
+        return item?.staA.some((r) => TaskStatusReq.includes(r))
       })
-      console.log('ami cahnged', y)
+      console.log('ami cahnged', y.length, y, searchKey, 'alias', TaskStatusReq)
       setSchFetData(y)
       const z = todaySch.map((data1) => {
+        // data1['staDA']
+        //   .filter((d) => {
+        //     console.log(
+        //       'macho 2 ',
+        //       d,
+        //       torrowDate,
+        //       d > torrowDate,
+        //       d == 16589196420002
+        //     )
+        //     // return d < torrowDate
+        //     return 1 === 1
+        //   })
+
         data1['staDA'].map((data2) => {
           const y = data1[data2]
+
+          if (
+            searchKey.length == 1 &&
+            searchKey.includes('pending') &&
+            y['sts'] === 'pending'
+          ) {
+            // make sure if date less than tomorrow is added
+            if (y['schTime'] < torrowDate) {
+              y.uid = data1.uid
+              y.leadUser = data1.leadUser
+              streamedTodo.push(y)
+              console.log('my value is 1', y)
+              return y
+            } else {
+              return
+            }
+          }
+
+          if (searchKey.length == 1 && searchKey.includes('upcoming')) {
+            // make sure if date greater than tomorrow is added
+            if (y['schTime'] > torrowDate) {
+              y.uid = data1.uid
+              y.leadUser = data1.leadUser
+              streamedTodo.push(y)
+              console.log('my value is 1', y)
+              return y
+            } else {
+              return
+            }
+          }
+
           y.uid = data1.uid
           y.leadUser = data1.leadUser
           streamedTodo.push(y)
@@ -427,11 +499,55 @@ export default function TodayLeadsActivitySearchView({
         })
       })
       setSchFetCleanData(streamedTodo)
-      console.log('my value is 1', z, streamedTodo)
+      console.log('my value is 1', searchKey, z, streamedTodo)
     } else {
       console.log('my value is ', todaySch)
     }
   }, [todaySch, searchKey])
+
+  const filterScheduleArry = (staDA, data1) => {
+    const streamedTodoLeadsFormat = []
+    staDA.map((data2) => {
+      const y = data1[data2]
+
+      if (
+        searchKey.length == 1 &&
+        searchKey.includes('pending') &&
+        y['sts'] === 'pending'
+      ) {
+        // make sure if date less than tomorrow is added
+
+        if (y['schTime'] < torrowDate) {
+          console.log('insertion 1', data2)
+          streamedTodoLeadsFormat.push(data2)
+          console.log('my value is 1', y)
+          return y
+        } else {
+          return
+        }
+      }
+
+      if (searchKey.length == 1 && searchKey.includes('upcoming')) {
+        // make sure if date greater than tomorrow is added
+        if (y['schTime'] > torrowDate) {
+          console.log('insertion 2', data2)
+          streamedTodoLeadsFormat.push(data2)
+          return
+        } else {
+          return
+        }
+      }
+      // if searchKey pending
+
+      console.log('insertion 3', data2)
+      if (searchKey.includes(y['sts'])) {
+        streamedTodoLeadsFormat.push(data2)
+      }
+      return y
+    })
+
+    return streamedTodoLeadsFormat
+  }
 
   const filterStuff = async (parent) => {
     const x = await parent.filter((item) => {
@@ -671,6 +787,7 @@ export default function TodayLeadsActivitySearchView({
                         <p>Done</p>
                       </div>
                     </a>
+
                     <a
                       className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8"
                       href="javascript:void(0)"
@@ -687,10 +804,26 @@ export default function TodayLeadsActivitySearchView({
                         <p>Pending</p>
                       </div>
                     </a>
+                    <a
+                      className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8"
+                      href="javascript:void(0)"
+                      onClick={() => setSearchKey(['upcoming'])}
+                    >
+                      <div
+                        className={`py-2 px-8 rounded-full hover:text-indigo-700 hover:bg-indigo-100  ${
+                          searchKey.includes('upcoming') &&
+                          searchKey.length === 1
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        <p>Up Coming</p>
+                      </div>
+                    </a>
                   </div>
                   <button className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded">
                     <p className="text-sm font-medium leading-none text-white">
-                      Add Task
+                      Add Tasks
                     </p>
                   </button>
                 </div>
@@ -826,17 +959,22 @@ export default function TodayLeadsActivitySearchView({
 
                       </div> */}
                               <div className="flex flex-col   w-full  ">
-                                {staDA
-                                  ?.filter((d) =>
-                                    // dat[d]['sts'] == 'pending' &&
-                                    searchKey.includes(dat[d]['sts']) &&
-                                    taskType === 'Today1Team'
-                                      ? dat[d]['schTime'] < torrowDate
-                                      : taskType === 'Today1'
-                                      ? dat[d]['schTime'] < torrowDate
-                                      : dat[d]['schTime'] > torrowDate
-                                  )
-                                  .map((ts, inx) => {
+                                {/* {staDA
+                                  ?.filter(
+                                    (d) => {
+                                      // dat[d]['sts'] == 'pending' &&
+
+                                      return searchKey.includes(dat[d]['sts'])
+                                    }
+                                    // &&
+                                    // taskType === 'Today1Team'
+                                    //   ? dat[d]['schTime'] < torrowDate
+                                    //   : taskType === 'Today1'
+                                    //   ? dat[d]['schTime'] < torrowDate
+                                    //   : dat[d]['schTime'] > torrowDate
+                                  ) */}
+                                {filterScheduleArry(staDA, dat).map(
+                                  (ts, inx) => {
                                     return (
                                       <>
                                         <section
@@ -901,7 +1039,8 @@ export default function TodayLeadsActivitySearchView({
                                         </section>
                                       </>
                                     )
-                                  })}
+                                  }
+                                )}
                               </div>
                             </div>
                           </div>

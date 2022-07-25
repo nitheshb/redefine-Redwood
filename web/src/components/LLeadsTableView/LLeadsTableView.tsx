@@ -172,7 +172,7 @@ const LLeadsTableView = ({
   // change navbar title
   // useTitle('Data Table V1')
   const { t } = useTranslation()
-  const [value, setValue] = useState('new')
+  const [value, setValue] = useState('all')
   const [tableData, setTableData] = useState([])
   const [tabHeadFieldsA, settabHeadFieldsA] = useState([])
   // const [leadsFetchedData, setLeadsFetchedData] = useState([])
@@ -223,7 +223,7 @@ const LLeadsTableView = ({
     settabHeadFieldsA(tabHeadFieldsA1)
 
     leadsTyper === 'inProgress'
-      ? setValue('new')
+      ? setValue('all')
       : leadsTyper === 'archieveLeads'
       ? setValue('all')
       : setValue('booked')

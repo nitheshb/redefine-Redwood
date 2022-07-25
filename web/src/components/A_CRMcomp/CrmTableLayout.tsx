@@ -566,6 +566,22 @@ const CRMTableView = ({
                   <p>Pending</p>
                 </div>
               </a>
+              <a
+                      className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8"
+                      href="javascript:void(0)"
+                      onClick={() => setSearchKey(['upcoming'])}
+                    >
+                      <div
+                        className={`py-2 px-8 rounded-full hover:text-indigo-700 hover:bg-indigo-100  ${
+                          searchKey.includes('upcoming') &&
+                          searchKey.length === 1
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        <p>Up Coming</p>
+                      </div>
+                    </a>
             </div>
             <button className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded">
               <p className="text-sm font-medium leading-none text-white">

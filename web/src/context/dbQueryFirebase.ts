@@ -197,7 +197,7 @@ export const getTodayTodoLeadsDataByUser = (orgId, snapshot, data, error) => {
     where('assignedTo', '==', uid)
   )
 
-  console.log('hello ', status, itemsQuery)
+  console.log('hello ', status, itemsQuery, uid)
   return onSnapshot(itemsQuery, snapshot, error)
 }
 export const getLeadbyId1 = async (orgId, uid) => {
@@ -1432,10 +1432,18 @@ export const updateSchLog = async (orgId, uid, kId, newStat, schStsA) => {
     [x]: newStat,
   })
 }
-export const updateSch = async (orgId, uid, kId, newCt, schStsA) => {
+export const updateSch = async (
+  orgId,
+  uid,
+  kId,
+  newCt,
+  schStsA,
+  assignedTo
+) => {
   const x = `${kId}.schTime`
   await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
     [x]: newCt,
+    assignedTo,
   })
 }
 export const updateMoreDetails = async (uid, moreDetails, enqueueSnackbar) => {
