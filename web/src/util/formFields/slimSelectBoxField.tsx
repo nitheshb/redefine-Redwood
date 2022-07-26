@@ -4,8 +4,8 @@ import Select from 'react-select'
 const customStyles = {
   control: (base) => ({
     ...base,
-    height: 32,
-    minHeight: 32,
+    height: 34,
+    minHeight: 34,
     padding: 0,
   }),
   valueContainer: (base) => ({
@@ -41,7 +41,7 @@ export const SlimSelectBox = ({
 
   return (
     <div className="">
-      {label != '' && (
+      {label != '' && label != 'Assign To' && (
         <label className="label font-regular text-sm ">{label}</label>
       )}
       <Select

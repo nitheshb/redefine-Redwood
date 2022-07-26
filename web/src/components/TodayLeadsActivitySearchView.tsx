@@ -365,6 +365,8 @@ export default function TodayLeadsActivitySearchView({
   const [rows, setRows] = React.useState([])
 
   const [isImportLeadsOpen, setisImportLeadsOpen] = React.useState(false)
+
+  const [isImportLeadsOpen1, setisImportLeadsOpen1] = React.useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = React.useState('')
   const [selUserProfile, setSelUserProfile] = React.useState({})
   const [schFetData, setSchFetData] = React.useState([])
@@ -584,6 +586,9 @@ export default function TodayLeadsActivitySearchView({
     setSelUserProfile(data)
   }
 
+  const openingTaskAddWindow = () => {
+    setisImportLeadsOpen1(true)
+  }
   const isSelected = (name) => selected.indexOf(name) !== -1
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -613,23 +618,94 @@ export default function TodayLeadsActivitySearchView({
     <>
       <div>
         {/* <Header /> */}
-        <div className="flex justify-center items-center text-gray-900 h-6"></div>
-        <div className=" px-4 justify-center items-center text-gray-900">
-          <h1 className="font-Playfair box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-wide  text-gray-900 align-baseline border-0 xl:text-3xl xl:tracking-normal md:text-3xl md:tracking-tight">
+        <div className="flex justify-center items-center text-gray-900 h-1"></div>
+        <div className=" justify-center items-center text-gray-900">
+          {/* <h1 className="font-Playfair box-border px-0 pt-0 pb-2  md:pb-4 m-0 text-3xl font-bold tracking-wide  text-gray-900 align-baseline border-0 xl:text-3xl xl:tracking-normal md:text-3xl md:tracking-tight">
             {greet}, {user?.displayName?.toLocaleUpperCase()}
-          </h1>
+          </h1> */}
+          <div className="flex flex-row justify-between pb-3">
+            <section>
+              <h2 className="text-xl font-semibold text-black leading-light font-Playfair pb-1">
+                {greet}, {user?.displayName?.toLocaleUpperCase()}
+              </h2>
 
-          {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
-          <h2 className="">
-            You've got{' '}
-            <span className="inline-flex text-xl leading-5 font-semibold rounded-full  text-green-800">
-              {schFetData.length}
-            </span>{' '}
-            leads{' '}
-            {taskType === 'Today1'
-              ? 'with schedules for Today'
-              : 'with coming up schedules in the next days'}{' '}
-          </h2>
+              {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
+              <h2 className="text-sm text-gray-700 ">
+                You've got tasks on {'  '}
+                <span className="inline-flex text-md leading-5 font-semibold rounded-full  text-green-800">
+                  {schFetData.length}
+                </span>{' '}
+                leads{' '}
+                {/* {taskType === 'Today1'
+                  ? 'with schedules for Today'
+                  : 'with coming up schedules in the next days'}{' '} */}
+              </h2>
+            </section>
+            <div className="flex items-center justify-between">
+              <p
+                tabIndex={0}
+                className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
+              ></p>
+              <section className="flex flex-row">
+                <span className="inline-flex p-1 border bg-gray-200 rounded-md">
+                  <button
+                    className={`px-2 py-1  rounded ${
+                      leadByViewLayout ? 'bg-white shadow' : ''
+                    }`}
+                    onClick={() => setLeadByViewLayout(true)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-gray-600"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    className={`px-2 py-1  rounded ${
+                      !leadByViewLayout ? 'bg-white shadow' : ''
+                    }`}
+                    onClick={() => setLeadByViewLayout(false)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 text-gray-600"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                </span>
+                <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">
+                  <p>Sort By:</p>
+                  <select
+                    aria-label="select"
+                    className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
+                  >
+                    <option className="text-sm text-indigo-800">Latest</option>
+                    <option className="text-sm text-indigo-800">Oldest</option>
+                    <option className="text-sm text-indigo-800">Latest</option>
+                  </select>
+                </div>
+              </section>
+            </div>
+          </div>
+
           {todaySch && schFetData.length === 0 && (
             <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
               <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
@@ -681,77 +757,9 @@ export default function TodayLeadsActivitySearchView({
 
           {leadByViewLayout && todaySch && schFetData.length > 0 && (
             <div className=" w-full">
-              <div className="px-4 md:pb-10 pb-7 md:pb-7">
-                <div className="flex items-center justify-between">
-                  <p
-                    tabIndex={0}
-                    className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
-                  ></p>
-                  <section className="flex flex-row">
-                    <span className="inline-flex p-1 border bg-gray-200 rounded-md">
-                      <button
-                        className={`px-2 py-1  rounded ${
-                          leadByViewLayout ? 'bg-white shadow' : ''
-                        }`}
-                        onClick={() => setLeadByViewLayout(true)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-gray-600"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        className={`px-2 py-1  rounded ${
-                          !leadByViewLayout ? 'bg-white shadow' : ''
-                        }`}
-                        onClick={() => setLeadByViewLayout(false)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-gray-600"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                    </span>
-                    <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">
-                      <p>Sort By:</p>
-                      <select
-                        aria-label="select"
-                        className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
-                      >
-                        <option className="text-sm text-indigo-800">
-                          Latest
-                        </option>
-                        <option className="text-sm text-indigo-800">
-                          Oldest
-                        </option>
-                        <option className="text-sm text-indigo-800">
-                          Latest
-                        </option>
-                      </select>
-                    </div>
-                  </section>
-                </div>
-              </div>
+              {/* <div className="px-4 md:pb-10 pb-3 md:pb-3">
+
+              </div> */}
 
               <div className="bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10">
                 <div className="sm:flex items-center justify-between">
@@ -821,7 +829,10 @@ export default function TodayLeadsActivitySearchView({
                       </div>
                     </a>
                   </div>
-                  <button className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded">
+                  <button
+                    onClick={() => openingTaskAddWindow()}
+                    className="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 mt-4 sm:mt-0 inline-flex items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
+                  >
                     <p className="text-sm font-medium leading-none text-white">
                       Add Tasks
                     </p>
@@ -1071,6 +1082,12 @@ export default function TodayLeadsActivitySearchView({
         open={isImportLeadsOpen}
         setOpen={setisImportLeadsOpen}
         title={addLeadsTypes}
+        customerDetails={selUserProfile}
+      />
+      <SiderForm
+        open={isImportLeadsOpen1}
+        setOpen={setisImportLeadsOpen1}
+        title={'Add Task'}
         customerDetails={selUserProfile}
       />
     </>

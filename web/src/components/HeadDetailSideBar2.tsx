@@ -800,7 +800,7 @@ const HeadSideBarDetailView2 = ({
                 </span>
                 <ul className="px-1 pt-2">
                   {' '}
-                  {['In Progress', 'Booking', 'Archive'].map((data, inx) => (
+                  {['Lead Management', 'Booked', 'Archive'].map((data, inx) => (
                     <li className="relative" key={inx}>
                       <span
                         className={
@@ -810,7 +810,7 @@ const HeadSideBarDetailView2 = ({
                             : '')
                         }
                         onClick={() =>
-                          data === 'In Progress'
+                          data === 'Lead Management'
                             ? setViewable('inProgress')
                             : data === 'Archive'
                             ? setViewable('archieveLeads')
@@ -864,7 +864,7 @@ const HeadSideBarDetailView2 = ({
                 </span>
                 <ul className="px-1 pt-2">
                   {' '}
-                  {['In Progress', 'Booking', 'Archive'].map((data, inx) => (
+                  {['Lead Management', 'Booked', 'Archive'].map((data, inx) => (
                     <li className="relative" key={inx}>
                       <span
                         className={
@@ -872,7 +872,7 @@ const HeadSideBarDetailView2 = ({
                           (pgName === 'home' ? 'bg-gray-300' : '')
                         }
                         onClick={() =>
-                          data === 'In Progress'
+                          data === 'Lead Management'
                             ? setViewable('inProgress')
                             : data === 'Archive'
                             ? setViewable('archieveLeads')

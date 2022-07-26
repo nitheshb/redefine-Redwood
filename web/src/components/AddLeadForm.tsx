@@ -76,12 +76,6 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     return unsubscribe
   }, [])
 
-  const aquaticCreatures = [
-    { label: 'Select the Project', value: '' },
-    { label: 'Subha Ecostone', value: 'subhaecostone' },
-    { label: 'Esperanza', value: 'esperanza' },
-    { label: 'Nakshatra Township', value: 'nakshatratownship' },
-  ]
   // const usersList = [
   //   { label: 'User1', value: 'User1' },
   //   { label: 'User2', value: 'User2' },

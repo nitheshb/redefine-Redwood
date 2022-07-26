@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from 'src/context/firebase-auth-context'
@@ -18,10 +20,11 @@ interface UserInfo {
 
 const LoginPage = () => {
   const [loginError, setloginError] = useState(false)
+  const [passwordResetMode, setPasswordResetMode] = useState(false)
   const [loginErrorMsg, setloginErrorMsg] = useState('')
   const [loader, setloader] = useState(false)
 
-  const { login, isAuthenticated, user } = useAuth()
+  const { login, isAuthenticated, user, forgotPassword } = useAuth()
 
   const navigate = useCallback(async () =>
     // isAuthenticated && user?.uid && (await navigateBasedOnUser(user?.uid)),
@@ -38,11 +41,42 @@ const LoginPage = () => {
 
   const onSubmit = async (data: UserInfo) => {
     setloader(true)
+
     setloginError(false)
     setloginErrorMsg('')
     const { email, password } = data
+
     try {
+      if (passwordResetMode) {
+        try {
+          await forgotPassword(email)
+          setloginError(true)
+          setloginErrorMsg('Please check your inbox for magic reset link...!')
+          setloader(false)
+          return
+        } catch (error) {
+          setloginError(true)
+          console.log('password reset error ', error)
+          const { code, message, name } = error
+          if (code === 'auth/user-not-found') {
+            setloginErrorMsg('Email Id not registered')
+          } else {
+            setloginErrorMsg('Contact Site Admin')
+          }
+          setloader(false)
+          console.log(
+            'error is message ',
+            code,
+            message,
+            name,
+            code === undefined
+          )
+          return
+        }
+      }
+
       const res: any = await login(email, password)
+
       // after login success user effect will trigger after setting up local with role values
       if (res?.user?.accessToken) {
         // const userData = await getUser(res.user.uid)
@@ -66,6 +100,12 @@ const LoginPage = () => {
       }
     }
   }
+
+  useEffect(() => {
+    setloginError(false)
+    setloginErrorMsg('')
+  }, [passwordResetMode])
+
   return (
     <>
       <div className="flex justify-between min-h-screen font-sans">
@@ -102,7 +142,7 @@ const LoginPage = () => {
 
             <div className="pt-36 pb-6">
               <h1 className="text-[28px] font-bold leading-loose tracking-wide whitespace-nowrap text-center">
-                Account Login
+                {passwordResetMode ? 'Password Reset' : 'Account Login'}
               </h1>
 
               {/* <div className="flex items-center justify-between pt-6">
@@ -150,26 +190,28 @@ const LoginPage = () => {
                   name="email"
                   className="error-message text-red-700 text-xs"
                 />
-                <div className="mt-2">
-                  <Label
-                    name="password"
-                    className="label font-regular text-sm"
-                    errorClassName="label font-regular text-sm"
-                  />
-                  <PasswordField
-                    name="password"
-                    className=" w-full px-4 py-2 rounded-sm b-order-gray-300 wborder duration-300 w-fulltransition focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 flex items-center w-full mt-2 overflow-hidden transition-all border rounded-sm border-gray-400  focus-within:shadow-lg focus-within:border-orange-500"
-                    errorClassName=" w-full px-4 py-2 rounded-sm b-order-gray-300 wborder duration-300 w-fulltransition focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 flex items-center w-full mt-2 overflow-hidden transition-all border rounded-sm border-gray-400  focus-within:shadow-lg focus-within:border-orange-500 bg-transparent border border-red-400 "
-                    validation={{
-                      required: true,
-                    }}
-                  />
+                {!passwordResetMode && (
+                  <div className="mt-2">
+                    <Label
+                      name="password"
+                      className="label font-regular text-sm"
+                      errorClassName="label font-regular text-sm"
+                    />
+                    <PasswordField
+                      name="password"
+                      className=" w-full px-4 py-2 rounded-sm b-order-gray-300 wborder duration-300 w-fulltransition focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 flex items-center w-full mt-2 overflow-hidden transition-all border rounded-sm border-gray-400  focus-within:shadow-lg focus-within:border-orange-500"
+                      errorClassName=" w-full px-4 py-2 rounded-sm b-order-gray-300 wborder duration-300 w-fulltransition focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 flex items-center w-full mt-2 overflow-hidden transition-all border rounded-sm border-gray-400  focus-within:shadow-lg focus-within:border-orange-500 bg-transparent border border-red-400 "
+                      validation={{
+                        required: !passwordResetMode,
+                      }}
+                    />
 
-                  <FieldError
-                    name="password"
-                    className="error-message text-red-700 text-xs"
-                  />
-                </div>
+                    <FieldError
+                      name="password"
+                      className="error-message text-red-700 text-xs"
+                    />
+                  </div>
+                )}
                 <div className="flex items-center justify-between pt-4">
                   <div className="flex items-center">
                     <input
@@ -185,13 +227,17 @@ const LoginPage = () => {
                       Remember me
                     </label>
                   </div>
-                  <a
-                    href="#"
-                    className=" text-stone-900 hover:text-stone-900 text-sm"
+                  <section
+                    onClick={() => setPasswordResetMode(!passwordResetMode)}
                   >
-                    {' '}
-                    Forgot password
-                  </a>
+                    <a
+                      href="#"
+                      className=" text-stone-900 hover:text-stone-900 text-sm"
+                    >
+                      {' '}
+                      {!passwordResetMode ? 'Forgot password' : 'Login'}
+                    </a>
+                  </section>
                 </div>
 
                 <Submit
@@ -201,7 +247,7 @@ const LoginPage = () => {
                   disabled={loader}
                 >
                   {loader && <Loader texColor="text-white" />}
-                  Log in
+                  {passwordResetMode ? 'Send Password Reset Email' : 'Log in'}
                 </Submit>
               </Form>
               {/*

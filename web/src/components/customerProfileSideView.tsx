@@ -52,12 +52,7 @@ import {
   prettyDateTime,
   timeConv,
 } from 'src/util/dateConverter'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import { DateTimePicker } from '@mui/lab'
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
-import { TextField } from '@mui/material'
-import TimePicker from '@mui/lab/TimePicker'
+
 import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'

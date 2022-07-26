@@ -17,6 +17,7 @@ import TransactionUpdateSideView from '../transactionUpdateSideView'
 import ProjPhaseHome from '../ProjPhaseHome/ProjPhaseHome'
 import InventoryViewSideForm from '../DialogFormBody/InventoryViewSideView'
 import CrmUnitSideView from '../crmUnitSideView'
+import AddTaskForm from '../AddTaskForm'
 
 const SiderForm = ({
   open,
@@ -101,7 +102,9 @@ const SiderForm = ({
                     </button>
                   </div>
                 </Transition.Child>
-
+                {title === 'Add Task' && (
+                  <AddTaskForm title={title} dialogOpen={setOpen} />
+                )}
                 {(title === 'Create Project' || title === 'Edit Project') && (
                   <DialogFormBody
                     title={title}

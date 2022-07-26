@@ -26,7 +26,7 @@ export const CustomSelect = ({
 
   return (
     <div className={className}>
-      {label != '' && (
+      {(label != '' || label != 'Assigned To') && (
         <label className="label font-regular text-sm mb-2">{label}</label>
       )}
       <Select
