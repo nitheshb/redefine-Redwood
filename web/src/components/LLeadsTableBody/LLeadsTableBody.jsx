@@ -54,6 +54,7 @@ import { ConnectingAirportsOutlined } from '@mui/icons-material'
 // }
 
 function descendingComparator(a, b, orderBy) {
+  console.log('what is the order 1 ',b[orderBy] )
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -64,9 +65,10 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
+ return order === 'desc'
+  ? (a, b) => descendingComparator(a, b, orderBy)
+  : (a, b) => -descendingComparator(a, b, orderBy)
+
 }
 
 // This method is created for cross-browser compatibility, if you don't
@@ -408,8 +410,8 @@ export default function LLeadsTableBody({
   rowsParent,
   selUserProfileF,
 }) {
-  const [order, setOrder] = React.useState('asc')
-  const [orderBy, setOrderBy] = React.useState('calories')
+  const [order, setOrder] = React.useState('desc')
+  const [orderBy, setOrderBy] = React.useState('Date')
   const [selected, setSelected] = React.useState([])
   const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(false)
