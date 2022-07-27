@@ -253,10 +253,35 @@ const EnhancedTableToolbar = (props) => {
   } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
+  const [downloadFormatRows, setDownloadFormatRows] = React.useState([])
 
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
   }, [rows])
+
+  React.useEffect(() => {
+let downRows =[]
+rowsAfterSearchKey.map((data)=> {
+  let row = {
+  }
+  row.Date = data?.Date;
+  row.Name = data?.Name;
+  row.CountryCode = data['Country Code']
+  row.Mobile = data?.Mobile
+  row.Email = data?.Email
+  row.AssignedTo = data?.assignedToObj?.name
+  row.Source = data?.Source
+  row.Status = data?.Status
+  row.Project = data?.Project
+
+  downRows.push(row)
+})
+
+
+    setDownloadFormatRows(downRows)
+  }, [rowsAfterSearchKey])
+
+
 
   const searchKeyField = (e) => {
     // console.log('searched values is ', e.target.value)
@@ -374,7 +399,7 @@ const EnhancedTableToolbar = (props) => {
 
             <CSVDownloader
               className="mr-6 h-[20px] w-[20px]"
-              downloadRows={rowsAfterSearchKey}
+              downloadRows={downloadFormatRows}
               style={{ height: '20px', width: '20px' }}
             />
           </Tooltip>

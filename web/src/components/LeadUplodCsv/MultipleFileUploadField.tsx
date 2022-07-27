@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-unused-expressions */
 import { Grid, makeStyles } from '@material-ui/core'
 import { useField } from 'formik'
@@ -25,6 +27,7 @@ import Loader from '../Loader/Loader'
 import { storage } from 'src/context/firebaseConfig'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { Timestamp } from '@firebase/firestore'
+import { prettyDate } from 'src/util/dateConverter'
 
 let currentId = 0
 
@@ -276,9 +279,15 @@ export function MultipleFileUploadField({
             clean1.map(async (dRow) => {
               console.log('found row is ', dRow)
               const foundLength = await checkIfLeadAlreadyExists(
-                'spark_leads',
+                `${orgId}_leads`,
                 dRow['Mobile']
               )
+              // modify date
+              const date = new Date(dRow['Date']) // some mock date
+              const milliseconds = date.getTime()
+              console.log('milliseconds is', milliseconds)
+              // dRow['Date'] = prettyDate(milliseconds).toLocaleString()
+              dRow['Date'] = milliseconds
               dRow['mode'] = await makeMode(foundLength)
               if (dRow['mode'] === 'valid' && dRow['EmpId'] != '') {
                 console.log('found row is 1', dRow)
@@ -296,6 +305,10 @@ export function MultipleFileUploadField({
                     name: MatchedValA[0]['name'],
                   }
                 }
+              }
+
+              if (dRow['Status'] == '' || dRow['Status'] === undefined) {
+                dRow['Status'] = 'unassigned'
               }
 
               if (dRow['Project'] != '') {
@@ -359,7 +372,7 @@ export function MultipleFileUploadField({
       onDrop,
       accept: ['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)
         ? '.pdf'
-        : '.csv, text/csv',
+        : '.csv, text/csv, .xlsx',
       maxSize: 40000 * 1024, // 1200KB
     })
 
@@ -387,47 +400,51 @@ export function MultipleFileUploadField({
   const handleSubmit = (file) => {
     uploadFile(file)
   }
+  const clearUploadDocs = () => {
+    setFiles([])
+  }
   return (
     <React.Fragment>
-      <div className="mx-3" {...getRootProps({ style })}>
-        {title === 'Import Leads' && (
-          <div className="w-full flex flex-row justify-between ">
-            <span></span>
-            <a
-              download="leadTemplate.csv"
-              target="_blank"
-              href="/leadTemplate.csv"
-            >
-              <span className="text-xs text-blue-500">
-                <DownloadIcon className="h-3 w-3 inline-block" /> Template
-              </span>
-            </a>
+      {files.length === 0 && (
+        <div className="mx-3" {...getRootProps({ style })}>
+          {title === 'Import Leads' && (
+            <div className="w-full flex flex-row justify-between ">
+              <span></span>
+              <a
+                download="leadTemplate.csv"
+                target="_blank"
+                href="/leadTemplate.csv"
+              >
+                <span className="text-xs text-blue-500">
+                  <DownloadIcon className="h-3 w-3 inline-block" /> Template
+                </span>
+              </a>
+            </div>
+          )}
+          <input {...getInputProps()} />
+          {/* <DocumentAddIcon className="h-20 w-60 " aria-hidden="true" /> */}
+          {/* <span>sample template</span> */}
+          <div className="pt-2 pb-8 px-8 flex flex-col items-center">
+            <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+              <img
+                className="w-[200px] h-[200px] inline"
+                alt=""
+                src="/empty-dashboard.svg"
+              />
+            </div>
+            <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+              Drag & drop
+            </h3>
+            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+              or
+              <span className="text-blue-600"> pick from local computer </span>
+              {['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)
+                ? '*.pdf'
+                : '*.csv'}
+              {/* <span className="text-blue-600"> get sample template</span> */}
+            </time>
           </div>
-        )}
-        <input {...getInputProps()} />
-        {/* <DocumentAddIcon className="h-20 w-60 " aria-hidden="true" /> */}
-        {/* <span>sample template</span> */}
-        <div className="pt-2 pb-8 px-8 flex flex-col items-center">
-          <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-            <img
-              className="w-[200px] h-[200px] inline"
-              alt=""
-              src="/empty-dashboard.svg"
-            />
-          </div>
-          <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-            Drag & drop
-          </h3>
-          <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-            or
-            <span className="text-blue-600"> pick from local computer </span>
-            {['Plan Diagram', 'Brouchers', 'Approvals'].includes(title)
-              ? '*.pdf'
-              : '*.csv'}
-            {/* <span className="text-blue-600"> get sample template</span> */}
-          </time>
-        </div>
-        {/* <svg
+          {/* <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-20 w-30 mt-4"
           viewBox="0 0 20 20"
@@ -436,123 +453,140 @@ export function MultipleFileUploadField({
           <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
           <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
         </svg> */}
-        {/* <p>
+          {/* <p>
           {' '}
           Drag & drop or <span className="text-blue-600">click to choose </span>
           <span className="text-black-600">*.csv</span>
         </p> */}
-      </div>
+        </div>
+      )}
+      {files.length >= 1 && (
+        <div className="flex flex-row justify-between">
+          <span></span>
+          <span
+            onClick={() => {
+              clearUploadDocs()
+            }}
+            className="text-blue-500"
+          >
+            Clear
+          </span>
+        </div>
+      )}
 
-      {files.map((fileWrapper, inx) => (
-        <div className="mt-6 p-6 bg-white border border-gray-100" key={inx}>
-          {fileWrapper.errors.length ? (
-            <UploadError
-              file={fileWrapper.file}
-              errors={fileWrapper.errors}
-              onDelete={onDelete}
-            />
-          ) : (
-            <section>
-              <SingleFileUploadWithProgress
-                onDelete={onDelete}
-                onUpload={onUpload}
+      {files.length >= 1 &&
+        files.map((fileWrapper, inx) => (
+          <div className="mt-6 p-6 bg-white border border-gray-100" key={inx}>
+            {fileWrapper.errors.length ? (
+              <UploadError
                 file={fileWrapper.file}
+                errors={fileWrapper.errors}
+                onDelete={onDelete}
               />
-              {['Plan Diagram', 'Brouchers', 'Approvals'].includes(title) && (
-                <Formik
-                  initialValues={{
-                    file_name: '',
-                  }}
-                  // validationSchema={validate}
-                  onSubmit={(values, { resetForm }) => {
-                    console.log('ami submitted', values)
-                    uploadFile(fileWrapper.file)
-                    // onSubmitFun(values, resetForm)
-                  }}
-                >
-                  {(formik) => (
-                    <Form>
-                      {/* 2 */}
-                      <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-1">
-                        <div className="mb-3 space-y-2 w-full text-xs mt-4">
-                          <TextField
-                            label="File Name*"
-                            name="file_name"
-                            value={fileName}
-                            type="text"
-                            onChange={(e) => {
-                              setFileName(e.target.value)
-                            }}
-                          />
+            ) : (
+              <section>
+                <SingleFileUploadWithProgress
+                  onDelete={onDelete}
+                  onUpload={onUpload}
+                  file={fileWrapper.file}
+                />
+                {['Plan Diagram', 'Brouchers', 'Approvals'].includes(title) && (
+                  <Formik
+                    initialValues={{
+                      file_name: '',
+                    }}
+                    // validationSchema={validate}
+                    onSubmit={(values, { resetForm }) => {
+                      console.log('ami submitted', values)
+                      uploadFile(fileWrapper.file)
+                      // onSubmitFun(values, resetForm)
+                    }}
+                  >
+                    {(formik) => (
+                      <Form>
+                        {/* 2 */}
+                        <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-1">
+                          <div className="mb-3 space-y-2 w-full text-xs mt-4">
+                            <TextField
+                              label="File Name*"
+                              name="file_name"
+                              value={fileName}
+                              type="text"
+                              onChange={(e) => {
+                                setFileName(e.target.value)
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="mb-8">
-                        <p className="text-xs text-red-400 text-right my-3">
-                          <abbr title="Required field">*</abbr> fields are
-                          mandatory
-                        </p>
-                        {formMessage === 'Saved Successfully..!' ||
-                          (formMessage === 'Uploaded Successfully..!' && (
-                            <p className=" flex text-md text-slate-800 text-right my-3">
+                        <div className="mb-8">
+                          <p className="text-xs text-red-400 text-right my-3">
+                            <abbr title="Required field">*</abbr> fields are
+                            mandatory
+                          </p>
+                          {formMessage === 'Saved Successfully..!' ||
+                            (formMessage === 'Uploaded Successfully..!' && (
+                              <p className=" flex text-md text-slate-800 text-right my-3">
+                                <img
+                                  className="w-[40px] h-[40px] inline mr-2"
+                                  alt=""
+                                  src="/ok.gif"
+                                />
+                                <span className="mt-2">{formMessage}</span>
+                              </p>
+                            ))}
+                          {formMessage === 'Unit Already Exists' && (
+                            <p className=" flex text-md text-pink-800 text-right my-3">
                               <img
                                 className="w-[40px] h-[40px] inline mr-2"
                                 alt=""
-                                src="/ok.gif"
+                                src="/error.gif"
                               />
                               <span className="mt-2">{formMessage}</span>
                             </p>
-                          ))}
-                        {formMessage === 'Unit Already Exists' && (
-                          <p className=" flex text-md text-pink-800 text-right my-3">
-                            <img
-                              className="w-[40px] h-[40px] inline mr-2"
-                              alt=""
-                              src="/error.gif"
-                            />
-                            <span className="mt-2">{formMessage}</span>
-                          </p>
-                        )}
-                        <div className="mt-5 mt-8 text-right md:space-x-3 md:block flex flex-col-reverse">
-                          <button
-                            className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
-                            type="reset"
-                            onClick={() => resetter()}
-                          >
-                            Reset
-                          </button>
+                          )}
+                          <div className="mt-5 mt-8 text-right md:space-x-3 md:block flex flex-col-reverse">
+                            <button
+                              className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
+                              type="reset"
+                              onClick={() => resetter()}
+                            >
+                              Reset
+                            </button>
 
-                          <button
-                            className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
-                            type="reset"
-                            onClick={() => handleSubmit(fileWrapper.file)}
-                            disabled={loading}
-                          >
-                            {loading && <Loader />}
-                            Add
-                          </button>
+                            <button
+                              className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
+                              type="reset"
+                              onClick={() => handleSubmit(fileWrapper.file)}
+                              disabled={loading}
+                            >
+                              {loading && <Loader />}
+                              Add
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    </Form>
-                  )}
-                </Formik>
-              )}
+                      </Form>
+                    )}
+                  </Formik>
+                )}
 
-              {/* this is for csv file upload */}
+                {/* this is for csv file upload */}
 
-              {!['Plan Diagram', 'Brouchers', 'Approvals'].includes(title) && (
-                <div className="mt-2 p-6 bg-white border border-gray-100">
-                  <LfileUploadTableHome
-                    fileRecords={fileRecords}
-                    title={title}
-                    pId={pId}
-                    myBlock={myBlock}
-                  />
-                </div>
-              )}
-            </section>
-          )}
-        </div>
-      ))}
+                {!['Plan Diagram', 'Brouchers', 'Approvals'].includes(
+                  title
+                ) && (
+                  <div className="mt-2 p-6 bg-white border border-gray-100">
+                    <LfileUploadTableHome
+                      fileRecords={fileRecords}
+                      title={title}
+                      pId={pId}
+                      myBlock={myBlock}
+                    />
+                  </div>
+                )}
+              </section>
+            )}
+          </div>
+        ))}
 
       {/* <div className="mt-4 text-bold text-lg">or</div> */}
       {/* <div className="mt-2 p-6 bg-white border border-gray-100">

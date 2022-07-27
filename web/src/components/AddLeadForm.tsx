@@ -239,7 +239,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     // lastName: Yup.string()
     //   .max(20, 'Must be 20 characters or less')
     //   .required('Required'),
-    email: Yup.string().email('Email is invalid').required('Email is required'),
+    email: Yup.string().email('Email is invalid'),
 
     // password: Yup.string()
     //   .min(6, 'Password must be at least 6 charaters')
@@ -362,7 +362,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                         />
                       </div>
                       <div className="mb-3 space-y-2 w-full text-xs">
-                        <TextField label="Email*" name="email" type="text" />
+                        <TextField label="Email" name="email" type="text" />
                       </div>
                     </div>
                     <div className="mt-8">

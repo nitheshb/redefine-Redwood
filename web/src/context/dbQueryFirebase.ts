@@ -539,7 +539,7 @@ export const addLead = async (orgId, data, by, msg) => {
 
   x1.push('pending')
 
-  await addLeadScheduler(x.id, data1, x1, data.assignedTo)
+  await addLeadScheduler(orgId, x.id, data1, x1, data.assignedTo)
   return
 }
 

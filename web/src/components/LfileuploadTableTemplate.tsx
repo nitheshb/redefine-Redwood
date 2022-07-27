@@ -24,10 +24,12 @@ import { visuallyHidden } from '@mui/utils'
 import Highlighter from 'react-highlight-words'
 import CSVDownloader from '../util/csvDownload'
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone'
+import FileUploadTwoToneIcon from '@mui/icons-material/FileUploadTwoTone'
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
 import { addLead, addUnit, getLedsData1 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
+import { prettyDate } from 'src/util/dateConverter'
 
 // function createData(
 //   Date,
@@ -207,6 +209,11 @@ const EnhancedTableToolbar = (props) => {
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
   const [unitUploadMessage, setUnitUploadMessage] = React.useState('')
 
+  const [uploadedLeadsCount, setUploadedLeadsCount] = React.useState(0)
+  const [uploadIcon, setUploadIcon] = React.useState(
+    sourceTab === 'validR' ? true : false
+  )
+
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
   }, [rows])
@@ -238,15 +245,18 @@ const EnhancedTableToolbar = (props) => {
     // setRows(rowsR)
   }
   const addLeadsToDB = async (records) => {
+    setUploadIcon(false)
     getLedsData1(orgId)
     const mappedArry = await Promise.all(
-      records.map(async (data) => {
+      rows.map(async (data, index) => {
         const newData = data
         newData['intype'] = 'bulk'
         newData['by'] = 'bulk'
-        newData['Status'] = 'unassigned'
+        // newData['Status'] = 'unassigned'
         console.log('am inside addLeadstoDB', newData)
+
         return await addLead(orgId, newData, user?.email, 'Lead Created by csv')
+        setUploadedLeadsCount(index + 1)
         console.log('am inside addLeadstoDB')
       })
     )
@@ -262,7 +272,7 @@ const EnhancedTableToolbar = (props) => {
         newData['pId'] = pId
         newData['blockId'] = myBlock?.uid
         newData['by'] = 'bulk'
-        newData['Status'] = 'available'
+        // newData['Status'] = 'available'
         console.log('am inside addLeadstoDB', newData)
         return await addUnit(orgId, newData, user?.email, 'Unit Created by csv')
         console.log('am inside addLeadstoDB')
@@ -326,6 +336,8 @@ const EnhancedTableToolbar = (props) => {
           component="div"
         >
           <span className="ml-3">Showing {rowsAfterSearchKey.length}</span>
+
+          <span></span>
           <span className="ml-3">{unitUploadMessage}</span>
         </Typography>
       )}
@@ -343,7 +355,7 @@ const EnhancedTableToolbar = (props) => {
               aria-label="done"
               onClick={() => addUnitsToDB(rowsAfterSearchKey, pId)}
             >
-              <DoneIcon />
+              <FileUploadTwoToneIcon />
             </IconButton>
           )}
           <IconButton
@@ -355,12 +367,19 @@ const EnhancedTableToolbar = (props) => {
         </span>
       ) : sourceTab != 'all' ? (
         <span style={{ display: 'flex' }}>
-          <IconButton
-            aria-label="done"
-            onClick={() => addLeadsToDB(rowsAfterSearchKey)}
-          >
-            <DoneIcon />
-          </IconButton>
+          {sourceTab === 'validR' && !uploadIcon && (
+            <span className="ml-3">
+              Uploaded {uploadedLeadsCount} of {rows.length}
+            </span>
+          )}
+          {uploadIcon && (
+            <IconButton
+              aria-label="done"
+              onClick={() => addLeadsToDB(rowsAfterSearchKey)}
+            >
+              <FileUploadTwoToneIcon />
+            </IconButton>
+          )}
           <IconButton
             aria-label="done"
             onClick={() => onToggleEditMode(row.id)}
@@ -462,7 +481,12 @@ export default function LfileuploadTableTemplate({
       ]
     } else {
       columns = [
-        { id: 'Date', label: 'Date', minWidth: 80 },
+        {
+          id: 'Date',
+          label: 'Date',
+          minWidth: 80,
+          format: (value) => value.toLocaleString(),
+        },
         { id: 'Status', label: 'Status', minWidth: 100 },
         {
           id: 'Name',
@@ -499,6 +523,13 @@ export default function LfileuploadTableTemplate({
           align: 'left',
           format: (value) => value.toFixed(2),
         },
+        {
+          id: 'EmpId',
+          label: 'Assigned To',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
       ]
     }
   }, [])
@@ -524,6 +555,7 @@ export default function LfileuploadTableTemplate({
     // return () => {
     //   second
     // }
+    console.log('rows parent is ', rowsParent)
   }, [selStatus, rowsParent])
 
   React.useEffect(() => {
@@ -619,6 +651,7 @@ export default function LfileuploadTableTemplate({
     <Box sx={{ width: '100%' }} style={{ display: 'flex', overflowX: 'auto' }}>
       <Paper sx={{ width: '100%', mx: 3, my: 2 }}>
         <EnhancedTableToolbar
+          sourceTab={sourceTab}
           numSelected={selected.length}
           selStatus={selStatus}
           filteredData={rows}
@@ -705,7 +738,13 @@ export default function LfileuploadTableTemplate({
                     >
                       <TableCell>{index + 1}</TableCell>
                       {columns.map((column) => {
-                        const value = row[column.id]
+                        const value =
+                          column.id === 'Date'
+                            ? prettyDate(row[column.id]).toLocaleString()
+                            : row[column.id]
+
+                        console.log('insert date value is', row[column.id], row)
+
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {/* {column.format && typeof value === 'number'

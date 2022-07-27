@@ -142,8 +142,7 @@ export default function LeadsDropHomes({
                     title={title}
                     pId={pId}
                     myPhase={myPhase}
-                    myBlock={myBlock}
-                  />
+                    myBlock={myBlock}                  />
 
                   {/* <Grid item>
                     <Button
