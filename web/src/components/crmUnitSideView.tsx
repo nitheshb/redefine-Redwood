@@ -67,6 +67,7 @@ import { VerticalAlignBottom } from '@mui/icons-material'
 import ProjPhaseHome from './ProjPhaseHome/ProjPhaseHome'
 import AddBookingForm from './bookingForm'
 import { H4 } from './Typography'
+import { useSnackbar } from 'notistack'
 
 // interface iToastInfo {
 //   open: boolean
@@ -131,6 +132,7 @@ export default function CrmUnitSideView({
   console.log('customer Details', customerDetails)
   const { user } = useAuth()
   const { orgId } = user
+  const { enqueueSnackbar } = useSnackbar()
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
 
@@ -419,7 +421,7 @@ export default function CrmUnitSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId, id, tempLeadStatus)
+      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
     }
     await setTakTitle('')
     await setAddSch(false)

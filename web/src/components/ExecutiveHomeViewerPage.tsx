@@ -20,6 +20,7 @@ import {
 } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
+import { useSnackbar } from 'notistack'
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
@@ -34,6 +35,7 @@ import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
 // }
 const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const { user } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
   const { orgId } = user
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
@@ -237,6 +239,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
       orgId,
       re.draggableId,
       statusFields[parseInt(re.destination.droppableId)],
+      enqueueSnackbar
     )
     setBoardData(newBoardData)
   }

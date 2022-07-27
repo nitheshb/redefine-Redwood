@@ -16,6 +16,7 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import SiderForm from '../SiderForm/SiderForm'
 import CardItem from '../leadsCard'
 import FinanceTableView from '../TableComp/financeTableView'
+import { useSnackbar } from 'notistack'
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
@@ -184,6 +185,7 @@ const BoardData = [
 const CrmTaskList = ({ leadsTyper }) => {
   const { user } = useAuth()
   const { orgId } = user
+  const { enqueueSnackbar } = useSnackbar()
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -284,7 +286,8 @@ const CrmTaskList = ({ leadsTyper }) => {
     updateLeadStatus(
       orgId,
       re.draggableId,
-      statusFields[parseInt(re.destination.droppableId)]
+      statusFields[parseInt(re.destination.droppableId)],
+      enqueueSnackbar
     )
     setBoardData(newBoardData)
   }

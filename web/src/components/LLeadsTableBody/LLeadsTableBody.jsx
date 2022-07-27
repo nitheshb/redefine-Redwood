@@ -264,7 +264,7 @@ let downRows =[]
 rowsAfterSearchKey.map((data)=> {
   let row = {
   }
-  row.Date = data?.Date;
+  row.Date = prettyDate(data?.Date).toLocaleString();
   row.Name = data?.Name;
   row.CountryCode = data['Country Code']
   row.Mobile = data?.Mobile

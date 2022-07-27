@@ -64,6 +64,7 @@ import Loader from './Loader/Loader'
 import { VerticalAlignBottom } from '@mui/icons-material'
 import ProjPhaseHome from './ProjPhaseHome/ProjPhaseHome'
 import AddBookingForm from './bookingForm'
+import { useSnackbar } from 'notistack'
 
 // interface iToastInfo {
 //   open: boolean
@@ -76,18 +77,7 @@ const people = [
   { name: 'Priority 3' },
   { name: 'Priority 4' },
 ]
-const statuslist = [
-  { label: 'Select the Status', value: '' },
-  { label: 'New', value: 'new' },
-  // { label: 'Follow Up', value: 'followup' },
-  { label: 'Visit Fixed', value: 'visitfixed' },
-  { label: 'Visit Done', value: 'visitdone' },
-  { label: 'Negotiation', value: 'Negotiation' },
-  // { label: 'RNR', value: 'rnr' },
-  { label: 'Booked', value: 'booked' },
-  { label: 'Not Interested', value: 'notinterested' },
-  // { label: 'Dead', value: 'Dead' },
-]
+
 
 const attachTypes = [
   { label: 'Select Document', value: '' },
@@ -192,6 +182,8 @@ export default function CustomerProfileSideView({
     Timeline,
     documents,
   } = customerDetails
+  const { enqueueSnackbar } = useSnackbar()
+
   useEffect(() => {
     //   get lead data by id
     streamLeadDataFun()
@@ -564,7 +556,7 @@ export default function CustomerProfileSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, assignedTo)
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId, id, tempLeadStatus)
+      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
     }
     await setTakTitle('')
     await setAddSch(false)
@@ -626,7 +618,13 @@ export default function CustomerProfileSideView({
   }
 
   const fAddNotes = async () => {
-    console.log('start time is ', startDate)
+    //  make it as notInterested if source is from NotInterestedd Page
+    console.log(
+      'start time is temp ',
+      startDate,
+      tempLeadStatus,
+      tempLeadStatus === 'notinterested'
+    )
     const data = {
       by: user.email,
       type: 'notes',
@@ -635,6 +633,10 @@ export default function CustomerProfileSideView({
     }
 
     await addLeadNotes(orgId, id, data)
+    if (tempLeadStatus === 'notinterested') {
+      console.log('am i here')
+      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
+    }
     await setNotesTitle('')
     await setAddNote(false)
   }

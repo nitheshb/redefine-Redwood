@@ -71,6 +71,7 @@ import Loader from './Loader/Loader'
 import { VerticalAlignBottom } from '@mui/icons-material'
 import ProjPhaseHome from './ProjPhaseHome/ProjPhaseHome'
 import AddBookingForm from './bookingForm'
+import { useSnackbar } from 'notistack'
 
 // interface iToastInfo {
 //   open: boolean
@@ -134,6 +135,8 @@ export default function TransactionUpdateSideView({
 }) {
   console.log('customer Details', customerDetails)
   const { user } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
+
   const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
@@ -534,7 +537,7 @@ export default function TransactionUpdateSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId, id, tempLeadStatus)
+      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
     }
     await setTakTitle('')
     await setAddSch(false)

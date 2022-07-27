@@ -20,6 +20,7 @@ import SiderForm from '../SiderForm/SiderForm'
 import CardItem from '../leadsCard'
 import FinanceTableView from '../TableComp/financeTableView'
 import CRMTableView from './CrmTableLayout'
+import { useSnackbar } from 'notistack'
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
@@ -188,6 +189,7 @@ const BoardData = [
 const CrmHome = ({ leadsTyper }) => {
   const { user } = useAuth()
   const { orgId } = user
+  const { enqueueSnackbar } = useSnackbar()
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -288,7 +290,8 @@ const CrmHome = ({ leadsTyper }) => {
     updateLeadStatus(
       orgId,
       re.draggableId,
-      statusFields[parseInt(re.destination.droppableId)]
+      statusFields[parseInt(re.destination.droppableId)],
+      enqueueSnackbar
     )
     setBoardData(newBoardData)
   }

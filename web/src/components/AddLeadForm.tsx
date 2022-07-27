@@ -34,6 +34,8 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
+  const [closeWindowMode, setCloseWindowMode] = useState(false)
+
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
       orgId,
@@ -83,22 +85,22 @@ const AddLeadForm = ({ title, dialogOpen }) => {
   // ]
   const budgetList = [
     { label: 'Select Customer Budget', value: '' },
-    { label: '5 - 10 Lacs', value: 'Bangalore,KA' },
-    { label: '10 - 20 Lacs', value: 'Cochin,KL' },
-    { label: '20 - 30 Lacs', value: 'Mumbai,MH' },
-    { label: '30 - 40 Lacs', value: 'Mumbai,MH' },
-    { label: '40 - 50 Lacs', value: 'Mumbai,MH' },
-    { label: '50 - 60 Lacs', value: 'Mumbai,MH' },
-    { label: '60 - 70 Lacs', value: 'Mumbai,MH' },
-    { label: '70 - 80 Lacs', value: 'Mumbai,MH' },
-    { label: '80 - 90 Lacs', value: 'Mumbai,MH' },
-    { label: '90 - 100 Lacs', value: 'Mumbai,MH' },
-    { label: '1.0 Cr - 1.1 Cr', value: 'Mumbai,MH' },
-    { label: '1.1 Cr - 1.2 Cr', value: 'Mumbai,MH' },
-    { label: '1.2 Cr - 1.3 Cr', value: 'Mumbai,MH' },
-    { label: '1.3 Cr - 1.4 Cr', value: 'Mumbai,MH' },
-    { label: '1.4 Cr - 1.5 Cr', value: 'Mumbai,MH' },
-    { label: '1.5 + Cr', value: 'Mumbai,MH' },
+    { label: '5 - 10 Lacs', value: '5-10L' },
+    { label: '10 - 20 Lacs', value: '10-20L' },
+    { label: '20 - 30 Lacs', value: '20-30L' },
+    { label: '30 - 40 Lacs', value: '30-40L' },
+    { label: '40 - 50 Lacs', value: '40-50L' },
+    { label: '50 - 60 Lacs', value: '50-60L' },
+    { label: '60 - 70 Lacs', value: '60-70L' },
+    { label: '70 - 80 Lacs', value: '70-80L' },
+    { label: '80 - 90 Lacs', value: '80-90L' },
+    { label: '90 - 100 Lacs', value: '90-100L' },
+    { label: '1.0 Cr - 1.1 Cr', value: '1-1.1C' },
+    { label: '1.1 Cr - 1.2 Cr', value: '1.1-1.2C' },
+    { label: '1.2 Cr - 1.3 Cr', value: '1.2-1.3C' },
+    { label: '1.3 Cr - 1.4 Cr', value: '1.3-1.4C' },
+    { label: '1.4 Cr - 1.5 Cr', value: '1.4-1.5C' },
+    { label: '1.5 + Cr', value: '1.5+' },
   ]
 
   const plans = [
@@ -161,7 +163,10 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     } = data
     // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
 
-    const foundLength = await checkIfLeadAlreadyExists('spark_leads', mobileNo)
+    const foundLength = await checkIfLeadAlreadyExists(
+      `${orgId}_leads`,
+      mobileNo
+    )
     const leadData = {
       Date: Timestamp.now().toMillis(),
       Email: email,
@@ -219,6 +224,10 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       resetForm()
       setFormMessage('Saved Successfully..!')
       setLoading(false)
+      if (closeWindowMode) {
+        console.log('am cloded')
+        dialogOpen()
+      }
     }
   }
 
@@ -288,7 +297,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                 project: '',
                 projectId: '',
                 assignedTo: '',
-                budget: '',
+                budget: '20-30L',
                 deptVal: '',
                 myRole: '',
               }}
@@ -592,6 +601,15 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                         >
                           {loading && <Loader />}
                           Add Lead
+                        </button>
+                        <button
+                          className="mb-2 md:mb-0 bg-green-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white  rounded-sm hover:shadow-lg hover:bg-green-500"
+                          type="submit"
+                          onClick={() => setCloseWindowMode(true)}
+                          disabled={loading}
+                        >
+                          {loading && <Loader />}
+                          Add Lead & Close
                         </button>
                       </div>
                     </div>

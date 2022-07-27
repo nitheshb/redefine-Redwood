@@ -416,7 +416,7 @@ export function MultipleFileUploadField({
                 href="/leadTemplate.csv"
               >
                 <span className="text-xs text-blue-500">
-                  <DownloadIcon className="h-3 w-3 inline-block" /> Template
+                  <DownloadIcon className="h-3 w-3 inline-block" />Sample Template
                 </span>
               </a>
             </div>

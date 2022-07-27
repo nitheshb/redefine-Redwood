@@ -1414,11 +1414,25 @@ export const updateUnitAsBooked = async (
   //   by,
   // })
 }
-export const updateLeadStatus = async (orgId, leadDocId, newStatus) => {
-  console.log('wow it should be here', leadDocId, newStatus)
-  await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
-    Status: newStatus,
-  })
+export const updateLeadStatus = async (
+  orgId,
+  leadDocId,
+  newStatus,
+  enqueueSnackbar
+) => {
+  try {
+    console.log('wow it should be here', leadDocId, newStatus)
+    await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
+      Status: newStatus,
+    })
+    enqueueSnackbar(`Status Updated to ${newStatus}`, {
+      variant: 'success',
+    })
+  } catch (e) {
+    enqueueSnackbar(e.message, {
+      variant: 'error',
+    })
+  }
 }
 export const updateLeadProject = async (orgId, leadDocId, newProjObj) => {
   console.log('wow it should be here', leadDocId, newProjObj)
