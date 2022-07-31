@@ -25,7 +25,6 @@ import toast from 'react-hot-toast'
 
 import {
   addLeadScheduler,
-  updateSch,
   deleteSchLog,
   steamUsersListByRole,
   updateLeadAssigTo,
@@ -41,10 +40,9 @@ import {
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
 import ClockIcon from '@heroicons/react/solid/ClockIcon'
-import CalendarIcon from '@heroicons/react/outline/CalendarIcon'
+
 import {
-  getDifferenceInHours,
-  getDifferenceInMinutes,
+
   prettyDate,
   prettyDateTime,
   timeConv,
@@ -434,15 +432,7 @@ export default function CrmUnitSideView({
     setLeadStatus(Status)
     setLoader(false)
   }
-  const fUpdateSchedule = async (data) => {
-    const tmId = data.ct
-    const newTm = Timestamp.now().toMillis() + 10800000 + 5 * 3600000
 
-    console.log('new one ', schStsA)
-    await updateSch(orgId, id, tmId, newTm, schStsA, assignedTo)
-    await setTakTitle('')
-    await setAddSch(false)
-  }
   const handleColor = (time) => {
     return time.getHours() > 12 ? 'text-success' : 'text-error'
   }

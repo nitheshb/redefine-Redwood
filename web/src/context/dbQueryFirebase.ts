@@ -1414,6 +1414,34 @@ export const updateUnitAsBooked = async (
   //   by,
   // })
 }
+
+export const updateLeadRemarks_NotIntrested = async (
+  orgId,
+  leadDocId,
+  data,
+  by,
+  enqueueSnackbar
+) => {
+  try {
+    console.log('data is', leadDocId, data)
+
+    await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
+      ...data,
+    })
+    enqueueSnackbar('Updated Successfully', {
+      variant: 'success',
+    })
+  } catch (error) {
+    console.log('Updation failed', error, {
+      ...data,
+    })
+    enqueueSnackbar('Updation failed', {
+      variant: 'error',
+    })
+  }
+
+  return
+}
 export const updateLeadStatus = async (
   orgId,
   leadDocId,
@@ -1424,6 +1452,8 @@ export const updateLeadStatus = async (
     console.log('wow it should be here', leadDocId, newStatus)
     await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
       Status: newStatus,
+      coveredA: arrayUnion(newStatus),
+      stsUpT: Timestamp.now().toMillis(),
     })
     enqueueSnackbar(`Status Updated to ${newStatus}`, {
       variant: 'success',
@@ -1452,13 +1482,29 @@ export const updateSch = async (
   kId,
   newCt,
   schStsA,
-  assignedTo
+  assignedTo,
+  actionType,
+  existingCount
 ) => {
   const x = `${kId}.schTime`
-  await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
-    [x]: newCt,
-    assignedTo,
-  })
+  const y = `${kId}.${actionType}`
+  // const y = {
+  //   [x]: newCt,
+  //   [x]: newCt,
+
+  //   assignedTo,
+  // }
+  const z = `${actionType}`
+  console.log('xo xo xo 1', actionType, y)
+  try {
+    await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
+      [x]: newCt,
+      [y]: increment(1),
+      assignedTo,
+    })
+  } catch (error) {
+    console.log('xo xo xo error', error)
+  }
 }
 export const updateMoreDetails = async (uid, moreDetails, enqueueSnackbar) => {
   try {

@@ -8,11 +8,11 @@ export default function SortComp({ selFilterVal, setSelFilterVal }) {
       <Menu as="div" className="relative inline-block text-left">
         <div>
           <Menu.Button className="inline-flex justify-center w-full px-2 py-0 text-sm font-medium text-gray-500 bg- rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-            {/* <span>
+            <span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="18"
                 viewBox="0 0 24 24"
                 className="mr-1"
               >
@@ -22,8 +22,10 @@ export default function SortComp({ selFilterVal, setSelFilterVal }) {
                   fillRule="nonzero"
                 ></path>
               </svg>
-            </span> */}
-            <span className="font-medium">Filter</span>
+            </span>
+            <span className="font-medium text-[10px] mb-[-4px]">
+              {selFilterVal?.toLocaleUpperCase()} Tasks
+            </span>
           </Menu.Button>
         </div>
         <Transition
@@ -43,6 +45,29 @@ export default function SortComp({ selFilterVal, setSelFilterVal }) {
                     className={`${
                       active ? 'bg-violet-500 text-white' : 'text-gray-900'
                     } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    onClick={() => setSelFilterVal('all')}
+                  >
+                    {active ? (
+                      <DuplicateActiveIcon
+                        className="w-5 h-5 mr-2"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <DuplicateInactiveIcon
+                        className="w-5 h-5 mr-2"
+                        aria-hidden="true"
+                      />
+                    )}
+                    All
+                  </button>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? 'bg-violet-500 text-white' : 'text-gray-900'
+                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                     onClick={() => setSelFilterVal('pending')}
                   >
                     {active ? (
@@ -56,7 +81,7 @@ export default function SortComp({ selFilterVal, setSelFilterVal }) {
                         aria-hidden="true"
                       />
                     )}
-                    Todo
+                    Pending
                   </button>
                 )}
               </Menu.Item>
@@ -80,29 +105,6 @@ export default function SortComp({ selFilterVal, setSelFilterVal }) {
                       />
                     )}
                     Completed
-                  </button>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? 'bg-violet-500 text-white' : 'text-gray-900'
-                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                    onClick={() => setSelFilterVal('all')}
-                  >
-                    {active ? (
-                      <DuplicateActiveIcon
-                        className="w-5 h-5 mr-2"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <DuplicateInactiveIcon
-                        className="w-5 h-5 mr-2"
-                        aria-hidden="true"
-                      />
-                    )}
-                    All
                   </button>
                 )}
               </Menu.Item>

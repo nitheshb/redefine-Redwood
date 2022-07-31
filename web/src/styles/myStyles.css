@@ -1,0 +1,34 @@
+.blockHead:after {
+  color: #4D81BF;
+  border-left: 20px solid;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-radius: 2px;
+  display: inline-block;
+  content: '';
+  position: absolute;
+  right: -20px;
+  top: 0;
+}
+.blockHead {
+  width: '100%';
+  height: '32px';
+  cursor: 'pointer';
+  text-overflow: 'ellipsis';
+  transition: 'all 250ms ease';
+  background-color: #4D81BF;
+  overflow: 'hidden';
+   white-space: 'nowrap';
+  /*width: 150px; */
+  height: 40px;
+  line-height: 40px;
+  display: inline-block;
+  position: relative;
+}
+.blocktext {
+  color: white;
+  font-weight: bold;
+  padding-left: 10px;
+  font-family: Arial;
+  font-size: 11;
+}

@@ -26,7 +26,7 @@ import toast from 'react-hot-toast'
 import {
   addLeadScheduler,
   addSchedulerLog,
-  updateSch,
+
   deleteSchLog,
   steamLeadActivityLog,
   steamLeadPhoneLog,
@@ -550,15 +550,7 @@ export default function TransactionUpdateSideView({
     setLeadStatus(Status)
     setLoader(false)
   }
-  const fUpdateSchedule = async (data) => {
-    const tmId = data.ct
-    const newTm = Timestamp.now().toMillis() + 10800000 + 5 * 3600000
 
-    console.log('new one ', schStsA)
-    await updateSch(orgId, id, tmId, newTm, schStsA, assignedTo)
-    await setTakTitle('')
-    await setAddSch(false)
-  }
   const handleColor = (time) => {
     return time.getHours() > 12 ? 'text-success' : 'text-error'
   }
