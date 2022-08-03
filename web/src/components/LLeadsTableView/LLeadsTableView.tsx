@@ -103,31 +103,7 @@ const tableData2 = [
     role: 'Editor',
   },
 ]
-function createData(
-  id,
-  Date,
-  Name,
-  Mobile,
-  Email,
-  Source,
-  Assignedto,
-  Status,
-  Project,
-  Note
-) {
-  return {
-    id,
-    Date,
-    Name,
-    Mobile,
-    Email,
-    Project,
-    Assignedto,
-    Source,
-    Status,
-    Note,
-  }
-}
+
 const rowsCounter = (parent, searchKey) => {
   return parent.filter((item) => {
     if (searchKey === 'all') {

@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import * as React from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -40,6 +41,11 @@ import {
 import SiderForm from './SiderForm/SiderForm'
 import Loader from './Loader/Loader'
 import TodoListView from './todoList'
+import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
+import {
+  getAllProjects,
+  steamUsersListByRole,
+} from 'src/context/dbQueryFirebase'
 
 // function createData(
 //   Date,
@@ -356,6 +362,7 @@ export default function TodayLeadsActivitySearchView({
   setSearchKey,
 }) {
   const { user } = useAuth()
+  const { orgId, access } = user
   const [order, setOrder] = React.useState('asc')
   const [orderBy, setOrderBy] = React.useState('calories')
   const [selected, setSelected] = React.useState([])
@@ -372,7 +379,16 @@ export default function TodayLeadsActivitySearchView({
   const [schFetData, setSchFetData] = React.useState([])
   const [schFetCleanData, setSchFetCleanData] = React.useState([])
   const [leadByViewLayout, setLeadByViewLayout] = React.useState(true)
-
+  const [projectList, setprojectList] = useState([])
+  const [usersList, setusersList] = useState([])
+  const [selProjectIs, setSelProject] = useState({
+    label: 'All Projects',
+    value: 'allprojects',
+  })
+  const [selLeadsOf, setSelLeadsOf] = useState({
+    label: 'My Tasks Leads',
+    value: 'mytasks',
+  })
   React.useEffect(() => {
     console.log('send values is', rowsParent)
     filterStuff(rowsParent)
@@ -397,6 +413,49 @@ export default function TodayLeadsActivitySearchView({
     // }
   }, [selStatus, rowsParent])
 
+  useEffect(() => {
+    const unsubscribe = getAllProjects(
+      orgId,
+      (querySnapshot) => {
+        const projectsListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+
+        projectsListA.map((user) => {
+          user.label = user.projectName
+          user.value = user.uid
+        })
+        console.log('fetched projects list is', projectsListA)
+        setprojectList(projectsListA)
+      },
+      (error) => setprojectList([])
+    )
+
+    return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = steamUsersListByRole(
+      orgId,
+      (querySnapshot) => {
+        const usersListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+
+        usersListA.map((user) => {
+          user.label = user.displayName || user.name
+          user.value = user.uid
+        })
+        console.log('fetched users list is', usersListA)
+
+        setusersList(usersListA)
+      },
+      (error) => setusersList([])
+    )
+
+    return unsubscribe
+  }, [])
+
   // React.useEffect(() => {
   //   // console.log('search on is', searchKey)
   //   // filterSearchString(rows)
@@ -409,103 +468,170 @@ export default function TodayLeadsActivitySearchView({
   //     setSchFetData(y)
   //   }
   // }, [searchKey])
+  const sorterFilterFun = async (todaySch) => {
+    console.log('max check it my value is ', todaySch)
+    const streamedTodo = []
+    let y = []
+    // if (searchKey.includes('pending') || searchKey.includes('upcoming')) {
+    //   y = todaySch
+    //     ?.filter((item) => {
+    //       console.log('yo you', item?.staA, searchKey)
+    //       return item?.staA.some((r) => searchKey.includes(r))
+    //     })
+    //     .filter((d) => {
+    //       console.log('macho', d)
+    //       return d['schTime'] < torrowDate
+    //     })
+    // } else {
+    //   y = todaySch?.filter((item) => {
+    //     console.log('yo you', item?.staA, searchKey)
+    //     return item?.staA.some((r) => searchKey.includes(r))
+    //   })
+    // }
 
+    //  updaing the lookup array to look for pending status when ever user selects upcoming as there is no sta
+
+    let TaskStatusReq = []
+    if (searchKey.includes('upcoming')) {
+      TaskStatusReq = ['pending']
+    } else {
+      TaskStatusReq = searchKey
+    }
+
+    y = await todaySch?.filter((item) => {
+      console.log('yo you', item?.staA, searchKey, TaskStatusReq)
+      if (selLeadsOf?.value == 'mytasks') {
+        return (
+          item?.staA.some((r) => TaskStatusReq.includes(r)) &&
+          item?.assignedTo === user?.uid
+        )
+      } else if (selLeadsOf?.value === 'teamtasks') {
+        return item?.staA.some((r) => TaskStatusReq.includes(r))
+      } else {
+        // console.log(
+        //   'sel lead is ',
+        //   selLeadsOf?.label,
+        //   selLeadsOf?.value,
+        //   item?.assignedTo,
+        //   item?.assignedTo === selLeadsOf?.value,
+        //   (
+        //     item?.staA.some((r) => TaskStatusReq.includes(r)) &&
+        //     item?.assignedTo === selLeadsOf?.value
+        //   )
+        // )
+        return (
+          item?.staA.some((r) => TaskStatusReq.includes(r)) &&
+          item?.assignedTo === selLeadsOf?.value
+        )
+      }
+    })
+    console.log(
+      'ami cahnged',
+      selProjectIs?.label,
+      y.length,
+      y,
+      searchKey,
+      'alias',
+      TaskStatusReq
+    )
+    await setSchFetData(y)
+    const z = todaySch.map((data1) => {
+      // data1['staDA']
+      //   .filter((d) => {
+      //     console.log(
+      //       'macho 2 ',
+      //       d,
+      //       torrowDate,
+      //       d > torrowDate,
+      //       d == 16589196420002
+      //     )
+      //     // return d < torrowDate
+      //     return 1 === 1
+      //   })
+
+      data1['staDA'].map((data2) => {
+        const y = data1[data2]
+
+        if (
+          searchKey.length == 1 &&
+          searchKey.includes('pending') &&
+          y['sts'] === 'pending'
+        ) {
+          // make sure if date less than tomorrow is added
+          if (y['schTime'] < torrowDate) {
+            y.uid = data1.uid
+            y.leadUser = data1.leadUser
+            streamedTodo.push(y)
+            console.log('my value is 1 yo i', y)
+            return y
+          } else {
+            return
+          }
+        }
+
+        if (searchKey.length == 1 && searchKey.includes('upcoming')) {
+          // make sure if date greater than tomorrow is added
+          if (y['schTime'] > torrowDate) {
+            y.uid = data1.uid
+            y.leadUser = data1.leadUser
+            streamedTodo.push(y)
+            console.log('my value is 1', y)
+            return y
+          } else {
+            return
+          }
+        }
+
+        y.uid = data1.uid
+        y.leadUser = data1.leadUser
+        streamedTodo.push(y)
+        console.log('my value is 1', y)
+        return y
+      })
+    })
+    // this is for list view
+    setSchFetCleanData(streamedTodo)
+    console.log('my value is 1', searchKey, z, streamedTodo)
+  }
   React.useEffect(() => {
     if (todaySch) {
-      console.log('my value is ', todaySch)
-      const streamedTodo = []
-      let y = []
-      // if (searchKey.includes('pending') || searchKey.includes('upcoming')) {
-      //   y = todaySch
-      //     ?.filter((item) => {
-      //       console.log('yo you', item?.staA, searchKey)
-      //       return item?.staA.some((r) => searchKey.includes(r))
-      //     })
-      //     .filter((d) => {
-      //       console.log('macho', d)
-      //       return d['schTime'] < torrowDate
-      //     })
-      // } else {
-      //   y = todaySch?.filter((item) => {
-      //     console.log('yo you', item?.staA, searchKey)
-      //     return item?.staA.some((r) => searchKey.includes(r))
-      //   })
-      // }
-
-      //  updaing the lookup array to look for pending status when ever user selects upcoming as there is no sta
-
-      let TaskStatusReq = []
-      if (searchKey.includes('upcoming')) {
-        TaskStatusReq = ['pending']
-      } else {
-        TaskStatusReq = searchKey
-      }
-      y = todaySch?.filter((item) => {
-        console.log('yo you', item?.staA, searchKey, TaskStatusReq)
-        return item?.staA.some((r) => TaskStatusReq.includes(r))
-      })
-      console.log('ami cahnged', y.length, y, searchKey, 'alias', TaskStatusReq)
-      setSchFetData(y)
-      const z = todaySch.map((data1) => {
-        // data1['staDA']
-        //   .filter((d) => {
-        //     console.log(
-        //       'macho 2 ',
-        //       d,
-        //       torrowDate,
-        //       d > torrowDate,
-        //       d == 16589196420002
-        //     )
-        //     // return d < torrowDate
-        //     return 1 === 1
-        //   })
-
-        data1['staDA'].map((data2) => {
-          const y = data1[data2]
-
-          if (
-            searchKey.length == 1 &&
-            searchKey.includes('pending') &&
-            y['sts'] === 'pending'
-          ) {
-            // make sure if date less than tomorrow is added
-            if (y['schTime'] < torrowDate) {
-              y.uid = data1.uid
-              y.leadUser = data1.leadUser
-              streamedTodo.push(y)
-              console.log('my value is 1', y)
-              return y
-            } else {
-              return
-            }
+      const z = todaySch?.filter((item) => {
+        if (selLeadsOf?.value == 'mytasks') {
+          if (selProjectIs?.value === 'allprojects') {
+            return item?.leadUser?.assignedTo === user?.uid
+          } else {
+            return (
+              item?.leadUser?.assignedTo === user?.uid &&
+              item?.leadUser.ProjectId === selProjectIs?.value
+            )
           }
-
-          if (searchKey.length == 1 && searchKey.includes('upcoming')) {
-            // make sure if date greater than tomorrow is added
-            if (y['schTime'] > torrowDate) {
-              y.uid = data1.uid
-              y.leadUser = data1.leadUser
-              streamedTodo.push(y)
-              console.log('my value is 1', y)
-              return y
-            } else {
-              return
-            }
+        } else if (selLeadsOf?.value === 'teamtasks') {
+          console.log('zoro condition', selProjectIs?.value)
+          return selProjectIs?.value === 'allprojects'
+            ? item
+            : item?.leadUser.ProjectId === selProjectIs?.value
+        } else {
+          console.log(
+            'zoro condition 1',
+            selProjectIs?.value,
+            selLeadsOf?.value
+          )
+          if (selProjectIs?.value === 'allprojects') {
+            return item?.leadUser?.assignedTo === selLeadsOf?.value
+          } else {
+            return (
+              item?.assignedTo === selLeadsOf?.value &&
+              item?.leadUser?.ProjectId === selProjectIs?.value
+            )
           }
-
-          y.uid = data1.uid
-          y.leadUser = data1.leadUser
-          streamedTodo.push(y)
-          console.log('my value is 1', y)
-          return y
-        })
+        }
       })
-      setSchFetCleanData(streamedTodo)
-      console.log('my value is 1', searchKey, z, streamedTodo)
+      console.log('zoro i s', z, todaySch)
+      sorterFilterFun(z)
     } else {
       console.log('my value is ', todaySch)
     }
-  }, [todaySch, searchKey])
+  }, [todaySch, searchKey, selLeadsOf, selProjectIs])
 
   const filterScheduleArry = (staDA, data1) => {
     const streamedTodoLeadsFormat = []
@@ -647,6 +773,48 @@ export default function TodayLeadsActivitySearchView({
                 className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
               ></p>
               <section className="flex flex-row">
+                <div className=" flex flex-col   mr-5 w-40">
+                  <SlimSelectBox
+                    name="project"
+                    label=""
+                    className="input "
+                    onChange={(value) => {
+                      console.log('zoro condition changed one  is', value)
+                      setSelProject(value)
+                      // formik.setFieldValue('project', value.value)
+                    }}
+                    value={selProjectIs?.value}
+                    // options={aquaticCreatures}
+                    options={[
+                      ...[{ label: 'All Projects', value: 'allprojects' }],
+                      ...projectList,
+                    ]}
+                  />
+                </div>
+                {access.includes('manage_leads') && (
+                  <div className=" flex flex-col  w-40 mr-5">
+                    <SlimSelectBox
+                      name="project"
+                      label=""
+                      placeholder="My Tasks"
+                      className="input "
+                      onChange={(value) => {
+                        console.log('changed value is ', value.value)
+                        setSelLeadsOf(value)
+                        // formik.setFieldValue('project', value.value)
+                      }}
+                      value={selLeadsOf?.value}
+                      // options={aquaticCreatures}
+                      options={[
+                        ...[
+                          { label: 'Team Tasks', value: 'teamtasks' },
+                          { label: 'My Tasks', value: 'mytasks' },
+                        ],
+                        ...usersList,
+                      ]}
+                    />
+                  </div>
+                )}
                 <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                   <button
                     className={`px-2 py-1  rounded ${
@@ -706,23 +874,6 @@ export default function TodayLeadsActivitySearchView({
             </div>
           </div>
 
-          {todaySch && schFetData.length === 0 && (
-            <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
-              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                <img
-                  className="w-[180px] h-[180px] inline"
-                  alt=""
-                  src="../note-widget.svg"
-                />
-              </div>
-              <h3 className="mb-1 text-sm font-semibold text-gray-900">
-                No Tasks Found
-              </h3>
-              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                <span className="text-blue-600"> Add New Task</span>
-              </time>
-            </div>
-          )}
           {!todaySch && (
             <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
               <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
@@ -741,11 +892,11 @@ export default function TodayLeadsActivitySearchView({
             </div>
           )}
           {/* searchKey, setSearchKey */}
-          {!leadByViewLayout && todaySch && schFetData.length > 0 && (
+          {!leadByViewLayout && todaySch && (
             <TodoListView
               taskListA={schFetCleanData}
-              setisImportLeadsOpen={undefined}
-              selUserProfileF={undefined}
+              setisImportLeadsOpen={setisImportLeadsOpen}
+              selUserProfileF={selUserProfileF}
               leadsFetchedData={undefined}
               leadsTyper={undefined}
               leadByViewLayout={leadByViewLayout}
@@ -755,7 +906,7 @@ export default function TodayLeadsActivitySearchView({
             />
           )}
 
-          {leadByViewLayout && todaySch && schFetData.length > 0 && (
+          {leadByViewLayout && todaySch && (
             <div className=" w-full">
               {/* <div className="px-4 md:pb-10 pb-3 md:pb-3">
 
@@ -838,7 +989,23 @@ export default function TodayLeadsActivitySearchView({
                     </p>
                   </button>
                 </div>
-
+                {todaySch && schFetData.length === 0 && (
+                  <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
+                    <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                      <img
+                        className="w-[180px] h-[180px] inline"
+                        alt=""
+                        src="../note-widget.svg"
+                      />
+                    </div>
+                    <h3 className="mb-1 text-sm font-semibold text-gray-900">
+                      No Tasks Found
+                    </h3>
+                    <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                      <span className="text-blue-600"> Add New Task</span>
+                    </time>
+                  </div>
+                )}
                 <div className="mt-6">
                   {schFetData.map((dat, index) => {
                     console.log('what am i', dat)
@@ -930,6 +1097,16 @@ export default function TodayLeadsActivitySearchView({
                                 <span className="text-sm ml-1 font-semibold">
                                   {''}
                                   {leadUser?.Project}
+                                </span>
+                              </span>
+                              <span className="inline-flex mr-4">
+                                <span className="text-sm  font-light  font text-gray-700 ">
+                                  {' '}
+                                  {'Project'}:{'  '}
+                                </span>
+                                <span className="text-sm ml-1 font-semibold">
+                                  {''}
+                                  {leadUser?.assignedToObj?.name}
                                 </span>
                               </span>
                             </section>

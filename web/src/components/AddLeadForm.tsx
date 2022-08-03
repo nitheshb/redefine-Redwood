@@ -235,15 +235,16 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     { label: 'Select the Source', value: '' },
     { label: 'Google Adwords', value: 'googleadwords' },
     { label: 'Facebook Ad', value: 'facebookad' },
-    { label: 'Instragram Ad', value: 'instragramad' },
+    { label: 'Instagram Ad', value: 'instagramad' },
     { label: 'Magic Bricks', value: 'magicbricks' },
+    { label: 'MCube', value: 'mcube' },
     { label: 'Direct Contact', value: 'directcontact' },
     { label: '99acres', value: '99acres' },
     { label: 'CP Skagen', value: 'cpskagen' },
   ]
   const validate = Yup.object({
     name: Yup.string()
-      .max(15, 'Must be 15 characters or less')
+      .max(45, 'Must be 45 characters or less')
       .required('Name is Required'),
     // lastName: Yup.string()
     //   .max(20, 'Must be 20 characters or less')

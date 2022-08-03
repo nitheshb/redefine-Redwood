@@ -17,7 +17,6 @@ import {
   prettyDateTime,
 } from 'src/util/dateConverter'
 
-
 const torrowDate = new Date(
   +new Date().setHours(0, 0, 0, 0) + 86400000
 ).getTime()
@@ -51,7 +50,6 @@ const TodoListView = ({
   }, [taskListA])
 
   useEffect(() => {
-
     // axios
     //   .get('/api/tableData1/all')
     //   .then(({ data }) => {
@@ -117,71 +115,6 @@ const TodoListView = ({
   return (
     <Box pb={4}>
       <div className=" w-full">
-        <div className="px-4 md:pb-10 pb-7 md:pb-7">
-          <div className="flex items-center justify-between">
-            <p
-              tabIndex={0}
-              className="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
-            ></p>
-            <section className="flex flex-row">
-              <span className="inline-flex p-1 border bg-gray-200 rounded-md">
-                <button
-                  className={`px-2 py-1  rounded ${
-                    leadByViewLayout ? 'bg-white shadow' : ''
-                  }`}
-                  onClick={() => setLeadByViewLayout(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-gray-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-                    />
-                  </svg>
-                </button>
-                <button
-                  className={`px-2 py-1  rounded ${
-                    !leadByViewLayout ? 'bg-white shadow' : ''
-                  }`}
-                  onClick={() => setLeadByViewLayout(false)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-gray-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                </button>
-              </span>
-              <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">
-                <p>Sort By:</p>
-                <select
-                  aria-label="select"
-                  className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
-                >
-                  <option className="text-sm text-indigo-800">Latest</option>
-                  <option className="text-sm text-indigo-800">Oldest</option>
-                  <option className="text-sm text-indigo-800">Latest</option>
-                </select>
-              </div>
-            </section>
-          </div>
-        </div>
         <div className="bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10">
           <div className="sm:flex items-center justify-between">
             <div className="flex items-center">
@@ -252,6 +185,23 @@ const TodoListView = ({
               </p>
             </button>
           </div>
+          {taskListA.length === 0 && (
+            <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
+              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                <img
+                  className="w-[180px] h-[180px] inline"
+                  alt=""
+                  src="../note-widget.svg"
+                />
+              </div>
+              <h3 className="mb-1 text-sm font-semibold text-gray-900">
+                No Tasks Found
+              </h3>
+              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                <span className="text-blue-600"> Add New Task</span>
+              </time>
+            </div>
+          )}
           <div className="mt-7 overflow-x-auto">
             <table className="w-full whitespace-nowrap">
               <tbody>
@@ -275,6 +225,9 @@ const TodoListView = ({
                         tabIndex={0}
                         className="focus:outline-none h-16 border border-gray-100 rounded"
                         key={i}
+                        onClick={() =>
+                          selUserProfileF('User Profile', dat?.leadUser)
+                        }
                       >
                         <td>
                           <div className="ml-5">
@@ -490,7 +443,6 @@ const TodoListView = ({
                           </svg> */}
 
                             <button className="py-3 px-3 text-[13px] focus:outline-none leading-none text-red-700 rounded">
-
                               {Math.abs(
                                 getDifferenceInMinutes(dat['schTime'], '')
                               ) > 60

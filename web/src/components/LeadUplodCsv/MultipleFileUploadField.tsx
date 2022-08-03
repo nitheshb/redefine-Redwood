@@ -174,7 +174,7 @@ export function MultipleFileUploadField({
     if (!file) return
     try {
       const uid = uuidv4()
-      const storageRef = ref(storage, `/spark_files/_${uid}`)
+      const storageRef = ref(storage, `/${orgId}_files/_${uid}`)
       const uploadTask = uploadBytesResumable(storageRef, file)
       return uploadTask.on(
         'state_changed',
@@ -244,7 +244,7 @@ export function MultipleFileUploadField({
           const serialData = await Promise.all(
             clean1.map(async (dRow) => {
               const foundLength = await checkIfUnitAlreadyExists(
-                'spark_units',
+                `${orgId}_units`,
                 pId,
                 myPhase?.uid,
                 myBlock?.uid,
@@ -284,7 +284,7 @@ export function MultipleFileUploadField({
               )
               // modify date
               const date = new Date(dRow['Date']) // some mock date
-              const milliseconds = date.getTime()
+              const milliseconds = date.getTime() + 21600000 // adding 21600000 ms == 6hrs to match local time with utc + 6hrs
               console.log('milliseconds is', milliseconds)
               // dRow['Date'] = prettyDate(milliseconds).toLocaleString()
               dRow['Date'] = milliseconds
@@ -416,7 +416,8 @@ export function MultipleFileUploadField({
                 href="/leadTemplate.csv"
               >
                 <span className="text-xs text-blue-500">
-                  <DownloadIcon className="h-3 w-3 inline-block" />Sample Template
+                  <DownloadIcon className="h-3 w-3 inline-block" />
+                  Sample Template
                 </span>
               </a>
             </div>

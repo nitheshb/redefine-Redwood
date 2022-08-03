@@ -699,7 +699,7 @@ id: "1" */}
                 // style={{ alignItems: 'end' }}
               >
                 <div
-                  className="absolute bottom-0 flex flex-col items-center hidden mb-6 group-hover:flex"
+                  className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex"
                   // style={{  width: '300px' }}
                   style={{  'z-index': '9' }}
                 >
@@ -793,8 +793,42 @@ id: "1" */}
                           </span>
                         </TableCell>
                       )}
+
                       <TableCell align="middle">
-                        <span className="font-bodyLato">
+                        <section>
+                          <div>
+
+                            <div
+                className="relative flex flex-col  group"
+                // style={{ alignItems: 'end' }}
+              >
+                <div
+                  className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex"
+                  // style={{  width: '300px' }}
+                  style={{  'z-index': '9' }}
+                >
+                  <span
+                    className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
+                    style={{
+                      color: 'black',
+                      background: '#e2c062',
+                      maxWidth: '300px',
+                    }}
+                  >
+                    <div className="italic flex flex-col">
+                    <div className="font-bodyLato">
+                    {row?.Source?.toString() || 'NA'}
+                            </div>
+
+
+                    </div>
+                  </span>
+                  <div
+                    className="w-3 h-3  -mt-2 rotate-45 bg-black"
+                    style={{ background: '#e2c062', marginRight: '12px' }}
+                  ></div>
+                </div>
+                <span className="font-bodyLato">
                           {/* <HighlighterStyle
                             searchKey={searchKey}
                             source={row.Source.toString()}
@@ -806,7 +840,13 @@ id: "1" */}
                   src={`../${row?.Source?.toString() || 'fb'}.svg`}
                 />
                         </span>
+              </div>
+                          </div>
+
+
+                        </section>
                       </TableCell>
+
 
                       <TableCell align="left">
 

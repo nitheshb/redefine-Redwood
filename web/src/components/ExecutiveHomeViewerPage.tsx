@@ -16,6 +16,7 @@ import {
   getAllProjects,
   getLeadsByStatus,
   getLeadsByStatusUser,
+  steamUsersListByRole,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
@@ -36,7 +37,7 @@ import { useSnackbar } from 'notistack'
 const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const { user } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
-  const { orgId } = user
+  const { orgId, access } = user
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -47,6 +48,9 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [boardData, setBoardData] = useState([])
   // const [showForm, setShowForm] = useState(false)
   // const [selectedBoard, setSelectedBoard] = useState(0)
+  const [fetchedUsersList, setfetchedUsersList] = useState([])
+
+  const [usersList, setusersList] = useState([])
   const [openUserProfile, setopenUserProfile] = useState(false)
   const [addLeadsTypes, setAddLeadsTypes] = useState('')
   const [selUserProfile, setSelUserProfile] = useState({})
@@ -56,7 +60,14 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [projectList, setprojectList] = useState([])
   const [unitsViewMode, setUnitsViewMode] = useState(false)
 
-  const [selProjectIs, setSelProject] = useState('All Projects')
+  const [selProjectIs, setSelProject] = useState({
+    label: 'All Projects',
+    value: 'allprojects',
+  })
+  const [selLeadsOf, setSelLeadsOf] = useState({
+    label: 'Team Leads',
+    value: 'teamleads',
+  })
 
   const statusFields = [
     'new',
@@ -71,6 +82,28 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const archieveFields = ['Dead', 'RNR', 'blocked', 'notinterested']
   useEffect(() => {
     getLeadsDataFun()
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = steamUsersListByRole(
+      orgId,
+      (querySnapshot) => {
+        const usersListA = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+
+        usersListA.map((user) => {
+          user.label = user.displayName || user.name
+          user.value = user.uid
+        })
+        console.log('fetched users list is', usersListA)
+
+        setusersList(usersListA)
+      },
+      (error) => setusersList([])
+    )
+
+    return unsubscribe
   }, [])
 
   useEffect(() => {
@@ -117,13 +150,31 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   useEffect(() => {
     const x = leadsFetchedRawData
     console.log('raw max is ', x)
-    if (selProjectIs != 'All Projects') {
-      const y = x.filter((d1) => d1.Project === selProjectIs)
+    if (selProjectIs?.value != 'allprojects') {
+      const z = x.filter((d1) => d1.Project === selProjectIs?.value)
+      let y = z
+      if (selLeadsOf?.value == 'myleads') {
+        y = z.filter((d1) => d1?.assingedTo === user.uid)
+      } else if (selLeadsOf?.value == 'teamleads') {
+        y = z
+      } else {
+        console.log('seleUser details are', selLeadsOf?.value)
+        y = z.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+      }
       setLeadsFetchedData(y)
     } else {
-      setLeadsFetchedData(x)
+      let y = x
+      if (selLeadsOf?.value == 'myleads') {
+        y = x.filter((d1) => d1?.assingedTo === user.uid)
+      } else if (selLeadsOf?.value == 'teamleads') {
+        y = x
+      } else {
+        console.log('seleUser details are', selLeadsOf?.value)
+        y = x.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+      }
+      setLeadsFetchedData(y)
     }
-  }, [selProjectIs])
+  }, [selProjectIs, selLeadsOf])
 
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
@@ -178,6 +229,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           })
           // setBoardData
           console.log('my Array data is ', usersListA)
+          await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
           await setLeadsFetchedData(usersListA)
         },
@@ -295,24 +347,48 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                 </h2>
               </div>
               <div className="flex">
-                <div className=" flex flex-col   w-40">
+                <div className=" flex flex-col mr-5  w-40">
                   <SlimSelectBox
                     name="project"
                     label=""
                     className="input "
                     onChange={(value) => {
                       console.log('changed value is ', value.value)
-                      setSelProject(value.value)
+                      setSelProject(value)
                       // formik.setFieldValue('project', value.value)
                     }}
-                    value={selProjectIs}
+                    value={selProjectIs?.value}
                     // options={aquaticCreatures}
                     options={[
-                      ...[{ label: 'All Projects', value: 'All Projects' }],
+                      ...[{ label: 'All Projects', value: 'allprojects' }],
                       ...projectList,
                     ]}
                   />
                 </div>
+                {access.includes('manage_leads') && (
+                  <div className=" flex flex-col   w-40">
+                    <SlimSelectBox
+                      name="project"
+                      label=""
+                      placeholder="My Leads"
+                      className="input "
+                      onChange={(value) => {
+                        console.log('changed value is ', value.value)
+                        setSelLeadsOf(value)
+                        // formik.setFieldValue('project', value.value)
+                      }}
+                      value={selLeadsOf?.value}
+                      // options={aquaticCreatures}
+                      options={[
+                        ...[
+                          { label: 'Team Leads', value: 'teamleads' },
+                          { label: 'My Leads', value: 'myleads' },
+                        ],
+                        ...usersList,
+                      ]}
+                    />
+                  </div>
+                )}
                 {/* {leadsTyper == 'inProgress' && (
                   <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                     <button
