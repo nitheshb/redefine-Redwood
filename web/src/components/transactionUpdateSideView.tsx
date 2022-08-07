@@ -537,7 +537,7 @@ export default function TransactionUpdateSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
+
     }
     await setTakTitle('')
     await setAddSch(false)

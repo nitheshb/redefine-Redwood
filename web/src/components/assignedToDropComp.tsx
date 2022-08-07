@@ -19,7 +19,7 @@ export default function AssigedToDropComp({
                 {assignerName}
               </span>
             ) : (
-              <span className="font-medium tracking-wide text-blue-600 text-left">
+              <span className="font-medium tracking-wide text-[#053219] text-left">
                 {assignerName}
               </span>
             )}

@@ -14,7 +14,12 @@ import {
   XIcon,
 } from '@heroicons/react/solid'
 import { v4 as uuidv4 } from 'uuid'
-import { ArrowRightIcon } from '@heroicons/react/outline'
+import {
+  ArrowRightIcon,
+  PhoneIcon,
+  DeviceMobileIcon,
+  MailIcon,
+} from '@heroicons/react/outline'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import SortComp from './sortComp'
 import { Listbox, Transition } from '@headlessui/react'
@@ -42,6 +47,7 @@ import {
   updateLeadProject,
   steamLeadById,
   updateLeadRemarks_NotIntrested,
+  updateLeadRemarks_VisitDone,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
@@ -151,6 +157,7 @@ export default function CustomerProfileSideView({
 
   // const [leadStatus, setLeadStatus] = useState([])
   const [selFeature, setFeature] = useState('appointments')
+  const [myStatus, setMyStatus] = useState('')
   const [tempLeadStatus, setLeadStatus] = useState('')
   const [assignerName, setAssignerName] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
@@ -189,6 +196,7 @@ export default function CustomerProfileSideView({
   const [loader, setLoader] = useState(false)
   const [projectList, setprojectList] = useState([])
   const [statusTimeLineA, setStatusTimeLineA] = useState(['new'])
+  const [selSchGrpO, setSelSchGrpO] = useState({})
 
   const [selProjectIs, setSelProjectIs] = useState({
     projectName: '',
@@ -216,6 +224,8 @@ export default function CustomerProfileSideView({
     notInterestedReason,
     notInterestedNotes,
     stsUpT,
+    assignT,
+    CT,
   } = customerDetails
   const { enqueueSnackbar } = useSnackbar()
   const [hover, setHover] = useState(false)
@@ -290,6 +300,7 @@ export default function CustomerProfileSideView({
     )
 
     setLeadStatus(Status)
+    console.log('this is the macho ', customerDetails)
   }, [customerDetails])
   // adopt this
   useEffect(() => {
@@ -424,15 +435,23 @@ export default function CustomerProfileSideView({
   }
 
   const setShowNotInterestedFun = (scheduleData, value) => {
+    cancelResetStatusFun()
     setLeadStatus('notinterested')
+    setShowVisitFeedBackStatus(false)
     setShowNotInterested(true)
+
+    // setFeature('appointments')
   }
   const setShowVisitFeedBackStatusFun = (scheduleData, value) => {
+    setSelSchGrpO(scheduleData)
+    cancelResetStatusFun()
     setLeadStatus('visitdone')
+    setShowNotInterested(false)
     setShowVisitFeedBackStatus(true)
   }
 
   const setStatusFun = async (leadDocId, newStatus) => {
+    cancelResetStatusFun()
     setLoader(true)
     console.log('is this triggered yo yo', newStatus)
     if (newStatus == 'visitdone') {
@@ -447,11 +466,14 @@ export default function CustomerProfileSideView({
     console.log('is this triggered yo yo 2', newStatus)
     setLeadStatus(newStatus)
 
-    const arr = ['notinterested', 'visitdone', 'visitcancel']
+    const arr = ['visitdone', 'visitcancel']
     if (newStatus === 'visitdone') {
       setFeature('visitDoneNotes')
     } else if (newStatus === 'visitcancel') {
       setFeature('visitCancelNotes')
+    } else if (newStatus === 'notinterested') {
+      setShowNotInterestedFun('', '')
+      console.log('is this triggered yo yo 2 checking it', newStatus)
     } else {
       arr.includes(newStatus) ? setFeature('notes') : setFeature('appointments')
       arr.includes(newStatus) ? setAddNote(true) : setAddSch(true)
@@ -483,33 +505,45 @@ export default function CustomerProfileSideView({
   }
   const getLeadsDataFun = async () => {
     console.log('ami triggered')
-    const unsubscribe = steamLeadActivityLog(
+    const steamLeadLogs = await steamLeadActivityLog(
       orgId,
-      (doc) => {
-        console.log('my total fetched list is yo yo ', doc.data())
-        const usersList = doc.data()
-        const usersListA = []
-
-        Object.entries(usersList).forEach((entry) => {
-          const [key, value] = entry
-          usersListA.push(value)
-          console.log('my total fetched list is 3', `${key}: ${value}`)
-        })
-        // for (const key in usersList) {
-        //   if (usersList.hasOwnProperty(key)) {
-        //     console.log(`${key} : ${usersList[key]}`)
-        //     console.log(`my total fetched list is 2 ${usersList[key]}`)
-        //   }
-        // }
-
-        console.log('my total fetched list is', usersListA.length)
-        setLeadsFetchedActivityData(usersListA)
-      },
+      'snap',
       {
         uid: id,
       },
       (error) => setLeadsFetchedActivityData([])
     )
+
+    console.log('stream logs', steamLeadLogs)
+    await setLeadsFetchedActivityData(steamLeadLogs)
+
+    // const unsubscribe = steamLeadActivityLog(
+    //   orgId,
+    //   (doc) => {
+    //     console.log('my total fetched list is yo yo ', doc.data())
+    //     const usersList = doc.data()
+    //     const usersListA = []
+
+    //     Object.entries(usersList).forEach((entry) => {
+    //       const [key, value] = entry
+    //       usersListA.push(value)
+    //       console.log('my total fetched list is 3', `${key}: ${value}`)
+    //     })
+    //     // for (const key in usersList) {
+    //     //   if (usersList.hasOwnProperty(key)) {
+    //     //     console.log(`${key} : ${usersList[key]}`)
+    //     //     console.log(`my total fetched list is 2 ${usersList[key]}`)
+    //     //   }
+    //     // }
+
+    //     console.log('my total fetched list is', usersListA.length)
+    //     setLeadsFetchedActivityData(usersListA)
+    //   },
+    //   {
+    //     uid: id,
+    //   },
+    //   (error) => setLeadsFetchedActivityData([])
+    // )
 
     //  lead Schedule list
     steamLeadScheduleLog(
@@ -582,6 +616,9 @@ export default function CustomerProfileSideView({
           console.log('my total fetched list is 3', `${key}: ${value}`)
         })
         console.log('my total notes list is ', usersListA)
+        usersListA.sort((a, b) => {
+          return b.ct - a.ct
+        })
         setLeadsFetchedNotesData(usersListA)
       },
       {
@@ -629,7 +666,14 @@ export default function CustomerProfileSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, assignedTo)
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
+      updateLeadStatus(
+        orgId,
+        id,
+        Status,
+        tempLeadStatus,
+        user?.email,
+        enqueueSnackbar
+      )
     }
     await setTakTitle('')
     await setAddSch(false)
@@ -703,6 +747,21 @@ export default function CustomerProfileSideView({
     setAttach(true)
   }
 
+  const activieLogNamer = (dat) => {
+    const { type, from, to, by } = dat
+    let tex = type
+
+    switch (type) {
+      case 'l_ctd':
+        return (tex = 'Lead Created')
+      case 'sts_change':
+        return (tex = ` is completed & status updated to`)
+      default:
+        return (tex = type)
+    }
+    return tex
+  }
+
   const fAddNotes = async () => {
     //  make it as notInterested if source is from NotInterestedd Page
     console.log(
@@ -722,6 +781,7 @@ export default function CustomerProfileSideView({
     if (tempLeadStatus === 'notinterested') {
       console.log('am i here', takTitle, takNotes)
       const dat = {
+        from: Status,
         Status: tempLeadStatus,
         notInterestedReason: takTitle,
         notInterestedNotes: takNotes,
@@ -734,7 +794,23 @@ export default function CustomerProfileSideView({
         user.email,
         enqueueSnackbar
       )
+      cancelResetStatusFun()
+    } else if (tempLeadStatus === 'visitdone') {
+      console.log('am i here', takTitle, takNotes)
+
+      const dat = {
+        from: Status,
+        Status: tempLeadStatus,
+        VisitDoneReason: takTitle,
+        VisitDoneNotes: takNotes,
+        stsUpT: Timestamp.now().toMillis(),
+      }
+      updateLeadRemarks_VisitDone(orgId, id, dat, user.email, enqueueSnackbar)
+      doneFun(selSchGrpO)
+      setSelSchGrpO({})
+      cancelResetStatusFun()
     }
+
     await setNotesTitle('')
     await setAddNote(false)
   }
@@ -880,95 +956,134 @@ export default function CustomerProfileSideView({
     >
       <div className="">
         <div className="p-3 flex justify-between">
-          <span className="text-md mt-1 font-semibold text-xl mr-auto ml-1 text-[#053219] tracking-wide">
-            Lead
+          <span className="text-md mt-1 font-semibold font-Playfair text-xl mr-auto ml-2 text-[#053219] tracking-wide">
+            Lead Detials
           </span>
           {/* <XIcon className="w-5 h-5 mt-[2px]" /> */}
         </div>
       </div>
-      <div className="py-3 px-3 m-4 mt-2 rounded-lg border border-gray-100 h-screen overflow-y-auto">
-        <div className=" mt-2 pb-8">
-          <div className="px-3 mb-4 grid grid-cols-3 gap-20 ">
-            <div className="">
-              <label className="font-semibold text-[#053219]  text-sm  mt-3 mb-1  tracking-wide font-bodyLato">
-                <div className="mb-[1px] text-xl uppercase">{Name}</div>
-                <div className="">
-                  <div className="font-md text-xs text-gray-500 mb-[2] tracking-wide">
-                    {Email}
-                  </div>
-                  <div className="font-md text-xs text-gray-500 mb-[2] tracking-wide ">
-                    {Mobile?.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}
+      <div className="h-screen overflow-y-auto">
+        <div className=" pb-[2px] px-3 m-4 mt-0 rounded-xs  mb-1  bg-[#F5F8FA]">
+          <div className="-mx-3 flex  sm:-mx-4 px-3">
+            <div className="w-full px-3 sm:px-4 xl:w-4/12  ">
+              <div className="">
+                <div className="font-semibold text-[#053219]  text-sm  mt-3 mb-1  tracking-wide font-bodyLato">
+                  <span className="mb-[4px] text-xl uppercase">{Name}</span>
+
+                  <div className="mt-1">
+                    <div className="font-md text-sm text-gray-500 mb-[2] tracking-wide">
+                      <MailIcon className="w-4 h-4 inline text-[#058527] " />{' '}
+                      {Email}
+                    </div>
+                    <div className="font-md text-sm text-gray-500 mb-[2] tracking-wide ">
+                      <DeviceMobileIcon className="w-4 h-4 inline text-[#058527] " />{' '}
+                      {Mobile?.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}
+                    </div>
                   </div>
                 </div>
-              </label>
-            </div>
-
-            <div className="font-lg text-sm text-slate-900 min-w-[33%] ml-1">
-              <div>
-                <AssigedToDropComp
-                  assignerName={assignerName}
-                  id={id}
-                  setAssigner={setAssigner}
-                  usersList={usersList}
-                  align={undefined}
-                />
-              </div>
-              <div className="font-semibold text-[#053219]  mt-1 px-[3px] py-[1px] rounded ">
-                {Status}
               </div>
             </div>
+            <div className="w-full px-1  xl:w-8/12 mt-3 ">
+              <div className="relative z-10 my-1">
+                <div className="grid grid-cols-3 gap-5">
+                  <section className="">
+                    <div
+                      className="flex flex-row  cursor-pointer"
+                      onClick={() => setUnitsViewMode(!unitsViewMode)}
+                    >
+                      <div className="font-md text-xs text-gray-500 mb-[2px] tracking-wide mr-4">
+                        Project {}
+                      </div>
+                      {selProjectIs?.uid?.length > 4 &&
+                        (unitsViewMode ? (
+                          <XIcon
+                            className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          // <ViewGridIcon
+                          //   className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
+                          //   aria-hidden="true"
+                          // />
+                          <span className="px-[3px] py-[1px]  text-[#FF8C02] hover:border-b-1 hover:border-[#FF8C02] text-[10px] text-[#] font-semibold">
+                            {' '}
+                            View Units
+                          </span>
+                        ))}
+                    </div>
+                    <div className="font-semibold text-sm text-slate-900 tracking-wide overflow-ellipsis">
+                      {/* {Project} */}
+                      {/* projectList */}
+                      <AssigedToDropComp
+                        assignerName={selProjectIs?.projectName || Project}
+                        id={id}
+                        align="right"
+                        setAssigner={setNewProject}
+                        usersList={projectList}
+                      />
+                    </div>
+                  </section>
 
-            <section className="min-w-[93%] max-w-[93%] mt-[2px]">
-              <div
-                className="flex flex-row  cursor-pointer"
-                onClick={() => setUnitsViewMode(!unitsViewMode)}
-              >
-                <div className="font-md text-xs text-gray-500 mb-[2px] tracking-wide mr-4">
-                  Project {}
+                  <section>
+                    <div className="font-md text-xs text-gray-500 mb-[px] tracking-wide mr-4">
+                      Assigned To {}
+                    </div>
+                    <div>
+                      <AssigedToDropComp
+                        assignerName={assignerName}
+                        id={id}
+                        setAssigner={setAssigner}
+                        usersList={usersList}
+                        align={undefined}
+                      />
+                    </div>
+                  </section>
+                  <section>
+                    <div className="font-md text-xs text-gray-500 mb-[0px] tracking-wide mr-4">
+                      Current Status {}
+                    </div>
+                    <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] py-[px] rounded ">
+                      {leadDetailsObj?.Status}{' '}
+                      {leadDetailsObj?.Status != tempLeadStatus
+                        ? `--> ${' '}${tempLeadStatus}`
+                        : ''}
+                    </div>
+                  </section>
                 </div>
-                {selProjectIs?.uid?.length > 4 &&
-                  (unitsViewMode ? (
-                    <XIcon
-                      className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    // <ViewGridIcon
-                    //   className="h-4 w-4 mr-1 mb-[2px] inline text-blue-600"
-                    //   aria-hidden="true"
-                    // />
-                    <span className="px-[3px] py-[1px] rounded bg-green-100 text-[10px] text-[#] font-semibold">
-                      {' '}
-                      View Units
+                <div className="w-full border-b border-[#ebebeb] mt-4"></div>
+                <div className=" w-full  pt-1 font-md text-xs text-gray-500 mb-[2px] tracking-wide mr-4 grid grid-cols-3 gap-5">
+                  {' '}
+                  <section>
+                    <span className="font-thin   font-bodyLato text-[9px]  py-[6px]">
+                      Created On
+                      <span className="text-[#867777] ck ml-2">
+                        {CT != undefined ? prettyDateTime(CT) : 'NA'}
+                      </span>
                     </span>
-                  ))}
+                  </section>
+                  <section>
+                    <span className="font-thin   font-bodyLato text-[9px]  py-[6px]">
+                      Updated On :
+                      <span className="text-[#867777] ck ml-2">
+                        {prettyDateTime(stsUpT) || 'NA'}
+                      </span>
+                    </span>
+                  </section>
+                  <section>
+                    <span className="font-thin text-[#867777]   font-bodyLato text-[9px]  py-[6px]">
+                      Assigned On
+                      <span className="text-[#867777] ck ml-2">
+                        {assignT != undefined ? prettyDateTime(assignT) : 'NA'}
+                      </span>
+                    </span>
+                  </section>
+                </div>
               </div>
-              <div className="font-semibold text-sm text-slate-900 tracking-wide overflow-ellipsis">
-                {/* {Project} */}
-                {/* projectList */}
-                <AssigedToDropComp
-                  assignerName={selProjectIs?.projectName || Project}
-                  id={id}
-                  align="right"
-                  setAssigner={setNewProject}
-                  usersList={projectList}
-                />
-              </div>
-            </section>
-
-            {/* <div className="font-lg text-sm text-slate-900 min-w-[33%]">
-              <div className="font-md text-xs mt-[1px] text-gray-500 mb-[2px] tracking-wide">
-                Assigned To
-              </div>
-              <AssigedToDropComp
-                assignerName={assignerName}
-                id={id}
-                setAssigner={setAssigner}
-                usersList={usersList}
-                align={undefined}
-              />
-
-            </div> */}
+            </div>
+          </div>
+          <div className="px-3 py-2 flex flex-row  text-xs  border-t border-[#ebebeb] font-thin   font-bodyLato text-[12px]  py-[6px] ">
+            Remarks:{' '}
+            <span className="text-[#867777] ml-1 "> {Remarks || 'NA'}</span>
           </div>
         </div>
         {/* <div>
@@ -996,7 +1111,7 @@ export default function CustomerProfileSideView({
         </div> */}
 
         <div
-          className="flex flex-row justify-between mb-6 "
+          className="flex flex-row justify-between   py-4 px-3 m-4 mt-0 mb-0 rounded-xs bg-[#F5F8FA]"
           style={{ flex: '4 0 100%' }}
         >
           {StatusListA.map((statusFlowObj, i) => (
@@ -1131,136 +1246,142 @@ export default function CustomerProfileSideView({
         )}
         {!unitsViewMode && (
           <>
-            <div className="">
+            <section className=" pb-8 py-3 px-3 m-4 mt-1 rounded-xs bg-[#F5F8FA]">
               <div className="">
-                {/* <div className="font-md font-medium text-xs  text-gray-800">
+                <div className="">
+                  {/* <div className="font-md font-medium text-xs  text-gray-800">
                           Notes
                         </div> */}
 
-                <div className=" border-gray-200 ">
-                  <ul
-                    className="flex    rounded-t-lg"
-                    id="myTab"
-                    data-tabs-toggle="#myTabContent"
-                    role="tablist"
-                  >
-                    {[
-                      { lab: 'Activity', val: 'appointments' },
-                      // { lab: 'Tasks', val: 'tasks' },
-                      // { lab: 'Notes', val: 'notes' },
-                      // { lab: 'Documents', val: 'documents' },
-                      // { lab: 'Phone', val: 'phone' },
-                      { lab: 'Lead Logs', val: 'timeline' },
-                    ].map((d, i) => {
-                      return (
-                        <li key={i} className="mr-2" role="presentation">
-                          <button
-                            className={`inline-block py-3 px-4 text-sm font-medium text-center text-black rounded-t-lg border-b-2  hover:text-black hover:border-gray-300   ${
-                              selFeature === d.val
-                                ? 'border-black'
-                                : 'border-transparent'
-                            }`}
-                            type="button"
-                            role="tab"
-                            onClick={() => setFeature(d.val)}
-                          >
-                            {`${d.lab} `}
-                            {/* <span className="bg-gray-100 px-2 py-1 rounded-full">
+                  <div className=" border-gray-200">
+                    <ul
+                      className="flex   rounded-t-lg border-b mx-2"
+                      id="myTab"
+                      data-tabs-toggle="#myTabContent"
+                      role="tablist"
+                    >
+                      {[
+                        { lab: 'Tasks', val: 'appointments' },
+                        // { lab: 'Tasks', val: 'tasks' },
+                        { lab: 'Notes', val: 'notes' },
+                        // { lab: 'Documents', val: 'documents' },
+                        // { lab: 'Phone', val: 'phone' },
+                        { lab: 'Email', val: 'email' },
+                        { lab: 'Activity Log', val: 'timeline' },
+                      ].map((d, i) => {
+                        return (
+                          <li key={i} className="mr-2" role="presentation">
+                            <button
+                              className={`inline-block pb-1 mr-3 text-sm font-medium text-center text-black rounded-t-lg border-b-2  hover:text-black hover:border-gray-300   ${
+                                selFeature === d.val
+                                  ? 'border-black'
+                                  : 'border-transparent'
+                              }`}
+                              type="button"
+                              role="tab"
+                              onClick={() => setFeature(d.val)}
+                            >
+                              {`${d.lab} `}
+                              {/* <span className="bg-gray-100 px-2 py-1 rounded-full">
                           {/* {rowsCounter(leadsFetchedData, d.val).length} */}
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
 
-                {selFeature === 'notes' && (
-                  <div className="flex flex-col justify-between border pt-6">
-                    {leadNotesFetchedData.length === 0 && !addNote && (
-                      <div className="py-8 px-8 flex flex-col items-center mt-5">
-                        <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                          <img
-                            className="w-[180px] h-[180px] inline"
-                            alt=""
-                            src="/note-widget.svg"
-                          />
-                        </div>
-                        <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                          No Helpful Notes {addNote}
-                        </h3>
-                        <button onClick={() => selFun()}>
-                          <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                            Better always attach a string
-                            <span className="text-blue-600"> Add Notes</span>
-                          </time>
-                        </button>
-                      </div>
-                    )}
-                    {addNote && (
-                      <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
-                        <div className="w-full flex flex-col mb-3 mt-2">
-                          <CustomSelect
-                            name="source"
-                            label="Not Interested Reason*"
-                            className="input mt-3"
-                            onChange={(value) => {
-                              // formik.setFieldValue('source', value.value)
-                              setNotInterestType(value.value)
-                            }}
-                            value={notInterestType}
-                            options={notInterestOptions}
-                          />
-                        </div>
-
-                        <div className="  outline-none border  rounded p-4 mt-4">
-                          <textarea
-                            value={takNotes}
-                            onChange={(e) => setNotesTitle(e.target.value)}
-                            placeholder="Type & make a notes"
-                            className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
-                          ></textarea>
-                        </div>
-                        <div className="flex flex-row mt-1">
-                          <button
-                            onClick={() => fAddNotes()}
-                            className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Save</span>
-                          </button>
-                          <button
-                            onClick={() => fAddNotes()}
-                            className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Save & Whats App</span>
-                          </button>
-                          <button
-                            // onClick={() => fSetLeadsType('Add Lead')}
-                            onClick={() => cancelResetStatusFun()}
-                            className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Cancel</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                    {leadNotesFetchedData.length > 0 && (
-                      <div className="px-4">
-                        <div className="flex justify-between">
-                          <div className="font-md font-medium text-xl mb-4 text-[#053219]">
-                            Notes
+                  {selFeature === 'notes' && (
+                    <div className="flex flex-col justify-between border pt-6">
+                      {leadNotesFetchedData.length === 0 && !addNote && (
+                        <div className="py-8 px-8 flex flex-col items-center mt-5">
+                          <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                            <img
+                              className="w-[180px] h-[180px] inline"
+                              alt=""
+                              src="/note-widget.svg"
+                            />
                           </div>
-
+                          <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                            No Helpful Notes {addNote}
+                          </h3>
                           <button onClick={() => selFun()}>
                             <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                              Better always attach a string
                               <span className="text-blue-600"> Add Notes</span>
                             </time>
                           </button>
                         </div>
-                        <ol className="relative border-l ml-3 border-gray-200  ">
-                          {leadNotesFetchedData.map((data, i) => (
-                            <section key={i} className="">
-                              <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
-                                {/* <svg
+                      )}
+                      {addNote && (
+                        <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
+{/*
+                          <div className="w-full flex flex-col mb-3 mt-2">
+                            <CustomSelect
+                              name="source"
+                              label="Not Interested Reason*"
+                              className="input mt-3"
+                              onChange={(value) => {
+                                // formik.setFieldValue('source', value.value)
+                                setNotInterestType(value.value)
+                              }}
+                              value={notInterestType}
+                              options={notInterestOptions}
+                            />
+                          </div> */}
+
+                          <div className="  outline-none border  rounded p-4 mt-4">
+                            <textarea
+                              value={takNotes}
+                              onChange={(e) => setNotesTitle(e.target.value)}
+                              placeholder="Type & make a notes"
+                              className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                            ></textarea>
+                          </div>
+                          <div className="flex flex-row mt-1">
+                            <button
+                              onClick={() => fAddNotes()}
+                              className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Save</span>
+                            </button>
+                            <button
+                              onClick={() => fAddNotes()}
+                              className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Save & Whats App</span>
+                            </button>
+                            <button
+                              // onClick={() => fSetLeadsType('Add Lead')}
+                              onClick={() => cancelResetStatusFun()}
+                              className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Cancel</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {leadNotesFetchedData.length > 0 && (
+                        <div className="px-4">
+                          <div className="flex justify-between">
+                            <div className="font-md font-medium text-xl mb-4 text-[#053219]">
+                              Notes
+                            </div>
+
+                            <button onClick={() => selFun()}>
+                              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                                <span className="text-blue-600">
+                                  {' '}
+                                  Add Notes
+                                </span>
+                              </time>
+                            </button>
+                          </div>
+                          <ol className="relative border-l ml-3 border-gray-200  ">
+                            {leadNotesFetchedData.map((data, i) => (
+                              <section key={i} className="">
+                                <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
+                                  {/* <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="h-3 w-3 text-blue-600 "
                               viewBox="0 0 20 20"
@@ -1268,212 +1389,216 @@ export default function CustomerProfileSideView({
                             >
                               <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                             </svg> */}
-                                <DocumentIcon className=" w-3 h-3" />
-                              </span>
-                              <div className="text-gray-600  m-3 ml-6">
-                                <div className="text-base font-normal">
-                                  <span className="font-medium text-green-900 ">
-                                    {data?.notes}
-                                  </span>{' '}
-                                </div>
-                                <div className="text-sm font-normal">
-                                  {data?.txt}
-                                </div>
-                                <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
-                                  <ClockIcon className=" w-3 h-3" />
-
-                                  <span className="ml-1">added on:</span>
-                                  <span className="text-red-900 ml-1 mr-4">
-                                    {prettyDateTime(data?.ct)}
-                                  </span>
-                                  <span className="ml-2">added by:</span>
-                                  <span className="text-red-900 ml-1 mr-4">
-                                    {data?.by}
-                                  </span>
+                                  <DocumentIcon className=" w-3 h-3" />
                                 </span>
-                              </div>
-                            </section>
-                          ))}
-                        </ol>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {selFeature === 'visitDoneNotes' && (
-                  <div className="flex flex-col justify-between border pt-6">
-                    {leadNotesFetchedData.length === 0 && !addNote && (
-                      <div className="py-8 px-8 flex flex-col items-center mt-5">
-                        <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                          <img
-                            className="w-[180px] h-[180px] inline"
-                            alt=""
-                            src="/note-widget.svg"
-                          />
-                        </div>
-                        <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                          No Helpful Notes {addNote}
-                        </h3>
-                        <button onClick={() => selFun()}>
-                          <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                            Better always attach a string
-                            <span className="text-blue-600"> Add Notes</span>
-                          </time>
-                        </button>
-                      </div>
-                    )}
-                    {addNote && (
-                      <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
-                        <div className="w-full flex flex-col mb-3 mt-2">
-                          <CustomSelect
-                            name="source"
-                            label="Site Visit Feedback*"
-                            className="input mt-3"
-                            onChange={(value) => {
-                              // formik.setFieldValue('source', value.value)
-                              setNotInterestType(value.value)
-                            }}
-                            value={notInterestType}
-                            options={siteVisitFeedbackOptions}
-                          />
-                        </div>
+                                <div className="text-gray-600  m-3 ml-6">
+                                  <div className="text-base font-normal">
+                                    <span className="font-medium text-green-900 ">
+                                      {data?.notes}
+                                    </span>{' '}
+                                  </div>
+                                  <div className="text-sm font-normal">
+                                    {data?.txt}
+                                  </div>
+                                  <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
+                                    <ClockIcon className=" w-3 h-3" />
 
-                        <div className="  outline-none border  rounded p-4 mt-4">
-                          <textarea
-                            value={takNotes}
-                            onChange={(e) => setNotesTitle(e.target.value)}
-                            placeholder="Type & make a notes"
-                            className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
-                          ></textarea>
-                        </div>
-                        <div className="flex flex-row mt-1">
-                          <button
-                            onClick={() => fAddNotes()}
-                            className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Save</span>
-                          </button>
-                          <button
-                            onClick={() => fAddNotes()}
-                            className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Save & Whats App</span>
-                          </button>
-                          <button
-                            // onClick={() => fSetLeadsType('Add Lead')}
-                            onClick={() => cancelResetStatusFun()}
-                            className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Cancel</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                    {leadNotesFetchedData.length > 0 && (
-                      <div className="px-4">
-                        <div className="flex justify-between">
-                          <div className="font-md font-medium text-xl mb-4 text-[#053219]">
-                            Notes
-                          </div>
-
-                          <button onClick={() => selFun()}>
-                            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                              <span className="text-blue-600"> Add Notes</span>
-                            </time>
-                          </button>
-                        </div>
-                        <ol className="relative border-l ml-3 border-gray-200  ">
-                          {leadNotesFetchedData.map((data, i) => (
-                            <section key={i} className="">
-                              <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
-                                {/* <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-3 w-3 text-blue-600 "
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                            </svg> */}
-                                <DocumentIcon className=" w-3 h-3" />
-                              </span>
-                              <div className="text-gray-600  m-3 ml-6">
-                                <div className="text-base font-normal">
-                                  <span className="font-medium text-green-900 ">
-                                    {data?.notes}
-                                  </span>{' '}
-                                </div>
-                                <div className="text-sm font-normal">
-                                  {data?.txt}
-                                </div>
-                                <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
-                                  <ClockIcon className=" w-3 h-3" />
-
-                                  <span className="ml-1">added on:</span>
-                                  <span className="text-red-900 ml-1 mr-4">
-                                    {prettyDateTime(data?.ct)}
+                                    <span className="ml-1">added on:</span>
+                                    <span className="text-red-900 ml-1 mr-4">
+                                      {prettyDateTime(data?.ct)}
+                                    </span>
+                                    <span className="ml-2">added by:</span>
+                                    <span className="text-red-900 ml-1 mr-4">
+                                      {data?.by}
+                                    </span>
                                   </span>
-                                  <span className="ml-2">added by:</span>
-                                  <span className="text-red-900 ml-1 mr-4">
-                                    {data?.by}
-                                  </span>
-                                </span>
-                              </div>
-                            </section>
-                          ))}
-                        </ol>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-            {selFeature === 'documents' && (
-              <div className="border px-4">
-                {docsList.length === 0 && (
-                  <div className="py-8 px-8 flex flex-col items-center mt-6">
-                    <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                      <img
-                        className="w-[200px] h-[200px] inline"
-                        alt=""
-                        src="/empty-dashboard.svg"
-                      />
+                                </div>
+                              </section>
+                            ))}
+                          </ol>
+                        </div>
+                      )}
                     </div>
-                    <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                      No Attachments
-                    </h3>
-                    <button onClick={() => showAddAttachF()}>
-                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                        Better always attach a string
-                        <span className="text-blue-600"> Add Dcoument</span>
-                      </time>
-                    </button>
-                  </div>
-                )}
+                  )}
 
-                {attach && (
-                  <div className="flex justify-center mt-4">
-                    <div className="mb-3 w-96 px-10 bg-[#FFF9F2] rounded-md py-3 pb-6">
-                      <div className="w-full flex flex-col mb-3 mt-2">
-                        <CustomSelect
-                          name="source"
-                          label="Document Type *"
-                          className="input mt-3"
-                          onChange={(value) => {
-                            // formik.setFieldValue('source', value.value)
-                            setAttachType(value.value)
-                          }}
-                          value={attachType}
-                          options={attachTypes}
+                  {selFeature === 'visitDoneNotes' && (
+                    <div className="flex flex-col justify-between border pt-6">
+                      {leadNotesFetchedData.length === 0 && !addNote && (
+                        <div className="py-8 px-8 flex flex-col items-center mt-5">
+                          <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                            <img
+                              className="w-[180px] h-[180px] inline"
+                              alt=""
+                              src="/note-widget.svg"
+                            />
+                          </div>
+                          <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                            No Helpful Notes {addNote}
+                          </h3>
+                          <button onClick={() => selFun()}>
+                            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                              Better always attach a string
+                              <span className="text-blue-600"> Add Notes</span>
+                            </time>
+                          </button>
+                        </div>
+                      )}
+                      {addNote && (
+                        <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
+                          <div className="w-full flex flex-col mb-3 mt-2">
+                            <CustomSelect
+                              name="source"
+                              label="Site Visit Feedback*"
+                              className="input mt-3"
+                              onChange={(value) => {
+                                // formik.setFieldValue('source', value.value)
+                                setNotInterestType(value.value)
+                              }}
+                              value={notInterestType}
+                              options={siteVisitFeedbackOptions}
+                            />
+                          </div>
+
+                          <div className="  outline-none border  rounded p-4 mt-4">
+                            <textarea
+                              value={takNotes}
+                              onChange={(e) => setNotesTitle(e.target.value)}
+                              placeholder="Type & make a notes"
+                              className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                            ></textarea>
+                          </div>
+                          <div className="flex flex-row mt-1">
+                            <button
+                              onClick={() => fAddNotes()}
+                              className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Save</span>
+                            </button>
+                            <button
+                              onClick={() => fAddNotes()}
+                              className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Save & Whats App</span>
+                            </button>
+                            <button
+                              // onClick={() => fSetLeadsType('Add Lead')}
+                              onClick={() => cancelResetStatusFun()}
+                              className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Cancel</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {leadNotesFetchedData.length > 0 && (
+                        <div className="px-4">
+                          <div className="flex justify-between">
+                            <div className="font-md font-medium text-xl mb-4 text-[#053219]">
+                              Notes
+                            </div>
+
+                            <button onClick={() => selFun()}>
+                              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                                <span className="text-blue-600">
+                                  {' '}
+                                  Add Notes
+                                </span>
+                              </time>
+                            </button>
+                          </div>
+                          <ol className="relative border-l ml-3 border-gray-200  ">
+                            {leadNotesFetchedData.map((data, i) => (
+                              <section key={i} className="">
+                                <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
+                                  {/* <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-3 w-3 text-blue-600 "
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                            </svg> */}
+                                  <DocumentIcon className=" w-3 h-3" />
+                                </span>
+                                <div className="text-gray-600  m-3 ml-6">
+                                  <div className="text-base font-normal">
+                                    <span className="font-medium text-green-900 ">
+                                      {data?.notes}
+                                    </span>{' '}
+                                  </div>
+                                  <div className="text-sm font-normal">
+                                    {data?.txt}
+                                  </div>
+                                  <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
+                                    <ClockIcon className=" w-3 h-3" />
+
+                                    <span className="ml-1">added on:</span>
+                                    <span className="text-red-900 ml-1 mr-4">
+                                      {prettyDateTime(data?.ct)}
+                                    </span>
+                                    <span className="ml-2">added by:</span>
+                                    <span className="text-red-900 ml-1 mr-4">
+                                      {data?.by}
+                                    </span>
+                                  </span>
+                                </div>
+                              </section>
+                            ))}
+                          </ol>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {selFeature === 'documents' && (
+                <div className="border px-4">
+                  {docsList.length === 0 && (
+                    <div className="py-8 px-8 flex flex-col items-center mt-6">
+                      <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                        <img
+                          className="w-[200px] h-[200px] inline"
+                          alt=""
+                          src="/empty-dashboard.svg"
                         />
                       </div>
-                      <label
-                        htmlFor="formFile"
-                        className="form-label inline-block mb-2  font-regular text-sm "
-                      >
-                        Upload file
-                      </label>
-                      <form onSubmit={docUploadHandler}>
-                        <input
-                          className="form-control
+                      <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                        No Attachments
+                      </h3>
+                      <button onClick={() => showAddAttachF()}>
+                        <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                          Better always attach a string
+                          <span className="text-blue-600"> Add Dcoument</span>
+                        </time>
+                      </button>
+                    </div>
+                  )}
+
+                  {attach && (
+                    <div className="flex justify-center mt-4">
+                      <div className="mb-3 w-96 px-10 bg-[#FFF9F2] rounded-md py-3 pb-6">
+                        <div className="w-full flex flex-col mb-3 mt-2">
+                          <CustomSelect
+                            name="source"
+                            label="Document Type *"
+                            className="input mt-3"
+                            onChange={(value) => {
+                              // formik.setFieldValue('source', value.value)
+                              setAttachType(value.value)
+                            }}
+                            value={attachType}
+                            options={attachTypes}
+                          />
+                        </div>
+                        <label
+                          htmlFor="formFile"
+                          className="form-label inline-block mb-2  font-regular text-sm "
+                        >
+                          Upload file
+                        </label>
+                        <form onSubmit={docUploadHandler}>
+                          <input
+                            className="form-control
     block
     w-full
     px-3
@@ -1488,90 +1613,90 @@ export default function CustomerProfileSideView({
     ease-in-out
     m-0
     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                          type="file"
-                          id="formFile"
-                        />
-                        <div className="flex flex-row mt-3">
-                          <button
-                            // onClick={() => fAddSchedule()}
-                            type="submit"
-                            className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Upload</span>
-                          </button>
-                          <button
-                            // onClick={() => fSetLeadsType('Add Lead')}
-                            onClick={() => setAttach(false)}
-                            className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
-                          >
-                            <span className="ml-1 ">Cancel</span>
-                          </button>
-                        </div>
-                      </form>
+                            type="file"
+                            id="formFile"
+                          />
+                          <div className="flex flex-row mt-3">
+                            <button
+                              // onClick={() => fAddSchedule()}
+                              type="submit"
+                              className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Upload</span>
+                            </button>
+                            <button
+                              // onClick={() => fSetLeadsType('Add Lead')}
+                              onClick={() => setAttach(false)}
+                              className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                            >
+                              <span className="ml-1 ">Cancel</span>
+                            </button>
+                          </div>
+                        </form>
 
-                      {/* <h3> {progress}</h3> */}
+                        {/* <h3> {progress}</h3> */}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {docsList.length > 0 && (
-                  <div className="py-8">
-                    <div className="flex justify-between">
-                      <h2 className="text-xl font-semibold leading-tight">
-                        Customer Documents
-                      </h2>
-                      <button onClick={() => showAddAttachF()}>
-                        <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                          <span className="text-blue-600"> Add Dcoument</span>
-                        </time>
-                      </button>
-                    </div>
-                    <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                      <div className="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
-                        <table className="min-w-full leading-normal">
-                          <thead>
-                            <tr>
-                              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Name
-                              </th>
+                  {docsList.length > 0 && (
+                    <div className="py-8">
+                      <div className="flex justify-between">
+                        <h2 className="text-xl font-semibold leading-tight">
+                          Customer Documents
+                        </h2>
+                        <button onClick={() => showAddAttachF()}>
+                          <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                            <span className="text-blue-600"> Add Dcoument</span>
+                          </time>
+                        </button>
+                      </div>
+                      <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                        <div className="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                          <table className="min-w-full leading-normal">
+                            <thead>
+                              <tr>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                  Name
+                                </th>
 
-                              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Created On / By
-                              </th>
-                              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                Status
-                              </th>
-                              {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th> */}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {docsList.map((dat, i) => {
-                              return (
-                                <tr key={i} className=" border-b">
-                                  <td className="px-5 py-5 bg-white text-sm ">
-                                    <div className="flex">
-                                      <div className="">
-                                        <p className="text-gray-900 whitespace-no-wrap overflow-ellipsis">
-                                          {dat.name}
-                                        </p>
-                                        <p className="text-blue-600 whitespace-no-wrap">
-                                          {dat.type}
-                                        </p>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                  Created On / By
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                  Status
+                                </th>
+                                {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {docsList.map((dat, i) => {
+                                return (
+                                  <tr key={i} className=" border-b">
+                                    <td className="px-5 py-5 bg-white text-sm ">
+                                      <div className="flex">
+                                        <div className="">
+                                          <p className="text-gray-900 whitespace-no-wrap overflow-ellipsis">
+                                            {dat.name}
+                                          </p>
+                                          <p className="text-blue-600 whitespace-no-wrap">
+                                            {dat.type}
+                                          </p>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </td>
+                                    </td>
 
-                                  <td className="px-5 py-5 bg-white text-sm ">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      {prettyDate(dat.cTime)}
-                                    </p>
-                                    <p className="text-gray-600 whitespace-no-wrap overflow-ellipsis">
-                                      {dat.by}
-                                    </p>
-                                  </td>
-                                  <td className="px-5 py-5 bg-white text-sm">
-                                    <>
-                                      {/* <span className="relative inline px-3 py-1 font-semibold text-red-900 leading-tight">
+                                    <td className="px-5 py-5 bg-white text-sm ">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        {prettyDate(dat.cTime)}
+                                      </p>
+                                      <p className="text-gray-600 whitespace-no-wrap overflow-ellipsis">
+                                        {dat.by}
+                                      </p>
+                                    </td>
+                                    <td className="px-5 py-5 bg-white text-sm">
+                                      <>
+                                        {/* <span className="relative inline px-3 py-1 font-semibold text-red-900 leading-tight">
                                     <span
                                       aria-hidden
                                       className="absolute inset-0 bg-red-200 opacity-50 rounded-full"
@@ -1579,118 +1704,119 @@ export default function CustomerProfileSideView({
                                     <span className="relative">Approved</span>
                                   </span> */}
 
-                                      <DownloadIcon
-                                        onClick={() => downloadFile(dat.url)}
-                                        className="w-5 h-5 text-gray-400 ml-3 cursor-pointer"
-                                        aria-hidden="true"
-                                      />
-                                    </>
-                                  </td>
-                                </tr>
-                              )
-                            })}
-                          </tbody>
-                        </table>
+                                        <DownloadIcon
+                                          onClick={() => downloadFile(dat.url)}
+                                          className="w-5 h-5 text-gray-400 ml-3 cursor-pointer"
+                                          aria-hidden="true"
+                                        />
+                                      </>
+                                    </td>
+                                  </tr>
+                                )
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {selFeature === 'tasks' && (
-              <div className="py-8 px-8 flex flex-col items-center">
-                <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                  <img
-                    className="w-[200px] h-[200px] inline"
-                    alt=""
-                    src="/all-complete.svg"
-                  />
+                  )}
                 </div>
-                <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                  You are clean
-                </h3>
-                <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                  Sitback & Relax{' '}
-                  <span className="text-blue-600">Add Task</span>
-                </time>
-              </div>
-            )}
-            {selFeature === 'phone' && (
-              <>
-                {filterData.length === 0 && (
-                  <div className="py-8 px-8 flex flex-col items-center">
-                    <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                      <img
-                        className="w-[200px] h-[200px] inline"
-                        alt=""
-                        src="/all-complete.svg"
-                      />
+              )}
+              {selFeature === 'tasks' && (
+                <div className="py-8 px-8 flex flex-col items-center">
+                  <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                    <img
+                      className="w-[200px] h-[200px] inline"
+                      alt=""
+                      src="/all-complete.svg"
+                    />
+                  </div>
+                  <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                    You are clean
+                  </h3>
+                  <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                    Sitback & Relax{' '}
+                    <span className="text-blue-600">Add Task</span>
+                  </time>
+                </div>
+              )}
+              {selFeature === 'phone' && (
+                <>
+                  {filterData.length === 0 && (
+                    <div className="py-8 px-8 flex flex-col items-center">
+                      <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                        <img
+                          className="w-[200px] h-[200px] inline"
+                          alt=""
+                          src="/all-complete.svg"
+                        />
+                      </div>
+                      <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                        You are clean
+                      </h3>
+                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                        Sitback & Relax{' '}
+                        <span className="text-blue-600">Add Task</span>
+                      </time>
                     </div>
-                    <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                      You are clean
-                    </h3>
-                    <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                      Sitback & Relax{' '}
-                      <span className="text-blue-600">Add Task</span>
-                    </time>
-                  </div>
-                )}
+                  )}
 
-                <div className="px-4 mt-4">
-                  <div className="font-md font-medium text-xl mb-4 text-[#053219]">
-                    Phone Calls
-                  </div>
-                  <ol className="relative border-l border-gray-200 ml-3 ">
-                    {filterData.map((data, i) => (
-                      <section key={i} className="">
-                        <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-3 w-3 text-blue-600 "
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                          </svg>
-                        </span>
-                        <div className="text-gray-600  m-3 ml-6">
-                          <div className="text-base font-normal">
-                            <span className="font-medium text-green-900 ">
-                              {'Rajiv'}
-                            </span>{' '}
-                            called{' '}
-                            <span className="text-sm text-red-900  ">
-                              {Name}
-                            </span>{' '}
-                          </div>
-                          <div className="text-sm font-normal">{data?.txt}</div>
-                          <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
-                            <ClockIcon className="mr-1 w-3 h-3" />
-                            {data?.type == 'ph'
-                              ? timeConv(Number(data?.time)).toLocaleString()
-                              : timeConv(data?.T).toLocaleString()}
-                            {'    '}
-                            <span className="text-red-900 ml-4 mr-4">
-                              {Number(data?.duration)} sec
-                            </span>
-                            or
-                            <span className="text-red-900 ml-4">
-                              {parseInt(data?.duration / 60)} min
-                            </span>
+                  <div className="px-4 mt-4">
+                    <div className="font-md font-medium text-xl mb-4 text-[#053219]">
+                      Phone Calls
+                    </div>
+                    <ol className="relative border-l border-gray-200 ml-3 ">
+                      {filterData.map((data, i) => (
+                        <section key={i} className="">
+                          <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-3 w-3 text-blue-600 "
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                            </svg>
                           </span>
-                        </div>
-                      </section>
-                    ))}
-                  </ol>
-                </div>
-              </>
-            )}
+                          <div className="text-gray-600  m-3 ml-6">
+                            <div className="text-base font-normal">
+                              <span className="font-medium text-green-900 ">
+                                {'Rajiv'}
+                              </span>{' '}
+                              called{' '}
+                              <span className="text-sm text-red-900  ">
+                                {Name}
+                              </span>{' '}
+                            </div>
+                            <div className="text-sm font-normal">
+                              {data?.txt}
+                            </div>
+                            <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
+                              <ClockIcon className="mr-1 w-3 h-3" />
+                              {data?.type == 'ph'
+                                ? timeConv(Number(data?.time)).toLocaleString()
+                                : timeConv(data?.T).toLocaleString()}
+                              {'    '}
+                              <span className="text-red-900 ml-4 mr-4">
+                                {Number(data?.duration)} sec
+                              </span>
+                              or
+                              <span className="text-red-900 ml-4">
+                                {parseInt(data?.duration / 60)} min
+                              </span>
+                            </span>
+                          </div>
+                        </section>
+                      ))}
+                    </ol>
+                  </div>
+                </>
+              )}
 
-            {selFeature === 'appointments' && (
-              <>
-                <div className=" pt-7 h-screen border">
-                  {showNotInterested ||
-                    (showVisitFeedBackStatus && (
+              {selFeature === 'appointments' && (
+                <>
+                  <div className=" pt-7 h-screen ">
+                    {(showNotInterested || showVisitFeedBackStatus) && (
                       <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
                         {showNotInterested && (
                           <div className="w-full flex flex-col mb-3 mt-2">
@@ -1756,51 +1882,51 @@ export default function CustomerProfileSideView({
                           </button>
                         </div>
                       </div>
-                    ))}
+                    )}
 
-                  <div className="font-md font-medium text-xs  ml-4 text-gray-800 flex justify-between mr-4 ">
-                    {/* <section> Schedule</section> */}
+                    <div className="font-md font-medium text-xs  ml-4 text-gray-800 flex justify-between mr-4 ">
+                      {/* <section> Schedule</section> */}
 
-                    <div className="inline ">
-                      <div className="font-md font-semibold text-wider text-[14px] font-bodyLato mb-4 text-[#053219]">
-                        Task Activity
+                      <div className="inline ">
+                        <div className="font-md font-semibold text-wider text-[14px] font-bodyLato mb-4 text-[#053219]">
+                          Task Activity
+                        </div>
                       </div>
-                    </div>
-                    <section className="mt-2">
-                      {/* <span
-                        className="text-blue-600 inline-block mr-2 cursor-pointer"
-                        onClick={() => setAddSch(true)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mb-1 inline"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                      <section className="flex flex-row">
+                        <div
+                          className="text-blue-600  mr-2 mt-[2px] cursor-pointer"
+                          onClick={() => setAddSch(true)}
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>{' '}
-                        <div className="mt-2 inline">Add Schedule</div>
-                      </span> */}
-                      <SortComp
-                        selFilterVal={selFilterVal}
-                        setSelFilterVal={setSelFilterVal}
-                      />
-                    </section>
-                  </div>
-                  {loader && (
-                    <div
-                      id="toast-success"
-                      className="flex items-center w-[95%] mx-4  p-2 text-white
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 mb-1 inline"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>{' '}
+                          <div className="inline">Add Task</div>
+                        </div>
+                        <SortComp
+                          selFilterVal={selFilterVal}
+                          setSelFilterVal={setSelFilterVal}
+                        />
+                      </section>
+                    </div>
+                    {loader && (
+                      <div
+                        id="toast-success"
+                        className="flex items-center w-[95%] mx-4  p-2 text-white
                      bg-[#516F90]"
-                      role="alert"
-                    >
-                      {/* {loader && (
+                        role="alert"
+                      >
+                        {/* {loader && (
                         <span className="pl-3 pr-3">
                           {' '}
 
@@ -1837,43 +1963,44 @@ export default function CustomerProfileSideView({
                           </svg>
                         </span>
                       )} */}
-                      <div className=" text-sm font-normal font-bodyLato tight-wider">
-                        {/* <div className=" text-sm font-normal font-bodyLato tight-wider">
+
+                        <div className=" text-sm font-normal font-bodyLato tight-wider">
+                          {/* <div className=" text-sm font-normal font-bodyLato tight-wider">
                           Create Task
                         </div> */}
-                        Hey, Plan your{' '}
-                        <span className="text-xs  tight-wider ">
-                          {tempLeadStatus.toLocaleUpperCase()}{' '}
-                        </span>
-                        ..!
-                      </div>
-                      <button
-                        type="button"
-                        className="ml-auto -mx-0.5 -my-0.5  text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 "
-                        data-dismiss-target="#toast-success"
-                        aria-label="Close"
-                      >
-                        <span className="sr-only">Close</span>
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
+                          Hey, Plan your{' '}
+                          <span className="text-xs  tight-wider ">
+                            {tempLeadStatus.toLocaleUpperCase()}{' '}
+                          </span>
+                          ..!
+                        </div>
+                        <button
+                          type="button"
+                          className="ml-auto -mx-0.5 -my-0.5  text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 "
+                          data-dismiss-target="#toast-success"
+                          aria-label="Close"
                         >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                  {addSch && (
-                    <div className="flex flex-col pt-0 my-10 mx-4 mt-[0px] ">
-                      <div className="  outline-none border  py-4">
-                        <section className=" px-4">
-                          {/* {['visitfixed'].includes(tempLeadStatus) && (
+                          <span className="sr-only">Close</span>
+                          <svg
+                            className="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                    {addSch && (
+                      <div className="flex flex-col pt-0 my-10 mx-4 mt-[0px] ">
+                        <div className="  outline-none border  py-4">
+                          <section className=" px-4">
+                            {/* {['visitfixed'].includes(tempLeadStatus) && (
                             <div className="flex flex-row  border-b mb-4 ">
                               <div className=" mb-3 flex justify-between">
                                 <section>
@@ -1913,74 +2040,74 @@ export default function CustomerProfileSideView({
                               </div>
                             </div>
                           )} */}
-                          <div className="text-xs font-bodyLato text-[#516f90]">
-                            Task Title
-                          </div>
-                          <input
-                            // onChange={setTakTitle()}
-                            autoFocus
-                            type="text"
-                            value={takTitle}
-                            onChange={(e) => setTitleFun(e)}
-                            placeholder="Enter a short title"
-                            className="w-full h-full pb-1 outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] "
-                          ></input>
-                          <div className="flex flex-row mt-3">
+                            <div className="text-xs font-bodyLato text-[#516f90]">
+                              Task Title
+                            </div>
+                            <input
+                              // onChange={setTakTitle()}
+                              autoFocus
+                              type="text"
+                              value={takTitle}
+                              onChange={(e) => setTitleFun(e)}
+                              placeholder="Enter a short title"
+                              className="w-full h-full pb-1 outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] "
+                            ></input>
+                            <div className="flex flex-row mt-3">
+                              <section>
+                                <span className="text-xs font-bodyLato text-[#516f90]">
+                                  <span className="">
+                                    {tempLeadStatus.charAt(0).toUpperCase() +
+                                      tempLeadStatus.slice(1)}{' '}
+                                  </span>
+                                  Due Date
+                                </span>
+                                <div className="bg-green   pl-   flex flex-row ">
+                                  {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
+                                  <span className="inline">
+                                    <DatePicker
+                                      className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae]"
+                                      selected={startDate}
+                                      onChange={(date) => setStartDate(date)}
+                                      showTimeSelect
+                                      timeFormat="HH:mm"
+                                      injectTimes={[
+                                        setHours(setMinutes(d, 1), 0),
+                                        setHours(setMinutes(d, 5), 12),
+                                        setHours(setMinutes(d, 59), 23),
+                                      ]}
+                                      dateFormat="MMMM d, yyyy h:mm aa"
+                                    />
+                                  </span>
+                                </div>
+                              </section>
+                            </div>
+                          </section>
+                          <div className="flex flex-row mt-4 justify-between pr-4 border-t">
                             <section>
-                              <span className="text-xs font-bodyLato text-[#516f90]">
-                                <span className="">
-                                  {tempLeadStatus.charAt(0).toUpperCase() +
-                                    tempLeadStatus.slice(1)}{' '}
+                              <span>{''}</span>
+                            </section>
+                            <section className="flex">
+                              <button
+                                onClick={() => fAddSchedule()}
+                                className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                              >
+                                <span className="ml-1 ">
+                                  Create {tempLeadStatus} Task
                                 </span>
-                                Due Date
-                              </span>
-                              <div className="bg-green   pl-   flex flex-row ">
-                                {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
-                                <span className="inline">
-                                  <DatePicker
-                                    className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae]"
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    showTimeSelect
-                                    timeFormat="HH:mm"
-                                    injectTimes={[
-                                      setHours(setMinutes(d, 1), 0),
-                                      setHours(setMinutes(d, 5), 12),
-                                      setHours(setMinutes(d, 59), 23),
-                                    ]}
-                                    dateFormat="MMMM d, yyyy h:mm aa"
-                                  />
-                                </span>
-                              </div>
+                              </button>
+                              <button
+                                // onClick={() => fSetLeadsType('Add Lead')}
+                                onClick={() => cancelResetStatusFun()}
+                                className={`flex mt-2 ml-4 rounded items-center text-bodyLato pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                              >
+                                <span className="ml-1 ">Cancel</span>
+                              </button>
                             </section>
                           </div>
-                        </section>
-                        <div className="flex flex-row mt-4 justify-between pr-4 border-t">
-                          <section>
-                            <span>{''}</span>
-                          </section>
-                          <section className="flex">
-                            <button
-                              onClick={() => fAddSchedule()}
-                              className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                            >
-                              <span className="ml-1 ">
-                                Create {tempLeadStatus} Task
-                              </span>
-                            </button>
-                            <button
-                              // onClick={() => fSetLeadsType('Add Lead')}
-                              onClick={() => cancelResetStatusFun()}
-                              className={`flex mt-2 ml-4 rounded items-center text-bodyLato pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
-                            >
-                              <span className="ml-1 ">Cancel</span>
-                            </button>
-                          </section>
                         </div>
                       </div>
-                    </div>
-                  )}
-                  {/* {addSch && (
+                    )}
+                    {/* {addSch && (
                     <div className="flex flex-col pt-0 my-10 mx-4 mt-[10px] rounded">
                       <div className="  outline-none border  rounded p-4">
                         <div className=" text-sm font-normal">
@@ -2139,9 +2266,9 @@ export default function CustomerProfileSideView({
                     </div>
                   )} */}
 
-                  {leadSchFetchedData.length == 0 && !addSch && (
-                    <div className="py-8 px-8 flex flex-col items-center">
-                      {/* <DesktopDatePicker
+                    {leadSchFetchedData.length == 0 && !addSch && (
+                      <div className="py-8 px-8 flex flex-col items-center">
+                        {/* <DesktopDatePicker
               label="Date desktop"
               inputFormat="MM/dd/yyyy"
               value={value}
@@ -2149,7 +2276,7 @@ export default function CustomerProfileSideView({
               renderInput={(params) => <TextField {...params} />}
             /> */}
 
-                      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(props) => <TextField {...props} />}
                 label="DateTimePicker"
@@ -2159,45 +2286,45 @@ export default function CustomerProfileSideView({
                 }}
               />
             </LocalizationProvider> */}
-                      <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                        <img
-                          className="w-[200px] h-[200px] inline"
-                          alt=""
-                          src="/target.svg"
-                        />
-                      </div>
-                      <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                        No Appointmentss
-                      </h3>
-                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                        Appointments always bring more suprises{' '}
-                        <span
-                          className="text-blue-600"
-                          onClick={() => setAddSch(true)}
-                        >
-                          Add new
-                        </span>
-                      </time>
-                    </div>
-                  )}
-
-                  <div className="max-h-[60%] overflow-y-auto">
-                    <ol className="relative  border-gray-200 ">
-                      {leadSchFilteredData.map((data, i) => (
-                        <section key={i} className=" mx-2 bg-[#f8f8ff] mb-2">
-                          <a
-                            href="#"
-                            className={`${
-                              data?.sts === 'completed'
-                                ? ''
-                                : 'hover:bg-gray-100'
-                            }block items-center px-3 sm:flex  `}
+                        <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                          <img
+                            className="w-[200px] h-[200px] inline"
+                            alt=""
+                            src="/target.svg"
+                          />
+                        </div>
+                        <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                          No Appointmentss
+                        </h3>
+                        <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                          Appointments always bring more suprises{' '}
+                          <span
+                            className="text-blue-600"
+                            onClick={() => setAddSch(true)}
                           >
-                            {/* <PlusCircleIcon className="mr-3 mb-3 w-10 h-10 rounded-full sm:mb-0" /> */}
+                            Add new
+                          </span>
+                        </time>
+                      </div>
+                    )}
 
-                            {data?.type != 'ph' && (
-                              <>
-                                {/* <span
+                    <div className="max-h-[60%] overflow-y-auto">
+                      <ol className="relative  border-gray-200 ">
+                        {leadSchFilteredData.map((data, i) => (
+                          <section key={i} className=" mx-2 bg-[#FFF] mb-2">
+                            <a
+                              href="#"
+                              className={`${
+                                data?.sts === 'completed'
+                                  ? ''
+                                  : 'hover:bg-gray-100'
+                              }block items-center px-3 sm:flex  `}
+                            >
+                              {/* <PlusCircleIcon className="mr-3 mb-3 w-10 h-10 rounded-full sm:mb-0" /> */}
+
+                              {data?.type != 'ph' && (
+                                <>
+                                  {/* <span
                                   className={`flex absolute -left-3 justify-center items-center w-6 h-6
                               ${
                                 data?.sts === 'completed'
@@ -2212,49 +2339,49 @@ export default function CustomerProfileSideView({
                                     <CalendarIcon className="w-3 inline text-[#058527]" />
                                   )}
                                 </span> */}
-                                <div className="text-gray-600  m-3 w-screen">
-                                  <section className="flex flex-row justify-between max-w-[95%]">
-                                    <div className="block">
-                                      <div className="mt-2">
-                                        <label className="inline-flex items-center">
-                                          {data?.sts != 'completed' && (
-                                            <span
-                                              className="px-[2px] py-[2px] rounded-full border border-2 cursor-pointer text-[#cdcdcd]"
-                                              onClick={() => doneFun(data)}
-                                            >
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-3 w-3"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
+                                  <div className="text-gray-600  m-3 w-screen">
+                                    <section className="flex flex-row justify-between max-w-[95%]">
+                                      <div className="block">
+                                        <div className="mt-2">
+                                          <label className="inline-flex items-center">
+                                            {data?.sts != 'completed' && (
+                                              <span
+                                                className="px-[2px] py-[2px] rounded-full border border-2 cursor-pointer text-[#cdcdcd]"
+                                                onClick={() => doneFun(data)}
                                               >
-                                                <path
-                                                  strokeLinecap="round"
-                                                  strokeLinejoin="round"
-                                                  d="M5 13l4 4L19 7"
-                                                />
-                                              </svg>
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  className="h-3 w-3"
+                                                  fill="none"
+                                                  viewBox="0 0 24 24"
+                                                  stroke="currentColor"
+                                                  strokeWidth="2"
+                                                >
+                                                  <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M5 13l4 4L19 7"
+                                                  />
+                                                </svg>
+                                              </span>
+                                            )}
+                                            {data?.sts === 'completed' && (
+                                              <BadgeCheckIcon className="w-8 h-8 inline text-[#058527]" />
+                                            )}
+                                            <span
+                                              className={`${
+                                                data?.sts === 'completed'
+                                                  ? 'line-through'
+                                                  : ''
+                                              }  ml-2 text-[15px] font-bodyLato font-semibold font-brand tracking-wider  text-[#0091ae] `}
+                                            >
+                                              {data?.notes}
                                             </span>
-                                          )}
-                                          {data?.sts === 'completed' && (
-                                            <BadgeCheckIcon className="w-8 h-8 inline text-[#058527]" />
-                                          )}
-                                          <span
-                                            className={`${
-                                              data?.sts === 'completed'
-                                                ? 'line-through'
-                                                : ''
-                                            }  ml-2 text-[15px] font-bodyLato font-semibold font-brand tracking-wider  text-[#0091ae] `}
-                                          >
-                                            {data?.notes}
-                                          </span>
-                                        </label>
+                                          </label>
+                                        </div>
                                       </div>
-                                    </div>
 
-                                    {/* <span className="mt-2 block ext-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-1">
+                                      {/* <span className="mt-2 block ext-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-1">
                                       {Math.abs(
                                         getDifferenceInMinutes(
                                           data?.schTime,
@@ -2270,75 +2397,75 @@ export default function CustomerProfileSideView({
                                             ''
                                           )} Min`}
                                     </span> */}
-                                  </section>
+                                    </section>
 
-                                  <section className="flex flex-row justify-between">
-                                    <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
-                                      <CalendarIcon className="w-3 inline text-[#058527]" />{' '}
-                                      {prettyDateTime(data?.schTime)} || in{' '}
-                                      {Math.abs(
-                                        getDifferenceInMinutes(
-                                          data?.schTime,
-                                          ''
-                                        )
-                                      ) > 60
-                                        ? `${getDifferenceInHours(
+                                    <section className="flex flex-row justify-between">
+                                      <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
+                                        <CalendarIcon className="w-3 inline text-[#058527]" />{' '}
+                                        {prettyDateTime(data?.schTime)} || in{' '}
+                                        {Math.abs(
+                                          getDifferenceInMinutes(
                                             data?.schTime,
                                             ''
-                                          )} Hours `
-                                        : `${getDifferenceInMinutes(
-                                            data?.schTime,
-                                            ''
-                                          )} Min`}{' '}
-                                    </span>
-                                    <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
-                                      {data?.stsType === 'visitfixed' && (
+                                          )
+                                        ) > 60
+                                          ? `${getDifferenceInHours(
+                                              data?.schTime,
+                                              ''
+                                            )} Hours `
+                                          : `${getDifferenceInMinutes(
+                                              data?.schTime,
+                                              ''
+                                            )} Min`}{' '}
+                                      </span>
+                                      <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
+                                        {data?.stsType === 'visitfixed' && (
+                                          <span
+                                            className=" text-green-700  "
+                                            onClick={() =>
+                                              setShowVisitFeedBackStatusFun(
+                                                data,
+                                                'visitdone'
+                                              )
+                                            }
+                                          >
+                                            VISIT DONE
+                                          </span>
+                                        )}
                                         <span
-                                          className=" text-green-700  "
+                                          className={` ${
+                                            data?.sts === 'completed'
+                                              ? 'text-[#867777] '
+                                              : 'text-[#FF8C02]'
+                                          }  ml-8   `}
                                           onClick={() =>
-                                            setShowVisitFeedBackStatusFun(
+                                            fUpdateSchedule(
                                               data,
-                                              'visitdone'
+                                              'busy',
+                                              data?.busy || 0
                                             )
                                           }
                                         >
-                                          VISIT DONE
+                                          BUSY ({data?.busy || 0})
                                         </span>
-                                      )}
-                                      <span
-                                        className={` ${
-                                          data?.sts === 'completed'
-                                            ? 'text-[#867777] '
-                                            : 'text-[#FF8C02]'
-                                        }  ml-8   `}
-                                        onClick={() =>
-                                          fUpdateSchedule(
-                                            data,
-                                            'busy',
-                                            data?.busy || 0
-                                          )
-                                        }
-                                      >
-                                        BUSY ({data?.busy || 0})
+                                        <span
+                                          className={` text-[12px]  ${
+                                            data?.sts === 'completed'
+                                              ? 'text-[#867777] '
+                                              : 'text-[#FF8C02]'
+                                          } ml-8  text-[#FF8C02] `}
+                                          onClick={() =>
+                                            fUpdateSchedule(
+                                              data,
+                                              'RNR',
+                                              data?.RNR || 0
+                                            )
+                                          }
+                                        >
+                                          RNR ({data?.RNR || 0})
+                                        </span>
                                       </span>
-                                      <span
-                                        className={` text-[12px]  ${
-                                          data?.sts === 'completed'
-                                            ? 'text-[#867777] '
-                                            : 'text-[#FF8C02]'
-                                        } ml-8  text-[#FF8C02] `}
-                                        onClick={() =>
-                                          fUpdateSchedule(
-                                            data,
-                                            'RNR',
-                                            data?.RNR || 0
-                                          )
-                                        }
-                                      >
-                                        RNR ({data?.RNR || 0})
-                                      </span>
-                                    </span>
-                                    {/* <span>
+                                      {/* <span>
                                       <span
                                         className=" text-[12px]  text-[#FF8C02] "
                                         onClick={() => fUpdateSchedule(data)}
@@ -2352,46 +2479,46 @@ export default function CustomerProfileSideView({
                                         RNR
                                       </span>
                                     </span> */}
-                                  </section>
-                                  <div className="pl-2 flex mt-4 border-t border-t-[#f5f3f3]">
-                                    {data?.sts != 'completed' && (
-                                      <section className="w-full flex flex-row justify-between pt-[6px] ">
-                                        <section>
-                                          <span className="font-thin text-[#867777]   font-bodyLato text-[12px]  pt-[6px]">
-                                            Assigned to {data?.by}
-                                          </span>
-                                        </section>
+                                    </section>
+                                    <div className="pl-2 flex mt-4 border-t border-t-[#f5f3f3]">
+                                      {data?.sts != 'completed' && (
+                                        <section className="w-full flex flex-row justify-between pt-[6px] ">
+                                          <section>
+                                            <span className="font-thin text-[#867777]   font-bodyLato text-[12px]  pt-[6px]">
+                                              Assigned to {data?.by}
+                                            </span>
+                                          </section>
 
-                                        <section>
-                                          <span
-                                            className="font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ml-2 pt-[12px]"
-                                            onClick={() =>
-                                              setShowNotInterestedFun(
-                                                data,
-                                                'notinterested'
-                                              )
-                                            }
-                                          >
-                                            NOT INTERESTED
-                                          </span>
-                                        </section>
+                                          <section>
+                                            <span
+                                              className="font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ml-2 pt-[12px]"
+                                              onClick={() =>
+                                                setShowNotInterestedFun(
+                                                  data,
+                                                  'notinterested'
+                                                )
+                                              }
+                                            >
+                                              NOT INTERESTED
+                                            </span>
+                                          </section>
 
-                                        <section>
-                                          <span className="font-thin text-[#0091ae]   font-bodyLato text-[12px]  pt-[12px]">
-                                            Edit
-                                          </span>
-                                          <span className="text-[#cdcdef] ml-2">
-                                            |
-                                          </span>
-                                          <span
-                                            onClick={() => delFun(data)}
-                                            className="font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-[12px]"
-                                          >
-                                            Delete
-                                          </span>
-                                        </section>
+                                          <section>
+                                            <span className="font-thin text-[#0091ae]   font-bodyLato text-[12px]  pt-[12px]">
+                                              Edit
+                                            </span>
+                                            <span className="text-[#cdcdef] ml-2">
+                                              |
+                                            </span>
+                                            <span
+                                              onClick={() => delFun(data)}
+                                              className="font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-[12px]"
+                                            >
+                                              Delete
+                                            </span>
+                                          </section>
 
-                                        {/* <section className="mt-[6px]">
+                                          {/* <section className="mt-[6px]">
                                       <button className="inline-flex items-center ml-2 justify-center w-7 h-7 mr-2 text-[#ff7f50] transition-colors duration-150 bg-[#ffefe6] rounded-full focus:shadow-outline hover:bg-pink-800">
                                         <svg
                                           xmlns="http://www.w3.org/2000/svg"
@@ -2458,135 +2585,145 @@ export default function CustomerProfileSideView({
                                       </button>
                                     </section> */}
 
-                                        {/* <button
+                                          {/* <button
                                   onClick={() => fAddSchedule()}
                                   className={`inline-flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                                 >
                                   <span className="ml-1 ">Not Interested</span>
                                 </button> */}
-                                      </section>
-                                    )}
+                                        </section>
+                                      )}
+                                    </div>
+                                    <div className="text-sm font-normal">
+                                      {data?.txt}
+                                    </div>
                                   </div>
-                                  <div className="text-sm font-normal">
-                                    {data?.txt}
-                                  </div>
-                                </div>
-                              </>
-                            )}
-                          </a>
-                        </section>
-                      ))}
-                    </ol>
-                  </div>
-                </div>
-              </>
-            )}
-            {selFeature === 'timeline' && (
-              <div className="py-8 px-8  border">
-                {filterData.length == 0 && (
-                  <div className="py-8 px-8 flex flex-col items-center">
-                    <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                      <img
-                        className="w-[200px] h-[200px] inline"
-                        alt=""
-                        src="/templates.svg"
-                      />
+                                </>
+                              )}
+                            </a>
+                          </section>
+                        ))}
+                      </ol>
                     </div>
-                    <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                      Timeline is Empty
-                    </h3>
-                    <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                      This scenario is very rare to view
-                    </time>
                   </div>
-                )}
-                <div className="font-md font-medium text-xs mb-4 text-gray-800">
-                  Timelines
-                </div>
-                <ol className="relative border-l border-gray-200 ">
-                  {filterData.map((data, i) => (
-                    <section key={i} className=" mx-2 bg-[#f8f8ff] mb-2">
-                      <a
-                        href="#"
-                        className="block items-center p-3 sm:flex hover:bg-gray-100 "
-                      >
-                        {/* <PlusCircleIcon className="mr-3 mb-3 w-10 h-10 rounded-full sm:mb-0" /> */}
-                        {data?.type == 'status' && (
-                          <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white  ">
-                            <svg
-                              className="w-3 h-3 text-blue-600 \"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                clipRule="evenodd"
-                              ></path>
-                            </svg>
-                          </span>
-                        )}
-                        {data?.type == 'ph' && (
-                          <>
-                            <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white ">
+                </>
+              )}
+              {selFeature === 'timeline' && (
+                <div className="py-8 px-8  border">
+                  {filterData.length == 0 && (
+                    <div className="py-8 px-8 flex flex-col items-center">
+                      <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                        <img
+                          className="w-[200px] h-[200px] inline"
+                          alt=""
+                          src="/templates.svg"
+                        />
+                      </div>
+                      <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                        Timeline is Empty
+                      </h3>
+                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                        This scenario is very rare to view
+                      </time>
+                    </div>
+                  )}
+                  <div className="font-md font-medium text-xs mb-4 text-gray-800">
+                    Timelines
+                  </div>
+                  <ol className="relative border-l border-gray-200 ">
+                    {filterData.map((data, i) => (
+                      <section key={i} className=" mx-2 bg-[#f8f8ff] mb-2">
+                        <a
+                          href="#"
+                          className="block items-center p-3 sm:flex hover:bg-gray-100 "
+                        >
+                          {/* <PlusCircleIcon className="mr-3 mb-3 w-10 h-10 rounded-full sm:mb-0" /> */}
+                          {data?.type == 'status' && (
+                            <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-blue-200 rounded-full ring-8 ring-white  ">
                               <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-3 w-3 text-blue-600 "
-                                viewBox="0 0 20 20"
+                                className="w-3 h-3 text-blue-600 \"
                                 fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
                               >
-                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                <path
+                                  fillRule="evenodd"
+                                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                  clipRule="evenodd"
+                                ></path>
                               </svg>
                             </span>
-                            <div className="text-gray-600  m-3">
+                          )}
+                          {data?.type == 'ph' && (
+                            <>
+                              <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white ">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-3 w-3 text-blue-600 "
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                </svg>
+                              </span>
+                              <div className="text-gray-600  m-3">
+                                <div className="text-base font-normal">
+                                  <span className="font-medium text-green-900 ">
+                                    {'Rajiv'}
+                                  </span>{' '}
+                                  called{' '}
+                                  <span className="text-sm text-red-900 ">
+                                    {Name}
+                                  </span>{' '}
+                                </div>
+                                <div className="text-sm font-normal">
+                                  {data?.txt}
+                                </div>
+                                <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
+                                  <ClockIcon className="mr-1 w-3 h-3" />
+                                  {data?.type == 'ph'
+                                    ? timeConv(
+                                        Number(data?.time)
+                                      ).toLocaleString()
+                                    : timeConv(data?.T).toLocaleString()}
+                                  {'    '}
+                                  <span className="text-red-900 ml-4 mr-4">
+                                    {Number(data?.duration)} sec
+                                  </span>
+                                  or
+                                  <span className="text-red-900 ml-4">
+                                    {parseInt(data?.duration / 60)} min
+                                  </span>
+                                </span>
+                              </div>
+                            </>
+                          )}
+                          {data?.type != 'ph' && (
+                            <div className="text-gray-600 font-bodyLato m-3">
                               <div className="text-base font-normal">
-                                <span className="font-medium text-green-900 ">
-                                  {'Rajiv'}
+                                {data?.type === 'sts_change' && (
+                                  <span className="text-xs text-red-900 ">
+                                    {data?.from?.toUpperCase()}
+                                  </span>
+                                )}
+                                <span className="text-sm text-green-900 ">
+                                  {activieLogNamer(data)}
                                 </span>{' '}
-                                called{' '}
+                                {data?.type === 'sts_change' && (
+                                  <span className="text-sm text-red-900 ">
+                                    {data?.to?.toUpperCase()}
+                                  </span>
+                                )}
+                                <span className="text-xs  ">{'by'}</span>{' '}
                                 <span className="text-sm text-red-900 ">
-                                  {Name}
+                                  {data?.by}
                                 </span>{' '}
                               </div>
                               <div className="text-sm font-normal">
                                 {data?.txt}
                               </div>
                               <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
-                                <ClockIcon className="mr-1 w-3 h-3" />
-                                {data?.type == 'ph'
-                                  ? timeConv(
-                                      Number(data?.time)
-                                    ).toLocaleString()
-                                  : timeConv(data?.T).toLocaleString()}
-                                {'    '}
-                                <span className="text-red-900 ml-4 mr-4">
-                                  {Number(data?.duration)} sec
-                                </span>
-                                or
-                                <span className="text-red-900 ml-4">
-                                  {parseInt(data?.duration / 60)} min
-                                </span>
-                              </span>
-                            </div>
-                          </>
-                        )}
-                        {data?.type != 'ph' && (
-                          <div className="text-gray-600  m-3">
-                            <div className="text-base font-normal">
-                              <span className="font-medium text-green-900 ">
-                                {data?.type?.toUpperCase()}
-                              </span>{' '}
-                              set by{' '}
-                              <span className="text-sm text-red-900 ">
-                                {data?.by}
-                              </span>{' '}
-                            </div>
-                            <div className="text-sm font-normal">
-                              {data?.txt}
-                            </div>
-                            <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
-                              {/* <svg
+                                {/* <svg
                           className="mr-1 w-3 h-3"
                           fill="currentColor"
                           viewBox="0 0 20 20"
@@ -2599,19 +2736,22 @@ export default function CustomerProfileSideView({
                           ></path>
                         </svg> */}
 
-                              <ClockIcon className="mr-1 w-3 h-3" />
-                              {data?.type == 'ph'
-                                ? timeConv(Number(data?.time)).toLocaleString()
-                                : timeConv(data?.T).toLocaleString()}
-                            </span>
-                          </div>
-                        )}
-                      </a>
-                    </section>
-                  ))}
-                </ol>
-              </div>
-            )}
+                                <ClockIcon className="mr-1 w-3 h-3" />
+                                {data?.type == 'ph'
+                                  ? timeConv(
+                                      Number(data?.time)
+                                    ).toLocaleString()
+                                  : timeConv(data?.T).toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                        </a>
+                      </section>
+                    ))}
+                  </ol>
+                </div>
+              )}
+            </section>
           </>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { db } from './firebaseConfig'
+import { supabase } from './supabase'
 import {
   setDoc,
   doc,
@@ -75,11 +76,17 @@ export const steamUsersActivityOfUser = (orgId, snapshot, error) => {
 }
 
 //  get lead activity list
-export const steamLeadActivityLog = (orgId, snapshot, data, error) => {
+export const steamLeadActivityLog = async (orgId, snapshot, data, error) => {
   // const itemsQuery = query(doc(db, `${orgId}_leads_log', 'W6sFKhgyihlsKmmqDG0r'))
   const { uid } = data
   console.log('is uid g', uid)
-  return onSnapshot(doc(db, `${orgId}_leads_log`, uid), snapshot, error)
+  // return onSnapshot(doc(db, `${orgId}_leads_log`, uid), snapshot, error)
+  const { data: lead_logs, error1 } = await supabase
+    .from(`${orgId}_lead_logs`)
+    .select('type,subtype,T, by, from, to ')
+    .eq('Luid', uid)
+    .order('T', { ascending: false })
+  return lead_logs
   // return onSnapshot(itemsQuery, snapshot, error)
 }
 export const steamLeadNotes = (orgId, snapshot, data, error) => {
@@ -514,14 +521,26 @@ export const createUser = async (data: any) => {
 export const addLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads`), data)
   await console.log('x value is', x, x.id)
-  await addLeadLog(orgId, x.id, {
-    s: 's',
-    type: 'status',
-    subtype: 'added',
-    T: Timestamp.now().toMillis(),
-    txt: msg,
-    by,
-  })
+  const { intype } = data
+  const { data3, errorx } = await supabase.from(`${orgId}_lead_logs`).insert([
+    {
+      type: 'l_ctd',
+      subtype: intype,
+      T: Timestamp.now().toMillis(),
+      Luid: x?.id || '',
+      by,
+      payload: {},
+    },
+  ])
+  await console.log('what is this supbase', data3, errorx)
+  // await addLeadLog(orgId, x.id, {
+  //   s: 's',
+  //   type: 'status',
+  //   subtype: 'added',
+  //   T: Timestamp.now().toMillis(),
+  //   txt: msg,
+  //   by,
+  // })
 
   // add task to scheduler to Intro call in 3 hrs
 
@@ -1424,10 +1443,63 @@ export const updateLeadRemarks_NotIntrested = async (
 ) => {
   try {
     console.log('data is', leadDocId, data)
+    const { from, Status, notInterestedReason, notInterestedNotes } = data
 
     await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
       ...data,
     })
+    const { data1, error1 } = await supabase.from(`${orgId}_lead_logs`).insert([
+      {
+        type: 'sts_change',
+        subtype: Status,
+        T: Timestamp.now().toMillis(),
+        Luid: leadDocId,
+        by,
+        payload: { reason: notInterestedReason, notes: notInterestedNotes },
+        from: from,
+        to: Status,
+      },
+    ])
+    enqueueSnackbar('Updated Successfully', {
+      variant: 'success',
+    })
+  } catch (error) {
+    console.log('Updation failed', error, {
+      ...data,
+    })
+    enqueueSnackbar('Updation failed', {
+      variant: 'error',
+    })
+  }
+
+  return
+}
+export const updateLeadRemarks_VisitDone = async (
+  orgId,
+  leadDocId,
+  data,
+  by,
+  enqueueSnackbar
+) => {
+  try {
+    console.log('data is visit done', leadDocId, data)
+    const { from, Status, VisitDoneReason, VisitDoneNotes } = data
+
+    await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
+      ...data,
+    })
+    const { data1, error1 } = await supabase.from(`${orgId}_lead_logs`).insert([
+      {
+        type: 'sts_change',
+        subtype: Status,
+        T: Timestamp.now().toMillis(),
+        Luid: leadDocId,
+        by,
+        payload: { reason: VisitDoneReason, notes: VisitDoneNotes },
+        from: from,
+        to: Status,
+      },
+    ])
     enqueueSnackbar('Updated Successfully', {
       variant: 'success',
     })
@@ -1445,16 +1517,40 @@ export const updateLeadRemarks_NotIntrested = async (
 export const updateLeadStatus = async (
   orgId,
   leadDocId,
+  oldStatus,
   newStatus,
+  by,
   enqueueSnackbar
 ) => {
   try {
     console.log('wow it should be here', leadDocId, newStatus)
     await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
       Status: newStatus,
-      coveredA: arrayUnion(newStatus),
+      coveredA: arrayUnion(oldStatus),
       stsUpT: Timestamp.now().toMillis(),
     })
+    // await addLeadLog(orgId, x.id, {
+    //   s: 's',
+    //   type: 'status',
+    //   subtype: 'added',
+    //   T: Timestamp.now().toMillis(),
+    //   txt: msg,
+    //   by,
+    // })
+    const { data1, error1 } = await supabase.from(`${orgId}_lead_logs`).insert([
+      {
+        type: 'sts_change',
+        subtype: oldStatus,
+        T: Timestamp.now().toMillis(),
+        Luid: leadDocId,
+        by,
+        payload: {},
+        from: oldStatus,
+        to: newStatus,
+      },
+    ])
+
+    console.log('chek if ther is any erro in supa', data1, error1)
     enqueueSnackbar(`Status Updated to ${newStatus}`, {
       variant: 'success',
     })

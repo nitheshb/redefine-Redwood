@@ -419,7 +419,7 @@ export default function CrmUnitSideView({
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, '')
     if (Status != tempLeadStatus) {
-      updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
+      // updateLeadStatus(orgId, id, tempLeadStatus, enqueueSnackbar)
     }
     await setTakTitle('')
     await setAddSch(false)
