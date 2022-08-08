@@ -431,6 +431,7 @@ const HighlighterStyle = (props) => {
   )
 }
 export default function LLeadsTableBody({
+  fetchLeadsLoader,
   selStatus,
   rowsParent,
   selUserProfileF,
@@ -594,6 +595,7 @@ export default function LLeadsTableBody({
       <section
         style={{ borderTop: '1px solid #efefef', background: '#fefafb' }}
       >
+          {fetchLeadsLoader && "Fetching Leads"}
         <TableContainer sx={{ maxHeight: 640 }}>
           <Table
             sx={{ minWidth: 750 }}
@@ -612,6 +614,7 @@ export default function LLeadsTableBody({
               searchkey={searchKey}
               viewUnitStatusA={viewUnitStatusA}
             />
+
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}

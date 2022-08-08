@@ -141,6 +141,8 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
 
 const LLeadsTableView = ({
   setisImportLeadsOpen,
+  fetchLeadsLoader,
+
   selUserProfileF,
   leadsFetchedData,
   leadsTyper,
@@ -286,6 +288,7 @@ const LLeadsTableView = ({
             {/*  Data Table */}
             <LLeadsTableBody
               data={filterTable}
+              fetchLeadsLoader={fetchLeadsLoader}
               handleDelete={handleDelete}
               selStatus={value}
               rowsParent={leadsFetchedData}

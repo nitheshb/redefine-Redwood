@@ -59,6 +59,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [serialLeadsData, setSerialLeadsData] = useState([])
   const [projectList, setprojectList] = useState([])
   const [unitsViewMode, setUnitsViewMode] = useState(false)
+  const [fetchLeadsLoader, setFetchLeadsLoader] = useState(true)
 
   const [selProjectIs, setSelProject] = useState({
     label: 'All Projects',
@@ -161,6 +162,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
         console.log('seleUser details are', selLeadsOf?.value)
         y = z.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
       }
+      setFetchLeadsLoader(false)
+
       setLeadsFetchedData(y)
     } else {
       let y = x
@@ -172,7 +175,9 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
         console.log('seleUser details are', selLeadsOf?.value)
         y = x.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
       }
+
       setLeadsFetchedData(y)
+      setFetchLeadsLoader(false)
     }
   }, [selProjectIs, selLeadsOf])
 
@@ -584,6 +589,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
 
             {!ready && (
               <LLeadsTableView
+                fetchLeadsLoader={fetchLeadsLoader}
                 leadsFetchedData={leadsFetchedData}
                 setisImportLeadsOpen={setisImportLeadsOpen}
                 selUserProfileF={selUserProfileF}

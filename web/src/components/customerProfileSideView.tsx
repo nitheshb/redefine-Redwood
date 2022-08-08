@@ -347,19 +347,19 @@ export default function CustomerProfileSideView({
     //   )
     // }
     else {
-      leadsActivityFetchedData.map((data) => {
+      leadsActivityFetchedData?.map((data) => {
         console.log('value of filtered feature count before', data)
       })
       let x = []
       if (selFeature != 'timeline') {
-        x = leadsActivityFetchedData.filter((data) => data.type === fet)
+        x = leadsActivityFetchedData?.filter((data) => data.type === fet)
       } else {
         x = leadsActivityFetchedData
       }
       console.log(
         'value of filtered feature count is wow it ',
         leadsActivityFetchedData,
-        x.length
+        x?.length
       )
       setFilterData(x)
     }
@@ -613,13 +613,13 @@ export default function CustomerProfileSideView({
         const usersList = doc.data()
         const usersListA = []
 
-        Object.entries(usersList).forEach((entry) => {
+        Object?.entries(usersList)?.forEach((entry) => {
           const [key, value] = entry
           usersListA.push(value)
           console.log('my total fetched list is 3', `${key}: ${value}`)
         })
         console.log('my total notes list is ', usersListA)
-        usersListA.sort((a, b) => {
+        usersListA?.sort((a, b) => {
           return b.ct - a.ct
         })
         setLeadsFetchedNotesData(usersListA)
@@ -1835,7 +1835,7 @@ export default function CustomerProfileSideView({
               )}
               {selFeature === 'phone' && (
                 <>
-                  {filterData.length === 0 && (
+                  {filterData?.length === 0 && (
                     <div className="py-8 px-8 flex flex-col items-center">
                       <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
                         <img
@@ -1859,7 +1859,7 @@ export default function CustomerProfileSideView({
                       Phone Calls
                     </div>
                     <ol className="relative border-l border-gray-200 ml-3 ">
-                      {filterData.map((data, i) => (
+                      {filterData?.map((data, i) => (
                         <section key={i} className="">
                           <span className="flex absolute -left-3 justify-center items-center w-6 h-6 bg-green-200 rounded-full ring-8 ring-white  ">
                             <svg
@@ -2732,7 +2732,7 @@ export default function CustomerProfileSideView({
               )}
               {selFeature === 'timeline' && (
                 <div className="py-8 px-8  border">
-                  {filterData.length == 0 && (
+                  {filterData?.length == 0 && (
                     <div className="py-8 px-8 flex flex-col items-center">
                       <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
                         <img
@@ -2753,7 +2753,7 @@ export default function CustomerProfileSideView({
                     Timelines
                   </div>
                   <ol className="relative border-l border-gray-200 ">
-                    {filterData.map((data, i) => (
+                    {filterData?.map((data, i) => (
                       <section key={i} className=" mx-2 bg-white mb-2">
                         <a
                           href="#"
