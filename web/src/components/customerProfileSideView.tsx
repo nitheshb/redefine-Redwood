@@ -1001,8 +1001,8 @@ export default function CustomerProfileSideView({
                 </div>
               </div>
             </div>
-            <div className="w-full px-1  xl:w-8/12 mt-3 ">
-              <div className="relative z-10 my-1">
+            <div className="w-full px-1  xl:w-8/12 mt-1 mb-1 bg-white  pl-3 pt-2 ">
+              <div className="relative z-10 my-1 bg-white">
                 <div className="grid grid-cols-3 gap-5">
                   <section className="">
                     <div
@@ -1099,9 +1099,52 @@ export default function CustomerProfileSideView({
               </div>
             </div>
           </div>
-          <div className="px-3 py-2 flex flex-row  text-xs  border-t border-[#ebebeb] font-thin   font-bodyLato text-[12px]  py-[6px] ">
-            Remarks:{' '}
-            <span className="text-[#867777] ml-1 "> {Remarks || 'NA'}</span>
+          <div className="flex flex-row justify-between">
+            <div className="px-3 py-2 flex flex-row  text-xs  border-t border-[#ebebeb] font-thin   font-bodyLato text-[12px]  py-[6px] ">
+              Remarks:{' '}
+              <span className="text-[#867777] ml-1 "> {Remarks || 'NA'}</span>
+            </div>
+            <div
+              className="relative flex flex-col  group"
+              // style={{ alignItems: 'end' }}
+            >
+              <div
+                className="absolute bottom-0 right-0 flex-col items-center hidden mb-6 group-hover:flex"
+                // style={{  width: '300px' }}
+                style={{ 'z-index': '9999' }}
+              >
+                <span
+                  className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
+                  style={{
+                    color: 'black',
+                    background: '#e2c062',
+                    maxWidth: '300px',
+                  }}
+                >
+                  <div className="italic flex flex-col">
+                    <div className="font-bodyLato">
+                      {Source?.toString() || 'NA'}
+                    </div>
+                  </div>
+                </span>
+                <div
+                  className="w-3 h-3  -mt-2 rotate-45 bg-black"
+                  style={{ background: '#e2c062', marginRight: '12px' }}
+                ></div>
+              </div>
+              <span className="font-bodyLato">
+                {/* <HighlighterStyle
+                            searchKey={searchKey}
+                            source={row.Source.toString()}
+                          /> */}
+
+                <img
+                  className="w-[18px] h-[18px] inline"
+                  alt=""
+                  src={`../${Source?.toString() || 'fb'}.svg`}
+                />
+              </span>
+            </div>
           </div>
         </div>
         {/* <div>
