@@ -122,7 +122,7 @@ const AddPaymentDetailsForm = ({
 
     // 4)update lead status to book
     // updateLeadStatus(leadDocId, newStatus)
-    updateLeadStatus(orgId, id, 'booked', enqueueSnackbar)
+    // updateLeadStatus(orgId, id, 'booked', enqueueSnackbar)
 
     const updatedData = {
       ...data,

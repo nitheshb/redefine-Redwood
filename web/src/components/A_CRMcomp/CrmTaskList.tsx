@@ -283,12 +283,12 @@ const CrmTaskList = ({ leadsTyper }) => {
       dragItem
     )
 
-    updateLeadStatus(
-      orgId,
-      re.draggableId,
-      statusFields[parseInt(re.destination.droppableId)],
-      enqueueSnackbar
-    )
+    // updateLeadStatus(
+    //   orgId,
+    //   re.draggableId,
+    //   statusFields[parseInt(re.destination.droppableId)],
+    //   enqueueSnackbar
+    // )
     setBoardData(newBoardData)
   }
 

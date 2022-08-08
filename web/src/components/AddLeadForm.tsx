@@ -204,7 +204,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
         orgId,
         leadData,
         user?.email,
-        `lead created and assidged to ${assignedTo}`
+        `lead created and assidged to ${assignedToObj?.email || assignedTo}`
       )
 
       await sendWhatAppTextSms(

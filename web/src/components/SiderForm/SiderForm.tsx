@@ -74,7 +74,6 @@ const SiderForm = ({
               <div
                 className={`relative w-screen ${
                   title === 'Add Lead' ||
-                  title === 'User Profile' ||
                   title === 'Create Project' ||
                   title === 'Edit Project'
                     ? 'max-w-2xl'
