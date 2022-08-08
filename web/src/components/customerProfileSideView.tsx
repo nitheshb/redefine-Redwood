@@ -1908,7 +1908,7 @@ export default function CustomerProfileSideView({
 
               {selFeature === 'appointments' && (
                 <>
-                  <div className=" pt-7 h-screen ">
+                  <div className=" pt-3 h-screen ">
                     {(showNotInterested || showVisitFeedBackStatus) && (
                       <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
                         {showNotInterested && (
@@ -1977,17 +1977,16 @@ export default function CustomerProfileSideView({
                       </div>
                     )}
 
-                    <div className="font-md font-medium text-xs  ml-4 text-gray-800 flex justify-between mr-4 ">
+                    <div className="font-md font-medium text-xs  ml-2 text-gray-800 flex justify-between mr-4 ">
                       {/* <section> Schedule</section> */}
-
                       <div className="inline ">
-                        <div className="font-md font-semibold text-wider text-[14px] font-bodyLato mb-4 text-[#053219]">
+                        <div className="font-md font-semibold text-wider text-[14px] font-bodyLato mb-2 text-[#053219]">
                           Task Activity
                         </div>
                       </div>
                       <section className="flex flex-row">
                         <div
-                          className="text-blue-600  mr-2 mt-[2px] cursor-pointer"
+                          className="text-blue-600  mr-2  cursor-pointer"
                           onClick={() => setAddSch(true)}
                         >
                           <svg
@@ -2433,7 +2432,7 @@ export default function CustomerProfileSideView({
                     <div className="max-h-[60%] overflow-y-auto">
                       <ol className="relative  border-gray-200 ">
                         {leadSchFilteredData.map((data, i) => (
-                          <section key={i} className=" mx-2 bg-[#FFF] mb-2">
+                          <section key={i} className=" mx-2 bg-[#FFF] mb-[1px]">
                             <a
                               href="#"
                               className={`${
@@ -2461,19 +2460,19 @@ export default function CustomerProfileSideView({
                                     <CalendarIcon className="w-3 inline text-[#058527]" />
                                   )}
                                 </span> */}
-                                  <div className="text-gray-600  m-3 w-screen">
-                                    <section className="flex flex-row justify-between max-w-[95%]">
+                                  <div className="text-gray-600  my-2 w-screen">
+                                    <section className="flex flex-row justify-between">
                                       <div className="block">
-                                        <div className="mt-2">
+                                        <div className="mt-1">
                                           <label className="inline-flex items-center">
                                             {data?.sts != 'completed' && (
                                               <span
-                                                className="px-[2px] py-[2px] rounded-full border border-2 cursor-pointer text-[#cdcdcd]"
+                                                className="px-[2px] py-[2px]  rounded-full border border-2 cursor-pointer text-[#cdcdcd]"
                                                 onClick={() => doneFun(data)}
                                               >
                                                 <svg
                                                   xmlns="http://www.w3.org/2000/svg"
-                                                  className="h-3 w-3"
+                                                  className="h-2 w-2"
                                                   fill="none"
                                                   viewBox="0 0 24 24"
                                                   stroke="currentColor"
@@ -2502,6 +2501,51 @@ export default function CustomerProfileSideView({
                                           </label>
                                         </div>
                                       </div>
+                                      {data?.sts != 'completed' && (
+                                        <section className="flex flex-row">
+                                          <span className="inline-flex  font-thin text-[#0091ae]   font-bodyLato text-[12px]  pt-[12px] text-[#867777] hover:text-green-900">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              className="h-3 w-3"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke="currentColor"
+                                              strokeWidth="2"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                              />
+                                            </svg>
+                                          </span>
+
+                                          <span
+                                            onClick={() => delFun(data)}
+                                            className="inline-flex  placeholder:font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-[12px] text-[#867777] hover:text-green-900"
+                                          >
+                                            <svg
+                                              className="h-3 w-3"
+                                              viewBox="0 0 21 21"
+                                              xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                              <g
+                                                fill="none"
+                                                fillRule="evenodd"
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                transform="translate(3 2)"
+                                              >
+                                                <path d="m2.5 2.5h10v12c0 1.1045695-.8954305 2-2 2h-6c-1.1045695 0-2-.8954305-2-2zm5-2c1.0543618 0 1.91816512.81587779 1.99451426 1.85073766l.00548574.14926234h-4c0-1.1045695.8954305-2 2-2z" />
+                                                <path d="m.5 2.5h14" />
+                                                <path d="m5.5 5.5v8" />
+                                                <path d="m9.5 5.5v8" />
+                                              </g>
+                                            </svg>
+                                          </span>
+                                        </section>
+                                      )}
 
                                       {/* <span className="mt-2 block ext-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-1">
                                       {Math.abs(
@@ -2522,36 +2566,57 @@ export default function CustomerProfileSideView({
                                     </section>
 
                                     <section className="flex flex-row justify-between">
-                                      <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
-                                        <CalendarIcon className="w-3 inline text-[#058527]" />{' '}
-                                        {prettyDateTime(data?.schTime)} || in{' '}
-                                        {Math.abs(
-                                          getDifferenceInMinutes(
-                                            data?.schTime,
-                                            ''
-                                          )
-                                        ) > 60
-                                          ? `${getDifferenceInHours(
+                                      <section className="flex flex-row">
+                                        <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
+                                          <CalendarIcon className="w-3 inline text-[#058527]" />{' '}
+                                          {prettyDateTime(data?.schTime)} || in{' '}
+                                          {Math.abs(
+                                            getDifferenceInMinutes(
                                               data?.schTime,
                                               ''
-                                            )} Hours `
-                                          : `${getDifferenceInMinutes(
-                                              data?.schTime,
-                                              ''
-                                            )} Min`}{' '}
-                                      </span>
-                                      <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6">
-                                        {data?.stsType === 'visitfixed' && (
+                                            )
+                                          ) > 60
+                                            ? `${getDifferenceInHours(
+                                                data?.schTime,
+                                                ''
+                                              )} Hours `
+                                            : `${getDifferenceInMinutes(
+                                                data?.schTime,
+                                                ''
+                                              )} Min`}{' '}
+                                        </span>
+
+                                        <span className="font-thin text-[#867777]   font-bodyLato text-[12px]  ml-2">
+                                          Assigned to {data?.by}
+                                        </span>
+                                      </section>
+
+                                      <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6 font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ">
+                                        {data?.stsType === 'visitfixed' &&
+                                          data?.sts != 'completed' && (
+                                            <span
+                                              className=" border-b text-[#0091ae] hover:border-[#0091ae] "
+                                              onClick={() =>
+                                                setShowVisitFeedBackStatusFun(
+                                                  data,
+                                                  'visitdone'
+                                                )
+                                              }
+                                            >
+                                              VISIT DONE
+                                            </span>
+                                          )}
+                                        {data?.sts != 'completed' && (
                                           <span
-                                            className=" text-green-700  "
+                                            className="font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ml-2 pt-[12px] border-b hover:border-[#0091ae] "
                                             onClick={() =>
-                                              setShowVisitFeedBackStatusFun(
+                                              setShowNotInterestedFun(
                                                 data,
-                                                'visitdone'
+                                                'notinterested'
                                               )
                                             }
                                           >
-                                            VISIT DONE
+                                            NOT INTERESTED
                                           </span>
                                         )}
                                         <span
@@ -2559,30 +2624,34 @@ export default function CustomerProfileSideView({
                                             data?.sts === 'completed'
                                               ? 'text-[#867777] '
                                               : 'text-[#FF8C02]'
-                                          }  ml-8   `}
-                                          onClick={() =>
-                                            fUpdateSchedule(
-                                              data,
-                                              'busy',
-                                              data?.busy || 0
-                                            )
-                                          }
+                                          }  ml-8  border-b hover:border-[#FF8C02] `}
+                                          onClick={() => {
+                                            if (data?.sts != 'completed') {
+                                              fUpdateSchedule(
+                                                data,
+                                                'busy',
+                                                data?.busy || 0
+                                              )
+                                            }
+                                          }}
                                         >
                                           BUSY ({data?.busy || 0})
                                         </span>
                                         <span
-                                          className={` text-[12px]  ${
+                                          className={` ${
                                             data?.sts === 'completed'
                                               ? 'text-[#867777] '
                                               : 'text-[#FF8C02]'
-                                          } ml-8  text-[#FF8C02] `}
-                                          onClick={() =>
-                                            fUpdateSchedule(
-                                              data,
-                                              'RNR',
-                                              data?.RNR || 0
-                                            )
-                                          }
+                                          } ml-2  text-[#FF8C02] border-b hover:border-[#FF8C02]`}
+                                          onClick={() => {
+                                            if (data?.sts != 'completed') {
+                                              fUpdateSchedule(
+                                                data,
+                                                'RNR',
+                                                data?.RNR || 0
+                                              )
+                                            }
+                                          }}
                                         >
                                           RNR ({data?.RNR || 0})
                                         </span>
@@ -2602,123 +2671,6 @@ export default function CustomerProfileSideView({
                                       </span>
                                     </span> */}
                                     </section>
-                                    <div className="pl-2 flex mt-4 border-t border-t-[#f5f3f3]">
-                                      {data?.sts != 'completed' && (
-                                        <section className="w-full flex flex-row justify-between pt-[6px] ">
-                                          <section>
-                                            <span className="font-thin text-[#867777]   font-bodyLato text-[12px]  pt-[6px]">
-                                              Assigned to {data?.by}
-                                            </span>
-                                          </section>
-
-                                          <section>
-                                            <span
-                                              className="font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ml-2 pt-[12px]"
-                                              onClick={() =>
-                                                setShowNotInterestedFun(
-                                                  data,
-                                                  'notinterested'
-                                                )
-                                              }
-                                            >
-                                              NOT INTERESTED
-                                            </span>
-                                          </section>
-
-                                          <section>
-                                            <span className="font-thin text-[#0091ae]   font-bodyLato text-[12px]  pt-[12px]">
-                                              Edit
-                                            </span>
-                                            <span className="text-[#cdcdef] ml-2">
-                                              |
-                                            </span>
-                                            <span
-                                              onClick={() => delFun(data)}
-                                              className="font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-[12px]"
-                                            >
-                                              Delete
-                                            </span>
-                                          </section>
-
-                                          {/* <section className="mt-[6px]">
-                                      <button className="inline-flex items-center ml-2 justify-center w-7 h-7 mr-2 text-[#ff7f50] transition-colors duration-150 bg-[#ffefe6] rounded-full focus:shadow-outline hover:bg-pink-800">
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          className="h-3 w-3"
-                                          fill="none"
-                                          viewBox="0 0 24 24"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                        >
-                                          <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                                          />
-                                        </svg>
-                                      </button>
-                                      <button
-                                        className="inline-flex items-center justify-center w-7 h-7 mr-2 text-[#FF8C02] transition-colors duration-150 bg-[#FFF9F2] rounded-full focus:shadow-outline hover:bg-pink-800"
-                                        onClick={() => delFun(data)}
-                                      >
-                                        <svg
-                                          height="16"
-                                          viewBox="0 0 21 21"
-                                          width="16"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <g
-                                            fill="none"
-                                            fillRule="evenodd"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            transform="translate(3 2)"
-                                          >
-                                            <path d="m2.5 2.5h10v12c0 1.1045695-.8954305 2-2 2h-6c-1.1045695 0-2-.8954305-2-2zm5-2c1.0543618 0 1.91816512.81587779 1.99451426 1.85073766l.00548574.14926234h-4c0-1.1045695.8954305-2 2-2z" />
-                                            <path d="m.5 2.5h14" />
-                                            <path d="m5.5 5.5v8" />
-                                            <path d="m9.5 5.5v8" />
-                                          </g>
-                                        </svg>
-                                      </button>
-                                      <button
-                                        className="inline-flex items-center  justify-center w-7 h-7 mr-2 text-[#248473] transition-colors duration-150 bg-[#eaf9f0] rounded-full focus:shadow-outline  hover:bg-pink-800"
-                                        onClick={() => doneFun(data)}
-                                      >
-                                        <svg
-                                          height="16"
-                                          viewBox="0 0 21 21"
-                                          width="16"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <g
-                                            fill="none"
-                                            fillRule="evenodd"
-                                            stroke="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            transform="translate(2 2)"
-                                          >
-                                            <circle cx="8.5" cy="8.5" r="8" />
-                                            <path d="m5.5 9.5 2 2 5-5" />
-                                          </g>
-                                        </svg>
-                                      </button>
-                                    </section> */}
-
-                                          {/* <button
-                                  onClick={() => fAddSchedule()}
-                                  className={`inline-flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                                >
-                                  <span className="ml-1 ">Not Interested</span>
-                                </button> */}
-                                        </section>
-                                      )}
-                                    </div>
-                                    <div className="text-sm font-normal">
-                                      {data?.txt}
-                                    </div>
                                   </div>
                                 </>
                               )}
