@@ -22,6 +22,9 @@ import {
 } from '@heroicons/react/outline'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import SortComp from './sortComp'
+import { ErrorMessage, Form, Formik } from 'formik'
+import * as Yup from 'yup'
+
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon, DownloadIcon } from '@heroicons/react/solid'
 import { useAuth } from 'src/context/firebase-auth-context'
@@ -456,7 +459,7 @@ export default function CustomerProfileSideView({
     console.log('is this triggered yo yo', newStatus)
     if (newStatus == 'visitdone') {
       console.log('is this triggered yo yo 1', newStatus)
-      enqueueSnackbar(`VISIT can be  set only from VISIT FIXED Activity`, {
+      enqueueSnackbar(`Mark VISIT-DONE  from VISIT-FIXED Task`, {
         variant: 'error',
       })
 
@@ -755,7 +758,7 @@ export default function CustomerProfileSideView({
       case 'l_ctd':
         return (tex = 'Lead Created')
       case 'sts_change':
-        return (tex = ` is completed & status updated to`)
+        return (tex = ` completed --> updated `)
       default:
         return (tex = type)
     }
@@ -848,7 +851,22 @@ export default function CustomerProfileSideView({
       console.log('upload error is ', error)
     }
   }
-
+  const initialState1 = {
+    notesText: '',
+  }
+  const validateSchema1 = Yup.object({
+    notesText: Yup.string()
+      .max(180, 'Must be 180 characters or less')
+      .required('Notes Text is  Required'),
+  })
+  const initialState = {
+    taskTitle: '',
+  }
+  const validateSchema = Yup.object({
+    taskTitle: Yup.string()
+      .max(180, 'Must be 180 characters or less')
+      .required('Task Title Required'),
+  })
   const StatusListA = [
     { label: 'New', value: 'new', logo: 'FireIcon', color: ' bg-violet-500' },
     {
@@ -1314,8 +1332,18 @@ export default function CustomerProfileSideView({
                         </div>
                       )}
                       {addNote && (
-                        <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
-{/*
+                        <Formik
+                          initialValues={initialState1}
+                          validationSchema={validateSchema1}
+                          onSubmit={(values, { resetForm }) => {
+                            console.log('values of form is ', values)
+                            fAddNotes()
+                          }}
+                        >
+                          {(formik1) => (
+                            <Form>
+                              <div className=" form flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
+                                {/*
                           <div className="w-full flex flex-col mb-3 mt-2">
                             <CustomSelect
                               name="source"
@@ -1330,36 +1358,58 @@ export default function CustomerProfileSideView({
                             />
                           </div> */}
 
-                          <div className="  outline-none border  rounded p-4 mt-4">
-                            <textarea
-                              value={takNotes}
-                              onChange={(e) => setNotesTitle(e.target.value)}
-                              placeholder="Type & make a notes"
-                              className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
-                            ></textarea>
-                          </div>
-                          <div className="flex flex-row mt-1">
-                            <button
-                              onClick={() => fAddNotes()}
-                              className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                            >
-                              <span className="ml-1 ">Save</span>
-                            </button>
-                            <button
-                              onClick={() => fAddNotes()}
-                              className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                            >
-                              <span className="ml-1 ">Save & Whats App</span>
-                            </button>
-                            <button
-                              // onClick={() => fSetLeadsType('Add Lead')}
-                              onClick={() => cancelResetStatusFun()}
-                              className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
-                            >
-                              <span className="ml-1 ">Cancel</span>
-                            </button>
-                          </div>
-                        </div>
+                                <div className="  outline-none border  rounded p-4 mt-4">
+                                  <ErrorMessage
+                                    component="div"
+                                    name="notesText"
+                                    className="error-message text-red-700 text-xs p-1"
+                                  />
+                                  <textarea
+                                    name="notesText"
+                                    value={takNotes}
+                                    onChange={(e) => {
+                                      console.log(
+                                        'what the matter',
+                                        e.target.value
+                                      )
+                                      formik1.setFieldValue(
+                                        'notesText',
+                                        e.target.value
+                                      )
+                                      setNotesTitle(e.target.value)
+                                    }}
+                                    placeholder="Type & make a notes"
+                                    className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded bg-[#FFF9F2] "
+                                  ></textarea>
+                                </div>
+                                <div className="flex flex-row mt-1">
+                                  <button
+                                    type="submit"
+                                    className={`flex mt-2 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                                  >
+                                    <span className="ml-1 ">Save</span>
+                                  </button>
+                                  <button
+                                    onClick={() => cancelResetStatusFun()}
+                                    type="submit"
+                                    className={`flex mt-2 ml-4 rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                                  >
+                                    <span className="ml-1 ">
+                                      Save & Whats App
+                                    </span>
+                                  </button>
+                                  <button
+                                    // onClick={() => fSetLeadsType('Add Lead')}
+                                    onClick={() => cancelResetStatusFun()}
+                                    className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700 hover:text-white `}
+                                  >
+                                    <span className="ml-1 ">Cancel</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </Form>
+                          )}
+                        </Formik>
                       )}
                       {leadNotesFetchedData.length > 0 && (
                         <div className="px-4">
@@ -1464,7 +1514,7 @@ export default function CustomerProfileSideView({
                               value={takNotes}
                               onChange={(e) => setNotesTitle(e.target.value)}
                               placeholder="Type & make a notes"
-                              className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                              className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded bg-[#FFF9F2] "
                             ></textarea>
                           </div>
                           <div className="flex flex-row mt-1">
@@ -1483,7 +1533,7 @@ export default function CustomerProfileSideView({
                             <button
                               // onClick={() => fSetLeadsType('Add Lead')}
                               onClick={() => cancelResetStatusFun()}
-                              className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                              className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700 hover:text-white  `}
                             >
                               <span className="ml-1 ">Cancel</span>
                             </button>
@@ -1857,7 +1907,7 @@ export default function CustomerProfileSideView({
                             value={takNotes}
                             onChange={(e) => setNotesTitle(e.target.value)}
                             placeholder="Type & make a notes"
-                            className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded  "
+                            className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded bg-[#FFF9F2] "
                           ></textarea>
                         </div>
                         <div className="flex flex-row mt-1">
@@ -1876,7 +1926,7 @@ export default function CustomerProfileSideView({
                           <button
                             // onClick={() => fSetLeadsType('Add Lead')}
                             onClick={() => cancelResetStatusFun()}
-                            className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
+                            className={`flex mt-2 ml-4  rounded items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700 hover:text-white  `}
                           >
                             <span className="ml-1 ">Cancel</span>
                           </button>
@@ -1998,9 +2048,18 @@ export default function CustomerProfileSideView({
                     )}
                     {addSch && (
                       <div className="flex flex-col pt-0 my-10 mx-4 mt-[0px] ">
-                        <div className="  outline-none border  py-4">
-                          <section className=" px-4">
-                            {/* {['visitfixed'].includes(tempLeadStatus) && (
+                        <Formik
+                          initialValues={initialState}
+                          validationSchema={validateSchema}
+                          onSubmit={(values, { resetForm }) => {
+                            fAddSchedule()
+                          }}
+                        >
+                          {(formik) => (
+                            <Form>
+                              <div className=" form outline-none border  py-4">
+                                <section className=" px-4">
+                                  {/* {['visitfixed'].includes(tempLeadStatus) && (
                             <div className="flex flex-row  border-b mb-4 ">
                               <div className=" mb-3 flex justify-between">
                                 <section>
@@ -2040,71 +2099,91 @@ export default function CustomerProfileSideView({
                               </div>
                             </div>
                           )} */}
-                            <div className="text-xs font-bodyLato text-[#516f90]">
-                              Task Title
-                            </div>
-                            <input
-                              // onChange={setTakTitle()}
-                              autoFocus
-                              type="text"
-                              value={takTitle}
-                              onChange={(e) => setTitleFun(e)}
-                              placeholder="Enter a short title"
-                              className="w-full h-full pb-1 outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] "
-                            ></input>
-                            <div className="flex flex-row mt-3">
-                              <section>
-                                <span className="text-xs font-bodyLato text-[#516f90]">
-                                  <span className="">
-                                    {tempLeadStatus.charAt(0).toUpperCase() +
-                                      tempLeadStatus.slice(1)}{' '}
-                                  </span>
-                                  Due Date
-                                </span>
-                                <div className="bg-green   pl-   flex flex-row ">
-                                  {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
-                                  <span className="inline">
-                                    <DatePicker
-                                      className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae]"
-                                      selected={startDate}
-                                      onChange={(date) => setStartDate(date)}
-                                      showTimeSelect
-                                      timeFormat="HH:mm"
-                                      injectTimes={[
-                                        setHours(setMinutes(d, 1), 0),
-                                        setHours(setMinutes(d, 5), 12),
-                                        setHours(setMinutes(d, 59), 23),
-                                      ]}
-                                      dateFormat="MMMM d, yyyy h:mm aa"
+                                  <div className="text-xs font-bodyLato text-[#516f90]">
+                                    Task Title
+                                    <ErrorMessage
+                                      component="div"
+                                      name="taskTitle"
+                                      className="error-message text-red-700 text-xs p-1"
                                     />
-                                  </span>
+                                  </div>
+                                  <input
+                                    // onChange={setTakTitle()}
+                                    autoFocus
+                                    name="taskTitle"
+                                    type="text"
+                                    value={takTitle}
+                                    onChange={(e) => {
+                                      formik.setFieldValue(
+                                        'taskTitle',
+                                        e.target.value
+                                      )
+                                      setTitleFun(e)
+                                    }}
+                                    placeholder="Enter a short title"
+                                    className="w-full h-full pb-1 outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-[#F5F8FA] "
+                                  ></input>
+                                  <div className="flex flex-row mt-3">
+                                    <section>
+                                      <span className="text-xs font-bodyLato text-[#516f90]">
+                                        <span className="">
+                                          {tempLeadStatus
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            tempLeadStatus.slice(1)}{' '}
+                                        </span>
+                                        Due Date
+                                      </span>
+                                      <div className="bg-green   pl-   flex flex-row ">
+                                        {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
+                                        <span className="inline">
+                                          <DatePicker
+                                            className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae] bg-[#F5F8FA]"
+                                            selected={startDate}
+                                            onChange={(date) =>
+                                              setStartDate(date)
+                                            }
+                                            showTimeSelect
+                                            timeFormat="HH:mm"
+                                            injectTimes={[
+                                              setHours(setMinutes(d, 1), 0),
+                                              setHours(setMinutes(d, 5), 12),
+                                              setHours(setMinutes(d, 59), 23),
+                                            ]}
+                                            dateFormat="MMMM d, yyyy h:mm aa"
+                                          />
+                                        </span>
+                                      </div>
+                                    </section>
+                                  </div>
+                                </section>
+                                <div className="flex flex-row mt-4 justify-between pr-4 border-t">
+                                  <section>
+                                    <span>{''}</span>
+                                  </section>
+                                  <section className="flex">
+                                    <button
+                                      type="submit"
+                                      // onClick={() => fAddSchedule()}
+                                      className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                                    >
+                                      <span className="ml-1 ">
+                                        Create {tempLeadStatus} Task
+                                      </span>
+                                    </button>
+                                    <button
+                                      // onClick={() => fSetLeadsType('Add Lead')}
+                                      onClick={() => cancelResetStatusFun()}
+                                      className={`flex mt-2 ml-4 rounded items-center text-bodyLato pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700 hover:text-white `}
+                                    >
+                                      <span className="ml-1 ">Cancel</span>
+                                    </button>
+                                  </section>
                                 </div>
-                              </section>
-                            </div>
-                          </section>
-                          <div className="flex flex-row mt-4 justify-between pr-4 border-t">
-                            <section>
-                              <span>{''}</span>
-                            </section>
-                            <section className="flex">
-                              <button
-                                onClick={() => fAddSchedule()}
-                                className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                              >
-                                <span className="ml-1 ">
-                                  Create {tempLeadStatus} Task
-                                </span>
-                              </button>
-                              <button
-                                // onClick={() => fSetLeadsType('Add Lead')}
-                                onClick={() => cancelResetStatusFun()}
-                                className={`flex mt-2 ml-4 rounded items-center text-bodyLato pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700  `}
-                              >
-                                <span className="ml-1 ">Cancel</span>
-                              </button>
-                            </section>
-                          </div>
-                        </div>
+                              </div>
+                            </Form>
+                          )}
+                        </Formik>
                       </div>
                     )}
                     {/* {addSch && (
@@ -2632,10 +2711,10 @@ export default function CustomerProfileSideView({
                   </div>
                   <ol className="relative border-l border-gray-200 ">
                     {filterData.map((data, i) => (
-                      <section key={i} className=" mx-2 bg-[#f8f8ff] mb-2">
+                      <section key={i} className=" mx-2 bg-white mb-2">
                         <a
                           href="#"
-                          className="block items-center p-3 sm:flex hover:bg-gray-100 "
+                          className="block items-center px-3 sm:flex hover:bg-gray-100 "
                         >
                           {/* <PlusCircleIcon className="mr-3 mb-3 w-10 h-10 rounded-full sm:mb-0" /> */}
                           {data?.type == 'status' && (
@@ -2699,49 +2778,39 @@ export default function CustomerProfileSideView({
                             </>
                           )}
                           {data?.type != 'ph' && (
-                            <div className="text-gray-600 font-bodyLato m-3">
+                            <div className="text-gray-600 font-bodyLato mx-3 my-1">
                               <div className="text-base font-normal">
                                 {data?.type === 'sts_change' && (
                                   <span className="text-xs text-red-900 ">
-                                    {data?.from?.toUpperCase()}
+                                    {data?.from?.toUpperCase()} {'  '}
                                   </span>
                                 )}
-                                <span className="text-sm text-green-900 ">
+                                <span className="text-sm text-green-900 mx-2 ">
                                   {activieLogNamer(data)}
                                 </span>{' '}
                                 {data?.type === 'sts_change' && (
-                                  <span className="text-sm text-red-900 ">
-                                    {data?.to?.toUpperCase()}
+                                  <span className="text-xs text-red-900 ">
+                                    {'  '} {data?.to?.toUpperCase()}
                                   </span>
                                 )}
-                                <span className="text-xs  ">{'by'}</span>{' '}
-                                <span className="text-sm text-red-900 ">
-                                  {data?.by}
-                                </span>{' '}
                               </div>
                               <div className="text-sm font-normal">
                                 {data?.txt}
                               </div>
                               <span className="inline-flex items-center text-xs font-normal text-gray-500 ">
-                                {/* <svg
-                          className="mr-1 w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg> */}
+                                <ClockIcon className=" w-3 h-3 text-gray-300" />
 
-                                <ClockIcon className="mr-1 w-3 h-3" />
-                                {data?.type == 'ph'
-                                  ? timeConv(
-                                      Number(data?.time)
-                                    ).toLocaleString()
-                                  : timeConv(data?.T).toLocaleString()}
+                                <span className="text-gray-400 ml-1 mr-4">
+                                  {data?.type == 'ph'
+                                    ? timeConv(
+                                        Number(data?.time)
+                                      ).toLocaleString()
+                                    : timeConv(data?.T).toLocaleString()}
+                                </span>
+                                <span className="text-green-900 ml-2">by:</span>
+                                <span className="text-gray-400 ml-1 mr-4">
+                                  {data?.by}
+                                </span>
                               </span>
                             </div>
                           )}
