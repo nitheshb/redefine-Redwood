@@ -105,14 +105,11 @@ const tableData2 = [
 ]
 
 const rowsCounter = (parent, searchKey) => {
-  return parent.filter((item) => {
-    if (searchKey === 'all') {
-      return item
-    } else if (item.Status.toLowerCase() === searchKey.toLowerCase()) {
-      console.log('All1', item)
-      return item
-    }
-  })
+  return searchKey === 'all'
+    ? parent
+    : parent.filter(
+        (item) => item.Status.toLowerCase() === searchKey.toLowerCase()
+      )
 }
 const Wrapper = styled(Section)(() => ({
   display: 'flex',
@@ -162,7 +159,7 @@ const LLeadsTableView = ({
   }
 
   useEffect(() => {
-    console.log('table data is ', tableData2)
+    console.log('my Array data is delayer 2', leadsFetchedData.length)
     setTableData(tableData2)
     // axios
     //   .get('/api/tableData1/all')

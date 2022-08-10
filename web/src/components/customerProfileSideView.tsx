@@ -31,6 +31,7 @@ import { useAuth } from 'src/context/firebase-auth-context'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from 'src/context/firebaseConfig'
 import toast from 'react-hot-toast'
+import LogSkelton from './shimmerLoaders/logSkelton'
 
 import {
   addLeadScheduler,
@@ -167,6 +168,7 @@ export default function CustomerProfileSideView({
   const [showNotInterested, setShowNotInterested] = useState(false)
 
   const [leadsActivityFetchedData, setLeadsFetchedActivityData] = useState([])
+  const [leadSchLoading, setLeadsSchLoading] = useState(true)
 
   const [leadSchFetchedData, setLeadsFetchedSchData] = useState([])
   const [leadNotesFetchedData, setLeadsFetchedNotesData] = useState([])
@@ -553,6 +555,7 @@ export default function CustomerProfileSideView({
       orgId,
       (doc) => {
         console.log('my total fetched list is 1', doc.data())
+        setLeadsSchLoading(true)
         const usersList = doc.data()
         const usersListA = []
 
@@ -587,14 +590,13 @@ export default function CustomerProfileSideView({
         // }
 
         console.log('my total fetched list is', usersListA.length, usersListA)
-        usersListA.sort((a, b) => {
-          return b.ct - a.cr
-        })
+
         setLeadsFetchedSchData(
           usersListA.sort((a, b) => {
             return b.ct - a.ct
           })
         )
+        setLeadsSchLoading(false)
       },
       {
         uid: id,
@@ -2387,9 +2389,14 @@ export default function CustomerProfileSideView({
                     </div>
                   )} */}
 
-                    {leadSchFetchedData.length == 0 && !addSch && (
-                      <div className="py-8 px-8 flex flex-col items-center">
-                        {/* <DesktopDatePicker
+                    {leadSchLoading &&
+                      [1, 2, 3].map((data, i) => <LogSkelton key={i} />)}
+
+                    {!leadSchLoading &&
+                      leadSchFetchedData.length == 0 &&
+                      !addSch && (
+                        <div className="py-8 px-8 flex flex-col items-center">
+                          {/* <DesktopDatePicker
               label="Date desktop"
               inputFormat="MM/dd/yyyy"
               value={value}
@@ -2397,7 +2404,7 @@ export default function CustomerProfileSideView({
               renderInput={(params) => <TextField {...params} />}
             /> */}
 
-                        {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(props) => <TextField {...props} />}
                 label="DateTimePicker"
@@ -2407,27 +2414,27 @@ export default function CustomerProfileSideView({
                 }}
               />
             </LocalizationProvider> */}
-                        <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                          <img
-                            className="w-[200px] h-[200px] inline"
-                            alt=""
-                            src="/target.svg"
-                          />
+                          <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+                            <img
+                              className="w-[200px] h-[200px] inline"
+                              alt=""
+                              src="/target.svg"
+                            />
+                          </div>
+                          <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
+                            No Appointmentss
+                          </h3>
+                          <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
+                            Appointments always bring more suprises{' '}
+                            <span
+                              className="text-blue-600"
+                              onClick={() => setAddSch(true)}
+                            >
+                              Add new
+                            </span>
+                          </time>
                         </div>
-                        <h3 className="mb-1 text-sm font-semibold text-gray-900 ">
-                          No Appointmentss
-                        </h3>
-                        <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
-                          Appointments always bring more suprises{' '}
-                          <span
-                            className="text-blue-600"
-                            onClick={() => setAddSch(true)}
-                          >
-                            Add new
-                          </span>
-                        </time>
-                      </div>
-                    )}
+                      )}
 
                     <div className="max-h-[60%] overflow-y-auto">
                       <ol className="relative  border-gray-200 ">

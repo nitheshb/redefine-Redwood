@@ -30,6 +30,7 @@ import DropCompUnitStatus from '../dropDownUnitStatus'
 
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
+import LogSkelton from '../shimmerLoaders/logSkelton'
 
 // function createData(
 //   Date,
@@ -475,14 +476,9 @@ export default function LLeadsTableBody({
   }, [searchKey])
 
   const filterStuff = async (parent) => {
-    let x = await parent.filter((item) => {
-      if (selStatus === 'all') {
-        return item
-      } else if (item.Status.toLowerCase() === selStatus.toLowerCase()) {
-        console.log('All1', item)
-        return item
-      }
-    })
+
+      let x =selStatus === 'all' ? parent : await parent.filter((item) => (item.Status.toLowerCase() === selStatus.toLowerCase()))
+
     await setRows(x)
     await console.log('xo', x, parent, selStatus)
   }
@@ -595,7 +591,6 @@ export default function LLeadsTableBody({
       <section
         style={{ borderTop: '1px solid #efefef', background: '#fefafb' }}
       >
-          {fetchLeadsLoader && "Fetching Leads"}
         <TableContainer sx={{ maxHeight: 640 }}>
           <Table
             sx={{ minWidth: 750 }}
@@ -614,7 +609,6 @@ export default function LLeadsTableBody({
               searchkey={searchKey}
               viewUnitStatusA={viewUnitStatusA}
             />
-
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}

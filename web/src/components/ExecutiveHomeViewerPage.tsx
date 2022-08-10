@@ -150,7 +150,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [getStatus, setGetStatus] = useState([])
   useEffect(() => {
     const x = leadsFetchedRawData
-    console.log('raw max is ', x)
+    console.log('raw max is ==>  ', x.length)
     if (selProjectIs?.value != 'allprojects') {
       const z = x.filter((d1) => d1.Project === selProjectIs?.value)
       let y = z
@@ -195,7 +195,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             return x
           })
           // setBoardData
-          console.log('my Array data is ', usersListA)
+          console.log('my Array data is delayer ', usersListA.length)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
           await setLeadsFetchedData(usersListA)
@@ -233,7 +233,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             return x
           })
           // setBoardData
-          console.log('my Array data is ', usersListA)
+          console.log('my Array data is delayer 1 ', usersListA.length)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
           await setLeadsFetchedData(usersListA)

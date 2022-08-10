@@ -378,7 +378,7 @@ export default function TodayLeadsActivitySearchView({
   const [selUserProfile, setSelUserProfile] = React.useState({})
   const [schFetData, setSchFetData] = React.useState([])
   const [schFetCleanData, setSchFetCleanData] = React.useState([])
-  const [leadByViewLayout, setLeadByViewLayout] = React.useState(true)
+  const [leadByViewLayout, setLeadByViewLayout] = React.useState(false)
   const [projectList, setprojectList] = useState([])
   const [usersList, setusersList] = useState([])
   const [selProjectIs, setSelProject] = useState({

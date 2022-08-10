@@ -233,14 +233,15 @@ const AddLeadForm = ({ title, dialogOpen }) => {
 
   const deptList = [
     { label: 'Select the Source', value: '' },
-    { label: 'Google Adwords', value: 'googleadwords' },
+    { label: 'CP Skagen', value: 'cpskagen' },
+    { label: 'Direct Contact', value: 'directcontact' },
     { label: 'Facebook Ad', value: 'facebookad' },
+    { label: 'Google Adwords', value: 'googleadwords' },
     { label: 'Instagram Ad', value: 'instagramad' },
     { label: 'Magic Bricks', value: 'magicbricks' },
     { label: 'MCube', value: 'mcube' },
-    { label: 'Direct Contact', value: 'directcontact' },
+    { label: 'Website', value: 'website' },
     { label: '99acres', value: '99acres' },
-    { label: 'CP Skagen', value: 'cpskagen' },
   ]
   const validate = Yup.object({
     name: Yup.string()
