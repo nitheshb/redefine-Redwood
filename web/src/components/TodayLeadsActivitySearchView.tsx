@@ -560,6 +560,7 @@ export default function TodayLeadsActivitySearchView({
           // make sure if date less than tomorrow is added
           if (y['schTime'] < torrowDate) {
             y.uid = data1.uid
+            y.id = data1.uid
             y.leadUser = data1.leadUser
             streamedTodo.push(y)
             console.log('my value is 1 yo i', y)
@@ -583,6 +584,7 @@ export default function TodayLeadsActivitySearchView({
         }
 
         y.uid = data1.uid
+        y.id = data1.uid
         y.leadUser = data1.leadUser
         streamedTodo.push(y)
         console.log('my value is 1', y)
@@ -1018,9 +1020,10 @@ export default function TodayLeadsActivitySearchView({
                         <div
                           key={index}
                           className="flex-1 px-4 py-2 mt-2  bg-white  cursor-pointer focus:outline-none border border-gray-100 rounded "
-                          onClick={() =>
+                          onClick={() => {
+                            console.log('macho 0', leadUser)
                             selUserProfileF('User Profile', leadUser)
-                          }
+                          }}
                         >
                           {/* <div className="inline">
                     <div className="ml-4 mt-4">

@@ -15,20 +15,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts'
-const projectFeedData = [
-  { k: 'Total', v: 125, pic: '' },
-  { k: 'Sold', v: 5, pic: '' },
-  { k: 'Booked', v: 25, pic: '' },
-  { k: 'Available', v: 85, pic: '' },
-  { k: 'Hold', v: 10, pic: '' },
-]
-const unitFeedData = [
-  { k: 'Total', v: 137500, pic: '' },
-  { k: 'Sold', v: 5500, pic: '' },
-  { k: 'Booked', v: 27500, pic: '' },
-  { k: 'Available', v: 93500, pic: '' },
-  { k: 'Hold', v: 11000, pic: '' },
-]
+
 const valueFeedData = [
   { k: 'Total', v: 300, pic: '' },
   { k: 'Progress', v: 100, pic: '' },
@@ -47,14 +34,6 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
     projectType,
     uid = 0,
   } = project
-
-  const aprtConfig = [
-    { k: 'Builder', v: builderName, pic: '/builder2.png' },
-    { k: 'Type', v: projectType?.name, pic: '/a1.png' },
-    { k: 'Location', v: location, pic: '/map.png' },
-    { k: 'Area', v: `${area} sqft`, pic: '/x.png' },
-    { k: 'Phases', v: 0, pic: '/p1.png' },
-  ]
 
   // const [unitsView, setUnitsView] = useState(false)
   // const [areaView, setAreaView] = useState(false)
@@ -117,15 +96,15 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
         <div className="box-border px-4 mx-auto border-solid sm:px-6 md:px-6 lg:px-8 max-w-full ">
           <div className="flex flex-col  leading-7  text-gray-900 border-0 border-gray-200 ">
             <div className="flex items-center flex-shrink-0  px-0  pl-0 border-b border-grey  mb-2">
-              <Link
+              {/* <Link
                 className="flex items-center"
-                to={routes.projectEdit({ uid })}
-              >
-                <img className="w-16 h-16" alt="" src="/apart.svg"></img>
-                <span className="relative z-10 flex items-center w-auto text-4xl font-bold leading-none pl-0 mt-[18px]">
-                  {projectName}
-                </span>
-              </Link>
+               // to={routes.projectEdit({ uid })}
+              > */}
+              <img className="w-16 h-16" alt="" src="/apart.svg"></img>
+              <span className="relative z-10 flex items-center w-auto text-4xl font-bold leading-none pl-0 mt-[18px]">
+                {projectName}
+              </span>
+              {/* </Link> */}
             </div>
 
             <div className=" mt-10 grid grid-cols-1 gap-7">
@@ -148,15 +127,15 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                     </div> */}
                     <section className="flex ml-auto mt-[18px]">
                       {!isEdit && (
-                        <Link to={routes.projectEdit({ uid })}>
-                          <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                            <EyeIcon
-                              className="h-3 w-3 mr-1"
-                              aria-hidden="true"
-                            />
-                            Current Week
-                          </span>
-                        </Link>
+                        // <Link to={routes.projectEdit({ uid })}>
+                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                          <EyeIcon
+                            className="h-3 w-3 mr-1"
+                            aria-hidden="true"
+                          />
+                          Current Week
+                        </span>
+                        // </Link>
                       )}
 
                       <button onClick={onSliderOpen}>
@@ -301,20 +280,17 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
               <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="overflow-hidden">
                   <div className=" text-md font-bold leading-none pl-0 mt-4 border-b pb-4 mb-4 ">
-                    {`Team Member wise Stastics of for this Week `}
+                    {`Source vs Status `}
                   </div>
 
                   <section className="flex ml-auto mt-[18px]">
                     {!isEdit && (
-                      <Link to={routes.projectEdit({ uid })}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                          <EyeIcon
-                            className="h-3 w-3 mr-1"
-                            aria-hidden="true"
-                          />
-                          Now
-                        </span>
-                      </Link>
+                      // <Link to={routes.projectEdit({ uid })}>
+                      <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
+                        <EyeIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                        Now
+                      </span>
+                      // </Link>
                     )}
 
                     <button onClick={onSliderOpen}>
@@ -367,13 +343,67 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           scope="col"
                           className="text-sm font-medium text-gray-900 px-6 py-4"
                         >
-                          Booking
+                          New
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Follow up
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Visit Fixed
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Visit Done
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Neogotiation
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Booked
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Not Interested
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Dead
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Blocked
                         </th>
                         <th
                           scope="col"
                           className="text-sm font-medium text-gray-900 px-6 py-4"
                         >
                           Archieve
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-sm font-medium text-gray-900 px-6 py-4"
+                        >
+                          Junk
                         </th>
                       </tr>
                     </thead>

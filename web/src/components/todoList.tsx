@@ -225,9 +225,13 @@ const TodoListView = ({
                         tabIndex={0}
                         className="focus:outline-none h-16 border border-gray-100 rounded"
                         key={i}
-                        onClick={() =>
-                          selUserProfileF('User Profile', dat?.leadUser)
-                        }
+                        onClick={() => {
+                          console.log('macho 1', dat?.leadUser, dat)
+                          const y = dat.leadUser
+                          y.id = dat?.id
+
+                          selUserProfileF('User Profile', y)
+                        }}
                       >
                         <td>
                           <div className="ml-5">

@@ -243,6 +243,7 @@ export default function CustomerProfileSideView({
 
   const streamLeadDataFun = () => {
     const { id } = customerDetails
+
     const z = steamLeadById(
       orgId,
       (querySnapshot) => {
@@ -1113,7 +1114,7 @@ export default function CustomerProfileSideView({
               <div
                 className="absolute bottom-0 right-0 flex-col items-center hidden mb-6 group-hover:flex"
                 // style={{  width: '300px' }}
-                style={{ 'z-index': '9999' }}
+                style={{ zIndex: '9999' }}
               >
                 <span
                   className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
