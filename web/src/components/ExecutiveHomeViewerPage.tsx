@@ -271,7 +271,6 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     // let newData =
     const x = statusFields.map((status) => {
       const items = array.filter((data) => data.Status.toLowerCase() == status)
-
       return { name: status, items }
     })
     setSerialLeadsData(x)

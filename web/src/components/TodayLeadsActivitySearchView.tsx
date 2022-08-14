@@ -819,7 +819,7 @@ export default function TodayLeadsActivitySearchView({
                 )}
                 <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                   <button
-                    className={`px-2 py-1  rounded ${
+                    className={`px-2  rounded ${
                       leadByViewLayout ? 'bg-white shadow' : ''
                     }`}
                     onClick={() => setLeadByViewLayout(true)}
@@ -840,7 +840,7 @@ export default function TodayLeadsActivitySearchView({
                     </svg>
                   </button>
                   <button
-                    className={`px-2 py-1  rounded ${
+                    className={`px-2  rounded ${
                       !leadByViewLayout ? 'bg-white shadow' : ''
                     }`}
                     onClick={() => setLeadByViewLayout(false)}
@@ -861,7 +861,7 @@ export default function TodayLeadsActivitySearchView({
                     </svg>
                   </button>
                 </span>
-                <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded">
+                <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded max-h-[35px]">
                   <p>Sort By:</p>
                   <select
                     aria-label="select"

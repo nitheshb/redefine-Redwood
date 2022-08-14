@@ -125,14 +125,16 @@ export const getLeadsByStatus = (orgId, snapshot, data, error) => {
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
-export const getLeadsByDate = (orgId, snapshot, data, error) => {
+export const getLeadsByDate = async (orgId,data, ) => {
   const { cutoffDate } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
     where('Date', '>=', cutoffDate)
   )
-  console.log('hello ', cutoffDate, itemsQuery)
-  return onSnapshot(itemsQuery, snapshot, error)
+  const citySnapshot = await getDocs(itemsQuery)
+  // await citySnapshot.docs.map((doc) => doc.data())
+  console.log('my Array data is delayer 1', citySnapshot)
+  return await citySnapshot.docs.map((doc) => doc.data())
 }
 // get finance transactions
 export const getFinanceTransactionsByStatus = (

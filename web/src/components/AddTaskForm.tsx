@@ -349,7 +349,7 @@ const AddTaskForm = ({ title, dialogOpen }) => {
                       ></textarea>
                       <div className="flex flex-row mt-1">
                         <div>
-                          <div className="w-full flex flex-col mb-3 mt-[6px] ml- mr-4 h-[36px]">
+                          <div className="w-full flex flex-col mb-3 mt-[6px]  h-[36px] max-w-[250px] min-w-[250px]">
                             <SlimSelectBox
                               name="assignedTo"
                               label="Assign To"
@@ -371,11 +371,11 @@ const AddTaskForm = ({ title, dialogOpen }) => {
                           </div>
                         </div>
 
-                        <div className="bg-green border  pl-4 ml-4 rounded flex flex-row mt-2 h-[36px]">
+                        <div className="bg-green border  pl-4 ml-4 rounded flex flex-row mt-2 h-[36px] ">
                           <CalendarIcon className="w-4  ml-1 inline text-[#058527]" />
                           <span className="inline">
                             <DatePicker
-                              className=" mt-[7px] pl- px-2  inline text-sm "
+                              className="mt-[7px] pl- px-2  inline text-sm min-w-[193px]"
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
                               showTimeSelect

@@ -3,22 +3,16 @@
 // import PhaseDetailsCard from '../PhaseDetailsCard/PhaseDetailsCard'
 
 import { CalendarIcon, EyeIcon } from '@heroicons/react/outline'
-import { Link, routes } from '@redwoodjs/router'
-import ProjectStatsCard from './ProjectStatsCard/ProjectStatsCard'
-import { Line } from 'react-chartjs-2'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from 'recharts'
+
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts'
 import { sourceList, sourceListItems } from 'src/constants/projects'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { getLeadsByDate } from 'src/context/dbQueryFirebase'
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+} from '@heroicons/react/solid'
 
 const valueFeedData = [
   { k: 'Total', v: 300, pic: '' },
@@ -78,75 +72,158 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
 
   const { user } = useAuth()
   const { orgId, access } = user
+  const [leadsFetchedRawData, setLeadsFetchedRawData] = useState([])
+  const [sourceListTuned, setSourceListTuned] = useState([])
+  const [showInproFSource, setShowInproFSource] = useState(false)
+  const [showArchiFSource, setShowArchiFSource] = useState(false)
+
+  const [viewSourceStats1A, SetViewSourceStats1A] = useState([
+    'label',
+    'total',
+    'inprogress',
+    'booked',
+    'archieve',
+  ])
+
+  useEffect(() => {
+    getLeadsDataFun()
+  }, [])
 
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
     const { access, uid, orgId } = user
 
     if (access?.includes('manage_leads')) {
-      const unsubscribe = getLeadsByDate(
-        orgId,
-        async (querySnapshot) => {
-          const usersListA = querySnapshot.docs.map((docSnapshot) => {
-            const x = docSnapshot.data()
-            x.id = docSnapshot.id
-            return x
-          })
-          // setBoardData
-          console.log('my Array data is delayer ', usersListA.length)
-          await setLeadsFetchedRawData(usersListA)
-          await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
-        },
-        {
-          cutoffDate: 1659724200000,
-        },
-        (error) => setLeadsFetchedData([])
-      )
-      return unsubscribe
-    } else {
-      const unsubscribe = getLeadsByStatusUser(
-        orgId,
-        async (querySnapshot) => {
-          const usersListA = querySnapshot.docs.map((docSnapshot) => {
-            const x = docSnapshot.data()
-            x.id = docSnapshot.id
-            return x
-          })
-          // setBoardData
-          console.log('my Array data is delayer 1 ', usersListA.length)
-          await setLeadsFetchedRawData(usersListA)
-          await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
-        },
-        {
-          uid: uid,
-          status:
-            leadsTyper === 'inProgress'
-              ? [
-                  'new',
-                  'followup',
-                  'unassigned',
-                  'visitfixed',
-                  'visitcancel',
-                  '',
-                  'visitdone',
-                  'negotiation',
-                  'reassign',
-                  'RNR',
-                  // 'booked',
-                ]
-              : leadsTyper === 'booked'
-              ? ['booked']
-              : archieveFields,
-        },
-        (error) => setLeadsFetchedData([])
-      )
+      const unsubscribe = getLeadsByDate(orgId, {
+        cutoffDate: 1659724200000,
+      })
+      console.log('my Array data is delayer 1 ', unsubscribe)
+      await setLeadsFetchedRawData(await unsubscribe)
+
+      await serialMyData(await unsubscribe)
       return unsubscribe
     }
-
-    // await console.log('leadsData', leadsData)
   }
+
+  const serialMyData = (fullData) => {
+    const y = sourceListItems.map((souceObj) => {
+      const x = souceObj
+      const Total1 = fullData.filter(
+        (datObj) => datObj?.Source === souceObj?.value
+      )
+      console.log('total is ', Total1)
+      x.Total = fullData.filter(
+        (datObj) => datObj?.Source === souceObj?.value
+      ).length
+      x.inprogress = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value &&
+          [
+            'new',
+            'unassigned',
+            'followup',
+            'visitfixed',
+            'visitdone',
+            'negotiation',
+          ].includes(datObj?.Status)
+      ).length
+      x.new = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value &&
+          ['new', 'unassigned'].includes(datObj?.Status)
+      ).length
+      x.unassigned = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'unassigned'
+      ).length
+
+      x.followup = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'followup'
+      ).length
+
+      x.visitfixed = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'visitfixed'
+      ).length
+      x.visitdone = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'visitdone'
+      ).length
+      x.negotiation = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'negotiation'
+      ).length
+      x.booked = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'booked'
+      ).length
+      x.Dead = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'Dead'
+      ).length
+      x.blocked = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'blocked'
+      ).length
+      x.notinterested = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value &&
+          datObj?.Status == 'notinterested'
+      ).length
+      x.dead = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'dead'
+      ).length
+      x.blocked = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'blocked'
+      ).length
+      x.junk = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value && datObj?.Status == 'junk'
+      ).length
+      x.archieve = fullData.filter(
+        (datObj) =>
+          datObj?.Source === souceObj?.value &&
+          ['blocked', 'dead', 'notinterested'].includes(datObj?.Status)
+      ).length
+
+      return x
+    })
+    setSourceListTuned(y)
+  }
+
+  const showColumnsSourceFun = async (id) => {
+    const y = ['new', 'followup', 'visitfixed', 'visitdone', 'neogotiation']
+    const y1 = ['notinterested', 'dead', 'blocked', 'junk']
+    if (id === 'inprogress') {
+      const check = !showInproFSource
+      await setShowInproFSource(check)
+      const x = viewSourceStats1A
+      if (check) {
+        SetViewSourceStats1A([...x, ...y])
+      } else {
+        const z = viewSourceStats1A.filter((d1) => {
+          return !y.includes(d1)
+        })
+        await SetViewSourceStats1A(z)
+      }
+    } else if (id === 'archieve') {
+      const check = !showArchiFSource
+      await setShowArchiFSource(check)
+      const x = await viewSourceStats1A
+      if (check) {
+        await SetViewSourceStats1A([...x, ...y1])
+      } else {
+        const z = viewSourceStats1A.filter((d1) => {
+          return !y1.includes(d1)
+        })
+        await SetViewSourceStats1A(z)
+      }
+    }
+  }
+
   const bgColors = [
     'bg-white border-blue-200',
     'bg-[#baf6d0] border-purple-200',
@@ -169,7 +246,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
               > */}
               <img className="w-16 h-16" alt="" src="/apart.svg"></img>
               <span className="relative z-10 flex items-center w-auto text-4xl font-bold leading-none pl-0 mt-[18px]">
-                {projectName}
+                {orgId?.toLocaleUpperCase()} Report
               </span>
               {/* </Link> */}
             </div>
@@ -391,91 +468,75 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                   <table className="min-w-full text-center mt-6">
                     <thead className="border-b">
                       <tr>
-                        <th scope="col" className="">
-                          Name
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Total
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          In Progress
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          New
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Follow up
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Visit Fixed
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Visit Done
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Neogotiation
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Booked
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Not Interested
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Dead
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Blocked
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Archieve
-                        </th>
-                        <th
-                          scope="col"
-                          className="text-sm font-medium text-gray-900 px-6 py-4"
-                        >
-                          Junk
-                        </th>
+                        {[
+                          { label: 'Source', id: 'label' },
+                          { label: 'Total', id: 'total' },
+                          { label: 'InProgress', id: 'inprogress' },
+                          { label: 'New', id: 'new' },
+                          { label: 'Followup', id: 'followup' },
+                          { label: 'VisitFixed', id: 'visitfixed' },
+                          { label: 'VisitDone', id: 'visitdone' },
+                          { label: 'Neogotiation', id: 'neogotiation' },
+                          { label: 'Booked', id: 'booked' },
+                          { label: 'NotInterested', id: 'notinterested' },
+                          { label: 'Dead', id: 'dead' },
+                          { label: 'Blocked', id: 'blocked' },
+                          { label: 'Junk', id: 'junk' },
+                          { label: 'Archieve', id: 'archieve' },
+                        ].map((d, i) => (
+                          <th
+                            key={i}
+                            scope="col"
+                            className="text-sm font-medium text-gray-900 px-6 py-4"
+                            style={{
+                              display: viewSourceStats1A.includes(d.id)
+                                ? ''
+                                : 'none',
+                              color:
+                                ['inprogress'].includes(d.id) &&
+                                showInproFSource
+                                  ? 'blue'
+                                  : ['archieve'].includes(d.id) &&
+                                    showArchiFSource
+                                  ? 'blue'
+                                  : 'black',
+                            }}
+                            onClick={() => {
+                              if (['inprogress', 'archieve'].includes(d.id))
+                                showColumnsSourceFun(d.id)
+                            }}
+                          >
+                            {d.label}
+                            {d.id === 'inprogress' && !showInproFSource && (
+                              <ChevronDoubleRightIcon
+                                className="w-4 h-4 inline"
+                                aria-hidden="true"
+                              />
+                            )}
+                            {d.id === 'inprogress' && showInproFSource && (
+                              <ChevronDoubleLeftIcon
+                                className="w-4 h-4 inline"
+                                aria-hidden="true"
+                              />
+                            )}
+                            {d.id === 'archieve' && !showArchiFSource && (
+                              <ChevronDoubleRightIcon
+                                className="w-4 h-4 inline"
+                                aria-hidden="true"
+                              />
+                            )}
+                            {d.id === 'archieve' && showArchiFSource && (
+                              <ChevronDoubleLeftIcon
+                                className="w-4 h-4 inline"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {sourceListItems.map((data, i) => {
+                      {sourceListTuned.map((data, i) => {
                         return (
                           <tr
                             className={`  ${
@@ -485,20 +546,55 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             }`}
                             key={i}
                           >
-                            <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap text-left">
                               {data?.label}
                             </td>
                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                              10
+                              {data?.Total}
                             </td>
                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                              5
+                              {data?.inprogress}
                             </td>
+                            {showInproFSource && (
+                              <>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.new}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.followup}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.visitfixed}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.visitdone}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.negotiation}
+                                </td>
+                              </>
+                            )}
                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                              3
+                              {data?.booked}
                             </td>
+                            {showArchiFSource && (
+                              <>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.notinterested}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.dead}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.blocked}
+                                </td>
+                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                  {data?.junk}
+                                </td>
+                              </>
+                            )}
                             <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                              2
+                              {data?.archieve}
                             </td>
                           </tr>
                         )
