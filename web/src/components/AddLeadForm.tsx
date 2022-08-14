@@ -27,6 +27,7 @@ import {
   sendWhatAppMediaSms,
   sendWhatAppTextSms,
 } from 'src/util/axiosWhatAppApi'
+import { sourceList } from 'src/constants/projects'
 
 const AddLeadForm = ({ title, dialogOpen }) => {
   const { user } = useAuth()
@@ -231,18 +232,18 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     }
   }
 
-  const deptList = [
-    { label: 'Select the Source', value: '' },
-    { label: 'CP Skagen', value: 'cpskagen' },
-    { label: 'Direct Contact', value: 'directcontact' },
-    { label: 'Facebook Ad', value: 'facebookad' },
-    { label: 'Google Adwords', value: 'googleadwords' },
-    { label: 'Instagram Ad', value: 'instagramad' },
-    { label: 'Magic Bricks', value: 'magicbricks' },
-    { label: 'MCube', value: 'mcube' },
-    { label: 'Website', value: 'website' },
-    { label: '99acres', value: '99acres' },
-  ]
+  // const sourceList = [
+  //   { label: 'Select the Source', value: '' },
+  //   { label: 'CP Skagen', value: 'cpskagen' },
+  //   { label: 'Direct Contact', value: 'directcontact' },
+  //   { label: 'Facebook Ad', value: 'facebookad' },
+  //   { label: 'Google Adwords', value: 'googleadwords' },
+  //   { label: 'Instagram Ad', value: 'instagramad' },
+  //   { label: 'Magic Bricks', value: 'magicbricks' },
+  //   { label: 'MCube', value: 'mcube' },
+  //   { label: 'Website', value: 'website' },
+  //   { label: '99acres', value: '99acres' },
+  // ]
   const validate = Yup.object({
     name: Yup.string()
       .max(45, 'Must be 45 characters or less')
@@ -369,7 +370,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                             formik.setFieldValue('mobileNo', value.value)
                           }}
                           value={formik.values.mobileNo}
-                          options={deptList}
+                          options={sourceList}
                         />
                       </div>
                       <div className="mb-3 space-y-2 w-full text-xs">
@@ -396,7 +397,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                             formik.setFieldValue('source', value.value)
                           }}
                           value={formik.values.source}
-                          options={deptList}
+                          options={sourceList}
                         />
                       </div>
 

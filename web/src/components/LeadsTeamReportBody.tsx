@@ -15,6 +15,10 @@ import {
   Tooltip,
   Legend,
 } from 'recharts'
+import { sourceList, sourceListItems } from 'src/constants/projects'
+import { useEffect } from 'react'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { getLeadsByDate } from 'src/context/dbQueryFirebase'
 
 const valueFeedData = [
   { k: 'Total', v: 300, pic: '' },
@@ -26,15 +30,6 @@ const valueFeedData = [
 ]
 
 const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
-  const {
-    area,
-    builderName,
-    location,
-    projectName,
-    projectType,
-    uid = 0,
-  } = project
-
   // const [unitsView, setUnitsView] = useState(false)
   // const [areaView, setAreaView] = useState(false)
   // const [valueView, setValueView] = useState(false)
@@ -80,6 +75,78 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   //   setValueKind(kind)
   //   setValueCurrency(currency)
   // }
+
+  const { user } = useAuth()
+  const { orgId, access } = user
+
+  const getLeadsDataFun = async () => {
+    console.log('login role detials', user)
+    const { access, uid, orgId } = user
+
+    if (access?.includes('manage_leads')) {
+      const unsubscribe = getLeadsByDate(
+        orgId,
+        async (querySnapshot) => {
+          const usersListA = querySnapshot.docs.map((docSnapshot) => {
+            const x = docSnapshot.data()
+            x.id = docSnapshot.id
+            return x
+          })
+          // setBoardData
+          console.log('my Array data is delayer ', usersListA.length)
+          await setLeadsFetchedRawData(usersListA)
+          await serealizeData(usersListA)
+          await setLeadsFetchedData(usersListA)
+        },
+        {
+          cutoffDate: 1659724200000,
+        },
+        (error) => setLeadsFetchedData([])
+      )
+      return unsubscribe
+    } else {
+      const unsubscribe = getLeadsByStatusUser(
+        orgId,
+        async (querySnapshot) => {
+          const usersListA = querySnapshot.docs.map((docSnapshot) => {
+            const x = docSnapshot.data()
+            x.id = docSnapshot.id
+            return x
+          })
+          // setBoardData
+          console.log('my Array data is delayer 1 ', usersListA.length)
+          await setLeadsFetchedRawData(usersListA)
+          await serealizeData(usersListA)
+          await setLeadsFetchedData(usersListA)
+        },
+        {
+          uid: uid,
+          status:
+            leadsTyper === 'inProgress'
+              ? [
+                  'new',
+                  'followup',
+                  'unassigned',
+                  'visitfixed',
+                  'visitcancel',
+                  '',
+                  'visitdone',
+                  'negotiation',
+                  'reassign',
+                  'RNR',
+                  // 'booked',
+                ]
+              : leadsTyper === 'booked'
+              ? ['booked']
+              : archieveFields,
+        },
+        (error) => setLeadsFetchedData([])
+      )
+      return unsubscribe
+    }
+
+    // await console.log('leadsData', leadsData)
+  }
   const bgColors = [
     'bg-white border-blue-200',
     'bg-[#baf6d0] border-purple-200',
@@ -408,36 +475,34 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {['Nithesh', 'Monesh', 'Aditi', 'Swethan', 'Gopi'].map(
-                        (data, i) => {
-                          return (
-                            <tr
-                              className={`  ${
-                                i > 7
-                                  ? bgColors[Math.floor(Math.random() * 10)]
-                                  : bgColors[i]
-                              }`}
-                              key={i}
-                            >
-                              <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap">
-                                {data}
-                              </td>
-                              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                10
-                              </td>
-                              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                5
-                              </td>
-                              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                3
-                              </td>
-                              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                2
-                              </td>
-                            </tr>
-                          )
-                        }
-                      )}
+                      {sourceListItems.map((data, i) => {
+                        return (
+                          <tr
+                            className={`  ${
+                              i > 7
+                                ? bgColors[Math.floor(Math.random() * 10)]
+                                : bgColors[i]
+                            }`}
+                            key={i}
+                          >
+                            <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap">
+                              {data?.label}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              10
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              5
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              3
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              2
+                            </td>
+                          </tr>
+                        )
+                      })}
 
                       <tr className="border-b bg-gray-800 boder-gray-900">
                         <td className="text-sm text-white font-medium px-6 py-4 whitespace-nowrap">

@@ -288,6 +288,8 @@ export function MultipleFileUploadField({
               console.log('milliseconds is', milliseconds)
               // dRow['Date'] = prettyDate(milliseconds).toLocaleString()
               dRow['Date'] = milliseconds
+              dRow['Status'] = dRow['Status']?.toLowerCase() || ''
+              dRow['Source'] = dRow['Source']?.toLowerCase() || ''
               dRow['mode'] = await makeMode(foundLength)
               if (dRow['mode'] === 'valid' && dRow['EmpId'] != '') {
                 console.log('found row is 1', dRow)

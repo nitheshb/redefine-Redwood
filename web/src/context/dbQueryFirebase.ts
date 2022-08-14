@@ -125,6 +125,15 @@ export const getLeadsByStatus = (orgId, snapshot, data, error) => {
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
+export const getLeadsByDate = (orgId, snapshot, data, error) => {
+  const { cutoffDate } = data
+  const itemsQuery = query(
+    collection(db, `${orgId}_leads`),
+    where('Date', '>=', cutoffDate)
+  )
+  console.log('hello ', cutoffDate, itemsQuery)
+  return onSnapshot(itemsQuery, snapshot, error)
+}
 // get finance transactions
 export const getFinanceTransactionsByStatus = (
   orgId,
@@ -1566,10 +1575,54 @@ export const updateLeadProject = async (orgId, leadDocId, newProjObj) => {
 }
 export const updateSchLog = async (orgId, uid, kId, newStat, schStsA) => {
   const x = `${kId}.sts`
+  const y = `${kId}.comT`
   await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
     staA: schStsA,
     // staDA: arrayUnion(xo),
     [x]: newStat,
+    [y]: Timestamp.now().toMillis() + 21600000,
+  })
+}
+export const undoSchLog = async (orgId, uid, kId, newStat, schStsA, oldSch) => {
+  const { schTime } = oldSch
+  const x = `${kId}.sts`
+  const y = `${kId}.schTime`
+  console.log('undo time is ', schStsA)
+
+  await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
+    staA: schStsA,
+    // staDA: arrayUnion(xo),
+    [x]: newStat,
+    [y]: schTime,
+  })
+}
+export const editTaskDB = async (orgId, uid, kId, newStat, schStsA, oldSch) => {
+  const { schTime, notes } = oldSch
+  const x = `${kId}.notes`
+  const y = `${kId}.schTime`
+  console.log('undo time is ', schStsA)
+
+  await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
+    staA: schStsA,
+    // staDA: arrayUnion(xo),
+    [x]: notes,
+    [y]: schTime,
+  })
+}
+export const editAddTaskCommentDB = async (
+  orgId,
+  uid,
+  kId,
+  newStat,
+  schStsA,
+  oldSch
+) => {
+  const { schTime, comments } = oldSch
+  const x = `${kId}.comments`
+  console.log('comments are', comments)
+
+  await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
+    [x]: comments,
   })
 }
 export const updateSch = async (

@@ -163,6 +163,21 @@ export const projectPlans = [
     img: '/villa.svg',
   },
 ]
+export const sourceListItems = [
+  { label: 'CP Skagen', value: 'cpskagen', rep: ['cpskagen'] },
+  { label: 'Direct Contact', value: 'directcontact', rep: ['directcontact'] },
+  { label: 'Facebook Ad', value: 'facebookad', rep: ['facebookad'] },
+  { label: 'Google Adwords', value: 'googleadwords', rep: ['googleadwords'] },
+  { label: 'Instagram Ad', value: 'instagramad', rep: ['instagramad'] },
+  { label: 'Magic Bricks', value: 'magicbricks', rep: ['magicbricks'] },
+  { label: 'MCube', value: 'mcube', rep: ['mcube'] },
+  { label: 'Website', value: 'website', rep: ['website'] },
+  { label: '99acres', value: '99acres', rep: ['99acres'] },
+]
+export const sourceList = [
+  { label: 'Select the Source', value: '' },
+  ...sourceListItems,
+]
 
 export const developmentTypes = [
   {

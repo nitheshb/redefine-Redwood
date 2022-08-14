@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react'
 import PropTypes from 'prop-types'
+import { useAuth } from 'src/context/firebase-auth-context'
 import { alpha } from '@mui/material/styles'
 import Section from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -437,6 +438,7 @@ export default function LLeadsTableBody({
   rowsParent,
   selUserProfileF,
 }) {
+  const { user } = useAuth()
   const [order, setOrder] = React.useState('desc')
   const [orderBy, setOrderBy] = React.useState('Date')
   const [selected, setSelected] = React.useState([])
@@ -557,10 +559,22 @@ export default function LLeadsTableBody({
   const [selBlock, setSelBlock] = React.useState({})
   const [viewUnitStatusA, setViewUnitStatusA] = React.useState([
     'Phone No',
+
     // 'Blocked',
     // 'Booked',
     // 'Total',
   ])
+  React.useEffect(() => {
+    if (user) {
+      const {role } = user
+
+        if (role[0] === 'sales-manager') {
+          setViewUnitStatusA(['Phone No','Assigned To'])
+        }
+
+
+    }
+  }, [user])
   const pickCustomViewer = (item) => {
     const newViewer = viewUnitStatusA
     if (viewUnitStatusA.includes(item)) {
