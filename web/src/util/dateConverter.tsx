@@ -30,7 +30,7 @@ export function prettyDate(d) {
 }
 
 export function prettyDateTime(d) {
-  const date = new Date(d)
+  const date = new Date(d + 21600000 - 3600000)
   const months = [
     'Jan',
     'Feb',

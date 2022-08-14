@@ -160,7 +160,6 @@ export default function CustomerProfileSideView({
   unitsViewMode,
   setUnitsViewMode,
 }) {
-  console.log('customer Details', customerDetails)
   const { user } = useAuth()
   const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
@@ -197,7 +196,7 @@ export default function CustomerProfileSideView({
   const [value, setValue] = useState(d)
 
   // const [startDate, setStartDate] = useState(d)
-  const [startDate, setStartDate] = useState(setHours(setMinutes(d, 30), 16))
+  const [startDate, setStartDate] = useState(d)
   const [selected, setSelected] = useState(people[0])
   const [taskDetails, setTaskDetails] = useState('')
   const [schPri, setSchPri] = useState(1)
@@ -212,6 +211,7 @@ export default function CustomerProfileSideView({
   const [projectList, setprojectList] = useState([])
   const [statusTimeLineA, setStatusTimeLineA] = useState(['new'])
   const [selSchGrpO, setSelSchGrpO] = useState({})
+  const [closeTask, setCloseTask] = useState(false)
 
   const [selProjectIs, setSelProjectIs] = useState({
     projectName: '',
@@ -222,9 +222,10 @@ export default function CustomerProfileSideView({
   const [addTaskCommentObj, setAddTaskCommentObj] = useState({})
   const [addCommentPlusTask, setAddCommentPlusTask] = useState(false)
   const [addCommentTitle, setAddCommentTitle] = useState('')
-  const [addCommentTime, setAddCommentTime] = useState(
-    setHours(setMinutes(d, 30), 16)
-  )
+  // const [addCommentTime, setAddCommentTime] = useState(
+  //   setHours(setMinutes(d, 30), 16)
+  // )
+  const [addCommentTime, setAddCommentTime] = useState(d)
 
   const {
     id,
@@ -713,10 +714,11 @@ export default function CustomerProfileSideView({
     await setLoader(false)
   }
   const cancelResetStatusFun = () => {
+    setCloseTask(true)
     setEditTaskObj({})
     setAddTaskCommentObj({})
     setAddCommentTitle('')
-    setAddCommentTime('')
+    // setAddCommentTime('')
     setAddCommentPlusTask(false)
     setTakTitle('')
     setStartDate(setHours(setMinutes(d, 30), 16))
@@ -814,6 +816,7 @@ export default function CustomerProfileSideView({
     const x = schStsA
     x[inx] = 'pending'
     setschStsA(x)
+
     if (addCommentPlusTask) {
       await setTakTitle(addCommentTitle)
       await fAddSchedule()
@@ -826,6 +829,9 @@ export default function CustomerProfileSideView({
 
       await cancelResetStatusFun()
     } else {
+      if (closeTask) {
+        doneFun(data)
+      }
       await editAddTaskCommentDB(orgId, id, data.ct, 'pending', schStsA, data)
       await cancelResetStatusFun()
     }
@@ -889,6 +895,14 @@ export default function CustomerProfileSideView({
     const x = schStsA
     x[inx] = 'pending'
     setschStsA(x)
+  }
+  const closeTaskFun = async (data) => {
+    if (data?.stsType === 'visitfixed') {
+      setShowVisitFeedBackStatusFun(data, 'visitdone')
+    } else {
+      setAddTaskCommentObj(data)
+      setCloseTask(true)
+    }
   }
   const addFeedbackFun = async (data) => {
     const inx = schStsMA.indexOf(data.ct)
@@ -1154,7 +1168,6 @@ export default function CustomerProfileSideView({
     setHoverID(id)
   }
   const hoverEffectTaskFun = (id) => {
-    console.log('hover fun is ', id)
     setHoverTasId(id)
   }
   const styleO = {
@@ -1362,9 +1375,6 @@ export default function CustomerProfileSideView({
                   className="w-[18px] h-[18px] inline"
                   alt={Source?.toString() || 'NA'}
                   src={`../${Source?.toString()}.svg`}
-                  onError={(e) => (
-                    (e.target.onerror = null), (e.target.src = 'fb.svg')
-                  )}
                 />
               </span>
             </div>
@@ -2489,7 +2499,7 @@ export default function CustomerProfileSideView({
                                         {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
                                         <span className="inline">
                                           <DatePicker
-                                            className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae] bg-[#F5F8FA]"
+                                            className=" mt-[2px] pl- px- min-w-[240px] inline text-xs text-[#0091ae] bg-[#F5F8FA]"
                                             selected={startDate}
                                             onChange={(date) =>
                                               setStartDate(date)
@@ -2900,7 +2910,10 @@ export default function CustomerProfileSideView({
                                               {data?.sts != 'completed' && (
                                                 <span
                                                   className="px-[2px] py-[2px]  rounded-full border border-2 cursor-pointer text-[#cdcdcd]"
-                                                  onClick={() => doneFun(data)}
+                                                  // onClick={() => doneFun(data)}
+                                                  onClick={() =>
+                                                    closeTaskFun(data)
+                                                  }
                                                 >
                                                   <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -2966,165 +2979,6 @@ export default function CustomerProfileSideView({
                                                 )
                                               }
                                             )}
-
-                                            {addTaskCommentObj?.ct ===
-                                            data?.ct ? (
-                                              <div className="flex flex-col mx-4 py-5 ">
-                                                <Formik
-                                                  enableReinitialize={true}
-                                                  initialValues={
-                                                    initialCommentState
-                                                  }
-                                                  validationSchema={
-                                                    validateCommentsSchema
-                                                  }
-                                                  onSubmit={(
-                                                    values,
-                                                    { resetForm }
-                                                  ) => {
-                                                    console.log(
-                                                      'am i submitted comments',
-                                                      addCommentPlusTask
-                                                    )
-                                                    addTaskCommentFun(data)
-                                                  }}
-                                                >
-                                                  {(formik) => (
-                                                    <Form>
-                                                      <div className=" form outline-none border  py-4">
-                                                        <section className=" px-4">
-                                                          <div className="text-xs font-bodyLato text-[#516f90]">
-                                                            Add Comment
-                                                            <ErrorMessage
-                                                              component="div"
-                                                              name="commentTitle"
-                                                              className="error-message text-red-700 text-xs p-1"
-                                                            />
-                                                          </div>
-                                                          <input
-                                                            // onChange={setTakTitle()}
-                                                            autoFocus
-                                                            name="commentTitle"
-                                                            type="text"
-                                                            value={
-                                                              addCommentTitle
-                                                            }
-                                                            onChange={(e) => {
-                                                              formik.setFieldValue(
-                                                                'commentTitle',
-                                                                e.target.value
-                                                              )
-                                                              setAddCommentTitle(
-                                                                e.target.value
-                                                              )
-                                                            }}
-                                                            placeholder="Enter a short title"
-                                                            className="w-full h-full pb-1 outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-[#F5F8FA] "
-                                                          ></input>
-                                                          {data?.stsType ===
-                                                            'visitfixed' && (
-                                                            <div className="flex flex-row mt-3">
-                                                              <section>
-                                                                <span className="text-xs font-bodyLato text-[#516f90]">
-                                                                  Set Due Date
-                                                                </span>
-                                                                <div className="bg-green   pl-   flex flex-row ">
-                                                                  {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
-                                                                  <span className="inline">
-                                                                    <DatePicker
-                                                                      className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae] bg-[#F5F8FA]"
-                                                                      selected={
-                                                                        addCommentTime
-                                                                      }
-                                                                      onChange={(
-                                                                        date
-                                                                      ) =>
-                                                                        setAddCommentTime(
-                                                                          date
-                                                                        )
-                                                                      }
-                                                                      showTimeSelect
-                                                                      timeFormat="HH:mm"
-                                                                      injectTimes={[
-                                                                        setHours(
-                                                                          setMinutes(
-                                                                            d,
-                                                                            1
-                                                                          ),
-                                                                          0
-                                                                        ),
-                                                                        setHours(
-                                                                          setMinutes(
-                                                                            d,
-                                                                            5
-                                                                          ),
-                                                                          12
-                                                                        ),
-                                                                        setHours(
-                                                                          setMinutes(
-                                                                            d,
-                                                                            59
-                                                                          ),
-                                                                          23
-                                                                        ),
-                                                                      ]}
-                                                                      dateFormat="MMMM d, yyyy h:mm aa"
-                                                                    />
-                                                                  </span>
-                                                                </div>
-                                                              </section>
-                                                            </div>
-                                                          )}
-                                                        </section>
-                                                        <div className="flex flex-row mt-4 justify-between pr-4 border-t">
-                                                          <section className="ml-2 mt-2">
-                                                            <span>{''}</span>
-                                                          </section>
-
-                                                          <section className="flex">
-                                                            <button
-                                                              type="submit"
-                                                              className={`flex mt-2 ml-4 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                                                            >
-                                                              <span className="ml-1 ">
-                                                                Add Comment
-                                                              </span>
-                                                            </button>
-
-                                                            <button
-                                                              type="submit"
-                                                              onClick={() =>
-                                                                setAddCommentPlusTask(
-                                                                  true
-                                                                )
-                                                              }
-                                                              className={`flex mt-2 ml-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
-                                                            >
-                                                              <span className="ml-1 ">
-                                                                Add & Create
-                                                                Reminder Task
-                                                              </span>
-                                                            </button>
-
-                                                            <button
-                                                              // onClick={() => fSetLeadsType('Add Lead')}
-                                                              onClick={() =>
-                                                                cancelResetStatusFun()
-                                                              }
-                                                              className={`flex mt-2 ml-4 rounded items-center text-bodyLato pl-2 h-[36px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700 hover:text-white `}
-                                                            >
-                                                              <span className="ml-1 ">
-                                                                Cancel
-                                                              </span>
-                                                            </button>
-                                                          </section>
-                                                        </div>
-                                                      </div>
-                                                    </Form>
-                                                  )}
-                                                </Formik>
-                                              </div>
-                                            ) : null}
                                           </div>
                                         </div>
                                         {data?.sts == 'completed' &&
@@ -3139,43 +2993,7 @@ export default function CustomerProfileSideView({
 
                                         {data?.sts != 'completed' &&
                                           hoverTasId === data?.ct && (
-                                            <section
-                                              className="flex flex-row"
-                                              // style={{
-                                              //   ...styleO.normal,
-                                              //   ...(statusTimeLineA.includes(
-                                              //     statusFlowObj.value
-                                              //   )
-                                              //     ? styleO.completed
-                                              //     : null),
-                                              //   ...(statusFlowObj.value ===
-                                              //   tempLeadStatus
-                                              //     ? styleO.hover
-                                              //     : null),
-                                              //   ...(hover && hoverId === i
-                                              //     ? styleO.hover
-                                              //     : null),
-                                              // }}
-                                            >
-                                              <span
-                                                className="px-[2px] py-[2px] h-[15px] w-[15px] rounded-full border border-1 border-[#867777] cursor-pointer ml-2 mt-1 text-[#867777]"
-                                                onClick={() => doneFun(data)}
-                                              >
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  className="h-2 w-2 "
-                                                  fill="none"
-                                                  viewBox="0 0 24 24"
-                                                  stroke="currentColor"
-                                                  strokeWidth="2"
-                                                >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M5 13l4 4L19 7"
-                                                  />
-                                                </svg>
-                                              </span>
+                                            <section className="flex flex-row">
                                               <span
                                                 onClick={() => {
                                                   setAddTaskCommentObj(data)
@@ -3199,51 +3017,6 @@ export default function CustomerProfileSideView({
                                                   </g>
                                                 </svg>
                                               </span>
-                                              <span
-                                                className="inline-flex  font-thin text-[#0091ae]   font-bodyLato text-[12px] ml-2 pt-1 text-[#867777] hover:text-green-900"
-                                                onClick={() =>
-                                                  EditTaskOpenWindowFun(data)
-                                                }
-                                              >
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  className="h-4 w-4"
-                                                  fill="none"
-                                                  viewBox="0 0 24 24"
-                                                  stroke="currentColor"
-                                                  strokeWidth="2"
-                                                >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                                                  />
-                                                </svg>
-                                              </span>
-                                              <span
-                                                onClick={() => delFun(data)}
-                                                className="inline-flex  placeholder:font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-1 text-[#867777] hover:text-green-900"
-                                              >
-                                                <svg
-                                                  className="h-4 w-4"
-                                                  viewBox="0 0 21 21"
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                  <g
-                                                    fill="none"
-                                                    fillRule="evenodd"
-                                                    stroke="currentColor"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    transform="translate(3 2)"
-                                                  >
-                                                    <path d="m2.5 2.5h10v12c0 1.1045695-.8954305 2-2 2h-6c-1.1045695 0-2-.8954305-2-2zm5-2c1.0543618 0 1.91816512.81587779 1.99451426 1.85073766l.00548574.14926234h-4c0-1.1045695.8954305-2 2-2z" />
-                                                    <path d="m.5 2.5h14" />
-                                                    <path d="m5.5 5.5v8" />
-                                                    <path d="m9.5 5.5v8" />
-                                                  </g>
-                                                </svg>
-                                              </span>
                                             </section>
                                           )}
 
@@ -3264,7 +3037,265 @@ export default function CustomerProfileSideView({
                                           )} Min`}
                                     </span> */}
                                       </section>
+                                      {addTaskCommentObj?.ct === data?.ct ? (
+                                        <div className="flex flex-col mx-4 py-5 ">
+                                          <Formik
+                                            enableReinitialize={true}
+                                            initialValues={initialCommentState}
+                                            validationSchema={
+                                              validateCommentsSchema
+                                            }
+                                            onSubmit={(
+                                              values,
+                                              { resetForm }
+                                            ) => {
+                                              console.log(
+                                                'am i submitted comments',
+                                                addCommentPlusTask
+                                              )
+                                              addTaskCommentFun(data)
+                                            }}
+                                          >
+                                            {(formik) => (
+                                              <Form>
+                                                <div className=" form outline-none border  py-2">
+                                                  <section className=" px-4">
+                                                    <div className="flex flex-row  border-b mb-4 ">
+                                                      <div className=" mb-3 flex justify-between">
+                                                        <section>
+                                                          {[
+                                                            {
+                                                              label: 'RNR',
+                                                              desc: 'RNR',
+                                                            },
+                                                            {
+                                                              label: 'Busy',
+                                                              desc: 'Call again as customer is busy now.',
+                                                            },
+                                                            {
+                                                              label:
+                                                                'Switched Off',
+                                                              desc: 'Phone Switched Off',
+                                                            },
 
+                                                            {
+                                                              label:
+                                                                'Project Details',
+                                                              desc: 'Asked for Project details like broucher e.t.c',
+                                                            },
+                                                            {
+                                                              label:
+                                                                'Quotation',
+                                                              desc: 'Share Quotation',
+                                                            },
+                                                            {
+                                                              label: 'Book Cab',
+                                                              desc: 'Book Cab',
+                                                            },
+                                                          ].map((data, i) => (
+                                                            <span
+                                                              key={i}
+                                                              className={`cursor-pointer   mr-2 items-center h-4 px-3 py-1 mt-1 text-xs  text-pink-500 bg-pink-100 rounded-full
+                      `}
+                                                              onClick={() => {
+                                                                // setTakTitle(
+                                                                //   data?.desc
+                                                                // )
+                                                                setAddCommentTitle(
+                                                                  data?.desc
+                                                                )
+                                                                formik.setFieldValue(
+                                                                  'commentTitle',
+                                                                  data?.desc
+                                                                )
+                                                              }}
+                                                            >
+                                                              {data?.label}{' '}
+                                                            </span>
+                                                          ))}
+                                                        </section>
+                                                      </div>
+                                                    </div>
+
+                                                    <div className="text-xs font-bodyLato text-[#516f90]">
+                                                      Add{' '}
+                                                      <span className="text-red-800">
+                                                        {closeTask &&
+                                                          'Task Closing'}
+                                                      </span>{' '}
+                                                      Comment
+                                                      <ErrorMessage
+                                                        component="div"
+                                                        name="commentTitle"
+                                                        className="error-message text-red-700 text-xs p-1"
+                                                      />
+                                                    </div>
+                                                    <input
+                                                      // onChange={setTakTitle()}
+                                                      autoFocus
+                                                      name="commentTitle"
+                                                      type="text"
+                                                      value={addCommentTitle}
+                                                      onChange={(e) => {
+                                                        formik.setFieldValue(
+                                                          'commentTitle',
+                                                          e.target.value
+                                                        )
+                                                        setAddCommentTitle(
+                                                          e.target.value
+                                                        )
+                                                      }}
+                                                      placeholder="Enter a short title"
+                                                      className="w-full h-full pb-1  outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-white"
+                                                    ></input>
+
+                                                    <div className="flex flex-row mt-3">
+                                                      <section>
+                                                        <span className="text-xs font-bodyLato text-[#516f90]">
+                                                          Set Due Date
+                                                        </span>
+                                                        <div className="bg-green   pl-   flex flex-row ">
+                                                          {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
+                                                          <span className="inline">
+                                                            <DatePicker
+                                                              className=" mt-[2px] pl- px- min-w-[240px] inline text-xs text-[#0091ae] bg-white"
+                                                              selected={
+                                                                addCommentTime
+                                                              }
+                                                              onChange={(
+                                                                date
+                                                              ) =>
+                                                                setAddCommentTime(
+                                                                  date
+                                                                )
+                                                              }
+                                                              showTimeSelect
+                                                              timeFormat="HH:mm"
+                                                              injectTimes={[
+                                                                setHours(
+                                                                  setMinutes(
+                                                                    d,
+                                                                    1
+                                                                  ),
+                                                                  0
+                                                                ),
+                                                                setHours(
+                                                                  setMinutes(
+                                                                    d,
+                                                                    5
+                                                                  ),
+                                                                  12
+                                                                ),
+                                                                setHours(
+                                                                  setMinutes(
+                                                                    d,
+                                                                    59
+                                                                  ),
+                                                                  23
+                                                                ),
+                                                              ]}
+                                                              dateFormat="MMMM d, yyyy h:mm aa"
+                                                            />
+                                                          </span>
+                                                        </div>
+                                                      </section>
+                                                    </div>
+                                                  </section>
+                                                  <div className="flex flex-row mt-4 justify-between pr-4 border-t">
+                                                    <section className="ml-2 mt-2">
+                                                      <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500  font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ">
+                                                        {data?.stsType ===
+                                                          'visitfixed' &&
+                                                          data?.sts !=
+                                                            'completed' && (
+                                                            <span
+                                                              className=" border-b text-green-900 hover:border-[#7BD500] text-[12px]"
+                                                              onClick={() =>
+                                                                setShowVisitFeedBackStatusFun(
+                                                                  data,
+                                                                  'visitdone'
+                                                                )
+                                                              }
+                                                            >
+                                                              VISIT DONE
+                                                            </span>
+                                                          )}
+                                                        {/* {data?.stsType ===
+                                                          'visitfixed' &&
+                                                          data?.sts !=
+                                                            'completed' && (
+                                                            <span
+                                                              className=" border-b text-green-900 hover:border-[#7BD500] text-[12px] ml-2"
+                                                              onClick={() =>
+                                                                setShowVisitFeedBackStatusFun(
+                                                                  data,
+                                                                  'visitdone'
+                                                                )
+                                                              }
+                                                            >
+                                                              VISIT CANCEL
+                                                            </span>
+                                                          )} */}
+                                                        {data?.sts !=
+                                                          'completed' && (
+                                                          <span
+                                                            className="font-thin text-green-900 cursor-pointer  font-bodyLato text-[12px] ml-2 pt-[12px] border-b hover:border-[#7BD500] "
+                                                            onClick={() =>
+                                                              setShowNotInterestedFun(
+                                                                data,
+                                                                'notinterested'
+                                                              )
+                                                            }
+                                                          >
+                                                            NOT INTERESTED ?
+                                                          </span>
+                                                        )}
+                                                      </span>
+                                                    </section>
+
+                                                    <section className="flex">
+                                                      <button
+                                                        type="submit"
+                                                        className={`flex mt-2 ml-4 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[28px] pr-4 py-1 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                                                      >
+                                                        <span className="ml-1 text-md">
+                                                          Add Comment
+                                                        </span>
+                                                      </button>
+
+                                                      <button
+                                                        type="submit"
+                                                        onClick={() =>
+                                                          setAddCommentPlusTask(
+                                                            true
+                                                          )
+                                                        }
+                                                        className={`flex mt-2 ml-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[28px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+                                                      >
+                                                        <span className="ml-1 text-md">
+                                                          Close & Add New Task
+                                                        </span>
+                                                      </button>
+
+                                                      <button
+                                                        // onClick={() => fSetLeadsType('Add Lead')}
+                                                        onClick={() =>
+                                                          cancelResetStatusFun()
+                                                        }
+                                                        className={`flex mt-2 ml-2 rounded-xs items-center text-bodyLato pl-2 h-[28px] pr-4 py-2 text-sm font-medium border  hover:bg-gray-700 hover:text-white `}
+                                                      >
+                                                        <span className="ml-1 ">
+                                                          Cancel
+                                                        </span>
+                                                      </button>
+                                                    </section>
+                                                  </div>
+                                                </div>
+                                              </Form>
+                                            )}
+                                          </Formik>
+                                        </div>
+                                      ) : null}
                                       {(showNotInterested ||
                                         showVisitFeedBackStatus) &&
                                         selSchGrpO?.ct === data?.ct && (
@@ -3506,108 +3537,117 @@ export default function CustomerProfileSideView({
                                             )}
 
                                             {data?.sts != 'completed' && (
-                                              <div
-                                                className="relative flex flex-col  group"
-                                                // style={{ alignItems: 'end' }}
-                                              >
+                                              <div className="flex flex-row">
                                                 <div
-                                                  className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex z-100000"
-                                                  // style={{  width: '300px' }}
-                                                  // style={{
-                                                  //   zIndex: '1',
-                                                  // }}
+                                                  className="relative flex flex-col  group"
+                                                  // style={{ alignItems: 'end' }}
                                                 >
-                                                  <span
-                                                    className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
-                                                    style={{
-                                                      color: 'black',
-                                                      background: '#e2c062',
-                                                      width: '100%',
-                                                    }}
+                                                  <div
+                                                    className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex z-100000"
+                                                    // style={{  width: '300px' }}
+                                                    // style={{
+                                                    //   zIndex: '1',
+                                                    // }}
                                                   >
-                                                    <div className="italic flex flex-col">
+                                                    <span
+                                                      className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
+                                                      style={{
+                                                        color: 'black',
+                                                        background: '#e2c062',
+                                                        width: '100%',
+                                                      }}
+                                                    >
+                                                      <div className="italic flex flex-col">
+                                                        <div className="font-bodyLato">
+                                                          {prettyDateTime(
+                                                            data?.schTime
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    </span>
+                                                    <div
+                                                      className="w-3 h-3  -mt-2 rotate-45 bg-black"
+                                                      style={{
+                                                        background: '#e2c062',
+                                                        marginRight: '12px',
+                                                      }}
+                                                    ></div>
+                                                  </div>
+                                                  <span
+                                                    className={`font-bodyLato flex flex-row ${
+                                                      getDifferenceInMinutes(
+                                                        data?.schTime,
+                                                        ''
+                                                      ) >= 0
+                                                        ? 'text-violet-900'
+                                                        : 'text-[#b03d32]'
+                                                    }`}
+                                                  >
+                                                    {/* <HighlighterStyle
+                            searchKey={searchKey}
+                            source={row.Source.toString()}
+                          /> */}
+                                                    <svg
+                                                      width="12"
+                                                      height="12"
+                                                      viewBox="0 0 12 12"
+                                                      fill="none"
+                                                      xmlns="http://www.w3.org/2000/svg"
+                                                      className="calendar_icon inline mr-1 mt-[2px]"
+                                                    >
+                                                      <path
+                                                        fillRule="evenodd"
+                                                        clipRule="evenodd"
+                                                        d="M9.5 1h-7A1.5 1.5 0 001 2.5v7A1.5 1.5 0 002.5 11h7A1.5 1.5 0 0011 9.5v-7A1.5 1.5 0 009.5 1zM2 2.5a.5.5 0 01.5-.5h7a.5.5 0 01.5.5v7a.5.5 0 01-.5.5h-7a.5.5 0 01-.5-.5v-7zM8.75 8a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM3.5 4a.5.5 0 000 1h5a.5.5 0 000-1h-5z"
+                                                        fill="currentColor"
+                                                      ></path>
+                                                    </svg>
+                                                    <div className="italic mr-2 inline">
                                                       <div className="font-bodyLato">
                                                         {prettyDateTime(
                                                           data?.schTime
                                                         )}
                                                       </div>
                                                     </div>
-                                                  </span>
-                                                  <div
-                                                    className="w-3 h-3  -mt-2 rotate-45 bg-black"
-                                                    style={{
-                                                      background: '#e2c062',
-                                                      marginRight: '12px',
-                                                    }}
-                                                  ></div>
-                                                </div>
-                                                <span
-                                                  className={`font-bodyLato ${
-                                                    getDifferenceInMinutes(
+                                                    {getDifferenceInMinutes(
                                                       data?.schTime,
                                                       ''
                                                     ) >= 0
-                                                      ? 'text-violet-900'
-                                                      : 'text-[#b03d32]'
-                                                  }`}
-                                                >
-                                                  {/* <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Source.toString()}
-                          /> */}
-                                                  <svg
-                                                    width="12"
-                                                    height="12"
-                                                    viewBox="0 0 12 12"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="calendar_icon inline mr-1"
-                                                  >
-                                                    <path
-                                                      fillRule="evenodd"
-                                                      clipRule="evenodd"
-                                                      d="M9.5 1h-7A1.5 1.5 0 001 2.5v7A1.5 1.5 0 002.5 11h7A1.5 1.5 0 0011 9.5v-7A1.5 1.5 0 009.5 1zM2 2.5a.5.5 0 01.5-.5h7a.5.5 0 01.5.5v7a.5.5 0 01-.5.5h-7a.5.5 0 01-.5-.5v-7zM8.75 8a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM3.5 4a.5.5 0 000 1h5a.5.5 0 000-1h-5z"
-                                                      fill="currentColor"
-                                                    ></path>
-                                                  </svg>
-                                                  {getDifferenceInMinutes(
-                                                    data?.schTime,
-                                                    ''
-                                                  ) >= 0
-                                                    ? 'Complete in'
-                                                    : 'Delayed by'}{' '}
-                                                  {'  '}
-                                                  {Math.abs(
-                                                    getDifferenceInMinutes(
-                                                      data?.schTime,
-                                                      ''
-                                                    )
-                                                  ) > 60
-                                                    ? Math.abs(
-                                                        getDifferenceInMinutes(
-                                                          data?.schTime,
-                                                          ''
-                                                        )
-                                                      ) > 8640
-                                                      ? `${Math.abs(
-                                                          getDifferenceInDays(
+                                                      ? 'Complete in'
+                                                      : 'Delayed by'}{' '}
+                                                    {'  '}
+                                                    {Math.abs(
+                                                      getDifferenceInMinutes(
+                                                        data?.schTime,
+                                                        ''
+                                                      )
+                                                    ) > 60
+                                                      ? Math.abs(
+                                                          getDifferenceInMinutes(
                                                             data?.schTime,
                                                             ''
                                                           )
-                                                        )} Days `
+                                                        ) > 8640
+                                                        ? `${Math.abs(
+                                                            getDifferenceInDays(
+                                                              data?.schTime,
+                                                              ''
+                                                            )
+                                                          )} Days `
+                                                        : `${Math.abs(
+                                                            getDifferenceInHours(
+                                                              data?.schTime,
+                                                              ''
+                                                            )
+                                                          )} Hours `
                                                       : `${Math.abs(
-                                                          getDifferenceInHours(
+                                                          getDifferenceInMinutes(
                                                             data?.schTime,
                                                             ''
                                                           )
-                                                        )} Hours `
-                                                    : `${Math.abs(
-                                                        getDifferenceInMinutes(
-                                                          data?.schTime,
-                                                          ''
-                                                        )
-                                                      )} Min`}{' '}
-                                                </span>
+                                                        )} Min`}{' '}
+                                                  </span>
+                                                </div>
                                               </div>
                                             )}
                                           </span>
@@ -3656,143 +3696,57 @@ export default function CustomerProfileSideView({
                                               {data?.by}
                                             </span>
                                           </div>
-                                          <div
-                                            className="ml-2 leading-[16px]"
-                                            onClick={() => {
-                                              setAddTaskCommentObj(data)
-                                            }}
-                                          >
-                                            <svg
-                                              viewBox="0 0 12 12"
-                                              className="notes_icon inline w-3 h-3 mr-1"
-                                              aria-label="2 comments"
-                                            >
-                                              <g fill="none" fillRule="evenodd">
-                                                <path
-                                                  fill="currentColor"
-                                                  fillRule="nonzero"
-                                                  d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
-                                                ></path>
-                                              </g>
-                                            </svg>
-                                            <span className="font-thin text-[#867777]   font-bodyLato text-[12px] ">
-                                              {data?.comments?.length}
-                                            </span>
-                                          </div>
                                         </section>
-
-                                        <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-6 font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ">
-                                          {data?.stsType === 'visitfixed' &&
-                                            data?.sts != 'completed' &&
-                                            hoverTasId === data?.ct && (
+                                        {data?.sts != 'completed' &&
+                                          hoverTasId === data?.ct && (
+                                            <section className="flex flex-row">
                                               <span
-                                                className=" border-b text-[#7BD500] hover:border-[#7BD500] text-[12px]"
+                                                className="inline-flex  font-thin text-[#0091ae]   font-bodyLato text-[12px] ml-2  text-[#867777] hover:text-green-900"
                                                 onClick={() =>
-                                                  setShowVisitFeedBackStatusFun(
-                                                    data,
-                                                    'visitdone'
-                                                  )
+                                                  EditTaskOpenWindowFun(data)
                                                 }
                                               >
-                                                VISIT DONE
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  className="h-4 w-4"
+                                                  fill="none"
+                                                  viewBox="0 0 24 24"
+                                                  stroke="currentColor"
+                                                  strokeWidth="2"
+                                                >
+                                                  <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                                  />
+                                                </svg>
                                               </span>
-                                            )}
-                                          {data?.stsType === 'visitfixed' &&
-                                            data?.sts != 'completed' &&
-                                            hoverTasId === data?.ct && (
                                               <span
-                                                className=" border-b text-[#7BD500] hover:border-[#7BD500] text-[12px] ml-2"
-                                                onClick={() =>
-                                                  setShowVisitFeedBackStatusFun(
-                                                    data,
-                                                    'visitdone'
-                                                  )
-                                                }
+                                                onClick={() => delFun(data)}
+                                                className="inline-flex  placeholder:font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2  text-[#867777] hover:text-green-900"
                                               >
-                                                VISIT CANCEL
+                                                <svg
+                                                  className="h-4 w-4"
+                                                  viewBox="0 0 21 21"
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                  <g
+                                                    fill="none"
+                                                    fillRule="evenodd"
+                                                    stroke="currentColor"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    transform="translate(3 2)"
+                                                  >
+                                                    <path d="m2.5 2.5h10v12c0 1.1045695-.8954305 2-2 2h-6c-1.1045695 0-2-.8954305-2-2zm5-2c1.0543618 0 1.91816512.81587779 1.99451426 1.85073766l.00548574.14926234h-4c0-1.1045695.8954305-2 2-2z" />
+                                                    <path d="m.5 2.5h14" />
+                                                    <path d="m5.5 5.5v8" />
+                                                    <path d="m9.5 5.5v8" />
+                                                  </g>
+                                                </svg>
                                               </span>
-                                            )}
-                                          {data?.sts != 'completed' &&
-                                            hoverTasId === data?.ct && (
-                                              <span
-                                                className="font-thin text-[#7BD500] cursor-pointer  font-bodyLato text-[12px] ml-2 pt-[12px] border-b hover:border-[#7BD500] "
-                                                onClick={() =>
-                                                  setShowNotInterestedFun(
-                                                    data,
-                                                    'notinterested'
-                                                  )
-                                                }
-                                              >
-                                                NOT INTERESTED
-                                              </span>
-                                            )}
-                                          <span
-                                            className={` ${
-                                              data?.sts === 'completed'
-                                                ? 'text-[#867777] '
-                                                : 'text-[#0091ae]'
-                                            }  ${
-                                              hoverTasId === data?.ct
-                                                ? ''
-                                                : 'hidden'
-                                            } ml-8 text-[12px] text-[#0091ae] border-b hover:border-[#0091ae]`}
-                                            onClick={() => {
-                                              if (data?.sts != 'completed') {
-                                                fUpdateSchedule(
-                                                  data,
-                                                  'RNR',
-                                                  data?.RNR || 0
-                                                )
-                                              }
-                                            }}
-                                          >
-                                            SWITCH-OFF ({data?.RNR || 0})
-                                          </span>
-                                          <span
-                                            className={` ${
-                                              data?.sts === 'completed'
-                                                ? 'text-[#867777] '
-                                                : 'text-[#0091ae]'
-                                            }  ${
-                                              hoverTasId === data?.ct
-                                                ? ''
-                                                : 'hidden'
-                                            } ml-2 text-[12px] border-b hover:border-[#0091ae] `}
-                                            onClick={() => {
-                                              if (data?.sts != 'completed') {
-                                                fUpdateSchedule(
-                                                  data,
-                                                  'busy',
-                                                  data?.busy || 0
-                                                )
-                                              }
-                                            }}
-                                          >
-                                            BUSY ({data?.busy || 0})
-                                          </span>
-                                          <span
-                                            className={` ${
-                                              data?.sts === 'completed'
-                                                ? 'text-[#867777] '
-                                                : 'text-[#0091ae]'
-                                            }  ${
-                                              hoverTasId === data?.ct
-                                                ? ''
-                                                : 'hidden'
-                                            } ml-2 text-[12px] text-[#0091ae] border-b hover:border-[#0091ae]`}
-                                            onClick={() => {
-                                              if (data?.sts != 'completed') {
-                                                fUpdateSchedule(
-                                                  data,
-                                                  'RNR',
-                                                  data?.RNR || 0
-                                                )
-                                              }
-                                            }}
-                                          >
-                                            RNR ({data?.RNR || 0})
-                                          </span>
-                                        </span>
+                                            </section>
+                                          )}
                                         {/* <span>
                                       <span
                                         className=" text-[12px]  text-[#FF8C02] "
