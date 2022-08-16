@@ -869,9 +869,9 @@ id: "1" */}
                       </span>
                       </TableCell>
 
-                      <TableCell align="center">
+                      <TableCell align="left" style={{maxWidth: "150px", textOverflow: "ellipsis"}}>
                         {' '}
-                        <span className="font-bodyLato">{row.Note}</span>
+                        <span className="font-bodyLato">{row.Remarks}</span>
                       </TableCell>
                     </TableRow>
                   )

@@ -714,7 +714,8 @@ export default function CustomerProfileSideView({
     await setLoader(false)
   }
   const cancelResetStatusFun = () => {
-    setCloseTask(true)
+    setCloseTask(false)
+
     setEditTaskObj({})
     setAddTaskCommentObj({})
     setAddCommentTitle('')
@@ -2905,7 +2906,18 @@ export default function CustomerProfileSideView({
                                     >
                                       <section className="flex flex-row justify-between">
                                         <div className="block w-full">
-                                          <div className="mt-1">
+                                          <div
+                                            className={`${
+                                              data?.sts === 'completed'
+                                                ? 'cursor-not-allowed '
+                                                : 'cursor-pointer'
+                                            }  mt-1`}
+                                            onClick={() => {
+                                              if (data?.sts === 'pending') {
+                                                setAddTaskCommentObj(data)
+                                              }
+                                            }}
+                                          >
                                             <label className="inline-flex items-center">
                                               {data?.sts != 'completed' && (
                                                 <span
@@ -2934,15 +2946,20 @@ export default function CustomerProfileSideView({
                                               {data?.sts === 'completed' && (
                                                 <CheckCircleIcon className="w-4 h-4 inline text-[#058527]" />
                                               )}
-                                              <span
+                                              <div
                                                 className={`${
                                                   data?.sts === 'completed'
                                                     ? 'line-through'
-                                                    : ''
-                                                }  ml-2 text-[14px] font-bodyLato font-brand tracking-wider text-[#0091ae]  `}
+                                                    : 'cursor-pointer'
+                                                }  ml-2 text-[14px] inline font-bodyLato font-brand tracking-wider text-[#0091ae]`}
+                                                onClick={() => {
+                                                  if (data?.sts === 'pending') {
+                                                    setAddTaskCommentObj(data)
+                                                  }
+                                                }}
                                               >
                                                 {data?.notes}
-                                              </span>
+                                              </div>
                                             </label>
 
                                             {data?.comments?.map(
@@ -2991,34 +3008,33 @@ export default function CustomerProfileSideView({
                                             </span>
                                           )}
 
-                                        {data?.sts != 'completed' &&
-                                          hoverTasId === data?.ct && (
-                                            <section className="flex flex-row">
-                                              <span
-                                                onClick={() => {
-                                                  setAddTaskCommentObj(data)
-                                                }}
-                                                className="inline-flex  placeholder:font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-1 text-[#867777] hover:text-green-900"
+                                        {data?.sts != 'completed' && (
+                                          <section className="flex flex-row">
+                                            <span
+                                              onClick={() => {
+                                                setAddTaskCommentObj(data)
+                                              }}
+                                              className="inline-flex  placeholder:font-thin text-[#0091ae]  cursor-pointer font-bodyLato text-[12px] ml-2 pt-1 text-[#867777] hover:text-green-900"
+                                            >
+                                              <svg
+                                                viewBox="0 0 12 12"
+                                                className="notes_icon inline w-4 h-4 mr-1 text-[#0091ae] "
+                                                aria-label="2 comments"
                                               >
-                                                <svg
-                                                  viewBox="0 0 12 12"
-                                                  className="notes_icon inline w-4 h-4 mr-1"
-                                                  aria-label="2 comments"
+                                                <g
+                                                  fill="none"
+                                                  fillRule="evenodd"
                                                 >
-                                                  <g
-                                                    fill="none"
-                                                    fillRule="evenodd"
-                                                  >
-                                                    <path
-                                                      fill="currentColor"
-                                                      fillRule="nonzero"
-                                                      d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
-                                                    ></path>
-                                                  </g>
-                                                </svg>
-                                              </span>
-                                            </section>
-                                          )}
+                                                  <path
+                                                    fill="currentColor"
+                                                    fillRule="nonzero"
+                                                    d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
+                                                  ></path>
+                                                </g>
+                                              </svg>
+                                            </span>
+                                          </section>
+                                        )}
 
                                         {/* <span className="mt-2 block ext-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500 ml-1">
                                       {Math.abs(
@@ -3065,138 +3081,199 @@ export default function CustomerProfileSideView({
                                                         <section>
                                                           {[
                                                             {
+                                                              type: 'reschedule',
                                                               label: 'RNR',
                                                               desc: 'RNR',
                                                             },
                                                             {
+                                                              type: 'reschedule',
                                                               label: 'Busy',
                                                               desc: 'Call again as customer is busy now.',
                                                             },
                                                             {
+                                                              type: 'reschedule',
                                                               label:
                                                                 'Switched Off',
                                                               desc: 'Phone Switched Off',
                                                             },
 
                                                             {
+                                                              type: 'textHelp',
                                                               label:
                                                                 'Project Details',
                                                               desc: 'Asked for Project details like broucher e.t.c',
                                                             },
                                                             {
+                                                              type: 'textHelp',
                                                               label:
                                                                 'Quotation',
                                                               desc: 'Share Quotation',
                                                             },
+                                                            // {
+                                                            //   type: "textHelp",
+
+                                                            //   label: 'Book Cab',
+                                                            //   desc: 'Book Cab',
+                                                            // },
                                                             {
-                                                              label: 'Book Cab',
-                                                              desc: 'Book Cab',
+                                                              type: 'notinterested',
+
+                                                              label:
+                                                                'Not Interested',
+                                                              desc: 'Not Interested',
                                                             },
-                                                          ].map((data, i) => (
-                                                            <span
-                                                              key={i}
-                                                              className={`cursor-pointer   mr-2 items-center h-4 px-3 py-1 mt-1 text-xs  text-pink-500 bg-pink-100 rounded-full
+                                                            {
+                                                              type: 'vist_status',
+                                                              label:
+                                                                'Visit Done',
+                                                              desc: 'Visit Done',
+                                                            },
+                                                          ].map(
+                                                            (dataObj, i) =>
+                                                              (dataObj?.type ===
+                                                                'reschedule' ||
+                                                                dataObj?.type ===
+                                                                  'textHelp' ||
+                                                                dataObj?.type ===
+                                                                  'notinterested' ||
+                                                                (data?.stsType ===
+                                                                  'visitfixed' &&
+                                                                  dataObj?.type ===
+                                                                    'vist_status')) && (
+                                                                <span>
+                                                                  <span
+                                                                    key={i}
+                                                                    className={`cursor-pointer   mr-2 items-center h-4 px-3 py-1 mt-1 text-xs  text-pink-500 bg-pink-100 rounded-full
                       `}
-                                                              onClick={() => {
-                                                                // setTakTitle(
-                                                                //   data?.desc
-                                                                // )
-                                                                setAddCommentTitle(
-                                                                  data?.desc
-                                                                )
-                                                                formik.setFieldValue(
-                                                                  'commentTitle',
-                                                                  data?.desc
-                                                                )
-                                                              }}
-                                                            >
-                                                              {data?.label}{' '}
-                                                            </span>
-                                                          ))}
+                                                                    onClick={() => {
+                                                                      // setTakTitle(
+                                                                      //   data?.desc
+                                                                      // )
+                                                                      if (
+                                                                        dataObj?.type ===
+                                                                        'vist_status'
+                                                                      ) {
+                                                                        setShowVisitFeedBackStatusFun(
+                                                                          data,
+                                                                          'visitdone'
+                                                                        )
+                                                                      } else if (
+                                                                        dataObj?.type ===
+                                                                        'notinterested'
+                                                                      ) {
+                                                                        setShowNotInterestedFun(
+                                                                          data,
+                                                                          'notinterested'
+                                                                        )
+                                                                      } else {
+                                                                        setAddCommentTitle(
+                                                                          dataObj?.desc
+                                                                        )
+                                                                      }
+
+                                                                      formik.setFieldValue(
+                                                                        'commentTitle',
+                                                                        dataObj?.desc
+                                                                      )
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      dataObj?.label
+                                                                    }{' '}
+                                                                  </span>
+                                                                </span>
+                                                              )
+                                                          )}
                                                         </section>
                                                       </div>
                                                     </div>
-
-                                                    <div className="text-xs font-bodyLato text-[#516f90]">
-                                                      Add{' '}
-                                                      <span className="text-red-800">
-                                                        {closeTask &&
-                                                          'Task Closing'}
-                                                      </span>{' '}
-                                                      Comment
-                                                      <ErrorMessage
-                                                        component="div"
-                                                        name="commentTitle"
-                                                        className="error-message text-red-700 text-xs p-1"
-                                                      />
-                                                    </div>
-                                                    <input
-                                                      // onChange={setTakTitle()}
-                                                      autoFocus
-                                                      name="commentTitle"
-                                                      type="text"
-                                                      value={addCommentTitle}
-                                                      onChange={(e) => {
-                                                        formik.setFieldValue(
-                                                          'commentTitle',
-                                                          e.target.value
-                                                        )
-                                                        setAddCommentTitle(
-                                                          e.target.value
-                                                        )
-                                                      }}
-                                                      placeholder="Enter a short title"
-                                                      className="w-full h-full pb-1  outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-white"
-                                                    ></input>
-
-                                                    <div className="flex flex-row mt-3">
+                                                    <div className="flex flex-row justify-between">
+                                                      <section className="w-full">
+                                                        <div className="text-xs font-bodyLato text-[#516f90]">
+                                                          Enter{' '}
+                                                          <span className="text-red-800">
+                                                            {closeTask &&
+                                                              'Task Closing'}
+                                                          </span>{' '}
+                                                          Comment
+                                                          <ErrorMessage
+                                                            component="div"
+                                                            name="commentTitle"
+                                                            className="error-message text-red-700 text-xs p-1"
+                                                          />
+                                                        </div>
+                                                        <input
+                                                          // onChange={setTakTitle()}
+                                                          autoFocus
+                                                          name="commentTitle"
+                                                          type="text"
+                                                          value={
+                                                            addCommentTitle
+                                                          }
+                                                          onChange={(e) => {
+                                                            formik.setFieldValue(
+                                                              'commentTitle',
+                                                              e.target.value
+                                                            )
+                                                            setAddCommentTitle(
+                                                              e.target.value
+                                                            )
+                                                          }}
+                                                          placeholder="Comment"
+                                                          className="w-full  pb-1  outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-white"
+                                                        ></input>
+                                                      </section>
                                                       <section>
-                                                        <span className="text-xs font-bodyLato text-[#516f90]">
-                                                          Set Due Date
-                                                        </span>
-                                                        <div className="bg-green   pl-   flex flex-row ">
-                                                          {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
-                                                          <span className="inline">
-                                                            <DatePicker
-                                                              className=" mt-[2px] pl- px- min-w-[240px] inline text-xs text-[#0091ae] bg-white"
-                                                              selected={
-                                                                addCommentTime
-                                                              }
-                                                              onChange={(
-                                                                date
-                                                              ) =>
-                                                                setAddCommentTime(
-                                                                  date
-                                                                )
-                                                              }
-                                                              showTimeSelect
-                                                              timeFormat="HH:mm"
-                                                              injectTimes={[
-                                                                setHours(
-                                                                  setMinutes(
-                                                                    d,
-                                                                    1
-                                                                  ),
-                                                                  0
-                                                                ),
-                                                                setHours(
-                                                                  setMinutes(
-                                                                    d,
-                                                                    5
-                                                                  ),
-                                                                  12
-                                                                ),
-                                                                setHours(
-                                                                  setMinutes(
-                                                                    d,
-                                                                    59
-                                                                  ),
-                                                                  23
-                                                                ),
-                                                              ]}
-                                                              dateFormat="MMMM d, yyyy h:mm aa"
-                                                            />
-                                                          </span>
+                                                        <div className="flex flex-row  ml-8">
+                                                          <section>
+                                                            <span className="text-xs font-bodyLato text-[#516f90]">
+                                                              Set Due Date
+                                                            </span>
+                                                            <div className="bg-green   pl-   flex flex-row ">
+                                                              {/* <CalendarIcon className="w-4  ml-1 inline text-[#058527]" /> */}
+                                                              <span className="inline">
+                                                                <DatePicker
+                                                                  className=" mt-[1px] pl- px- min-w-[151px] inline text-xs text-[#0091ae] bg-white"
+                                                                  selected={
+                                                                    addCommentTime
+                                                                  }
+                                                                  onChange={(
+                                                                    date
+                                                                  ) =>
+                                                                    setAddCommentTime(
+                                                                      date
+                                                                    )
+                                                                  }
+                                                                  showTimeSelect
+                                                                  timeFormat="HH:mm"
+                                                                  injectTimes={[
+                                                                    setHours(
+                                                                      setMinutes(
+                                                                        d,
+                                                                        1
+                                                                      ),
+                                                                      0
+                                                                    ),
+                                                                    setHours(
+                                                                      setMinutes(
+                                                                        d,
+                                                                        5
+                                                                      ),
+                                                                      12
+                                                                    ),
+                                                                    setHours(
+                                                                      setMinutes(
+                                                                        d,
+                                                                        59
+                                                                      ),
+                                                                      23
+                                                                    ),
+                                                                  ]}
+                                                                  dateFormat="MMMM d, yyyy h:mm aa"
+                                                                />
+                                                              </span>
+                                                            </div>
+                                                          </section>
                                                         </div>
                                                       </section>
                                                     </div>
@@ -3204,22 +3281,6 @@ export default function CustomerProfileSideView({
                                                   <div className="flex flex-row mt-4 justify-between pr-4 border-t">
                                                     <section className="ml-2 mt-2">
                                                       <span className="text-xs text-xs font-bodyLato  font-normal text-red-900  text-gray-500  font-thin text-[#0091ae] cursor-pointer  font-bodyLato text-[10px] ">
-                                                        {data?.stsType ===
-                                                          'visitfixed' &&
-                                                          data?.sts !=
-                                                            'completed' && (
-                                                            <span
-                                                              className=" border-b text-green-900 hover:border-[#7BD500] text-[12px]"
-                                                              onClick={() =>
-                                                                setShowVisitFeedBackStatusFun(
-                                                                  data,
-                                                                  'visitdone'
-                                                                )
-                                                              }
-                                                            >
-                                                              VISIT DONE
-                                                            </span>
-                                                          )}
                                                         {/* {data?.stsType ===
                                                           'visitfixed' &&
                                                           data?.sts !=
@@ -3236,20 +3297,6 @@ export default function CustomerProfileSideView({
                                                               VISIT CANCEL
                                                             </span>
                                                           )} */}
-                                                        {data?.sts !=
-                                                          'completed' && (
-                                                          <span
-                                                            className="font-thin text-green-900 cursor-pointer  font-bodyLato text-[12px] ml-2 pt-[12px] border-b hover:border-[#7BD500] "
-                                                            onClick={() =>
-                                                              setShowNotInterestedFun(
-                                                                data,
-                                                                'notinterested'
-                                                              )
-                                                            }
-                                                          >
-                                                            NOT INTERESTED ?
-                                                          </span>
-                                                        )}
                                                       </span>
                                                     </section>
 
