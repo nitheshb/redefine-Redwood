@@ -226,7 +226,6 @@ export default function CustomerProfileSideView({
   //   setHours(setMinutes(d, 30), 16)
   // )
   const [addCommentTime, setAddCommentTime] = useState(d)
-
   const {
     id,
     Name,
@@ -250,10 +249,15 @@ export default function CustomerProfileSideView({
     assignT,
     CT,
   } = customerDetails
+
   const { enqueueSnackbar } = useSnackbar()
   const [hover, setHover] = useState(false)
   const [hoverId, setHoverID] = useState(1000)
   const [hoverTasId, setHoverTasId] = useState(2000)
+
+  useEffect(() => {
+    console.log('customer detail sare', customerDetails)
+  }, [customerDetails])
 
   useEffect(() => {
     //   get lead data by id
@@ -1086,7 +1090,7 @@ export default function CustomerProfileSideView({
     taskTitle: takTitle || '',
   }
   const initialCommentState = {
-    commentTitle: '',
+    commentTitle: addCommentTitle || '',
   }
   const validateCommentsSchema = Yup.object({
     commentTitle: Yup.string()
@@ -1336,7 +1340,10 @@ export default function CustomerProfileSideView({
           <div className="flex flex-row justify-between">
             <div className="px-3 py-2 flex flex-row  text-xs  border-t border-[#ebebeb] font-thin   font-bodyLato text-[12px]  py-[6px] ">
               Remarks:{' '}
-              <span className="text-[#867777] ml-1 "> {Remarks || 'NA'}</span>
+              <span className="text-[#867777] ml-1 ">
+                {' '}
+                {leadDetailsObj?.Remarks || 'NA'}
+              </span>
             </div>
             <div
               className="relative flex flex-col  group"
@@ -1562,7 +1569,7 @@ export default function CustomerProfileSideView({
                         { lab: 'Activity Log', val: 'timeline' },
                       ].map((d, i) => {
                         return (
-                          <li key={i} className="mr-2" role="presentation">
+                          <li key={i} className="mr-4" role="presentation">
                             <button
                               className={`inline-block pb-1 mr-3 text-sm font-medium text-center text-black rounded-t-lg border-b-2  hover:text-black hover:border-gray-300   ${
                                 selFeature === d.val
@@ -2754,7 +2761,7 @@ export default function CustomerProfileSideView({
                         </div>
                       )}
 
-                    <div className="max-h-[60%] overflow-y-auto">
+                    <div className="max-h-[60%]">
                       <ol className="relative  border-gray-200 ">
                         {leadSchFilteredData.map((data, i) => (
                           <section key={i} className=" mx-2 bg-[#FFF] mb-[1px]">
@@ -3033,6 +3040,20 @@ export default function CustomerProfileSideView({
                                                 </g>
                                               </svg>
                                             </span>
+                                            {data?.stsType === 'visitfixed' &&
+                                              data?.sts != 'completed' && (
+                                                <span
+                                                  className=" mt-[3px]  ml-4 text-green-900 hover:border-[#7BD500] text-[12px] ml-2"
+                                                  onClick={() =>
+                                                    setShowVisitFeedBackStatusFun(
+                                                      data,
+                                                      'visitdone'
+                                                    )
+                                                  }
+                                                >
+                                                  VISITDONE
+                                                </span>
+                                              )}
                                           </section>
                                         )}
 
@@ -3123,7 +3144,7 @@ export default function CustomerProfileSideView({
                                                               desc: 'Not Interested',
                                                             },
                                                             {
-                                                              type: 'vist_status',
+                                                              type: 'visitfixed',
                                                               label:
                                                                 'Visit Done',
                                                               desc: 'Visit Done',
@@ -3139,11 +3160,26 @@ export default function CustomerProfileSideView({
                                                                 (data?.stsType ===
                                                                   'visitfixed' &&
                                                                   dataObj?.type ===
-                                                                    'vist_status')) && (
+                                                                    'visitfixed')) && (
                                                                 <span>
                                                                   <span
                                                                     key={i}
-                                                                    className={`cursor-pointer   mr-2 items-center h-4 px-3 py-1 mt-1 text-xs  text-pink-500 bg-pink-100 rounded-full
+                                                                    className={`cursor-pointer   mr-2 items-center h-4 px-3 py-1 mt-1 text-xs ${
+                                                                      [
+                                                                        'notinterested',
+                                                                        'visitfixed',
+                                                                      ].includes(
+                                                                        dataObj?.type
+                                                                      )
+                                                                        ? 'text-[#333333] bg-[#7BD500]'
+                                                                        : [
+                                                                            'reschedule',
+                                                                          ].includes(
+                                                                            dataObj?.type
+                                                                          )
+                                                                        ? 'text-blue-500 bg-blue-100'
+                                                                        : 'text-pink-500 bg-pink-100'
+                                                                    }  rounded-full
                       `}
                                                                     onClick={() => {
                                                                       // setTakTitle(
@@ -3151,7 +3187,7 @@ export default function CustomerProfileSideView({
                                                                       // )
                                                                       if (
                                                                         dataObj?.type ===
-                                                                        'vist_status'
+                                                                        'visitfixed'
                                                                       ) {
                                                                         setShowVisitFeedBackStatusFun(
                                                                           data,
@@ -3204,13 +3240,18 @@ export default function CustomerProfileSideView({
                                                         </div>
                                                         <input
                                                           // onChange={setTakTitle()}
-                                                          autoFocus
+                                                          // autoFocus
                                                           name="commentTitle"
                                                           type="text"
                                                           value={
                                                             addCommentTitle
                                                           }
                                                           onChange={(e) => {
+                                                            console.log(
+                                                              'any error ',
+                                                              e,
+                                                              e.target.value
+                                                            )
                                                             formik.setFieldValue(
                                                               'commentTitle',
                                                               e.target.value
@@ -3219,8 +3260,8 @@ export default function CustomerProfileSideView({
                                                               e.target.value
                                                             )
                                                           }}
-                                                          placeholder="Comment"
-                                                          className="w-full  pb-1  outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-white"
+                                                          placeholder="Type here"
+                                                          className="w-full  pb-1 pt-1 outline-none text-sm font-bodyLato focus:border-blue-600 hover:border-blue-600  border-b border-[#cdcdcd] text-[33475b] bg-white"
                                                         ></input>
                                                       </section>
                                                       <section>
@@ -3306,7 +3347,9 @@ export default function CustomerProfileSideView({
                                                         className={`flex mt-2 ml-4 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[28px] pr-4 py-1 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                                                       >
                                                         <span className="ml-1 text-md">
-                                                          Add Comment
+                                                          {closeTask &&
+                                                            'Close Task &'}{' '}
+                                                          Add Comment{' '}
                                                         </span>
                                                       </button>
 

@@ -125,7 +125,7 @@ export const getLeadsByStatus = (orgId, snapshot, data, error) => {
   console.log('hello ', status, itemsQuery)
   return onSnapshot(itemsQuery, snapshot, error)
 }
-export const getLeadsByDate = async (orgId,data, ) => {
+export const getLeadsByDate = async (orgId, data) => {
   const { cutoffDate } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
@@ -1485,6 +1485,35 @@ export const updateLeadRemarks_NotIntrested = async (
 
   return
 }
+export const updateLeadRemarks = async (
+  orgId,
+  leadDocId,
+  data,
+  by,
+  enqueueSnackbar
+) => {
+  try {
+    console.log('data is visit done', leadDocId, data)
+    const { from, Status, VisitDoneReason, VisitDoneNotes } = data
+
+    await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
+      ...data,
+    })
+
+    enqueueSnackbar('Updated Successfully', {
+      variant: 'success',
+    })
+  } catch (error) {
+    console.log('Updation failed', error, {
+      ...data,
+    })
+    enqueueSnackbar('Updation failed', {
+      variant: 'error',
+    })
+  }
+
+  return
+}
 export const updateLeadRemarks_VisitDone = async (
   orgId,
   leadDocId,
@@ -1623,9 +1652,17 @@ export const editAddTaskCommentDB = async (
   const x = `${kId}.comments`
   console.log('comments are', comments)
 
+
   await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
     [x]: comments,
   })
+
+  if (comments.length > 0) {
+    const { c } = comments[0]
+    await updateDoc(doc(db, `${orgId}_leads`, uid), {
+      Remarks: c,
+    })
+  }
 }
 export const updateSch = async (
   orgId,
