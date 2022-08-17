@@ -149,37 +149,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   }, [])
   const [getStatus, setGetStatus] = useState([])
   useEffect(() => {
-    const x = leadsFetchedRawData
-    console.log('raw max is ==>  ', x.length)
-    if (selProjectIs?.value != 'allprojects') {
-      const z = x.filter((d1) => d1.Project === selProjectIs?.value)
-      let y = z
-      if (selLeadsOf?.value == 'myleads') {
-        y = z.filter((d1) => d1?.assingedTo === user.uid)
-      } else if (selLeadsOf?.value == 'teamleads') {
-        y = z
-      } else {
-        console.log('seleUser details are', selLeadsOf?.value)
-        y = z.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
-      }
-      setFetchLeadsLoader(false)
-
-      setLeadsFetchedData(y)
-    } else {
-      let y = x
-      if (selLeadsOf?.value == 'myleads') {
-        y = x.filter((d1) => d1?.assingedTo === user.uid)
-      } else if (selLeadsOf?.value == 'teamleads') {
-        y = x
-      } else {
-        console.log('seleUser details are', selLeadsOf?.value)
-        y = x.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
-      }
-
-      setLeadsFetchedData(y)
-      setFetchLeadsLoader(false)
-    }
+    filter_Leads_Projects_Users_Fun()
   }, [selProjectIs, selLeadsOf])
+
+  useEffect(() => {
+    console.log('am refreshed ')
+    filter_Leads_Projects_Users_Fun()
+  }, [leadsFetchedRawData])
 
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
@@ -198,7 +174,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           console.log('my Array data is delayer ', usersListA.length)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
+         // filter_Leads_Projects_Users_Fun()
+          // await setLeadsFetchedData(usersListA)
         },
         {
           status:
@@ -236,7 +213,9 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           console.log('my Array data is delayer 1 ', usersListA.length)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
-          await setLeadsFetchedData(usersListA)
+         // filter_Leads_Projects_Users_Fun()
+
+          //  await setLeadsFetchedData(usersListA)
         },
         {
           uid: uid,
@@ -265,6 +244,39 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     }
 
     // await console.log('leadsData', leadsData)
+  }
+
+  const filter_Leads_Projects_Users_Fun = () => {
+    const x = leadsFetchedRawData
+    console.log('raw max is ==>  ', x.length)
+    if (selProjectIs?.value != 'allprojects') {
+      const z = x.filter((d1) => d1.Project === selProjectIs?.value)
+      let y = z
+      if (selLeadsOf?.value == 'myleads') {
+        y = z.filter((d1) => d1?.assingedTo === user.uid)
+      } else if (selLeadsOf?.value == 'teamleads') {
+        y = z
+      } else {
+        console.log('seleUser details are', selLeadsOf?.value)
+        y = z.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+      }
+      setFetchLeadsLoader(false)
+      console.log('my Array data is delayer follow', y.length)
+      setLeadsFetchedData(y)
+    } else {
+      let y = x
+      if (selLeadsOf?.value == 'myleads') {
+        y = x.filter((d1) => d1?.assingedTo === user.uid)
+      } else if (selLeadsOf?.value == 'teamleads') {
+        y = x
+      } else {
+        console.log('seleUser details are', selLeadsOf?.value)
+        y = x.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+      }
+      console.log('my Array data is delayer follow 1 ', y.length)
+      setLeadsFetchedData(y)
+      setFetchLeadsLoader(false)
+    }
   }
 
   const serealizeData = (array) => {
