@@ -1373,7 +1373,7 @@ export default function CustomerProfileSideView({
           </div>
           <div className="flex flex-row justify-between">
             <div className="px-3 py-2 flex flex-row  text-xs  border-t border-[#ebebeb] font-thin   font-bodyLato text-[12px]  py-[6px] ">
-              Remarks:{' '}
+              Recent Comments:{' '}
               <span className="text-[#867777] ml-1 ">
                 {' '}
                 {leadDetailsObj?.Remarks || 'NA'}

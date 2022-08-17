@@ -136,7 +136,7 @@ const headCells = [
     id: 'Notes',
     numeric: true,
     disablePadding: false,
-    label: 'Notes',
+    label: 'Comments',
   },
 ]
 
