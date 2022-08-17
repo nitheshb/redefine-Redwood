@@ -203,7 +203,7 @@ export default function CustomerProfileSideView({
   const [schTime, setSchTime] = useState()
   const [schStsA, setschStsA] = useState([])
   const [schStsMA, setschStsMA] = useState([])
-  const [selFilterVal, setSelFilterVal] = useState('all')
+  const [selFilterVal, setSelFilterVal] = useState('pending')
   const [addNote, setAddNote] = useState(false)
   const [addSch, setAddSch] = useState(false)
   const [attach, setAttach] = useState(false)
@@ -232,7 +232,7 @@ export default function CustomerProfileSideView({
     Project,
     ProjectId,
     Source,
-    Status,
+    // Status,
     by,
     Mobile,
     Date,
@@ -254,6 +254,11 @@ export default function CustomerProfileSideView({
   const [hover, setHover] = useState(false)
   const [hoverId, setHoverID] = useState(1000)
   const [hoverTasId, setHoverTasId] = useState(2000)
+  const [streamCoveredA, setStreamCoveredA] = useState([])
+  const [streamCurrentStatus, setStreamCurrentStatus] = useState('new')
+  const [streamfrom, setStreamFrom] = useState('')
+
+  const [closePrevious, setClosePrevious] = useState(false)
 
   useEffect(() => {
     console.log('customer detail sare', customerDetails)
@@ -281,6 +286,17 @@ export default function CustomerProfileSideView({
       }
     )
   }
+
+  useEffect(() => {
+    const { coveredA, Status, from } = leadDetailsObj
+    if (coveredA) {
+      setStreamCoveredA(coveredA)
+    } else {
+      setStreamCoveredA([])
+    }
+    setStreamCurrentStatus(Status)
+    setStreamFrom(from || '')
+  }, [leadDetailsObj])
 
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
@@ -314,6 +330,7 @@ export default function CustomerProfileSideView({
     console.log('xo xo xo', x)
     setLeadsFilteredSchData(x)
   }, [leadSchFetchedData, selFilterVal])
+
   useEffect(() => {
     console.log(
       'assinger to yo yo',
@@ -328,7 +345,7 @@ export default function CustomerProfileSideView({
       [...statusTimeLineA, ...(customerDetails?.coveredA || [])] || ['new']
     )
 
-    setLeadStatus(Status)
+    // setLeadStatus(Status)
     console.log('this is the macho ', customerDetails)
   }, [customerDetails])
   // adopt this
@@ -437,7 +454,7 @@ export default function CustomerProfileSideView({
     return unsubscribe
   }
   useEffect(() => {
-    setLeadStatus(Status?.toLowerCase())
+    // setLeadStatus(Status?.toLowerCase())
   }, [customerDetails])
 
   const setAssigner = (leadDocId, value) => {
@@ -483,6 +500,7 @@ export default function CustomerProfileSideView({
   const setStatusFun = async (leadDocId, newStatus) => {
     cancelResetStatusFun()
     setLoader(true)
+    setClosePrevious(true)
     console.log('is this triggered yo yo', newStatus)
     if (newStatus == 'visitdone') {
       console.log('is this triggered yo yo 1', newStatus)
@@ -660,6 +678,13 @@ export default function CustomerProfileSideView({
   }
   const fAddSchedule = async () => {
     console.log(
+      'what is this status setup  ',
+      closePrevious,
+      tempLeadStatus,
+      streamCurrentStatus
+    )
+
+    console.log(
       'start time is ',
       startDate,
       'takti',
@@ -668,6 +693,10 @@ export default function CustomerProfileSideView({
       addCommentTitle
     )
     const y = takTitle === '' ? addCommentTitle : takTitle
+    if (closePrevious) {
+      closeAllPerviousTasks(`${y}`)
+    }
+
     const data = {
       stsType: tempLeadStatus || 'none',
       assTo: user?.displayName || user?.email,
@@ -703,11 +732,11 @@ export default function CustomerProfileSideView({
     //  get assignedTo Led
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, assignedTo)
-    if (Status != tempLeadStatus) {
+    if (streamCurrentStatus != tempLeadStatus) {
       updateLeadStatus(
         orgId,
         id,
-        Status,
+        streamCurrentStatus,
         tempLeadStatus,
         user?.email,
         enqueueSnackbar
@@ -719,7 +748,7 @@ export default function CustomerProfileSideView({
   }
   const cancelResetStatusFun = () => {
     setCloseTask(false)
-
+    setClosePrevious(false)
     setEditTaskObj({})
     setAddTaskCommentObj({})
     setAddCommentTitle('')
@@ -732,7 +761,7 @@ export default function CustomerProfileSideView({
     setAddSch(false)
     setAddNote(false)
     // if its not edit mode ignore it
-    setLeadStatus(Status)
+    setLeadStatus(streamCurrentStatus)
     setLoader(false)
   }
   const fUpdateSchedule = async (data, actionType, count) => {
@@ -843,36 +872,7 @@ export default function CustomerProfileSideView({
   }
 
   const notInterestedFun = async () => {
-    const pendingTaskAObj = leadSchFetchedData.filter(
-      (d) => d?.schTime != undefined && d?.sts === 'pending'
-    )
-    // const inx = schStsMA.indexOf(data.ct)
-    console.log('come is pending tasks ', pendingTaskAObj)
-    pendingTaskAObj?.map(async (pendObj) => {
-      //1)add comment on task
-
-      //2) mark the tasks as done
-      //3) set status as not interested
-
-      // 1) add comment on task
-      pendObj.comments = [
-        {
-          c: 'closed by Not-Interested',
-          t: Timestamp.now().toMillis() + 21600000,
-        },
-        ...(pendObj?.comments || []),
-      ]
-      await editAddTaskCommentDB(
-        orgId,
-        id,
-        pendObj.ct,
-        'pending',
-        schStsA,
-        pendObj
-      )
-      //2) mark the tasks as done
-      await doneFun(pendObj)
-    })
+    await closeAllPerviousTasks('closed by Not-Interested')
     //3) set status as not interested
     await fAddNotes()
     await cancelResetStatusFun()
@@ -901,6 +901,38 @@ export default function CustomerProfileSideView({
     x[inx] = 'pending'
     setschStsA(x)
   }
+  const closeAllPerviousTasks = async (closingComments) => {
+    const pendingTaskAObj = leadSchFetchedData.filter(
+      (d) => d?.schTime != undefined && d?.sts === 'pending'
+    )
+    // const inx = schStsMA.indexOf(data.ct)
+    console.log('come is pending tasks ', pendingTaskAObj)
+    pendingTaskAObj?.map(async (pendObj) => {
+      //1)add comment on task
+
+      //2) mark the tasks as done
+      //3) set status as not interested
+
+      // 1) add comment on task
+      pendObj.comments = [
+        {
+          c: closingComments,
+          t: Timestamp.now().toMillis() + 21600000,
+        },
+        ...(pendObj?.comments || []),
+      ]
+      await editAddTaskCommentDB(
+        orgId,
+        id,
+        pendObj.ct,
+        'pending',
+        schStsA,
+        pendObj
+      )
+      //2) mark the tasks as done
+      await doneFun(pendObj)
+    })
+  }
   const closeTaskFun = async (data) => {
     if (data?.stsType === 'visitfixed') {
       setShowVisitFeedBackStatusFun(data, 'visitdone')
@@ -919,9 +951,11 @@ export default function CustomerProfileSideView({
       },
       ...(data?.comments || []),
     ]
+
     await setTakTitle('Negotiate with customer')
 
-    await editAddTaskCommentDB(orgId, id, data.ct, 'pending', schStsA, data)
+    // await editAddTaskCommentDB(orgId, id, data.ct, 'pending', schStsA, data)
+    closeAllPerviousTasks(`${fbTitle}-${fbNotes}`)
 
     await doneFun(data)
     await fAddSchedule()
@@ -1001,7 +1035,7 @@ export default function CustomerProfileSideView({
     if (tempLeadStatus === 'notinterested') {
       console.log('am i here', takTitle, takNotes)
       const dat = {
-        from: Status,
+        from: streamCurrentStatus,
         Status: tempLeadStatus,
         notInterestedReason: takTitle === '' ? fbTitle : takTitle,
         notInterestedNotes: takNotes === '' ? fbNotes : takNotes,
@@ -1027,7 +1061,7 @@ export default function CustomerProfileSideView({
 
       const dat = {
         coveredA: covA,
-        from: Status,
+        from: streamCurrentStatus,
         Status: 'negotiation',
         VisitDoneReason: fbTitle,
         VisitDoneNotes: fbNotes,
@@ -1213,7 +1247,7 @@ export default function CustomerProfileSideView({
       <div className="">
         <div className="p-3 flex justify-between">
           <span className="text-md mt-1 font-semibold font-Playfair text-xl mr-auto ml-2 text-[#053219] tracking-wide">
-            Lead Detials
+            Lead Details
           </span>
           {/* <XIcon className="w-5 h-5 mt-[2px]" /> */}
         </div>
@@ -1442,13 +1476,21 @@ export default function CustomerProfileSideView({
               //   color: 'rgb(51, 51, 51)',
               //   dataBaseColor: '#2fc6f6',
               // }}
+              //{leadDetailsObj?.Remarks
               style={{
                 ...styleO.normal,
-                ...(statusTimeLineA.includes(statusFlowObj.value)
+                ...(statusFlowObj.value === streamCurrentStatus
+                  ? styleO.hover
+                  : null),
+                ...(streamCoveredA.includes(statusFlowObj.value)
                   ? styleO.completed
                   : null),
+
                 ...(statusFlowObj.value === tempLeadStatus
                   ? styleO.hover
+                  : null),
+                ...(statusFlowObj.value === streamfrom
+                  ? styleO.completed
                   : null),
                 ...(hover && hoverId === i ? styleO.hover : null),
               }}
@@ -2537,7 +2579,11 @@ export default function CustomerProfileSideView({
                                       className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                                     >
                                       <span className="ml-1 ">
-                                        Create {tempLeadStatus} Task
+                                        Create{' '}
+                                        {tempLeadStatus !=
+                                          streamCurrentStatus &&
+                                          tempLeadStatus}{' '}
+                                        Task
                                       </span>
                                     </button>
                                     <button
@@ -3344,6 +3390,11 @@ export default function CustomerProfileSideView({
                                                     <section className="flex">
                                                       <button
                                                         type="submit"
+                                                        onClick={() => {
+                                                          setClosePrevious(
+                                                            false
+                                                          )
+                                                        }}
                                                         className={`flex mt-2 ml-4 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[28px] pr-4 py-1 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                                                       >
                                                         <span className="ml-1 text-md">
@@ -3355,11 +3406,14 @@ export default function CustomerProfileSideView({
 
                                                       <button
                                                         type="submit"
-                                                        onClick={() =>
+                                                        onClick={() => {
                                                           setAddCommentPlusTask(
                                                             true
                                                           )
-                                                        }
+                                                          setClosePrevious(
+                                                            false
+                                                          )
+                                                        }}
                                                         className={`flex mt-2 ml-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[28px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
                                                       >
                                                         <span className="ml-1 text-md">
