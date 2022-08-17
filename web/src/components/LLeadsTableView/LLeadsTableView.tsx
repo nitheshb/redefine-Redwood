@@ -139,7 +139,6 @@ const TabListWrapper = styled(TabList)(({ theme }) => ({
 const LLeadsTableView = ({
   setisImportLeadsOpen,
   fetchLeadsLoader,
-
   selUserProfileF,
   leadsFetchedData,
   leadsTyper,

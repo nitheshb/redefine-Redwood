@@ -665,7 +665,7 @@ id: "1" */}
                   }
                 })
                // .slice()
-              //  .sort(getComparator(order, orderBy))
+              .sort(getComparator(order, orderBy))
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.Name)
                   const labelId = `enhanced-table-checkbox-${index}`
