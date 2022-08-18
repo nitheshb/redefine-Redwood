@@ -96,7 +96,7 @@ export default function LeadTaskDisplayHead({
           </span>
           {data?.stsType === 'visitfixed' && data?.sts != 'completed' && (
             <span
-              className=" mt-[3px]  ml-4 text-green-900 font-semibold hover:border-[#7BD500] text-[12px] ml-2"
+              className=" mt-[3px]  ml-4 text-green-900 font-semibold hover:border-[#7BD500] text-[12px] ml-2 cursor-pointer"
               onClick={() => setShowVisitFeedBackStatusFun(data, 'visitdone')}
             >
               VISITDONE

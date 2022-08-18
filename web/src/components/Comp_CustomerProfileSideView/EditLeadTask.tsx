@@ -86,7 +86,7 @@ export default function EditLeadTask({
                 editTaskFun(editTaskObj)
               }
             }}
-            className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-white bg-[#FF7A53]  hover:bg-gray-700  `}
+            className={`flex mt-2 cursor-pointer rounded-xs text-bodyLato items-center  pl-2 h-[36px] pr-4 py-2 text-sm font-medium text-[#054861] bg-[#5cebdf]  hover:bg-[#9ff9e1]  `}
           >
             <span className="ml-1 ">Edit Task</span>
           </button>
