@@ -219,6 +219,7 @@ const LLeadsTableView = ({
     { lab: 'Dead', val: 'dead' },
     { lab: 'Not Interested', val: 'notinterested' },
     { lab: 'Blocked', val: 'blockded' },
+    { lab: 'Junk', val: 'junk' },
   ]
   const financeTab = [
     { lab: 'All', val: 'all' },

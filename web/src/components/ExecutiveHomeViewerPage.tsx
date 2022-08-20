@@ -109,7 +109,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
 
   useEffect(() => {
     if (leadsTyper == 'archieveLeads') {
-      const archieveFields1 = ['Dead', 'RNR', 'blocked', 'notinterested']
+      const archieveFields1 = [
+        'Dead',
+        'RNR',
+        'blocked',
+        'notinterested',
+        'junk',
+      ]
       setGetStatus(archieveFields1)
     } else if (leadsTyper == 'inProgress') {
       const archieveFields2 = [
@@ -174,7 +180,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           console.log('my Array data is delayer ', usersListA.length)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
-         // filter_Leads_Projects_Users_Fun()
+          // filter_Leads_Projects_Users_Fun()
           // await setLeadsFetchedData(usersListA)
         },
         {
@@ -213,7 +219,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           console.log('my Array data is delayer 1 ', usersListA.length)
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
-         // filter_Leads_Projects_Users_Fun()
+          // filter_Leads_Projects_Users_Fun()
 
           //  await setLeadsFetchedData(usersListA)
         },

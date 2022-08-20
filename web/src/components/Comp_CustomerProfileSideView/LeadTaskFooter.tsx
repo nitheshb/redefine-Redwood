@@ -19,7 +19,7 @@ export default function LeadTaskFooter({
   return (
     <section className="flex flex-row justify-between mt-[2px]">
       <section className="flex flex-row">
-        <span className="text-xs text-xs font-bodyLato  font-normal text-[#b03d32] text-gray-500 ml-6 ">
+        <span className="text-xs font-bodyLato  font-normal text-[#b03d32] text-gray-500 ml-6 ">
           {data?.sts === 'completed' && (
             <span className="text-[#4c1d95] flex flex-row">
               <div className="relative flex flex-col  group">

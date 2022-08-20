@@ -1322,18 +1322,27 @@ export const updateBlock_AddFloor = async (uid, floorName, enqueueSnackbar) => {
   }
 }
 
-export const updateLeadAssigTo = async (orgId, leadDocId, assignedTo, by) => {
+export const updateLeadAssigTo = async (
+  orgId,
+  leadDocId,
+  assignedTo,
+  Status,
+  by
+) => {
   const { value } = assignedTo
   console.log('inside updater ', {
     leadDocId,
     assignedTo: value,
     assignedToObj: assignedTo,
     AssignedBy: by,
+    assignT: Timestamp.now().toMillis(),
   })
   await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
     assignedTo: value,
     assignedToObj: assignedTo,
     AssignedBy: by,
+    assignT: Timestamp.now().toMillis(),
+    Status: Status == 'unassigned' || Status == '' ? 'new' : Status,
   })
 
   return
@@ -1631,12 +1640,26 @@ export const editTaskDB = async (orgId, uid, kId, newStat, schStsA, oldSch) => {
   const { schTime, notes } = oldSch
   const x = `${kId}.notes`
   const y = `${kId}.schTime`
-  console.log('undo time is ', schStsA)
-
+  console.log('undo time is ', schStsA, schTime)
   await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
     staA: schStsA,
     // staDA: arrayUnion(xo),
     [x]: notes,
+    [y]: schTime,
+  })
+}
+export const rescheduleTaskDB = async (
+  orgId,
+  uid,
+  kId,
+  newStat,
+  schStsA,
+  schTime
+) => {
+  const y = `${kId}.schTime`
+  console.log('new schedule time i s', schTime)
+
+  await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
     [y]: schTime,
   })
 }
@@ -1650,11 +1673,12 @@ export const editAddTaskCommentDB = async (
 ) => {
   const { schTime, comments } = oldSch
   const x = `${kId}.comments`
+  const y = `${kId}.schTime`
   console.log('comments are', comments)
-
 
   await updateDoc(doc(db, `${orgId}_leads_sch`, uid), {
     [x]: comments,
+    [y]: schTime,
   })
 
   if (comments.length > 0) {

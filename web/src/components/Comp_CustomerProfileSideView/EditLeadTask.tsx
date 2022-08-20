@@ -57,7 +57,7 @@ export default function EditLeadTask({
             <div className="bg-green   pl-   flex flex-row ">
               <span className="inline">
                 <DatePicker
-                  className=" mt-[2px] pl- px-  inline text-xs text-[#0091ae] bg-[#F5F8FA]"
+                  className=" mt-[2px] pl- px-   min-w-[151px] inline text-xs text-[#0091ae] bg-[#F5F8FA]"
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
                   showTimeSelect

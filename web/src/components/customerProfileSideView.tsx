@@ -57,6 +57,7 @@ import {
   undoSchLog,
   editTaskDB,
   editAddTaskCommentDB,
+  rescheduleTaskDB,
 } from 'src/context/dbQueryFirebase'
 import { useDropzone } from 'react-dropzone'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
@@ -140,6 +141,18 @@ const notInterestOptions = [
   // { label: 'RNR', value: 'rnr' },
   // { label: 'Dead', value: 'Dead' },
 ]
+const junktOptions = [
+  // { label: 'Select Reason', value: '' },
+  { label: 'Phone no invalid', value: 'phone_no_invalid' },
+  {
+    label: 'Fake Customer',
+    value: 'fake_customer',
+  },
+
+  // { label: 'Follow Up', value: 'followup' },
+  // { label: 'RNR', value: 'rnr' },
+  // { label: 'Dead', value: 'Dead' },
+]
 
 const siteVisitFeedbackOptions = [
   // { label: 'Visit Feedback', value: '' },
@@ -176,7 +189,9 @@ export default function CustomerProfileSideView({
   const [assignerName, setAssignerName] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
   const [showNotInterested, setShowNotInterested] = useState(false)
+  const [showJunk, setShowJunk] = useState(false)
 
+  const [junkReason, setJunkReason] = useState('Phone no Invalid')
   const [leadsActivityFetchedData, setLeadsFetchedActivityData] = useState([])
   const [leadSchLoading, setLeadsSchLoading] = useState(true)
 
@@ -195,12 +210,14 @@ export default function CustomerProfileSideView({
   const [docsList, setDocsList] = useState([])
   const [progress, setProgress] = useState(0)
   const [editTaskObj, setEditTaskObj] = useState({})
+  const [selType, setSelType] = useState('')
 
   const d = new window.Date()
   const [value, setValue] = useState(d)
 
   // const [startDate, setStartDate] = useState(d)
   const [startDate, setStartDate] = useState(d)
+
   const [selected, setSelected] = useState(people[0])
   const [taskDetails, setTaskDetails] = useState('')
   const [schPri, setSchPri] = useState(1)
@@ -229,7 +246,7 @@ export default function CustomerProfileSideView({
   // const [addCommentTime, setAddCommentTime] = useState(
   //   setHours(setMinutes(d, 30), 16)
   // )
-  const [addCommentTime, setAddCommentTime] = useState(d)
+  const [addCommentTime, setAddCommentTime] = useState(d.getTime() + 60000)
   const {
     id,
     Name,
@@ -272,6 +289,20 @@ export default function CustomerProfileSideView({
     //   get lead data by id
     streamLeadDataFun()
   }, [])
+
+  useEffect(() => {
+    console.log('object is ', addTaskCommentObj)
+    const { schTime } = addTaskCommentObj
+    if (schTime) {
+      setStartDate(schTime)
+    }
+  }, [addTaskCommentObj])
+  useEffect(() => {
+    const { schTime } = editTaskObj
+    if (schTime) {
+      setStartDate(schTime)
+    }
+  }, [editTaskObj])
 
   const streamLeadDataFun = () => {
     const { id } = customerDetails
@@ -465,8 +496,8 @@ export default function CustomerProfileSideView({
     setAssignerName(value.name)
     setAssignedTo(value.value)
     // save assigner Details in db
-
-    updateLeadAssigTo(orgId, leadDocId, value, by)
+    const x = leadDetailsObj?.Status || 'unassigned'
+    updateLeadAssigTo(orgId, leadDocId, value, x, by)
   }
   const setNewProject = (leadDocId, value) => {
     console.log('sel pROJECT DETAILS ', value)
@@ -527,6 +558,9 @@ export default function CustomerProfileSideView({
     } else if (newStatus === 'notinterested') {
       setShowNotInterestedFun({}, '')
       console.log('is this triggered yo yo 2 checking it', newStatus)
+    } else if (newStatus === 'junk') {
+      setLoader(false)
+      setShowJunk(true)
     } else {
       arr.includes(newStatus) ? setFeature('notes') : setFeature('appointments')
       arr.includes(newStatus) ? setAddNote(true) : setAddSch(true)
@@ -751,6 +785,7 @@ export default function CustomerProfileSideView({
     await setAddSch(false)
     await setLoader(false)
   }
+
   const cancelResetStatusFun = () => {
     setCloseTask(false)
     setClosePrevious(false)
@@ -762,6 +797,7 @@ export default function CustomerProfileSideView({
     setTakTitle('')
     setStartDate(setHours(setMinutes(d, 30), 16))
     setShowNotInterested(false)
+    setShowJunk(false)
     setShowVisitFeedBackStatus(false)
     setAddSch(false)
     setAddNote(false)
@@ -812,6 +848,7 @@ export default function CustomerProfileSideView({
       data,
       startDate,
       'max',
+      data?.schTime,
       setHours(setMinutes(data?.schTime, 30), 16)
     )
     cancelResetStatusFun()
@@ -842,9 +879,7 @@ export default function CustomerProfileSideView({
   const addTaskCommentFun = async (data) => {
     await setTakTitle(addCommentTitle)
     console.log('clicked schedule is', data, addCommentPlusTask, takTitle)
-
     const inx = schStsMA.indexOf(data.ct)
-
     data.comments = [
       {
         c: addCommentTitle,
@@ -855,21 +890,22 @@ export default function CustomerProfileSideView({
     const x = schStsA
     x[inx] = 'pending'
     setschStsA(x)
-
     if (addCommentPlusTask) {
       await setTakTitle(addCommentTitle)
       await fAddSchedule()
       // mark current task as done
-
       await editAddTaskCommentDB(orgId, id, data.ct, 'pending', schStsA, data)
       if (data?.stsType != 'visitfixed') {
         await doneFun(data)
       }
-
       await cancelResetStatusFun()
     } else {
       if (closeTask) {
         doneFun(data)
+      }
+      if (selType === 'reschedule') {
+        // rescheduleTaskDB(orgId, id, data.ct, 'pending', schStsA, addCommentTime)
+        data.schTime = addCommentTime
       }
       await editAddTaskCommentDB(orgId, id, data.ct, 'pending', schStsA, data)
       await cancelResetStatusFun()
@@ -1045,7 +1081,7 @@ export default function CustomerProfileSideView({
         notInterestedReason: takTitle === '' ? fbTitle : takTitle,
         notInterestedNotes: takNotes === '' ? fbNotes : takNotes,
         stsUpT: Timestamp.now().toMillis(),
-        Remarks: `${fbTitle}-${fbNotes}`,
+        Remarks: `${notInterestType}-${takNotes}`,
       }
       updateLeadRemarks_NotIntrested(
         orgId,
@@ -1055,6 +1091,23 @@ export default function CustomerProfileSideView({
         enqueueSnackbar
       )
       setLeadStatus('notinterested')
+      cancelResetStatusFun()
+    } else if (tempLeadStatus === 'junk') {
+      console.log('am i here', takTitle, takNotes)
+      const dat = {
+        from: streamCurrentStatus,
+        Status: tempLeadStatus,
+        stsUpT: Timestamp.now().toMillis(),
+        Remarks: `${junkReason}`,
+      }
+      updateLeadRemarks_NotIntrested(
+        orgId,
+        id,
+        dat,
+        user.email,
+        enqueueSnackbar
+      )
+      setLeadStatus('junk')
       cancelResetStatusFun()
     } else if (tempLeadStatus === 'visitdone') {
       console.log('am i here', takTitle, takNotes)
@@ -1176,6 +1229,12 @@ export default function CustomerProfileSideView({
     {
       label: 'Not Interested',
       value: 'notinterested',
+      logo: 'XCircleIcon',
+      color: ' bg-violet-500',
+    },
+    {
+      label: 'Junk',
+      value: 'junk',
       logo: 'XCircleIcon',
       color: ' bg-violet-500',
     },
@@ -1321,7 +1380,7 @@ export default function CustomerProfileSideView({
 
                   <section>
                     <div className="font-md text-xs text-gray-500 mb-[px] tracking-wide mr-4">
-                      Assined To {}
+                      Assigned To {}
                     </div>
                     <div>
                       <AssigedToDropComp
@@ -1352,7 +1411,9 @@ export default function CustomerProfileSideView({
                     <span className="font-thin   font-bodyLato text-[9px]  py-[6px]">
                       Created On
                       <span className="text-[#867777] ck ml-2">
-                        {CT != undefined ? prettyDateTime(CT) : 'NA'}
+                        {CT != undefined
+                          ? prettyDateTime(CT)
+                          : prettyDateTime(Date)}
                       </span>
                     </span>
                   </section>
@@ -1368,7 +1429,9 @@ export default function CustomerProfileSideView({
                     <span className="font-thin text-[#867777]   font-bodyLato text-[9px]  py-[6px]">
                       Assigned On
                       <span className="text-[#867777] ck ml-2">
-                        {assignT != undefined ? prettyDateTime(assignT) : 'NA'}
+                        {assignT != undefined
+                          ? prettyDateTime(assignT)
+                          : prettyDateTime(Date)}
                       </span>
                     </span>
                   </section>
@@ -2194,7 +2257,9 @@ export default function CustomerProfileSideView({
               {selFeature === 'appointments' && (
                 <>
                   <div className=" h-screen ">
-                    {(showNotInterested || showVisitFeedBackStatus) &&
+                    {(showNotInterested ||
+                      showVisitFeedBackStatus ||
+                      showJunk) &&
                       selSchGrpO?.ct === undefined && (
                         <div className="flex flex-col pt-0 my-10 mt-[10px] rounded bg-[#FFF9F2] mx-4 p-4">
                           {showNotInterested && (
@@ -2204,7 +2269,7 @@ export default function CustomerProfileSideView({
                                 label={`Why  ${
                                   customerDetails?.Name?.toLocaleUpperCase() ||
                                   'Customer'
-                                } is  not Interested *`}
+                                } is  not Interestedx *`}
                                 className="input mt-3"
                                 onChange={(value) => {
                                   // formik.setFieldValue('source', value.value)
@@ -2215,6 +2280,22 @@ export default function CustomerProfileSideView({
                               />
                             </div>
                           )}
+                          {showJunk && (
+                            <div className="w-full flex flex-col mb-3 mt-2">
+                              <CustomSelect
+                                name="source"
+                                label={`Why customer details are Junk ?`}
+                                className="input mt-3"
+                                onChange={(value) => {
+                                  // formik.setFieldValue('source', value.value)
+                                  setJunkReason(value.value)
+                                }}
+                                value={junkReason}
+                                options={junktOptions}
+                              />
+                            </div>
+                          )}
+
                           {showVisitFeedBackStatus && (
                             <div className="w-full flex flex-col mb-3 mt-2">
                               <CustomSelect
@@ -2231,14 +2312,16 @@ export default function CustomerProfileSideView({
                             </div>
                           )}
 
-                          <div className="  outline-none border  rounded p-4 mt-4">
-                            <textarea
-                              value={takNotes}
-                              onChange={(e) => setNotesTitle(e.target.value)}
-                              placeholder="Type & make a notes"
-                              className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded bg-[#FFF9F2] "
-                            ></textarea>
-                          </div>
+                          {!showJunk && (
+                            <div className="  outline-none border  rounded p-4 mt-4">
+                              <textarea
+                                value={takNotes}
+                                onChange={(e) => setNotesTitle(e.target.value)}
+                                placeholder="Type & make a notes"
+                                className="w-full h-full pb-10 outline-none  focus:border-blue-600 hover:border-blue-600 rounded bg-[#FFF9F2] "
+                              ></textarea>
+                            </div>
+                          )}
                           <div className="flex flex-row mt-1">
                             <button
                               onClick={() => notInterestedFun()}
@@ -2287,40 +2370,6 @@ export default function CustomerProfileSideView({
                           <div className="inline boder-b ">Add Task</div>
                         </div>
 
-                        <div className="mx-2 inline">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            className="mr-1 inline"
-                          >
-                            <g fill="none" fillRule="evenodd">
-                              <g fill="currentColor" fillRule="nonzero">
-                                <g>
-                                  <g>
-                                    <path
-                                      d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9zm0 1c-4.418 0-8 3.582-8 8 0 .702.09 1.383.26 2.031l2.886-2.885c.196-.195.512-.195.708 0l2.646 2.647 4.793-4.794L13 9c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h3.52l.052.005L16.5 8c.036 0 .071.004.105.011l.046.012.04.015c.014.005.027.012.04.019.013.006.025.013.036.02l.035.025c.014.01.027.02.04.033l.012.011.011.013c.012.012.023.025.033.039l-.044-.052c.026.027.05.056.069.087l.02.034.02.042.014.04c.005.015.009.03.012.046l.006.033.005.051V12c0 .276-.224.5-.5.5s-.5-.224-.5-.5V9.706l-5.146 5.148c-.196.195-.512.195-.708 0L7.5 12.207 4.618 15.09C5.827 17.974 8.677 20 12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8z"
-                                      transform="translate(-564 -480) translate(528 444) translate(36 36)"
-                                    ></path>
-                                  </g>
-                                </g>
-                              </g>
-                            </g>
-                          </svg>
-                          {
-                            leadSchFetchedData?.filter(
-                              (d) => d?.sts === 'completed'
-                            ).length
-                          }
-                          /
-                          {
-                            leadSchFetchedData.filter(
-                              (d) => d?.schTime != undefined
-                            ).length
-                          }
-                        </div>
-
                         {/* <SortComp
                           selFilterVal={selFilterVal}
                           setSelFilterVal={setSelFilterVal}
@@ -2334,7 +2383,7 @@ export default function CustomerProfileSideView({
                         <div className="flex flex-row bg-white rounded-xl border ">
                           <div
                             className={` py-1 pr-4 pl-4 min-w-[62px] ${
-                              selFilterVal === 'all' ? 'bg-red-300' : ''
+                              selFilterVal === 'all' ? 'bg-[#c6fff0]' : ''
                             } rounded-xl rounded-r-none`}
                             onClick={() => setSelFilterVal('all')}
                           >
@@ -2348,7 +2397,7 @@ export default function CustomerProfileSideView({
                           </div>
                           <div
                             className={` py-1 pr-4 pl-4 min-w-[62px] border-x ${
-                              selFilterVal === 'pending' ? 'bg-red-300' : ''
+                              selFilterVal === 'pending' ? 'bg-[#c6fff0]' : ''
                             } `}
                             onClick={() => setSelFilterVal('pending')}
                           >
@@ -2368,7 +2417,7 @@ export default function CustomerProfileSideView({
                           </div>
                           <div
                             className={` py-1 pr-4 pl-4 min-w-[62px] ${
-                              selFilterVal === 'completed' ? 'bg-red-300' : ''
+                              selFilterVal === 'completed' ? 'bg-[#c6fff0]' : ''
                             }  rounded-xl rounded-l-none`}
                             onClick={() => setSelFilterVal('completed')}
                           >
@@ -2885,6 +2934,9 @@ export default function CustomerProfileSideView({
                                   setAddCommentTime={setAddCommentTime}
                                   cancelResetStatusFun={cancelResetStatusFun}
                                   addTaskCommentFun={addTaskCommentFun}
+                                  addCommentPlusTask={addCommentPlusTask}
+                                  setSelType={setSelType}
+                                  selType={selType}
                                   d={d}
                                 />
                               )}
@@ -2898,7 +2950,7 @@ export default function CustomerProfileSideView({
                                           label={`Why  ${
                                             customerDetails?.Name?.toLocaleUpperCase() ||
                                             'Customer'
-                                          } is  not Interested *`}
+                                          } is  not Interested*`}
                                           options={notInterestOptions}
                                           value={fbTitle}
                                           onChange={(value) => {
