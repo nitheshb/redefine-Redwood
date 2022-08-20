@@ -232,15 +232,6 @@ const BlockingUnitForm = ({ title, dialogOpen }) => {
     }
   }
 
-  const deptList = [
-    { label: 'Select the Source', value: '' },
-    { label: 'Google Adwords', value: 'googleadwords' },
-    { label: 'Facebook Ad', value: 'facebookad' },
-    { label: 'Instragram Ad', value: 'instragramad' },
-    { label: 'Magic Bricks', value: 'magicbricks' },
-    { label: 'Direct Contact', value: 'directcontact' },
-    { label: 'CP Skagen', value: 'cpskagen' },
-  ]
 
   const initialState = {
     blockReason: '',

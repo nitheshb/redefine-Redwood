@@ -244,16 +244,7 @@ const AddTaskForm = ({ title, dialogOpen }) => {
     }
   }
 
-  const deptList = [
-    { label: 'Select the Source', value: '' },
-    { label: 'Google Adwords', value: 'googleadwords' },
-    { label: 'Facebook Ad', value: 'facebookad' },
-    { label: 'Instragram Ad', value: 'instragramad' },
-    { label: 'Magic Bricks', value: 'magicbricks' },
-    { label: 'Direct Contact', value: 'directcontact' },
-    { label: '99acres', value: '99acres' },
-    { label: 'CP Skagen', value: 'cpskagen' },
-  ]
+
   const validate = Yup.object({
     name: Yup.string()
       .max(15, 'Must be 15 characters or less')

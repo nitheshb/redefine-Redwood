@@ -168,6 +168,7 @@ export const sourceListItems = [
   { label: 'Direct Contact', value: 'directcontact', rep: ['directcontact'] },
   { label: 'Facebook Ad', value: 'facebookad', rep: ['facebookad'] },
   { label: 'Google Adwords', value: 'googleadwords', rep: ['googleadwords'] },
+  { label: 'Housing.com', value: 'housingcom', rep: ['housingcom'] },
   { label: 'Instagram Ad', value: 'instagramad', rep: ['instagramad'] },
   { label: 'Magic Bricks', value: 'magicbricks', rep: ['magicbricks'] },
   { label: 'MCube', value: 'mcube', rep: ['mcube'] },
