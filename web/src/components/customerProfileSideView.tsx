@@ -497,7 +497,7 @@ export default function CustomerProfileSideView({
     setAssignedTo(value.value)
     // save assigner Details in db
     const x = leadDetailsObj?.Status || 'unassigned'
-    updateLeadAssigTo(orgId, leadDocId, value, x, by)
+    updateLeadAssigTo(orgId, leadDocId, value, x, leadDetailsObj, by)
   }
   const setNewProject = (leadDocId, value) => {
     console.log('sel pROJECT DETAILS ', value)

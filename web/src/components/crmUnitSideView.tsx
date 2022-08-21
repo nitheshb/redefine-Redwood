@@ -329,7 +329,7 @@ export default function CrmUnitSideView({
     setAssignedTo(value.value)
     // save assigner Details in db
 
-    updateLeadAssigTo(orgId, leadDocId, value,'', by)
+    // updateLeadAssigTo(orgId, leadDocId, value,'', by)
   }
   const setNewProject = (leadDocId, value) => {
     console.log('sel pROJECT DETAILS ', value)

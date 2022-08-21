@@ -205,6 +205,7 @@ const AddTaskForm = ({ title, dialogOpen }) => {
         roles: assignedToObj?.roles || [],
         uid: assignedToObj?.value || '',
         value: assignedToObj?.value || '',
+        offPh: assignedToObj?.offPh || '',
       },
       by: user?.email,
     }
@@ -215,7 +216,7 @@ const AddTaskForm = ({ title, dialogOpen }) => {
       setLoading(false)
     } else {
       console.log('foundLENGTH IS empty ', foundLength)
-
+      console.log('add lead obj is ', leadData)
       // proceed to copy
       await addLead(
         orgId,
@@ -243,7 +244,6 @@ const AddTaskForm = ({ title, dialogOpen }) => {
       setLoading(false)
     }
   }
-
 
   const validate = Yup.object({
     name: Yup.string()

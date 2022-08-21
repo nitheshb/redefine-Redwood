@@ -22,6 +22,7 @@ import {
 } from 'firebase/firestore'
 import { v4 as uuidv4 } from 'uuid'
 import { WhereToVote } from '@mui/icons-material'
+import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
 
 // import { userAccessRoles } from 'src/constants/userAccess'
 
@@ -531,8 +532,8 @@ export const createUser = async (data: any) => {
 
 export const addLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads`), data)
-  await console.log('x value is', x, x.id)
-  const { intype } = data
+  await console.log('add Lead value is ', x, x.id, data)
+  const { intype, Name, Mobile, assignedTo, assignedToObj } = data
   const { data3, errorx } = await supabase.from(`${orgId}_lead_logs`).insert([
     {
       type: 'l_ctd',
@@ -543,6 +544,13 @@ export const addLead = async (orgId, data, by, msg) => {
       payload: {},
     },
   ])
+  if (assignedTo) {
+    const { offPh } = assignedToObj
+    await sendWhatAppTextSms1(
+      offPh,
+      `⚡ A new lead- ${Name} Assigned to you. 📱${Mobile}`
+    )
+  }
   await console.log('what is this supbase', data3, errorx)
   // await addLeadLog(orgId, x.id, {
   //   s: 's',
@@ -1327,16 +1335,19 @@ export const updateLeadAssigTo = async (
   leadDocId,
   assignedTo,
   Status,
+  leadDetailsObj,
   by
 ) => {
-  const { value } = assignedTo
-  console.log('inside updater ', {
+  const { value, offPh } = assignedTo
+  const { Name, Email, Mobile } = leadDetailsObj
+  console.log('inside updater ', assignedTo, {
     leadDocId,
     assignedTo: value,
     assignedToObj: assignedTo,
     AssignedBy: by,
     assignT: Timestamp.now().toMillis(),
   })
+
   await updateDoc(doc(db, `${orgId}_leads`, leadDocId), {
     assignedTo: value,
     assignedToObj: assignedTo,
@@ -1344,6 +1355,10 @@ export const updateLeadAssigTo = async (
     assignT: Timestamp.now().toMillis(),
     Status: Status == 'unassigned' || Status == '' ? 'new' : Status,
   })
+  await sendWhatAppTextSms1(
+    offPh,
+    `⚡ A new lead- ${Name} Assigned to you. 📱${Mobile}`
+  )
 
   return
   // return await addUserLog({

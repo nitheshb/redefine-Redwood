@@ -300,11 +300,13 @@ export function MultipleFileUploadField({
                 })
                 if (MatchedValA.length === 1) {
                   console.log('found row is 2', dRow)
+                  const { offPh } = MatchedValA[0]
                   dRow['assignedTo'] = MatchedValA[0]['uid']
                   dRow['assignedToObj'] = {
                     empId: MatchedValA[0]['empId'],
                     label: MatchedValA[0]['name'],
                     name: MatchedValA[0]['name'],
+                    offPh: offPh || 0,
                   }
                 }
               }

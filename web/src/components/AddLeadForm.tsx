@@ -189,6 +189,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
         roles: assignedToObj?.roles || [],
         uid: assignedToObj?.value || '',
         value: assignedToObj?.value || '',
+        offPh: assignedToObj?.offPh || '',
       },
       by: user?.email,
     }
