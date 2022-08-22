@@ -118,12 +118,13 @@ export const steamLeadById = (orgId, snapshot, data, error) => {
 }
 // stream
 export const getLeadsByStatus = (orgId, snapshot, data, error) => {
-  const { status } = data
+  const { status, projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
-    where('Status', 'in', status)
+    where('ProjectId', 'in', projAccessA)
+    // where('Status', 'in', status)
   )
-  console.log('hello ', status, itemsQuery)
+  console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
   return onSnapshot(itemsQuery, snapshot, error)
 }
 export const getLeadsByDate = async (orgId, data) => {
@@ -431,7 +432,17 @@ export const getSelectedRoleAccess = async (orgId, role) => {
     ?.filter((item) => item.checked)
     ?.map((elem) => elem.key)
 }
-
+export const getMyProjects = async (orgId, data, snapshot, error) => {
+  console.log('org is ', orgId)
+  const { projAccessA } = data
+  console.log('what is this', projAccessA)
+  const getAllProjectsQuery = await query(
+    collection(db, `${orgId}_projects`),
+    // where('uid', 'in', projAccessA),
+    orderBy('created', 'desc')
+  )
+  return onSnapshot(getAllProjectsQuery, snapshot, error)
+}
 export const getAllProjects = async (orgId, snapshot, error) => {
   console.log('org is ', orgId)
   const getAllProjectsQuery = await query(
@@ -1034,6 +1045,29 @@ export const updateUserRole = async (
     type: 'updateRole',
     subtype: 'updateRole',
     txt: `${email} is updated with ${role}`,
+    by,
+  })
+}
+export const updateUserAccessProject = async (
+  orgId,
+  uid,
+  projAccessA,
+  projectName,
+  email,
+  by,
+  enqueueSnackbar
+) => {
+  await updateDoc(doc(db, 'users', uid), {
+    projAccessA: projAccessA,
+  })
+  enqueueSnackbar(`Lead Access Provided to ${email}`, {
+    variant: 'success',
+  })
+  return await addUserLog(orgId, {
+    s: 's',
+    type: 'updateRole',
+    subtype: 'updateRole',
+    txt: `${email} is updated with project ${projectName}`,
     by,
   })
 }

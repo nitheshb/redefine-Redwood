@@ -16,6 +16,7 @@ import {
   getAllProjects,
   getLeadsByStatus,
   getLeadsByStatusUser,
+  getMyProjects,
   steamUsersListByRole,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
@@ -37,7 +38,8 @@ import { useSnackbar } from 'notistack'
 const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const { user } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
-  const { orgId, access } = user
+  const { orgId, access, projAccessA } = user
+
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -134,8 +136,9 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   }, [leadsTyper])
 
   useEffect(() => {
-    const unsubscribe = getAllProjects(
+    const unsubscribe = getMyProjects(
       orgId,
+      { projAccessA: projAccessA },
       (querySnapshot) => {
         const projectsListA = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.data()
@@ -145,10 +148,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           user.label = user.projectName
           user.value = user.projectName
         })
-        console.log('fetched users list is', projectsListA)
-        setprojectList(projectsListA)
+        console.log('fetched myProjects list is', projectsListA)
+        setprojectList(projectsListA.filter((d) => projAccessA.includes(d.uid)))
       },
-      (error) => setprojectList([])
+      (error) => {
+        console.log('error at bro', error)
+        setprojectList([])
+      }
     )
 
     return unsubscribe
@@ -177,7 +183,11 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             return x
           })
           // setBoardData
-          console.log('my Array data is delayer ', usersListA.length)
+          console.log(
+            'my Array data is delayer ',
+            projAccessA,
+            usersListA.length
+          )
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
           // filter_Leads_Projects_Users_Fun()
@@ -202,6 +212,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
               : leadsTyper === 'booked'
               ? ['booked']
               : archieveFields,
+          projAccessA: projAccessA,
         },
         (error) => setLeadsFetchedData([])
       )

@@ -26,7 +26,7 @@ export interface User {
   avatar: string
   email: string
   displayName: string
-
+  projAccessA: any
   [key: string]: any
 }
 
@@ -108,6 +108,7 @@ export default function AuthContextProvider({ children }) {
         displayName: currentUser.displayName || additionalUserInfo?.name,
         phone: currentUser.phoneNumber,
         token: currentUser.uid,
+        projAccessA: additionalUserInfo.projAccessA || [],
         role: additionalUserInfo?.roles,
         orgId: additionalUserInfo?.orgId,
         orgName: additionalUserInfo?.orgName,

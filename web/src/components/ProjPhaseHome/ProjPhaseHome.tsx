@@ -22,6 +22,7 @@ import BlockingUnitForm from '../BlockingUnitForm'
 import CostBreakUpSheet from '../costBreakUpSheet'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 import AssigedToDropComp from '../assignedToDropComp'
+import PaymentLeadAccess from '../PaymentScheduleForm/ProjectLeadAccess'
 
 const ProjPhaseHome = ({
   projectDetails,
@@ -74,7 +75,6 @@ const ProjPhaseHome = ({
     console.log('new customer object', leadDetailsObj)
     setLeadDetailsObj1(leadDetailsObj)
   }, [leadDetailsObj])
-
 
   useEffect(() => {
     if (uid) {
@@ -404,6 +404,7 @@ const ProjPhaseHome = ({
                             { lab: 'Brouchers', val: 'Brouchers' },
                             { lab: 'Approvals', val: 'Approvals' },
                             { lab: 'Bank Details', val: 'Bank Details' },
+                            { lab: 'Leads Access', val: 'Lead Access' },
                             { lab: 'More Details', val: 'More Details' },
                           ].map((d, i) => {
                             return (
@@ -565,6 +566,13 @@ const ProjPhaseHome = ({
                         />
                       )}
 
+                      {phaseViewFeature === 'Lead Access' && (
+                        <PaymentLeadAccess
+                          title={'Leads Access'}
+                          data={{ phase: phase, project: projectDetails}}
+                          source={source}
+                        />
+                      )}
                       {phaseViewFeature === 'More Details' && (
                         <MoreDetailsPhaseForm
                           title={'More Detailss'}
