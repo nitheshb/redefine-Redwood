@@ -118,15 +118,31 @@ export const steamLeadById = (orgId, snapshot, data, error) => {
 }
 // stream
 export const getLeadsByStatus = (orgId, snapshot, data, error) => {
-  const { status, projAccessA } = data
+  const { projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
     where('ProjectId', 'in', projAccessA)
     // where('Status', 'in', status)
   )
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+export const getLeadsByUnassigned = (orgId, snapshot, error) => {
+  const itemsQuery = query(
+    collection(db, `${orgId}_leads`),
+    where('Status', '==', 'unassigned')
+  )
+  return onSnapshot(itemsQuery, snapshot, error)
+}
+export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
+  const { status, projAccessA } = data
+  const itemsQuery = query(
+    collection(db, `${orgId}_leads`),
+    where('Status', 'in', status)
+  )
   console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
   return onSnapshot(itemsQuery, snapshot, error)
 }
+
 export const getLeadsByDate = async (orgId, data) => {
   const { cutoffDate } = data
   const itemsQuery = query(

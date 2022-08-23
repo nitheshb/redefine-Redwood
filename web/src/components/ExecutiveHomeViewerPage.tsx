@@ -14,8 +14,10 @@ import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
   getAllProjects,
+  getLeadsByAdminStatus,
   getLeadsByStatus,
   getLeadsByStatusUser,
+  getLeadsByUnassigned,
   getMyProjects,
   steamUsersListByRole,
   updateLeadStatus,
@@ -39,7 +41,6 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const { user } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
   const { orgId, access, projAccessA } = user
-
   const isImportLeads =
     user?.role?.includes(USER_ROLES.ADMIN) ||
     user?.role?.includes(USER_ROLES.SALES_MANAGER)
@@ -172,9 +173,9 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const getLeadsDataFun = async () => {
     console.log('login role detials', user)
     const { access, uid, orgId } = user
-
-    if (access?.includes('manage_leads')) {
-      const unsubscribe = getLeadsByStatus(
+    if (user?.role?.includes(USER_ROLES.ADMIN)) {
+      console.log('am i inside here')
+      const unsubscribe = getLeadsByAdminStatus(
         orgId,
         async (querySnapshot) => {
           const usersListA = querySnapshot.docs.map((docSnapshot) => {
@@ -217,6 +218,51 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
         (error) => setLeadsFetchedData([])
       )
       return unsubscribe
+    } else if (access?.includes('manage_leads')) {
+      const unsubscribe = await getLeadsByStatus(
+        orgId,
+        async (querySnapshot) => {
+          const usersListA = querySnapshot.docs.map((docSnapshot) => {
+            const x = docSnapshot.data()
+            x.id = docSnapshot.id
+            return x
+          })
+          // setBoardData
+          console.log(
+            'my Array data is delayer ',
+            projAccessA,
+            usersListA.length
+          )
+
+          // await setLeadsFetchedRawData(usersListA)
+          // await serealizeData(usersListA)
+          await getUnassignedLeads(usersListA)
+          // filter_Leads_Projects_Users_Fun()
+          // await setLeadsFetchedData(usersListA)
+        },
+        {
+          status:
+            leadsTyper === 'inProgress'
+              ? [
+                  'new',
+                  'followup',
+                  'unassigned',
+                  'visitfixed',
+                  '',
+                  'visitdone',
+                  'visitcancel',
+                  'negotiation',
+                  'reassign',
+                  'RNR',
+                  // 'booked',
+                ]
+              : leadsTyper === 'booked'
+              ? ['booked']
+              : archieveFields,
+          projAccessA: projAccessA,
+        },
+        (error) => setLeadsFetchedData([])
+      )
     } else {
       const unsubscribe = getLeadsByStatusUser(
         orgId,
@@ -263,6 +309,24 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     // await console.log('leadsData', leadsData)
   }
 
+  const getUnassignedLeads = (otherData) => {
+    const unsubscribe1 = getLeadsByUnassigned(
+      orgId,
+      async (querySnapshot) => {
+        const usersListA = querySnapshot.docs.map((docSnapshot) => {
+          const x = docSnapshot.data()
+          x.id = docSnapshot.id
+          return x
+        })
+
+        const xA = [...otherData, ...usersListA]
+        await setLeadsFetchedRawData(xA)
+        await serealizeData(xA)
+      },
+      (error) => setLeadsFetchedData([])
+    )
+    return unsubscribe1
+  }
   const filter_Leads_Projects_Users_Fun = () => {
     const x = leadsFetchedRawData
     console.log('raw max is ==>  ', x.length)
