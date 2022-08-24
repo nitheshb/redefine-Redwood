@@ -479,7 +479,22 @@ export default function LLeadsTableBody({
 
   const filterStuff = async (parent) => {
 
-      let x =selStatus === 'all' ? parent : await parent.filter((item) => (item.Status.toLowerCase() === selStatus.toLowerCase()))
+      let x =selStatus === 'all' ? parent.filter((item) =>
+      [
+        'new',
+        'followup',
+        'visitfixed',
+        'visitdone',
+        'visitcancel',
+        'negotiation',
+      ].includes(
+        item.Status.toLowerCase()
+      )
+    ) : selStatus === 'archieve_all' ? parent.filter((item) =>
+      ['notinterested', 'blocked', 'junk', 'dead'].includes(
+        item.Status.toLowerCase()
+      )
+    ):  await parent.filter((item) => (item.Status.toLowerCase() === selStatus.toLowerCase()))
 
     await setRows(x)
     await console.log('xo', x, parent, selStatus)

@@ -150,7 +150,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           user.value = user.projectName
         })
         console.log('fetched myProjects list is', projectsListA)
-        setprojectList(projectsListA.filter((d) => projAccessA.includes(d.uid)))
+        if (user?.role?.includes(USER_ROLES.ADMIN)) {
+          setprojectList(projectsListA)
+        } else {
+          setprojectList(
+            projectsListA.filter((d) => projAccessA.includes(d.uid))
+          )
+        }
       },
       (error) => {
         console.log('error at bro', error)
@@ -228,12 +234,6 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             return x
           })
           // setBoardData
-          console.log(
-            'my Array data is delayer ',
-            projAccessA,
-            usersListA.length
-          )
-
           // await setLeadsFetchedRawData(usersListA)
           // await serealizeData(usersListA)
           await getUnassignedLeads(usersListA)

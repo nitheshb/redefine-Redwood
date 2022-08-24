@@ -186,7 +186,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
       x.archieve = fullData.filter(
         (datObj) =>
           datObj?.Source === souceObj?.value &&
-          ['blocked', 'dead', 'notinterested'].includes(datObj?.Status)
+          ['blocked', 'dead', 'notinterested', 'junk'].includes(datObj?.Status)
       ).length
 
       return x

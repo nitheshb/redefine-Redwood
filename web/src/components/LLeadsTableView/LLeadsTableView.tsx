@@ -106,7 +106,22 @@ const tableData2 = [
 
 const rowsCounter = (parent, searchKey) => {
   return searchKey === 'all'
-    ? parent
+    ? parent.filter((item) =>
+        [
+          'new',
+          'followup',
+          'visitfixed',
+          'visitdone',
+          'visitcancel',
+          'negotiation',
+        ].includes(item.Status.toLowerCase())
+      )
+    : searchKey === 'archieve_all'
+    ? parent.filter((item) =>
+        ['notinterested', 'blocked', 'junk', 'dead'].includes(
+          item.Status.toLowerCase()
+        )
+      )
     : parent.filter(
         (item) => item.Status.toLowerCase() === searchKey.toLowerCase()
       )
@@ -215,10 +230,10 @@ const LLeadsTableView = ({
   )
 
   const archieveTab = [
-    { lab: 'Archieve', val: 'all' },
+    { lab: 'Archieve', val: 'archieve_all' },
     { lab: 'Dead', val: 'dead' },
     { lab: 'Not Interested', val: 'notinterested' },
-    { lab: 'Blocked', val: 'blockded' },
+    { lab: 'Blocked', val: 'blocked' },
     { lab: 'Junk', val: 'junk' },
   ]
   const financeTab = [
