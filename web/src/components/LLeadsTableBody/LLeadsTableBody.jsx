@@ -162,7 +162,7 @@ function EnhancedTableHead(props) {
           align="center"
           component="th"
           scope="row"
-          padding="checkbox"
+          padding="none"
           size="small"
           style={{
             backgroundColor: '#F7F9FB',
@@ -170,6 +170,11 @@ function EnhancedTableHead(props) {
             maxHeight: '10px',
             height: '10px',
             lineHeight: '10px',
+            maxWidth:'52px',
+            minWidth:'25px',
+            paddingLeft: '14px',
+            paddingRight: '29px',
+            marginRight: '10px'
           }}
         >
           {/* <Checkbox
@@ -181,7 +186,7 @@ function EnhancedTableHead(props) {
               'aria-label': 'select all desserts',
             }}
           /> */}
-          <TableSortLabel>S.No</TableSortLabel>
+          <TableSortLabel >S.No</TableSortLabel>
         </TableCell>
         {headCells.map((headCell) => (
           <>
@@ -688,7 +693,6 @@ id: "1" */}
                     <TableRow
                       hover
                       onClick={(event) => handleClick(event, row)}
-                      role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={index}
@@ -700,7 +704,7 @@ id: "1" */}
                         component="th"
                         id={labelId}
                         scope="row"
-                        padding="checkbox"
+                        padding="none"
                         size="small"
                       >
                         {index + 1}
@@ -821,56 +825,10 @@ id: "1" */}
                       )}
 
                       <TableCell align="middle">
-                        <section>
-                          <div>
 
-                            <div
-                className="relative flex flex-col  group"
-                // style={{ alignItems: 'end' }}
-              >
-                <div
-                  className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex"
-                  // style={{  width: '300px' }}
-                  style={{  'z-index': '9' }}
-                >
-                  <span
-                    className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
-                    style={{
-                      color: 'black',
-                      background: '#e2c062',
-                      maxWidth: '300px',
-                    }}
-                  >
-                    <div className="italic flex flex-col">
-                    <div className="font-bodyLato">
-                    {row?.Source?.toString() || 'NA'}
-                            </div>
-
-
-                    </div>
-                  </span>
-                  <div
-                    className="w-3 h-3  -mt-2 rotate-45 bg-black"
-                    style={{ background: '#e2c062', marginRight: '12px' }}
-                  ></div>
-                </div>
-                <span className="font-bodyLato">
-                          {/* <HighlighterStyle
-                            searchKey={searchKey}
-                            source={row.Source.toString()}
-                          /> */}
-
-                          <img
-                  className="w-[18px] h-[18px] inline"
-                  alt=""
-                  src={`../${row?.Source?.toString() || 'fb'}.svg`}
-                />
-                        </span>
-              </div>
-                          </div>
-
-
-                        </section>
+                        <span className="px-2 uppercase inline-flex text-[11px] text-black-900  ">
+                          {row?.Source?.toString() || 'NA'}
+                      </span>
                       </TableCell>
 
 

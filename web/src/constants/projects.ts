@@ -163,17 +163,36 @@ export const projectPlans = [
     img: '/villa.svg',
   },
 ]
+
 export const sourceListItems = [
   { label: 'CP Skagen', value: 'cpskagen', rep: ['cpskagen'] },
   { label: 'Direct Contact', value: 'directcontact', rep: ['directcontact'] },
-  { label: 'Facebook Ad', value: 'facebookad', rep: ['facebookad'] },
-  { label: 'Google Adwords', value: 'googleadwords', rep: ['googleadwords'] },
-  { label: 'Housing.com', value: 'housingcom', rep: ['housingcom'] },
-  { label: 'Instagram Ad', value: 'instagramad', rep: ['instagramad'] },
-  { label: 'Magic Bricks', value: 'magicbricks', rep: ['magicbricks'] },
-  { label: 'MCube', value: 'mcube', rep: ['mcube'] },
+  {
+    label: 'Facebook Ad',
+    value: 'facebookad',
+    rep: ['facebookad', 'Facebook', 'facebook'],
+  },
+  {
+    label: 'Google Adwords',
+    value: 'googleadwords',
+    rep: ['googleadwords', 'Google-Ads', 'google adwords'],
+  },
+  { label: 'Housing.com', value: 'housingcom', rep: ['housingcom', 'housing'] },
+  {
+    label: 'Instagram Ad',
+    value: 'instagramad',
+    rep: ['instagramad', 'Instagram', 'instagram'],
+  },
+  { label: 'Live Chat', value: 'Live Chat', rep: ['Live Chat', 'Livechat'] },
+  {
+    label: 'Magic Bricks',
+    value: 'magicbricks',
+    rep: ['magicbricks', 'magic bricks', 'magic bricks'],
+  },
+  { label: 'MCube', value: 'mcube', rep: ['mcube', 'Mcube'] },
   { label: 'Website', value: 'website', rep: ['website'] },
   { label: '99acres', value: '99acres', rep: ['99acres'] },
+  { label: 'others', value: 'others', rep: [] },
 ]
 export const sourceList = [
   { label: 'Select the Source', value: '' },

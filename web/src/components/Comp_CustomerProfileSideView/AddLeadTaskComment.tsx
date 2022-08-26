@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react'
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
 import ScheduleSendTwoToneIcon from '@mui/icons-material/ScheduleSendTwoTone';
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone'
-import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
+import SendTwoToneIcon from '@mui/icons-material/SendTwoTone'
+import CheckTwoToneIcon from '@mui/icons-material/CheckTwoTone'
 import { XIcon } from '@heroicons/react/solid'
 
 export default function AddLeadTaskComment({
@@ -158,6 +159,7 @@ export default function AddLeadTaskComment({
               {(addCommentTitle === 'undefined' || addCommentTitle === '') && <CloseTwoToneIcon />}
               {(!closeTask &&  !addCommentPlusTask && selType != 'reschedule' && !(addCommentTitle === 'undefined' || addCommentTitle === '')) && <SendTwoToneIcon />}{' '}
               {(!closeTask  && selType === 'reschedule' && !(addCommentTitle === 'undefined' || addCommentTitle === '')) && <ScheduleSendTwoToneIcon />}
+             {(closeTask && !(addCommentTitle === 'undefined' || addCommentTitle === '')) && <CheckTwoToneIcon />}
               {/* {closeTask && (
                 <span className="text-[#4b4a4a]">Close This Task </span>
               )}{' '}
