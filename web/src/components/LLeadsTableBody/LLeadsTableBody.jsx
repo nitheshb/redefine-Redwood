@@ -271,6 +271,12 @@ let downRows =[]
 rowsAfterSearchKey.map((data)=> {
   let row = {
   }
+  let remark;
+if(data?.Remarks){
+  remark=  data?.Remarks?.charAt(0) == "-" ? data?.Remarks.substring(1) : data?.Remarks
+}else {
+  remark = data?.Remarks
+}
   row.Date = prettyDate(data?.Date).toLocaleString();
   row.Name = data?.Name;
   row.CountryCode = data['Country Code']
@@ -280,6 +286,7 @@ rowsAfterSearchKey.map((data)=> {
   row.Source = data?.Source
   row.Status = data?.Status
   row.Project = data?.Project
+  row.Remarks = remark
 
   downRows.push(row)
 })
