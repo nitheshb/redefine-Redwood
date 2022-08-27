@@ -1421,7 +1421,9 @@ export default function CustomerProfileSideView({
                     <span className="font-thin   font-bodyLato text-[9px]  py-[6px]">
                       Updated On :
                       <span className="text-[#867777] ck ml-2">
-                        {prettyDateTime(stsUpT) || 'NA'}
+                        {stsUpT === undefined
+                          ? 'NA'
+                          : prettyDateTime(stsUpT) || 'NA'}
                       </span>
                     </span>
                   </section>
@@ -2349,7 +2351,7 @@ export default function CustomerProfileSideView({
                     <div className="font-md font-medium text-xs  ml-2 text-gray-800 flex flex-row justify-between mr-4 py-2">
                       {/* <section> Schedule</section> */}
                       <section className="flex flex-row py-1">
-                        <div
+                        {/* <div
                           className="text-blue-600  mr-4  cursor-pointer"
                           onClick={() => setAddSch(true)}
                         >
@@ -2368,7 +2370,7 @@ export default function CustomerProfileSideView({
                             />
                           </svg>{' '}
                           <div className="inline boder-b ">Add Task</div>
-                        </div>
+                        </div> */}
 
                         {/* <SortComp
                           selFilterVal={selFilterVal}
