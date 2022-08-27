@@ -684,65 +684,65 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             }`}
                             key={i}
                           >
-                            <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap text-left">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {data?.label}
                             </td>
                             <td
-                              className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"
+                              className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap"
                               onClick={() => {
                                 console.log('total stuff is ', data?.Total)
                               }}
                             >
                               {data?.Total?.length}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.inprogress?.length}
                             </td>
                             {showInproFSource && (
                               <>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.new?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.followup?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.visitfixed?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.visitdone?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.negotiation?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.unassigned?.length}
                                 </td>
                               </>
                             )}
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.booked?.length}
                             </td>
                             {showArchiFSource && (
                               <>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.notinterested?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.dead?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.blocked?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.junk?.length}
                                 </td>
                               </>
                             )}
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.archieve?.length}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.others?.length}
                             </td>
                           </tr>
@@ -750,13 +750,13 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       })}
 
                       <tr className="border-b bg-gray-800 boder-gray-900">
-                        <td className="text-sm text-white font-medium px-6 py-4 whitespace-nowrap text-left">
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
                           Total
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {sourceRawFilData.length}
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             sourceRawFilData.filter((datObj) =>
                               [
@@ -772,35 +772,35 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         </td>
                         {showInproFSource && (
                           <>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'new'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'followup'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'visitfixed'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'visitdone'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'negotiation'
@@ -809,7 +809,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             </td>
                           </>
                         )}
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             sourceRawFilData.filter(
                               (datObj) => datObj?.Status == 'booked'
@@ -818,28 +818,28 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         </td>
                         {showArchiFSource && (
                           <>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'notinterested'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'dead'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'blocked'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 sourceRawFilData.filter(
                                   (datObj) => datObj?.Status == 'junk'
@@ -848,7 +848,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             </td>
                           </>
                         )}
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             sourceRawFilData.filter((datObj) =>
                               [
@@ -860,7 +860,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             ).length
                           }
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             sourceRawFilData.filter(
                               (datObj) => datObj?.Status == ''
@@ -974,7 +974,9 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           <th
                             key={i}
                             scope="col"
-                            className="text-sm font-medium text-gray-900 px-6 py-4"
+                            className={`text-sm font-medium text-gray-900 px-6 py-4 ${
+                              ['Source'].includes(d.label) ? 'text-left' : ''
+                            }`}
                             style={{
                               display: viewSourceStats1A.includes(d.id)
                                 ? ''
@@ -1033,57 +1035,57 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             }`}
                             key={i}
                           >
-                            <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap text-left">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {data?.label}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.Total?.length}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.inprogress?.length}
                             </td>
                             {showInproFSource && (
                               <>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.new?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.followup?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.visitfixed?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.visitdone?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.negotiation?.length}
                                 </td>
                               </>
                             )}
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.booked?.length}
                             </td>
                             {showArchiFSource && (
                               <>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.notinterested?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.dead?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.blocked?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.junk?.length}
                                 </td>
                               </>
                             )}
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.archieve?.length}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.others?.length}
                             </td>
                           </tr>
@@ -1091,13 +1093,13 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       })}
 
                       <tr className="border-b bg-gray-800 boder-gray-900">
-                        <td className="text-sm text-white font-medium px-6 py-4 whitespace-nowrap text-left">
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
                           Total
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {EmpRawFilData.length}
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             EmpRawFilData.filter((datObj) =>
                               [
@@ -1113,35 +1115,35 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         </td>
                         {showInproFSource && (
                           <>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'new'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'followup'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'visitfixed'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'visitdone'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'negotiation'
@@ -1150,7 +1152,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             </td>
                           </>
                         )}
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             EmpRawFilData.filter(
                               (datObj) => datObj?.Status == 'booked'
@@ -1159,28 +1161,28 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         </td>
                         {showArchiFSource && (
                           <>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'notinterested'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'dead'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'blocked'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 EmpRawFilData.filter(
                                   (datObj) => datObj?.Status == 'junk'
@@ -1189,7 +1191,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             </td>
                           </>
                         )}
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             EmpRawFilData.filter((datObj) =>
                               [
@@ -1201,7 +1203,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             ).length
                           }
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             EmpRawFilData.filter(
                               (datObj) => datObj?.Status == ''
@@ -1301,7 +1303,9 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           <th
                             key={i}
                             scope="col"
-                            className="text-sm font-medium text-gray-900 px-6 py-4"
+                            className={`text-sm font-medium text-gray-900 px-6 py-4 ${
+                              ['Source'].includes(d.label) ? 'text-left' : ''
+                            }`}
                             style={{
                               display: viewSourceStats1A.includes(d.id)
                                 ? ''
@@ -1360,57 +1364,57 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             }`}
                             key={i}
                           >
-                            <td className="text-sm text-gray-900 font-medium px-6 py-4 whitespace-nowrap text-left">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {data?.label}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.Total?.length}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.inprogress?.length}
                             </td>
                             {showInproFSource && (
                               <>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.new?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.followup?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.visitfixed?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.visitdone?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.negotiation?.length}
                                 </td>
                               </>
                             )}
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.booked?.length}
                             </td>
                             {showArchiFSource && (
                               <>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.notinterested?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.dead?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.blocked?.length}
                                 </td>
-                                <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                                   {data?.junk?.length}
                                 </td>
                               </>
                             )}
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.archieve?.length}
                             </td>
-                            <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
                               {data?.others?.length}
                             </td>
                           </tr>
@@ -1418,13 +1422,13 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       })}
 
                       <tr className="border-b bg-gray-800 boder-gray-900">
-                        <td className="text-sm text-white font-medium px-6 py-4 whitespace-nowrap text-left">
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
                           Total
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {leadsFetchedRawData.length}
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             leadsFetchedRawData.filter((datObj) =>
                               [
@@ -1440,35 +1444,35 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         </td>
                         {showInproFSource && (
                           <>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'new'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'followup'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'visitfixed'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'visitdone'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'negotiation'
@@ -1477,7 +1481,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             </td>
                           </>
                         )}
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             leadsFetchedRawData.filter(
                               (datObj) => datObj?.Status == 'booked'
@@ -1486,28 +1490,28 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         </td>
                         {showArchiFSource && (
                           <>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'notinterested'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'dead'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'blocked'
                                 ).length
                               }
                             </td>
-                            <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                               {
                                 leadsFetchedRawData.filter(
                                   (datObj) => datObj?.Status == 'junk'
@@ -1516,7 +1520,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             </td>
                           </>
                         )}
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             leadsFetchedRawData.filter((datObj) =>
                               [
@@ -1528,7 +1532,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             ).length
                           }
                         </td>
-                        <td className="text-sm text-white font-light px-6 py-4 whitespace-nowrap">
+                        <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
                           {
                             leadsFetchedRawData.filter(
                               (datObj) => datObj?.Status == ''

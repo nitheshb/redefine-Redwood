@@ -33,10 +33,10 @@ export const sendWhatAppTextSms1 = (clientNo, msg) => {
 
   const options = {
     method: 'POST',
-    url: 'https://api.maytapi.com/api/7f802afd-f792-45e5-b329-caae7c948084/23152/sendMessage',
+    url: 'https://api.maytapi.com/api/d3dcc6ea-dec3-410b-8e09-f427f90e8e27/23255/sendMessage',
     headers: {
       'content-type': 'application/json',
-      'x-maytapi-key': '677994e3-bb6a-43f0-a7c0-d949ff4ba0fb',
+      'x-maytapi-key': '1a3becfe-e29e-4efc-b195-e89fe1f370fd',
     },
     data: {
       to_number: `+91${clientNo}`,

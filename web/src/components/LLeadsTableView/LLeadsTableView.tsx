@@ -214,7 +214,7 @@ const LLeadsTableView = ({
     leadsTyper === 'inProgress'
       ? setValue('all')
       : leadsTyper === 'archieveLeads'
-      ? setValue('all')
+      ? setValue('archieve_all')
       : setValue('booked')
   }, [])
 
