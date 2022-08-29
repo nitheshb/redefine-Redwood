@@ -3,6 +3,9 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import { useAuth } from 'src/context/firebase-auth-context'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { setHours, setMinutes } from 'date-fns'
 import { alpha } from '@mui/material/styles'
 import Section from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -28,6 +31,7 @@ import Highlighter from 'react-highlight-words'
 import CSVDownloader from '../../util/csvDownload'
 import { timeConv, prettyDate } from '../../util/dateConverter'
 import DropCompUnitStatus from '../dropDownUnitStatus'
+
 
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
@@ -258,13 +262,16 @@ const EnhancedTableToolbar = (props) => {
     pickCustomViewer,
     setViewUnitStatusA,
   } = props
-
+  const d = new window.Date()
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
   const [downloadFormatRows, setDownloadFormatRows] = React.useState([])
+  const [cutOffDate, setCutOffDate] = React.useState(d.getTime() + 60000)
 
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
   }, [rows])
+
+
 
   React.useEffect(() => {
 let downRows =[]
@@ -346,6 +353,17 @@ if(data?.Remarks){
           className="ml-6 bg-transparent text-xs focus:border-transparent focus:ring-0 focus-visible:border-transparent focus-visible:ring-0 focus:outline-none"
         />
       </span>
+      {/* <span className="inline mt-[4px] pl-2">
+                    <DatePicker
+                      className=" pl- px- min-w-[151px] inline text-xs text-[#0091ae] bg-white cursor-pointer"
+                      selected={cutOffDate}
+                      onChange={(date) =>{ setCutOffDate(date.getTime())}}
+                      showTimeSelect
+                      timeFormat="HH:mm"
+
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                    />
+                  </span> */}
 
       {/* {numSelected > 0 ? (
         <Typography

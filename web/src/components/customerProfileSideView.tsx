@@ -1477,17 +1477,13 @@ export default function CustomerProfileSideView({
                   style={{ background: '#e2c062', marginRight: '12px' }}
                 ></div>
               </div>
-              <span className="font-bodyLato text-[#867777] text-xs">
+              <span className="font-bodyLato text-[#867777] text-xs mt-2">
                 {/* <HighlighterStyle
                             searchKey={searchKey}
                             source={row.Source.toString()}
                           /> */}
 
-                <img
-                  className="w-[18px] h-[18px] inline"
-                  alt={Source?.toString() || 'NA'}
-                  src={`../${Source?.toString()}.svg`}
-                />
+                {Source?.toString() || 'NA'}
               </span>
             </div>
           </div>

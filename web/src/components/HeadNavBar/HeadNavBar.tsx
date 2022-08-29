@@ -79,7 +79,7 @@ const HeadNavBar = () => {
           </svg>
           <span className="ml-" style={{ marginLeft: '-11px' }}>
             {' '}
-            Redefine Erp.
+            Redefine Erp .
           </span>
         </span>
 
