@@ -75,7 +75,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const onSubmit = async (data) => {
     console.log('check fo this ', data)
     setLoading(true)
-    const { empId, email, orgName, myRole, deptVal, name, offPh, perPh } = data
+    const { empId, email, myRole, deptVal, name, offPh, perPh } = data
 
     if (editMode) {
       updateUserRole(
@@ -106,7 +106,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         message: `Role is updated Successfully`,
       })
     } else {
-      const data = JSON.stringify({
+      const data = {
         empId: empId,
         email: email,
         name: name,
@@ -119,12 +119,15 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         orgStatus: 'active',
         offPh: offPh,
         perPh: perPh,
-      })
+      }
+
+//       Invalid Arguments {\"empId\":\"102\",\"uid\":\"71wQrhV54oeWxn5Ha9E8pm93XID3\",\"email\":\"nitheshreddy.email@gmail.com\",\"offPh\":\"\",\"perPh\":\"\",\"userStatus\":\"active\",\"orgStatus\":\"active\",\"orgId\":\"spark\",\"department\":[\"admin\"],\"roles\":[\"admin\"],\"name\":\"nitheshreddy\"}"
+// payload: "{\"code\":\"invalid-argument\",\"name\":\"FirebaseError\"}"
 
       const config = {
         method: 'post',
 
-        url: 'https://testredefine.azurewebsites.net/api/Redefine_addUser?code=5OdECsAJBhxoCpmv9tk6hR8bbbgIVJc1O2ZONQtLTuImAzFuGaxqhw==',
+        url: 'https://asia-south1-redefine-erp.cloudfunctions.net/erpAddUser',
         headers: {
           'Content-Type': 'text/plain',
         },
