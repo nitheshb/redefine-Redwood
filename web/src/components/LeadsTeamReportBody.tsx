@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 // import { useState } from 'react'
 // import ProjectStatsCard from '../ProjectStatsCard/ProjectStatsCard'
 // import PhaseDetailsCard from '../PhaseDetailsCard/PhaseDetailsCard'
@@ -23,6 +25,7 @@ import { serialProjectLeadData } from './LeadsTeamReport/serialProjectLeadData'
 import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
 import CSVDownloader from 'src/util/csvDownload'
 import { prettyDate } from 'src/util/dateConverter'
+import { startOfWeek, startOfDay, startOfMonth, subMonths } from 'date-fns'
 
 const valueFeedData = [
   { k: 'Total', v: 300, pic: '' },
@@ -79,7 +82,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   //   setValueKind(kind)
   //   setValueCurrency(currency)
   // }
-
+  const d = new window.Date()
   const { user } = useAuth()
   const { orgId, access } = user
   const [leadsFetchedRawData, setLeadsFetchedRawData] = useState([])
@@ -107,6 +110,13 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
 
   const [projDownloadRows, setProjDownloadRows] = React.useState([])
 
+  const [sourceDateRange, setSourceDateRange] = React.useState(
+    startOfDay(d).getTime()
+  )
+  const [empDateRange, setEmpDateRange] = React.useState(
+    startOfWeek(d).getTime()
+  )
+
   const [viewSourceStats1A, SetViewSourceStats1A] = useState([
     'label',
     'total',
@@ -119,6 +129,9 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   useEffect(() => {
     getLeadsDataFun()
   }, [])
+  useEffect(() => {
+    getLeadsDataFun()
+  }, [sourceDateRange])
 
   useEffect(() => {
     if (selProjectIs?.value === 'allprojects') {
@@ -221,12 +234,13 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   }
 
   const getLeadsDataFun = async () => {
-    console.log('login role detials', user)
+    startOfWeek(d)
+    console.log('date is', d, subMonths(startOfMonth(d), 6).getTime())
     const { access, uid, orgId } = user
 
     if (access?.includes('manage_leads')) {
       const unsubscribe = getLeadsByDate(orgId, {
-        cutoffDate: 1659724200000,
+        cutoffDate: sourceDateRange,
       })
       console.log('my Array data is delayer 1 ', unsubscribe)
       await setLeadsFetchedRawData(await unsubscribe)
@@ -534,18 +548,40 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                     <section className="flex">
                       {!isEdit && (
                         // <Link to={routes.projectEdit({ uid })}>
-                        <span className="flex ml-2 mt-[5px] items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                          <EyeIcon
-                            className="h-3 w-3 mr-1"
-                            aria-hidden="true"
-                          />
-                          Now
-                        </span>
+                        <button
+                          onClick={() => {
+                            setSourceDateRange(startOfDay(d).getTime())
+                          }}
+                        >
+                          <span
+                            className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                              sourceDateRange === startOfDay(d).getTime()
+                                ? 'font-semibold text-pink-800 bg-pink-200 '
+                                : 'text-green-800 bg-green-200 '
+                            }rounded-full`}
+                          >
+                            <EyeIcon
+                              className="h-3 w-3 mr-1"
+                              aria-hidden="true"
+                            />
+                            Now
+                          </span>
+                        </button>
                         // </Link>
                       )}
 
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(startOfWeek(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange === startOfWeek(d).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -553,8 +589,18 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           This Week
                         </span>
                       </button>
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(startOfMonth(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange === startOfMonth(d).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -562,8 +608,21 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           This Month
                         </span>
                       </button>
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(
+                            subMonths(startOfMonth(d), 6).getTime()
+                          )
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange ===
+                            subMonths(startOfMonth(d), 6).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -887,21 +946,43 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                   </div>
 
                   <section className="flex flex-row justify-between mt-[18px]">
-                    <section className="flex">
+                  <section className="flex">
                       {!isEdit && (
                         // <Link to={routes.projectEdit({ uid })}>
-                        <span className="flex ml-2 mt-[5px] items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                          <EyeIcon
-                            className="h-3 w-3 mr-1"
-                            aria-hidden="true"
-                          />
-                          Now
-                        </span>
+                        <button
+                          onClick={() => {
+                            setSourceDateRange(startOfDay(d).getTime())
+                          }}
+                        >
+                          <span
+                            className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                              sourceDateRange === startOfDay(d).getTime()
+                                ? 'font-semibold text-pink-800 bg-pink-200 '
+                                : 'text-green-800 bg-green-200 '
+                            }rounded-full`}
+                          >
+                            <EyeIcon
+                              className="h-3 w-3 mr-1"
+                              aria-hidden="true"
+                            />
+                            Now
+                          </span>
+                        </button>
                         // </Link>
                       )}
 
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(startOfWeek(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange === startOfWeek(d).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -909,8 +990,18 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           This Week
                         </span>
                       </button>
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(startOfMonth(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange === startOfMonth(d).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -918,8 +1009,21 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           This Month
                         </span>
                       </button>
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(
+                            subMonths(startOfMonth(d), 6).getTime()
+                          )
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange ===
+                            subMonths(startOfMonth(d), 6).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -1229,21 +1333,43 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                   </div>
 
                   <section className="flex flex-row justify-between mt-[18px]">
-                    <section className="flex">
+                  <section className="flex">
                       {!isEdit && (
                         // <Link to={routes.projectEdit({ uid })}>
-                        <span className="flex ml-2 mt-[5px] items-center h-6 px-3 text-xs font-semibold text-pink-800 bg-pink-200 rounded-full">
-                          <EyeIcon
-                            className="h-3 w-3 mr-1"
-                            aria-hidden="true"
-                          />
-                          Now
-                        </span>
+                        <button
+                          onClick={() => {
+                            setSourceDateRange(startOfDay(d).getTime())
+                          }}
+                        >
+                          <span
+                            className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                              sourceDateRange === startOfDay(d).getTime()
+                                ? 'font-semibold text-pink-800 bg-pink-200 '
+                                : 'text-green-800 bg-green-200 '
+                            }rounded-full`}
+                          >
+                            <EyeIcon
+                              className="h-3 w-3 mr-1"
+                              aria-hidden="true"
+                            />
+                            Now
+                          </span>
+                        </button>
                         // </Link>
                       )}
 
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(startOfWeek(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange === startOfWeek(d).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -1251,8 +1377,18 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           This Week
                         </span>
                       </button>
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(startOfMonth(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange === startOfMonth(d).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"
@@ -1260,8 +1396,21 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           This Month
                         </span>
                       </button>
-                      <button onClick={onSliderOpen}>
-                        <span className="flex ml-2 items-center h-6 px-3 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSourceDateRange(
+                            subMonths(startOfMonth(d), 6).getTime()
+                          )
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mt-[5px] items-center h-6 px-3 text-xs ${
+                            sourceDateRange ===
+                            subMonths(startOfMonth(d), 6).getTime()
+                              ? 'font-semibold text-pink-800 bg-pink-200 '
+                              : 'text-green-800 bg-green-200 '
+                          }rounded-full`}
+                        >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
                             aria-hidden="true"

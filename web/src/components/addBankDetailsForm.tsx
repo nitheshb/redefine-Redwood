@@ -10,7 +10,6 @@ import {
   Checkbox,
 } from '@mui/material'
 import { Add, Remove } from '@mui/icons-material'
-import { format, isDate, parse } from 'date-fns'
 import Loader from 'src/components/Loader/Loader'
 import { TextField } from 'src/util/formFields/TextField'
 import { DateField } from 'src/util/formFields/DateField'
@@ -57,7 +56,7 @@ const AddBankDetailsForm = ({ title, dialogOpen, phase: bankData }) => {
       await dialogOpen(false)
     } else if (title === 'Virtual Accounts') {
       await addVirtualAccount(
-        orgId, 
+        orgId,
         updatedData,
         'nithe.nithesh@gmail.com',
         'virtural Creation'
