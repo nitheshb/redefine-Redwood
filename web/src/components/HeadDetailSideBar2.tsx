@@ -81,72 +81,70 @@ const HeadSideBarDetailView2 = ({
           </span>
           <ul className=" pt-4">
             {sourceLink != 'projectsScreen' &&
-              // !access?.includes('manage_leads') &&
+              !access?.includes('manage_leads') &&
               // !user?.role?.includes(USER_ROLES.CP_AGENT) &&
               (
-                <>
+              <>
+                <span
+                  className={
+                    'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden  border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer '
+                  }
+                  onClick={() => setViewable('inProgress')}
+                >
+                  <span className="flex items-center ml-">
+                    <span className="text-md font-bold pl-1 ">My Schedule</span>
+                  </span>
+                  <span className="flex ml-auto items-bottom">
+                    <span
+                      // style={{ color: '#058527' }}
+                      className="flex ml-auto items-bottom text-xs mt-2"
+                    ></span>
+                  </span>
+                </span>
+                <li className="relative ">
                   <span
                     className={
-                      'flex items-center text-sm py-1  h-9 mt-4 overflow-hidden  border-b text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer '
+                      'flex items-center text-sm py-1 h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
+                      (viewable === 'Today1'
+                        ? 'text-blue-600 text-md font-semibold '
+                        : '')
                     }
-                    onClick={() => setViewable('inProgress')}
+                    onClick={() => setViewable('Today1')}
                   >
-                    <span className="flex items-center ml-">
-                      <span className="text-md font-bold pl-1 ">
-                        My Schedule
+                    <span className="flex items-center">
+                      <span style={{ color: '#058527' }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                          <g fill="currentColor" fillRule="evenodd">
+                            <path
+                              fillRule="nonzero"
+                              d="M6 4.5h12A1.5 1.5 0 0 1 19.5 6v2.5h-15V6A1.5 1.5 0 0 1 6 4.5z"
+                              opacity=".1"
+                            ></path>
+                            <path
+                              fillRule="nonzero"
+                              d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H6zm1 3h10a.5.5 0 1 1 0 1H7a.5.5 0 0 1 0-1z"
+                            ></path>
+                            <text
+                              fontFamily="-apple-system, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
+                              fontSize="9"
+                              transform="translate(4 2)"
+                              fontWeight="500"
+                            >
+                              <tspan x="8" y="15" textAnchor="middle">
+                                28
+                              </tspan>
+                            </text>
+                          </g>
+                        </svg>
                       </span>
+                      <span className="text-sm pl-1">My Task</span>
                     </span>
                     <span className="flex ml-auto items-bottom">
-                      <span
-                        // style={{ color: '#058527' }}
-                        className="flex ml-auto items-bottom text-xs mt-2"
-                      ></span>
+                      <span className="flex ml-auto items-bottom text-xs mt-2"></span>
                     </span>
                   </span>
-                  <li className="relative ">
-                    <span
-                      className={
-                        'flex items-center text-sm py-1 h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                        (viewable === 'Today1'
-                          ? 'text-blue-600 text-md font-semibold '
-                          : '')
-                      }
-                      onClick={() => setViewable('Today1')}
-                    >
-                      <span className="flex items-center">
-                        <span style={{ color: '#058527' }}>
-                          <svg width="24" height="24" viewBox="0 0 24 24">
-                            <g fill="currentColor" fillRule="evenodd">
-                              <path
-                                fillRule="nonzero"
-                                d="M6 4.5h12A1.5 1.5 0 0 1 19.5 6v2.5h-15V6A1.5 1.5 0 0 1 6 4.5z"
-                                opacity=".1"
-                              ></path>
-                              <path
-                                fillRule="nonzero"
-                                d="M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H6zm1 3h10a.5.5 0 1 1 0 1H7a.5.5 0 0 1 0-1z"
-                              ></path>
-                              <text
-                                fontFamily="-apple-system, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
-                                fontSize="9"
-                                transform="translate(4 2)"
-                                fontWeight="500"
-                              >
-                                <tspan x="8" y="15" textAnchor="middle">
-                                  28
-                                </tspan>
-                              </text>
-                            </g>
-                          </svg>
-                        </span>
-                        <span className="text-sm pl-1">My Task</span>
-                      </span>
-                      <span className="flex ml-auto items-bottom">
-                        <span className="flex ml-auto items-bottom text-xs mt-2"></span>
-                      </span>
-                    </span>
-                  </li>
-                  {/* <li className="relative ">
+                </li>
+                {/* <li className="relative ">
                     <span
                       className={
                         'flex items-center text-sm py-1 h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
@@ -190,7 +188,7 @@ const HeadSideBarDetailView2 = ({
                     </span>
                   </li> */}
 
-                  {/* <li className="relative">
+                {/* <li className="relative">
                   <span
                     className={
                       'flex items-center text-sm py-1  h-9  overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
@@ -227,8 +225,8 @@ const HeadSideBarDetailView2 = ({
                     </span>
                   </span>
                 </li> */}
-                </>
-              )}
+              </>
+            )}
             {['crmModule'].includes(sourceLink) && (
               <>
                 <span
