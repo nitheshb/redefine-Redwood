@@ -464,7 +464,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                     ]}
                   />
                 </div>
-                {access.includes('manage_leads') && (
+                {access?.includes('manage_leads') && (
                   <div className=" flex flex-col   w-40">
                     <SlimSelectBox
                       name="project"
@@ -556,27 +556,29 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
 
                     <span className="ml-1">Add lead</span>
                   </button>
-                  <button
-                    onClick={() => fSetLeadsType('Import Leads')}
-                    className={`flex items-center ml-5 pl-2 pr-4 py-1 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                  {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                    <button
+                      onClick={() => fSetLeadsType('Import Leads')}
+                      className={`flex items-center ml-5 pl-2 pr-4 py-1 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
 
-                    <span className="ml-1">Import Lead</span>
-                  </button>
+                      <span className="ml-1">Import Lead</span>
+                    </button>
+                  )}
                   {/* {isImportLeads && (
                     <button
                       onClick={() => fSetLeadsType('Import Leads')}

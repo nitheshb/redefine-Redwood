@@ -1,5 +1,5 @@
 import { Link, routes } from '@redwoodjs/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MetaTags } from '@redwoodjs/web'
 import ExecutiveHomeViewerPage from 'src/components/ExecutiveHomeViewerPage'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
@@ -15,15 +15,27 @@ import MyLeadsReportHome from 'src/components/myLeadsReportHome'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
 import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
 import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { USER_ROLES } from 'src/constants/userRoles'
 
 const LeadsManagerPage = () => {
+  const { user } = useAuth()
   const [showSideBar, setShowSideBar] = useState(true)
-  const [viewable, setViewable] = useState('Today1')
+  const [viewable, setViewable] = useState('')
 
   const showSideView1 = () => {
-    console.log('iam clicked', showSideBar)
     setShowSideBar(!showSideBar)
   }
+  useEffect(() => {
+    if (user) {
+      if (user?.role?.includes(USER_ROLES.CP_AGENT)) {
+        setViewable('inProgress')
+      } else {
+        setViewable('Today1')
+      }
+    }
+  }, [user])
+
   return (
     <>
       <div className="flex w-screen h-screen text-gray-700">

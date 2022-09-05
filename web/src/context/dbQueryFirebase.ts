@@ -335,17 +335,31 @@ export const checkIfLeadAlreadyExists = async (cName, matchVal) => {
   // db.collection('')
   console.log('matchVal', matchVal)
   const q = await query(collection(db, cName), where('Mobile', '==', matchVal))
+  const parentDocs = []
+  const cpDocs = []
 
   const querySnapshot = await getDocs(q)
   await console.log('foundLength @@', querySnapshot.docs.length)
   // return await querySnapshot.docs.length
-  const parentDocs = []
+
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     console.log('dc', doc.id, ' => ', doc.data())
     parentDocs.push(doc.data())
   })
 
+  const q1 = await query(
+    collection(db, `${cName}_cp`),
+    where('Mobile', '==', matchVal)
+  )
+
+  const querySnapshot1 = await getDocs(q1)
+
+  querySnapshot1.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log('dc', doc.id, ' => ', doc.data())
+    parentDocs.push(doc.data())
+  })
   return parentDocs
 
   // await console.log('length is ', q.length)
@@ -605,6 +619,57 @@ export const addLead = async (orgId, data, by, msg) => {
   x1.push('pending')
 
   await addLeadScheduler(orgId, x.id, data1, x1, data.assignedTo)
+  return
+}
+// This function is used to add leads for cp
+export const addCpLead = async (orgId, data, by, msg) => {
+  const x = await addDoc(collection(db, `${orgId}_leads_cp`), data)
+  await console.log('add Lead value is ', x, x.id, data)
+  const { intype, Name, Mobile, assignedTo, assignedToObj } = data
+  const { data3, errorx } = await supabase.from(`${orgId}_lead_logs`).insert([
+    {
+      type: 'l_ctd',
+      subtype: intype,
+      T: Timestamp.now().toMillis(),
+      Luid: x?.id || '',
+      by,
+      payload: {},
+    },
+  ])
+  if (assignedTo) {
+    const { offPh } = assignedToObj
+    await sendWhatAppTextSms1(
+      offPh,
+      `⚡ A new lead- ${Name} Assigned to you. 📱${Mobile}`
+    )
+  }
+  await console.log('what is this supbase', data3, errorx)
+  // await addLeadLog(orgId, x.id, {
+  //   s: 's',
+  //   type: 'status',
+  //   subtype: 'added',
+  //   T: Timestamp.now().toMillis(),
+  //   txt: msg,
+  //   by,
+  // })
+
+  // add task to scheduler to Intro call in 3 hrs
+
+  // const data1 = {
+  //   by: by,
+  //   type: 'schedule',
+  //   pri: 'priority 1',
+  //   notes: 'Get into Introduction Call with customer',
+  //   sts: 'pending',
+  //   schTime: Timestamp.now().toMillis() + 10800000, // 3 hrs
+  //   ct: Timestamp.now().toMillis(),
+  // }
+
+  // const x1 = []
+
+  // x1.push('pending')
+
+  // await addLeadScheduler(orgId, x.id, data1, x1, data.assignedTo)
   return
 }
 

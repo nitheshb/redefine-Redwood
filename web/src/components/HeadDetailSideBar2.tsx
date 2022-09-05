@@ -6,6 +6,7 @@ import { UserGroupIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import { spawnSync } from 'child_process'
 import { useEffect, useState } from 'react'
+import { USER_ROLES } from 'src/constants/userRoles'
 import { useAuth } from 'src/context/firebase-auth-context'
 const HeadSideBarDetailView2 = ({
   pgName,
@@ -14,7 +15,7 @@ const HeadSideBarDetailView2 = ({
   setViewable,
   viewable,
 }) => {
-  // projectsScreen leadsScreen
+  // projectsScreen leadsScreenf
 
   // const showSideView = () => {
   //   console.log('iam clicked', showSideBar)
@@ -80,7 +81,9 @@ const HeadSideBarDetailView2 = ({
           </span>
           <ul className=" pt-4">
             {sourceLink != 'projectsScreen' &&
-              !access.includes('manage_leads') && (
+              // !access?.includes('manage_leads') &&
+              // !user?.role?.includes(USER_ROLES.CP_AGENT) &&
+              (
                 <>
                   <span
                     className={
@@ -679,7 +682,7 @@ const HeadSideBarDetailView2 = ({
                 </li>
               </>
             )}
-            {sourceLink === 'leadsScreen' && access.includes('manage_leads') && (
+            {sourceLink === 'leadsScreen' && access?.includes('manage_leads') && (
               <>
                 <span
                   className={
@@ -925,7 +928,7 @@ const HeadSideBarDetailView2 = ({
                 </ul>
               </li>
             )} */}
-            {sourceLink === 'leadsScreen' && !access.includes('manage_leads') && (
+            {sourceLink === 'leadsScreen' && !access?.includes('manage_leads') && (
               <li className="relative">
                 <span
                   className={
@@ -992,7 +995,7 @@ const HeadSideBarDetailView2 = ({
                 </ul>
               </li>
             )}
-            {sourceLink === 'leadsScreen' && access.includes('manage_leads') && (
+            {sourceLink === 'leadsScreen' && access?.includes('manage_leads') && (
               <li className="relative">
                 <span
                   className={
@@ -1521,40 +1524,42 @@ const HeadSideBarDetailView2 = ({
                     </span>
                   </span>
                 </li>
-                <li className="relative">
-                  <span
-                    className={
-                      'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                      (pgName === 'home' ? 'bg-gray-300' : '')
-                    }
-                    onClick={() => setViewable('Team Lead Report')}
-                  >
-                    <span className="flex items-center">
-                      <span style={{ color: '#692fc2' }}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                        >
-                          <g fill="none" fillRule="evenodd">
-                            <g fill="currentColor" fillRule="nonzero">
-                              <g>
+                {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                  <li className="relative">
+                    <span
+                      className={
+                        'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
+                        (pgName === 'home' ? 'bg-gray-300' : '')
+                      }
+                      onClick={() => setViewable('Team Lead Report')}
+                    >
+                      <span className="flex items-center">
+                        <span style={{ color: '#692fc2' }}>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                          >
+                            <g fill="none" fillRule="evenodd">
+                              <g fill="currentColor" fillRule="nonzero">
                                 <g>
-                                  <path
-                                    d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9zm0 1c-4.418 0-8 3.582-8 8 0 .702.09 1.383.26 2.031l2.886-2.885c.196-.195.512-.195.708 0l2.646 2.647 4.793-4.794L13 9c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h3.52l.052.005L16.5 8c.036 0 .071.004.105.011l.046.012.04.015c.014.005.027.012.04.019.013.006.025.013.036.02l.035.025c.014.01.027.02.04.033l.012.011.011.013c.012.012.023.025.033.039l-.044-.052c.026.027.05.056.069.087l.02.034.02.042.014.04c.005.015.009.03.012.046l.006.033.005.051V12c0 .276-.224.5-.5.5s-.5-.224-.5-.5V9.706l-5.146 5.148c-.196.195-.512.195-.708 0L7.5 12.207 4.618 15.09C5.827 17.974 8.677 20 12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8z"
-                                    transform="translate(-564 -480) translate(528 444) translate(36 36)"
-                                  ></path>
+                                  <g>
+                                    <path
+                                      d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9zm0 1c-4.418 0-8 3.582-8 8 0 .702.09 1.383.26 2.031l2.886-2.885c.196-.195.512-.195.708 0l2.646 2.647 4.793-4.794L13 9c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h3.52l.052.005L16.5 8c.036 0 .071.004.105.011l.046.012.04.015c.014.005.027.012.04.019.013.006.025.013.036.02l.035.025c.014.01.027.02.04.033l.012.011.011.013c.012.012.023.025.033.039l-.044-.052c.026.027.05.056.069.087l.02.034.02.042.014.04c.005.015.009.03.012.046l.006.033.005.051V12c0 .276-.224.5-.5.5s-.5-.224-.5-.5V9.706l-5.146 5.148c-.196.195-.512.195-.708 0L7.5 12.207 4.618 15.09C5.827 17.974 8.677 20 12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8z"
+                                      transform="translate(-564 -480) translate(528 444) translate(36 36)"
+                                    ></path>
+                                  </g>
                                 </g>
                               </g>
                             </g>
-                          </g>
-                        </svg>
+                          </svg>
+                        </span>
+                        <span className="text-sm pl-[4px]">Team Report</span>
                       </span>
-                      <span className="text-sm pl-[4px]">Team Report</span>
                     </span>
-                  </span>
-                </li>
+                  </li>
+                )}
               </ul>
             </li>
 
@@ -1579,48 +1584,50 @@ const HeadSideBarDetailView2 = ({
                 </Link>
                 <ul className="px-1">
                   {' '}
-                  <li className="relative">
-                    <span
-                      className={
-                        'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                        (pgName === 'home' ? 'bg-gray-300' : '')
-                      }
-                      onClick={() => setViewable('Attendance')}
-                    >
-                      <span className="flex items-center">
-                        <span style={{ color: '#eb8909' }}>
-                          <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              opacity="0.1"
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M13 6.5A1.5 1.5 0 0114.5 5h3A1.5 1.5 0 0119 6.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 0113 9.5v-3zM6.5 13A1.5 1.5 0 005 14.5v3A1.5 1.5 0 006.5 19h3a1.5 1.5 0 001.5-1.5v-3A1.5 1.5 0 009.5 13h-3zm8 0a1.5 1.5 0 00-1.5 1.5v3a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-3zm-8-8A1.5 1.5 0 005 6.5v3A1.5 1.5 0 006.5 11h3A1.5 1.5 0 0011 9.5v-3A1.5 1.5 0 009.5 5h-3z"
-                              fill="currentColor"
-                            ></path>
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M17.5 6h-3a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5zm-3-1A1.5 1.5 0 0013 6.5v3a1.5 1.5 0 001.5 1.5h3A1.5 1.5 0 0019 9.5v-3A1.5 1.5 0 0017.5 5h-3zm-8 9h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5A1.5 1.5 0 016.5 13h3a1.5 1.5 0 011.5 1.5v3A1.5 1.5 0 019.5 19h-3A1.5 1.5 0 015 17.5v-3zm9.5-.5h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3a1.5 1.5 0 01-1.5-1.5v-3zM6.5 6h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zM5 6.5A1.5 1.5 0 016.5 5h3A1.5 1.5 0 0111 6.5v3A1.5 1.5 0 019.5 11h-3A1.5 1.5 0 015 9.5v-3z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
-                        </span>
+                  {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                    <li className="relative">
+                      <span
+                        className={
+                          'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
+                          (pgName === 'home' ? 'bg-gray-300' : '')
+                        }
+                        onClick={() => setViewable('Attendance')}
+                      >
+                        <span className="flex items-center">
+                          <span style={{ color: '#eb8909' }}>
+                            <svg
+                              width="24"
+                              height="24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                opacity="0.1"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M13 6.5A1.5 1.5 0 0114.5 5h3A1.5 1.5 0 0119 6.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 0113 9.5v-3zM6.5 13A1.5 1.5 0 005 14.5v3A1.5 1.5 0 006.5 19h3a1.5 1.5 0 001.5-1.5v-3A1.5 1.5 0 009.5 13h-3zm8 0a1.5 1.5 0 00-1.5 1.5v3a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-3zm-8-8A1.5 1.5 0 005 6.5v3A1.5 1.5 0 006.5 11h3A1.5 1.5 0 0011 9.5v-3A1.5 1.5 0 009.5 5h-3z"
+                                fill="currentColor"
+                              ></path>
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M17.5 6h-3a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5zm-3-1A1.5 1.5 0 0013 6.5v3a1.5 1.5 0 001.5 1.5h3A1.5 1.5 0 0019 9.5v-3A1.5 1.5 0 0017.5 5h-3zm-8 9h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5A1.5 1.5 0 016.5 13h3a1.5 1.5 0 011.5 1.5v3A1.5 1.5 0 019.5 19h-3A1.5 1.5 0 015 17.5v-3zm9.5-.5h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3a1.5 1.5 0 01-1.5-1.5v-3zM6.5 6h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zM5 6.5A1.5 1.5 0 016.5 5h3A1.5 1.5 0 0111 6.5v3A1.5 1.5 0 019.5 11h-3A1.5 1.5 0 015 9.5v-3z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </span>
 
-                        <span className="text-sm pl-[6px]">Attendance</span>
+                          <span className="text-sm pl-[6px]">Attendance</span>
+                        </span>
+                        <span className="flex ml-auto items-bottom">
+                          <span
+                            // style={{ color: '#058527' }}
+                            className="flex ml-auto items-bottom text-xs mt-1"
+                          ></span>
+                        </span>
                       </span>
-                      <span className="flex ml-auto items-bottom">
-                        <span
-                          // style={{ color: '#058527' }}
-                          className="flex ml-auto items-bottom text-xs mt-1"
-                        ></span>
-                      </span>
-                    </span>
-                  </li>
+                    </li>
+                  )}
                   <li className="relative">
                     <span
                       className={
@@ -1705,52 +1712,56 @@ const HeadSideBarDetailView2 = ({
                       </span>
                     </span>
                   </li>
-                  <li className="relative">
-                    <span
-                      className={
-                        'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
-                        (pgName === 'home' ? 'bg-gray-300' : '')
-                      }
-                      onClick={() => setViewable('LinkWhatsApp')}
-                    >
-                      <span className="flex items-center">
-                        <span style={{ color: '#eb8909' }}>
-                          <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              opacity="0.1"
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M13 6.5A1.5 1.5 0 0114.5 5h3A1.5 1.5 0 0119 6.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 0113 9.5v-3zM6.5 13A1.5 1.5 0 005 14.5v3A1.5 1.5 0 006.5 19h3a1.5 1.5 0 001.5-1.5v-3A1.5 1.5 0 009.5 13h-3zm8 0a1.5 1.5 0 00-1.5 1.5v3a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-3zm-8-8A1.5 1.5 0 005 6.5v3A1.5 1.5 0 006.5 11h3A1.5 1.5 0 0011 9.5v-3A1.5 1.5 0 009.5 5h-3z"
-                              fill="currentColor"
-                            ></path>
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M17.5 6h-3a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5zm-3-1A1.5 1.5 0 0013 6.5v3a1.5 1.5 0 001.5 1.5h3A1.5 1.5 0 0019 9.5v-3A1.5 1.5 0 0017.5 5h-3zm-8 9h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5A1.5 1.5 0 016.5 13h3a1.5 1.5 0 011.5 1.5v3A1.5 1.5 0 019.5 19h-3A1.5 1.5 0 015 17.5v-3zm9.5-.5h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3a1.5 1.5 0 01-1.5-1.5v-3zM6.5 6h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zM5 6.5A1.5 1.5 0 016.5 5h3A1.5 1.5 0 0111 6.5v3A1.5 1.5 0 019.5 11h-3A1.5 1.5 0 015 9.5v-3z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
-                        </span>
+                  {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                    <li className="relative">
+                      <span
+                        className={
+                          'flex items-center text-sm py-1  h-9 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-blue-600 hover:bg-blue-50 transition duration-300 ease-in-out cursor-pointer ' +
+                          (pgName === 'home' ? 'bg-gray-300' : '')
+                        }
+                        onClick={() => setViewable('LinkWhatsApp')}
+                      >
+                        <span className="flex items-center">
+                          <span style={{ color: '#eb8909' }}>
+                            <svg
+                              width="24"
+                              height="24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                opacity="0.1"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M13 6.5A1.5 1.5 0 0114.5 5h3A1.5 1.5 0 0119 6.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 0113 9.5v-3zM6.5 13A1.5 1.5 0 005 14.5v3A1.5 1.5 0 006.5 19h3a1.5 1.5 0 001.5-1.5v-3A1.5 1.5 0 009.5 13h-3zm8 0a1.5 1.5 0 00-1.5 1.5v3a1.5 1.5 0 001.5 1.5h3a1.5 1.5 0 001.5-1.5v-3a1.5 1.5 0 00-1.5-1.5h-3zm-8-8A1.5 1.5 0 005 6.5v3A1.5 1.5 0 006.5 11h3A1.5 1.5 0 0011 9.5v-3A1.5 1.5 0 009.5 5h-3z"
+                                fill="currentColor"
+                              ></path>
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M17.5 6h-3a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5zm-3-1A1.5 1.5 0 0013 6.5v3a1.5 1.5 0 001.5 1.5h3A1.5 1.5 0 0019 9.5v-3A1.5 1.5 0 0017.5 5h-3zm-8 9h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5A1.5 1.5 0 016.5 13h3a1.5 1.5 0 011.5 1.5v3A1.5 1.5 0 019.5 19h-3A1.5 1.5 0 015 17.5v-3zm9.5-.5h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zm-1.5.5a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3a1.5 1.5 0 01-1.5-1.5v-3zM6.5 6h3a.5.5 0 01.5.5v3a.5.5 0 01-.5.5h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.5-.5zM5 6.5A1.5 1.5 0 016.5 5h3A1.5 1.5 0 0111 6.5v3A1.5 1.5 0 019.5 11h-3A1.5 1.5 0 015 9.5v-3z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </span>
 
-                        <span className="text-sm pl-[6px]">Link WhatsApp</span>
+                          <span className="text-sm pl-[6px]">
+                            Link WhatsApp
+                          </span>
+                        </span>
+                        <span className="flex ml-auto items-bottom">
+                          <span
+                            // style={{ color: '#058527' }}
+                            className="flex ml-auto items-bottom text-xs mt-1"
+                          ></span>
+                        </span>
                       </span>
-                      <span className="flex ml-auto items-bottom">
-                        <span
-                          // style={{ color: '#058527' }}
-                          className="flex ml-auto items-bottom text-xs mt-1"
-                        ></span>
-                      </span>
-                    </span>
-                  </li>
+                    </li>
+                  )}
                 </ul>
               </li>
             }
-            {sourceLink === 'leadsScreen' && access.includes('manage_leads') && (
+            {sourceLink === 'leadsScreen' && access?.includes('manage_leads') && (
               <li className="relative">
                 <Link
                   className={

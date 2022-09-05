@@ -20,7 +20,8 @@ export const navigateBasedOnUser = async (userData) => {
     await navigate(routes.home(), { replace: true })
   } else if (
     userData.role.includes(USER_ROLES.SALES_MANAGER) ||
-    userData.role.includes(USER_ROLES.SALES_EXECUTIVE)
+    userData.role.includes(USER_ROLES.SALES_EXECUTIVE) ||
+    userData.role.includes(USER_ROLES.CP_AGENT)
   ) {
     console.log('where am i 3')
     await navigate(routes.leadsManager(), { replace: true })

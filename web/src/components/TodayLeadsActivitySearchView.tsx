@@ -793,7 +793,7 @@ export default function TodayLeadsActivitySearchView({
                     ]}
                   />
                 </div>
-                {access.includes('manage_leads') && (
+                {access?.includes('manage_leads') && (
                   <div className=" flex flex-col  w-40 mr-5">
                     <SlimSelectBox
                       name="project"

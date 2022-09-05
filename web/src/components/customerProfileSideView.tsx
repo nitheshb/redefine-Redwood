@@ -94,6 +94,7 @@ import EditLeadTask from './Comp_CustomerProfileSideView/EditLeadTask'
 import AddLeadTaskComment from './Comp_CustomerProfileSideView/AddLeadTaskComment'
 import LeadTaskDisplayHead from './Comp_CustomerProfileSideView/LeadTaskDisplayHead'
 import LeadTaskFooter from './Comp_CustomerProfileSideView/LeadTaskFooter'
+import { USER_ROLES } from 'src/constants/userRoles'
 
 // interface iToastInfo {
 //   open: boolean
@@ -1057,6 +1058,39 @@ export default function CustomerProfileSideView({
     return tex
   }
 
+  const currentStatusDispFun = (dat) => {
+    switch (dat) {
+      case 'unassigned':
+        return 'Un Assigned'
+        break
+      case 'new':
+        return 'New'
+        break
+      case 'followup':
+        return 'Follow Up'
+        break
+      case 'notinterested':
+        return 'Not Interested'
+        break
+      case 'visitfixed':
+        return 'Visit Fixed'
+        break
+      case 'visitdone':
+        return 'Visit Done'
+        break
+      case 'junk':
+        return 'Junk'
+        break
+      case 'booked':
+        return 'Booked'
+        break
+
+      default:
+        return dat
+        break
+    }
+  }
+
   const fAddNotes = async () => {
     //  make it as notInterested if source is from NotInterestedd Page
     console.log(
@@ -1382,22 +1416,32 @@ export default function CustomerProfileSideView({
                     <div className="font-md text-xs text-gray-500 mb-[px] tracking-wide mr-4">
                       Assigned To {}
                     </div>
-                    <div>
-                      <AssigedToDropComp
-                        assignerName={assignerName}
-                        id={id}
-                        setAssigner={setAssigner}
-                        usersList={usersList}
-                        align={undefined}
-                      />
-                    </div>
+                    {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                      <div>
+                        <AssigedToDropComp
+                          assignerName={assignerName}
+                          id={id}
+                          setAssigner={setAssigner}
+                          usersList={usersList}
+                          align={undefined}
+                        />
+                      </div>
+                    )}
+                    {user?.role?.includes(USER_ROLES.CP_AGENT) && (
+
+                        <span className="text-left text-sm">
+                          {' '}
+                          {assignerName}
+                        </span>
+
+                    )}
                   </section>
                   <section>
                     <div className="font-md text-xs text-gray-500 mb-[0px] tracking-wide mr-4">
                       Current Status {}
                     </div>
-                    <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] py-[px] rounded ">
-                      {leadDetailsObj?.Status}{' '}
+                    <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] pt-[2px] rounded ">
+                      {currentStatusDispFun(leadDetailsObj?.Status)}{' '}
                       {/* {leadDetailsObj?.Status != tempLeadStatus
                         ? `--> ${' '}${tempLeadStatus}`
                         : ''} */}

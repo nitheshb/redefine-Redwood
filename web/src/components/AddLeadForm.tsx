@@ -15,6 +15,7 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
+  addCpLead,
   addLead,
   checkIfLeadAlreadyExists,
   getAllProjects,
@@ -28,6 +29,7 @@ import {
   sendWhatAppTextSms,
 } from 'src/util/axiosWhatAppApi'
 import { sourceList } from 'src/constants/projects'
+import { USER_ROLES } from 'src/constants/userRoles'
 
 const AddLeadForm = ({ title, dialogOpen }) => {
   const { user } = useAuth()
@@ -152,6 +154,22 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     console.log(data)
     setLoading(true)
 
+    if (user?.role?.includes(USER_ROLES.CP_AGENT)) {
+      const { uid, email, displayName, department, role, orgId, phone } = user
+      data.assignedTo = uid
+      data.assignedToObj = {
+        department: department || [],
+        email: email || '',
+        label: displayName || '',
+        name: displayName || '',
+        namespace: orgId,
+        roles: role || [],
+        uid: uid || '',
+        value: uid || '',
+        offPh: phone || '',
+      }
+    }
+
     const {
       email,
       name,
@@ -162,6 +180,7 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       project,
       projectId,
     } = data
+
     // updateUserRole(uid, deptVal, myRole, email, 'nitheshreddy.email@gmail.com')
 
     const foundLength = await checkIfLeadAlreadyExists(
@@ -201,13 +220,23 @@ const AddLeadForm = ({ title, dialogOpen }) => {
     } else {
       console.log('foundLENGTH IS empty ', foundLength)
 
-      // proceed to copy
-      await addLead(
-        orgId,
-        leadData,
-        user?.email,
-        `lead created and assidged to ${assignedToObj?.email || assignedTo}`
-      )
+      if (user?.role?.includes(USER_ROLES.CP_AGENT)) {
+        await addCpLead(
+          orgId,
+          leadData,
+          user?.email,
+          `lead created and assidged to ${assignedToObj?.email || assignedTo}`
+        )
+      } else {
+        // proceed to copy
+        await addLead(
+          orgId,
+          leadData,
+          user?.email,
+          `lead created and assidged to ${assignedToObj?.email || assignedTo}`
+        )
+        //
+      }
 
       await sendWhatAppTextSms(
         mobileNo,
@@ -419,28 +448,31 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                       </div>
                     </div>
                     {/* 4 */}
-                    <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
-                      <div className="w-full flex flex-col mb-3">
-                        <CustomSelect
-                          name="assignedTo"
-                          label="Assign To"
-                          className="input mt-"
-                          onChange={(value) => {
-                            formik.setFieldValue('assignedTo', value.value)
-                            formik.setFieldValue('assignedToObj', value)
-                          }}
-                          value={formik.values.assignedTo}
-                          options={usersList}
-                        />
+                    {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                      <div className="md:flex md:flex-row md:space-x-4 w-full text-xs">
+                        <div className="w-full flex flex-col mb-3">
+                          <CustomSelect
+                            name="assignedTo"
+                            label="Assign To"
+                            className="input mt-"
+                            onChange={(value) => {
+                              console.log('value is ', value, user)
+                              formik.setFieldValue('assignedTo', value.value)
+                              formik.setFieldValue('assignedToObj', value)
+                            }}
+                            value={formik.values.assignedTo}
+                            options={usersList}
+                          />
 
-                        <p
-                          className="text-sm text-red-500 hidden mt-3"
-                          id="error"
-                        >
-                          Please fill out this field.
-                        </p>
+                          <p
+                            className="text-sm text-red-500 hidden mt-3"
+                            id="error"
+                          >
+                            Please fill out this field.
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* 6 */}
                     <div className=" mt-8 ">

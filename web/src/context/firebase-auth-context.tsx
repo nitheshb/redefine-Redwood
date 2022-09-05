@@ -109,6 +109,7 @@ export default function AuthContextProvider({ children }) {
         phone: currentUser.phoneNumber,
         token: currentUser.uid,
         projAccessA: additionalUserInfo.projAccessA || [],
+        department: additionalUserInfo?.department,
         role: additionalUserInfo?.roles,
         orgId: additionalUserInfo?.orgId,
         orgName: additionalUserInfo?.orgName,

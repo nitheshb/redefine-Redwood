@@ -66,7 +66,7 @@ const Routes = () => {
         <Route path="/users-admin" page={UsersAdminPage} name="usersAdmin" />
       </>
     )
-  } else if (user?.role?.includes(USER_ROLES.SALES_MANAGER) || user?.role?.includes(USER_ROLES.SALES_EXECUTIVE)) {
+  } else if (user?.role?.includes(USER_ROLES.SALES_MANAGER) || user?.role?.includes(USER_ROLES.SALES_EXECUTIVE) || user?.role?.includes(USER_ROLES.CP_AGENT)) {
     UpdatedRoutes = (
       <>
         <Route path="/leads-manager" page={LeadsManagerPage} name="leadsManager" />
