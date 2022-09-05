@@ -589,7 +589,7 @@ export const addLead = async (orgId, data, by, msg) => {
     const { offPh } = assignedToObj
     await sendWhatAppTextSms1(
       offPh,
-      `⚡ A new lead- ${Name} Assigned to you ${Project || ''}. 📱${Mobile}`
+      `⚡ A new lead- ${Name} Assigned to you @${Project || ''}. 📱${Mobile}`
     )
   }
   await console.log('what is this supbase', data3, errorx)
@@ -625,7 +625,7 @@ export const addLead = async (orgId, data, by, msg) => {
 export const addCpLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads_cp`), data)
   await console.log('add Lead value is ', x, x.id, data)
-  const { intype, Name, Mobile, assignedTo, assignedToObj } = data
+  const { intype, Name, Mobile, assignedTo, Project, assignedToObj } = data
   const { data3, errorx } = await supabase.from(`${orgId}_lead_logs`).insert([
     {
       type: 'l_ctd',
@@ -640,7 +640,7 @@ export const addCpLead = async (orgId, data, by, msg) => {
     const { offPh } = assignedToObj
     await sendWhatAppTextSms1(
       offPh,
-      `⚡ A new lead- ${Name} Assigned to you. 📱${Mobile}`
+      `⚡ A new lead- ${Name} Assigned to you @${Project}. 📱${Mobile}`
     )
   }
   await console.log('what is this supbase', data3, errorx)
