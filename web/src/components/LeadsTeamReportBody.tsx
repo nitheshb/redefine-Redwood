@@ -26,6 +26,7 @@ import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
 import CSVDownloader from 'src/util/csvDownload'
 import { prettyDate } from 'src/util/dateConverter'
 import { startOfWeek, startOfDay, startOfMonth, subMonths } from 'date-fns'
+import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
 
 const valueFeedData = [
   { k: 'Total', v: 300, pic: '' },
@@ -355,6 +356,20 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
     'bg-white border-blue-200',
     'bg-[#baf6d0] border-purple-200',
   ]
+  const triggerWhatsAppAlert = async () => {
+    empListTuned.map((empData, i) => {
+      const { label, offPh, followup, visitfixed, negotiation, booked } =
+        empData
+      sendWhatAppTextSms1(
+        '9849000525',
+        `🔥  ${label} Leads Stats As Per Today \n
+      Followup -  ${followup?.length || 0}
+      Visits Fixed -${visitfixed?.length || 0}
+      Negotiation -${negotiation?.length || 0}
+      Booked -${booked?.length || 0}`
+      )
+    })
+  }
   return (
     <div>
       <section className="pb-8 pt-1 mb-8 leading-7 text-gray-900 bg-white ">
@@ -946,7 +961,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                   </div>
 
                   <section className="flex flex-row justify-between mt-[18px]">
-                  <section className="flex">
+                    <section className="flex">
                       {!isEdit && (
                         // <Link to={routes.projectEdit({ uid })}>
                         <button
@@ -1022,7 +1037,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             subMonths(startOfMonth(d), 6).getTime()
                               ? 'font-semibold text-pink-800 bg-pink-200 '
                               : 'text-green-800 bg-green-200 '
-                          }rounded-full`}
+                          } rounded-full`}
                         >
                           <CalendarIcon
                             className="h-3 w-3 mr-1"
@@ -1033,6 +1048,23 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </button>
                     </section>
                     <div className=" flex   ">
+                      {/* <button
+                        onClick={() => {
+                          triggerWhatsAppAlert(startOfWeek(d).getTime())
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mr-4  items-center h-6 px-3 text-xs
+                            text-green-800 bg-green-200
+                          rounded-full`}
+                        >
+                          <CalendarIcon
+                            className="h-3 w-3 mr-1"
+                            aria-hidden="true"
+                          />
+                          Alert Status Count
+                        </span>
+                      </button> */}
                       <SlimSelectBox
                         name="project"
                         label=""
@@ -1333,7 +1365,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                   </div>
 
                   <section className="flex flex-row justify-between mt-[18px]">
-                  <section className="flex">
+                    <section className="flex">
                       {!isEdit && (
                         // <Link to={routes.projectEdit({ uid })}>
                         <button

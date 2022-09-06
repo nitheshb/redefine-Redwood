@@ -1113,13 +1113,13 @@ export const updateUserRole = async (
   by
 ) => {
   await updateDoc(doc(db, 'users', uid), {
-    empId: empId,
+    empId: empId || 101,
     orgName: orgName,
     orgId: orgId,
     department: [dept],
     roles: [role],
-    offPh,
-    perPh,
+    offPh: offPh || "",
+    perPh: perPh || "",
   })
   return await addUserLog(orgId, {
     s: 's',
