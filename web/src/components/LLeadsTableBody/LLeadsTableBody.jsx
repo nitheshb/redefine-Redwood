@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 import * as React from 'react'
+import '../../styles/myStyles.css'
 import PropTypes from 'prop-types'
 import { useAuth } from 'src/context/firebase-auth-context'
 import DatePicker from 'react-datepicker'
@@ -32,6 +33,8 @@ import CSVDownloader from '../../util/csvDownload'
 import { timeConv, prettyDate } from '../../util/dateConverter'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 
+
+import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
 
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
 import { ConnectingAirportsOutlined } from '@mui/icons-material'
@@ -261,15 +264,42 @@ const EnhancedTableToolbar = (props) => {
     viewUnitStatusA,
     pickCustomViewer,
     setViewUnitStatusA,
+    startDate,
+    endDate,
+    setDateRange
   } = props
   const d = new window.Date()
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
   const [downloadFormatRows, setDownloadFormatRows] = React.useState([])
   const [cutOffDate, setCutOffDate] = React.useState(d.getTime() + 60000)
 
+  const [isOpened, setIsOpened] = React.useState(false);
+
+
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
   }, [rows])
+  React.useEffect(() => {
+   console.log('calendar state', isOpened, startDate?.getTime())
+   if(startDate !== null && endDate !=null){
+    console.log('inside you1')
+    let rowsR = rows.filter((item) => {
+     return item.Date >=startDate.getTime() && item.Date <=endDate.getTime()
+    })
+    setRowsAfterSearchKey(rowsR)
+   }else if(startDate !==null) {
+    console.log('inside you')
+    let rowsR = rows.filter((item) => {
+      console.log('inside you wjat os tjo filter', item.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name)
+      return item.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000
+     })
+     console.log('inside you wjat os tjo filter', rowsR.length)
+     setRowsAfterSearchKey(rowsR)
+     console.log('inside you wjat os tjo filter 1', rowsAfterSearchKey)
+   }
+  }, [startDate,endDate ])
+
+
 
 
 
@@ -331,6 +361,7 @@ if(data?.Remarks){
   }
   return (
     <section className="flex flex-row justify-between pb pt-1 px-3 ">
+    <span className="flex flex-row">
       <span className="relative  p- border rounded h-7">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -353,6 +384,39 @@ if(data?.Remarks){
           className="ml-6 bg-transparent text-xs focus:border-transparent focus:ring-0 focus-visible:border-transparent focus-visible:ring-0 focus:outline-none"
         />
       </span>
+      <span className="max-h-[42px] mt-[2px] ml-3">
+                {/* <span className="text-xs font-bodyLato text-[#516f90] cursor-none">
+                  Set Due Date
+                </span> */}
+                <label className="bg-green   pl-   flex flex-row cursor-pointer">
+                  <CalendarMonthTwoToneIcon className="mr-1" />
+                  <span className="inline">
+                    <DatePicker
+                      className="z-10 pl- py-1  inline text-xs text-[#0091ae] bg-white cursor-pointer min-w-[170px]"
+                      // selected={cutOffDate}
+                      // onChange={(date) => setCutOffDate(date)}
+                      // calendarContainer={MyContainer(setIsOpened)}
+                      onCalendarOpen={()=>setIsOpened(true)}
+                      onCalendarClose={()=>setIsOpened(false)}
+                      onChange={(update)=> setDateRange(update)}
+                      selectsRange={true}
+                      startDate={startDate}
+      endDate={endDate}
+
+  isClearable={true}
+
+                      // injectTimes={[
+                      //   setHours(setMinutes(d, 1), 0),
+                      //   setHours(setMinutes(d, 5), 12),
+                      //   setHours(setMinutes(d, 59), 23),
+                      // ]}
+                      dateFormat="MMM d, yyyy "
+                    />
+                  </span>
+                </label>
+              </span>
+      </span>
+
       {/* <span className="inline mt-[4px] pl-2">
                     <DatePicker
                       className=" pl- px- min-w-[151px] inline text-xs text-[#0091ae] bg-white cursor-pointer"
@@ -400,18 +464,16 @@ if(data?.Remarks){
           pickCustomViewer={pickCustomViewer}
         />
         </section>
-        <Tooltip title={`Download ${rowsAfterSearchKey.length} Rows`}>
-          {/* <IconButton>
-            <FileDownloadIcon />
-            <CSVDownloader />
-          </IconButton> */}
+        {/* <Tooltip title={`Download ${rowsAfterSearchKey.length} Rows`}>
+
           <IconButton className="bg-gray-200 ">
             <EventNoteTwoToneIcon
               className="h-[20px] w-[20px]"
               style={{ height: '20px', width: '20px' }}
             />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
+
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
@@ -477,6 +539,8 @@ export default function LLeadsTableBody({
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [rows, setRows] = React.useState([])
   const [searchKey, setSearchKey] = React.useState('')
+  const [dateRange, setDateRange] = React.useState([null, null]);
+  const [startDate, endDate] = dateRange;
 
   React.useEffect(() => {
     console.log('send values is', rowsParent, selStatus)
@@ -506,6 +570,11 @@ export default function LLeadsTableBody({
     console.log('search on is', searchKey)
     filterSearchString(rows)
   }, [searchKey])
+  React.useEffect(() => {
+    console.log('search on is', searchKey)
+    // filterByDate(rows)
+
+  }, [startDate, endDate])
 
   const filterStuff = async (parent) => {
 
@@ -528,6 +597,33 @@ export default function LLeadsTableBody({
 
     await setRows(x)
     await console.log('xo', x, parent, selStatus)
+  }
+  const filterByDate = ()=>{
+    rows.filter((item)=>{
+      {/* console.log('inside xxxx ==>', item?.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name) */}
+      if(startDate !== null && endDate !=null){
+console.log('inside you1', startDate, endDate, item)
+let x=  rows.filter((item) => {
+return item?.Date >=startDate?.getTime() && item?.Date <=endDate?.getTime()
+})
+setRows(x)
+
+}else if(startDate !==null) {
+console.log('inside you1 x')
+console.log('iinside you1 x', item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
+
+let x =  rows.filter((item) => {
+console.log('inside you wjat os tjo filter', item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
+return item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000
+})
+setRows(x)
+
+
+
+} else{
+return item
+}
+    })
   }
   const filterSearchString = async (parent) => {
     return
@@ -578,22 +674,10 @@ export default function LLeadsTableBody({
     // }
     console.log('is row clicked', row)
     selUserProfileF('User Profile', row)
-
     setSelected(newSelected)
   }
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked)
-  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1
 
@@ -641,6 +725,9 @@ export default function LLeadsTableBody({
         selStatus={selStatus}
         filteredData={rows}
         searchKey={searchKey}
+        startDate={startDate}
+        endDate={endDate}
+        setDateRange={setDateRange}
         setSearchKey={setSearchKey}
         rows={rows}
         viewUnitStatusA={viewUnitStatusA}
@@ -708,6 +795,29 @@ id: "1" */}
                   ) {
                     return item
                   }
+                }).
+              filter((item)=>{
+                  {/* console.log('inside xxxx ==>', item?.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name) */}
+                  if(startDate !== null && endDate !=null){
+    console.log('inside you1', startDate, endDate, item)
+
+     return item?.Date >=startDate?.getTime() && item?.Date <=endDate?.getTime()+ 86399999
+
+
+   }else if(startDate !==null) {
+    console.log('inside you1 x')
+    console.log('iinside you1 x', item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
+
+
+      console.log('inside you wjat os tjo filter',item?.Date,  item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
+      return item?.Date>= startDate?.getTime()+ 19070000 && item?.Date <= startDate?.getTime()+ 86399999
+
+
+
+
+   } else{
+      return item
+     }
                 })
                // .slice()
               .sort(getComparator(order, orderBy))
@@ -890,3 +1000,5 @@ id: "1" */}
     </Section>
   )
 }
+
+

@@ -143,6 +143,19 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
+export const getMyLeadsByDate = async (orgId, data) => {
+  const { cutoffDate, uid, isCp } = data
+  const colName = isCp ? `${orgId}_leads_cp` : `${orgId}_leads`
+  const itemsQuery = query(
+    collection(db, colName),
+    where('assignedTo', '==', uid),
+    where('Date', '>=', cutoffDate)
+  )
+  const citySnapshot = await getDocs(itemsQuery)
+  // await citySnapshot.docs.map((doc) => doc.data())
+  console.log('my Array data is delayer 1', citySnapshot)
+  return await citySnapshot.docs.map((doc) => doc.data())
+}
 export const getLeadsByDate = async (orgId, data) => {
   const { cutoffDate } = data
   const itemsQuery = query(
@@ -233,7 +246,6 @@ export const getTodayTodoLeadsDataByUser = (orgId, snapshot, data, error) => {
     where('assignedTo', '==', uid)
   )
 
-  console.log('hello ', status, itemsQuery, uid)
   return onSnapshot(itemsQuery, snapshot, error)
 }
 export const getLeadbyId1 = async (orgId, uid) => {
@@ -1118,8 +1130,8 @@ export const updateUserRole = async (
     orgId: orgId,
     department: [dept],
     roles: [role],
-    offPh: offPh || "",
-    perPh: perPh || "",
+    offPh: offPh || '',
+    perPh: perPh || '',
   })
   return await addUserLog(orgId, {
     s: 's',

@@ -10,6 +10,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts'
 import { sourceList, sourceListItems } from 'src/constants/projects'
 import { useEffect, useState } from 'react'
 import { useAuth } from 'src/context/firebase-auth-context'
+import DatePicker from 'react-datepicker'
+
 import {
   getAllProjects,
   getLeadsByDate,
@@ -27,6 +29,7 @@ import CSVDownloader from 'src/util/csvDownload'
 import { prettyDate } from 'src/util/dateConverter'
 import { startOfWeek, startOfDay, startOfMonth, subMonths } from 'date-fns'
 import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
+import { serialEmployeeTaskLeadData } from './LeadsTeamReport/serialEmployeeTaskLeadData'
 
 const valueFeedData = [
   { k: 'Total', v: 300, pic: '' },
@@ -88,11 +91,30 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   const { orgId, access } = user
   const [leadsFetchedRawData, setLeadsFetchedRawData] = useState([])
   const [sourceListTuned, setSourceListTuned] = useState([])
+  const [sourceFiltListTuned, setFiltSourceListTuned] = useState([])
+  const [viewSource, selViewSource] = useState({
+    label: 'All Sources',
+    value: 'allsources',
+  })
+
   const [showInproFSource, setShowInproFSource] = useState(false)
   const [showArchiFSource, setShowArchiFSource] = useState(false)
   const [usersList, setusersList] = useState([])
+  const [usersCleanList, setusersCleanList] = useState([])
   const [projectList, setprojectList] = useState([])
+  const [projectFilList, setFiltProjectListTuned] = useState([])
+  const [viewProjs, selProjs] = useState({
+    label: 'All Projects',
+    value: 'allprojects',
+  })
   const [empListTuned, setEmployeeListTuned] = useState([])
+  const [empFiltListTuned, setFiltEmployeeListTuned] = useState([])
+  const [viewEmp1, selEmp1] = useState({
+    label: 'All Employee',
+    value: 'allemployees',
+  })
+  const [empTaskListTuned, setTaskEmployeeListTuned] = useState([])
+  const [empTaskListTunedTotal, setTaskEmployeeListTunedTotal] = useState({})
 
   const [projectListTuned, setProjectListTuned] = useState([])
   const [selProjectEmpIs, setSelProjectEmp] = useState({
@@ -117,7 +139,9 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   const [empDateRange, setEmpDateRange] = React.useState(
     startOfWeek(d).getTime()
   )
-
+  const [dateRange, setDateRange] = React.useState([null, null])
+  const [isOpened, setIsOpened] = React.useState(false)
+  const [startDate, endDate] = dateRange
   const [viewSourceStats1A, SetViewSourceStats1A] = useState([
     'label',
     'total',
@@ -128,11 +152,21 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   ])
 
   useEffect(() => {
+    if (dateRange[0] != null) {
+      const [startDate, endDate] = dateRange
+      setSourceDateRange(startDate?.getTime())
+    }
+  }, [dateRange])
+  useEffect(() => {
     getLeadsDataFun()
   }, [])
   useEffect(() => {
     getLeadsDataFun()
   }, [sourceDateRange])
+
+  // useEffect(() => {
+  //   console.log('emp task list is ', empTaskListTuned)
+  // }, [empTaskListTuned])
 
   useEffect(() => {
     if (selProjectIs?.value === 'allprojects') {
@@ -158,6 +192,49 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
       setSourceRawFilData(projectWideA)
     }
   }, [leadsFetchedRawData, selProjectIs])
+
+  useEffect(() => {
+    if (viewSource?.value == 'allsources') {
+      setFiltSourceListTuned(sourceListTuned)
+    } else {
+      const z = sourceListTuned.filter((da) => {
+        return da.value == viewSource?.value
+      })
+      setFiltSourceListTuned(z)
+      // viewSource
+    }
+  }, [sourceListTuned, viewSource])
+
+  useEffect(() => {
+    if (viewEmp1?.value == 'allemployees') {
+      setFiltEmployeeListTuned(empListTuned)
+    } else {
+      const z = empListTuned.filter((da) => {
+        return da.value == viewEmp1?.value
+      })
+      setFiltEmployeeListTuned(z)
+      // viewSource
+    }
+  }, [empListTuned, viewEmp1])
+
+  useEffect(() => {
+    if (viewProjs?.value == 'allprojects') {
+      setFiltProjectListTuned(projectList)
+    } else {
+      const z = projectList.filter((da) => {
+        return da.value == viewProjs?.value
+      })
+      setFiltProjectListTuned(z)
+      // viewSource
+    }
+  }, [projectList, viewProjs])
+
+  // const [projectFilList, setFiltProjectListTuned] = useState([])
+  // const [viewProjs, selProjs] = useState({
+  //   label: 'All Projects',
+  //   value: 'allprojects',
+  // })
+
   useEffect(() => {
     setProjectListTuned(serialProjectLeadData(projectList, leadsFetchedRawData))
   }, [projectList, leadsFetchedRawData])
@@ -185,7 +262,108 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
       setEmpRawFilData(projectWideA)
     }
   }, [usersList, leadsFetchedRawData, selProjectEmpIs])
+  const setEmpTaskFun = async () => {
+    const x = await serialEmployeeTaskLeadData(usersCleanList)
+    // await console.log('master one', x)
+    // await setTaskEmployeeListTuned(x)
+    const z = Promise.all(x).then(function (results) {
+      console.log('master one', results)
+      setTaskEmployeeListTuned(results)
+      let sum1,
+        now1,
+        Sum7,
+        Sum30,
+        Sum20,
+        Sum40,
+        Sum50,
+        Sum50M = 0
+
+      const Total = {}
+      empTaskListTuned.map((dat) => {
+        sum1 = sum1 + dat.Total.length || 0
+        now1 = now1 + dat.now.length || 0
+        Sum7 = Sum7 + dat.sevenDays.length || 0
+        Sum30 = Sum30 + dat.thirtyDays.length || 0
+        Sum20 = Sum20 + dat.twentyDays.length || 0
+        Sum40 = Sum40 + dat.fourtyDays.length || 0
+        Sum50 = Sum50 + dat.fiftyDays.length || 0
+        Sum50M = dat.fiftyDaysMore.length || 0 + Sum50M
+      })
+      Total.TotalSum = sum1
+      Total.now = now1
+      Total.Sum7 = Sum7
+      Total.Sum30 = Sum30
+      Total.Sum20 = Sum20
+      Total.Sum40 = Sum40
+      Total.Sum50 = Sum50
+      Total.Sum50M = Sum50M
+      setTaskEmployeeListTunedTotal(Total)
+      console.log('sum1 is ', Total)
+
+      // results.filter((data) => data != 'remove')
+      return results
+    })
+    await console.log('setted value is 0', z)
+
+    const a1 = await x.map((dat) => {
+      const { label, fiftyDays, value } = dat
+      console.log(
+        'setted value is 1 ',
+        label,
+        value,
+        fiftyDays,
+        dat?.fiftyDays,
+        dat
+      )
+      const z = {}
+
+      z.label = dat.label
+      z.sevenDays = fiftyDays?.length
+      z.twentyDays = dat.twentyDays
+      z.thirtyDays = dat.thirtyDays
+      z.fourtyDays = dat.fourtyDays
+      z.sevenDays = dat.sevenDays
+      z.fiftyDays = dat.fiftyDays
+      z.Total = 0
+
+      return z
+    })
+    // await setTaskEmployeeListTuned(a1)
+    await console.log('setted value is ', a1, a1.length)
+  }
+  useEffect(() => {
+    getUsersDataFun1()
+  }, [])
+  useEffect(() => {
+    setEmpTaskFun()
+  }, [usersCleanList])
+
   const getUsersDataFun = async () => {
+    const unsubscribe = steamUsersListByRole(
+      orgId,
+      async (querySnapshot) => {
+        const usersListA1 = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        // setusersList(usersListA)
+        usersListA1.map((user) => {
+          user.label = user.displayName || user.name
+          user.value = user.uid
+        })
+        console.log('fetched users list is', usersListA1)
+
+        await setusersList([
+          ...usersListA1,
+          ...[{ label: 'others', value: 'others' }],
+        ])
+      },
+      (error) => setusersList([])
+    )
+
+    return unsubscribe
+  }
+
+  const getUsersDataFun1 = async () => {
     const unsubscribe = steamUsersListByRole(
       orgId,
       async (querySnapshot) => {
@@ -197,14 +375,11 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
           user.label = user.displayName || user.name
           user.value = user.uid
         })
-        console.log('fetched users list is', usersListA)
+        console.log('fetched users list is clean', usersListA)
 
-        await setusersList([
-          ...usersListA,
-          ...[{ label: 'others', value: 'others' }],
-        ])
+        await setusersCleanList(usersListA)
       },
-      (error) => setusersList([])
+      (error) => setusersCleanList([])
     )
 
     return unsubscribe
@@ -367,6 +542,20 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
       Visits Fixed -${visitfixed?.length || 0}
       Negotiation -${negotiation?.length || 0}
       Booked -${booked?.length || 0}`
+      )
+    })
+  }
+  const triggerWhatsAppTasksCountAlert = async () => {
+    empTaskListTuned.map((empData, i) => {
+      const { label, offPh, now, sevenDays } = empData
+      sendWhatAppTextSms1(
+        offPh,
+      `Good Morning..! ${label} 🏆
+      Here is your Today's task overview  \n
+      Due Tasks   -${sevenDays?.length || 0}
+      Today Tasks -  ${now?.length || 0}\n \n
+      For details- www.redefineerp.in
+      `
       )
     })
   }
@@ -565,6 +754,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         // <Link to={routes.projectEdit({ uid })}>
                         <button
                           onClick={() => {
+                            setDateRange([null, null])
                             setSourceDateRange(startOfDay(d).getTime())
                           }}
                         >
@@ -587,6 +777,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
 
                       <button
                         onClick={() => {
+                          setDateRange([null, null])
                           setSourceDateRange(startOfWeek(d).getTime())
                         }}
                       >
@@ -606,6 +797,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </button>
                       <button
                         onClick={() => {
+                          setDateRange([null, null])
                           setSourceDateRange(startOfMonth(d).getTime())
                         }}
                       >
@@ -625,6 +817,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </button>
                       <button
                         onClick={() => {
+                          setDateRange([null, null])
                           setSourceDateRange(
                             subMonths(startOfMonth(d), 6).getTime()
                           )
@@ -645,12 +838,88 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           Last 6 Months
                         </span>
                       </button>
+                      <span className="max-h-[42px] mt-[2px] ml-3">
+                        <label className="bg-green   pl-   flex flex-row cursor-pointer">
+                          {!isOpened && (
+                            <span
+                              className={`flex ml-1 mt-[6px] items-center h-6 px-3 text-xs ${
+                                sourceDateRange === startDate?.getTime()
+                                  ? 'font-semibold text-pink-800 bg-pink-200 '
+                                  : 'text-green-800 bg-green-200 '
+                              } rounded-full`}
+                              onClick={() => {
+                                setIsOpened(true)
+                              }}
+                            >
+                              <CalendarIcon
+                                className="h-3 w-3 mr-1"
+                                aria-hidden="true"
+                              />
+                              {startDate == null ? 'Custom' : ''}
+                              {startDate != null
+                                ? prettyDate(startDate?.getTime() + 21600000)
+                                : ''}
+                              {endDate != null ? '-' : ''}
+                              {endDate != null
+                                ? prettyDate(endDate?.getTime() + 21600000)
+                                : ''}
+                            </span>
+                          )}
+                          {
+                            <span
+                              className="inline"
+                              style={{
+                                visibility: isOpened ? 'visible' : 'hidden',
+                              }}
+                            >
+                              <DatePicker
+                                className={`z-10 pl- py-1 px-3 mt-[7px] inline text-xs text-[#0091ae] placeholder-green-800 cursor-pointer  max-w-fit   ${
+                                  sourceDateRange === startDate?.getTime()
+                                    ? 'font-semibold text-pink-800 bg-pink-200 '
+                                    : 'text-green-800 bg-green-200 '
+                                } rounded-full`}
+                                onCalendarClose={() => setIsOpened(false)}
+                                placeholderText="&#128467;	 Custom"
+                                onChange={(update) => {
+                                  setDateRange(update)
+                                }}
+                                selectsRange={true}
+                                startDate={startDate}
+                                endDate={endDate}
+                                isClearable={true}
+                                onClear={() => {
+                                  console.log('am i cleared')
+                                }}
+                                dateFormat="MMM d, yyyy "
+                              />
+                            </span>
+                          }
+                        </label>
+                      </span>
                     </section>
                     <div className=" flex flex-row   ">
+                      <span className="mr-4">
+                        <SlimSelectBox
+                          name="project"
+                          label=""
+                          className="input min-w-[164px]"
+                          onChange={(value) => {
+                            console.log('zoro condition changed one  is', value)
+                            selViewSource(value)
+                            // formik.setFieldValue('project', value.value)
+                          }}
+                          value={viewSource?.value}
+                          // options={aquaticCreatures}
+                          options={[
+                            ...[{ label: 'All Sources', value: 'allsources' }],
+                            ...sourceListTuned,
+                          ]}
+                        />
+                      </span>
                       <SlimSelectBox
                         name="project"
                         label=""
-                        className="input min-w-[164px]"
+                        className="input min-w-[164px] ml-4"
                         onChange={(value) => {
                           console.log('zoro condition changed one  is', value)
                           setSelProject(value)
@@ -748,7 +1017,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {sourceListTuned.map((data, i) => {
+                      {sourceFiltListTuned.map((data, i) => {
                         return (
                           <tr
                             className={`  ${
@@ -823,125 +1092,128 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         )
                       })}
 
-                      <tr className="border-b bg-gray-800 boder-gray-900">
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
-                          Total
-                        </td>
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                          {sourceRawFilData.length}
-                        </td>
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            sourceRawFilData.filter((datObj) =>
-                              [
-                                'new',
-                                'unassigned',
-                                'followup',
-                                'visitfixed',
-                                'visitdone',
-                                'negotiation',
-                              ].includes(datObj?.Status)
-                            ).length
-                          }
-                        </td>
-                        {showInproFSource && (
-                          <>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'new'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'followup'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'visitfixed'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'visitdone'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'negotiation'
-                                ).length
-                              }
-                            </td>
-                          </>
-                        )}
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                          {
-                            sourceRawFilData.filter(
-                              (datObj) => datObj?.Status == 'booked'
-                            ).length
-                          }
-                        </td>
-                        {showArchiFSource && (
-                          <>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'notinterested'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'dead'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'blocked'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                sourceRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'junk'
-                                ).length
-                              }
-                            </td>
-                          </>
-                        )}
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            sourceRawFilData.filter((datObj) =>
-                              [
-                                'blocked',
-                                'dead',
-                                'notinterested',
-                                'junk',
-                              ].includes(datObj?.Status)
-                            ).length
-                          }
-                        </td>
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            sourceRawFilData.filter(
-                              (datObj) => datObj?.Status == ''
-                            ).length
-                          }
-                        </td>
-                      </tr>
+                      {viewSource?.value === 'allsources' && (
+                        <tr className="border-b bg-gray-800 boder-gray-900">
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
+                            Total
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                            {sourceRawFilData.length}
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              sourceRawFilData.filter((datObj) =>
+                                [
+                                  'new',
+                                  'unassigned',
+                                  'followup',
+                                  'visitfixed',
+                                  'visitdone',
+                                  'negotiation',
+                                ].includes(datObj?.Status)
+                              ).length
+                            }
+                          </td>
+                          {showInproFSource && (
+                            <>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'new'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'followup'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'visitfixed'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'visitdone'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'negotiation'
+                                  ).length
+                                }
+                              </td>
+                            </>
+                          )}
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                            {
+                              sourceRawFilData.filter(
+                                (datObj) => datObj?.Status == 'booked'
+                              ).length
+                            }
+                          </td>
+                          {showArchiFSource && (
+                            <>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap ">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) =>
+                                      datObj?.Status == 'notinterested'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'dead'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'blocked'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  sourceRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'junk'
+                                  ).length
+                                }
+                              </td>
+                            </>
+                          )}
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              sourceRawFilData.filter((datObj) =>
+                                [
+                                  'blocked',
+                                  'dead',
+                                  'notinterested',
+                                  'junk',
+                                ].includes(datObj?.Status)
+                              ).length
+                            }
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              sourceRawFilData.filter(
+                                (datObj) => datObj?.Status == ''
+                              ).length
+                            }
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -966,6 +1238,8 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         // <Link to={routes.projectEdit({ uid })}>
                         <button
                           onClick={() => {
+                            setDateRange([null, null])
+
                             setSourceDateRange(startOfDay(d).getTime())
                           }}
                         >
@@ -988,6 +1262,8 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
 
                       <button
                         onClick={() => {
+                          setDateRange([null, null])
+
                           setSourceDateRange(startOfWeek(d).getTime())
                         }}
                       >
@@ -1007,6 +1283,8 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </button>
                       <button
                         onClick={() => {
+                          setDateRange([null, null])
+
                           setSourceDateRange(startOfMonth(d).getTime())
                         }}
                       >
@@ -1026,6 +1304,8 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </button>
                       <button
                         onClick={() => {
+                          setDateRange([null, null])
+
                           setSourceDateRange(
                             subMonths(startOfMonth(d), 6).getTime()
                           )
@@ -1046,9 +1326,67 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           Last 6 Months
                         </span>
                       </button>
+                      <span className="max-h-[42px] mt-[2px] ml-3">
+                        <label className="bg-green   pl-   flex flex-row cursor-pointer">
+                          {!isOpened && (
+                            <span
+                              className={`flex ml-1 mt-[6px] items-center h-6 px-3 text-xs ${
+                                sourceDateRange === startDate?.getTime()
+                                  ? 'font-semibold text-pink-800 bg-pink-200 '
+                                  : 'text-green-800 bg-green-200 '
+                              } rounded-full`}
+                              onClick={() => {
+                                setIsOpened(true)
+                              }}
+                            >
+                              <CalendarIcon
+                                className="h-3 w-3 mr-1"
+                                aria-hidden="true"
+                              />
+                              {startDate == null ? 'Custom' : ''}
+                              {startDate != null
+                                ? prettyDate(startDate?.getTime() + 21600000)
+                                : ''}
+                              {endDate != null ? '-' : ''}
+                              {endDate != null
+                                ? prettyDate(endDate?.getTime() + 21600000)
+                                : ''}
+                            </span>
+                          )}
+                          {
+                            <span
+                              className="inline"
+                              style={{
+                                visibility: isOpened ? 'visible' : 'hidden',
+                              }}
+                            >
+                              <DatePicker
+                                className={`z-10 pl- py-1 px-3 mt-[7px] inline text-xs text-[#0091ae] placeholder-green-800 cursor-pointer  max-w-fit   ${
+                                  sourceDateRange === startDate?.getTime()
+                                    ? 'font-semibold text-pink-800 bg-pink-200 '
+                                    : 'text-green-800 bg-green-200 '
+                                } rounded-full`}
+                                onCalendarClose={() => setIsOpened(false)}
+                                placeholderText="&#128467;	 Custom"
+                                onChange={(update) => {
+                                  setDateRange(update)
+                                }}
+                                selectsRange={true}
+                                startDate={startDate}
+                                endDate={endDate}
+                                isClearable={true}
+                                onClear={() => {
+                                  console.log('am i cleared')
+                                }}
+                                dateFormat="MMM d, yyyy "
+                              />
+                            </span>
+                          }
+                        </label>
+                      </span>
                     </section>
                     <div className=" flex   ">
-                      {/* <button
+                      <button
                         onClick={() => {
                           triggerWhatsAppAlert(startOfWeek(d).getTime())
                         }}
@@ -1064,7 +1402,27 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           />
                           Alert Status Count
                         </span>
-                      </button> */}
+                      </button>
+                      <span className="mr-4">
+                        <SlimSelectBox
+                          name="project"
+                          label=""
+                          className="input min-w-[164px]"
+                          onChange={(value) => {
+                            console.log('zoro condition changed one  is', value)
+                            selEmp1(value)
+                            // formik.setFieldValue('project', value.value)
+                          }}
+                          value={viewEmp1?.value}
+                          // options={aquaticCreatures}
+                          options={[
+                            ...[
+                              { label: 'All Employees', value: 'allemployees' },
+                            ],
+                            ...empListTuned,
+                          ]}
+                        />
+                      </span>
                       <SlimSelectBox
                         name="project"
                         label=""
@@ -1091,7 +1449,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                     <thead className="border-b">
                       <tr>
                         {[
-                          { label: 'Source', id: 'label' },
+                          { label: 'Employee', id: 'label' },
                           { label: 'Total', id: 'total' },
                           { label: 'InProgress', id: 'inprogress' },
                           { label: 'New', id: 'new' },
@@ -1111,7 +1469,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                             key={i}
                             scope="col"
                             className={`text-sm font-medium text-gray-900 px-6 py-4 ${
-                              ['Source'].includes(d.label) ? 'text-left' : ''
+                              ['Employee'].includes(d.label) ? 'text-left' : ''
                             }`}
                             style={{
                               display: viewSourceStats1A.includes(d.id)
@@ -1161,7 +1519,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {empListTuned.map((data, i) => {
+                      {empFiltListTuned.map((data, i) => {
                         return (
                           <tr
                             className={`  ${
@@ -1228,131 +1586,135 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         )
                       })}
 
-                      <tr className="border-b bg-gray-800 boder-gray-900">
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
-                          Total
-                        </td>
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {EmpRawFilData.length}
-                        </td>
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            EmpRawFilData.filter((datObj) =>
-                              [
-                                'new',
-                                'unassigned',
-                                'followup',
-                                'visitfixed',
-                                'visitdone',
-                                'negotiation',
-                              ].includes(datObj?.Status)
-                            ).length
-                          }
-                        </td>
-                        {showInproFSource && (
-                          <>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'new'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'followup'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'visitfixed'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'visitdone'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'negotiation'
-                                ).length
-                              }
-                            </td>
-                          </>
-                        )}
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            EmpRawFilData.filter(
-                              (datObj) => datObj?.Status == 'booked'
-                            ).length
-                          }
-                        </td>
-                        {showArchiFSource && (
-                          <>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'notinterested'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'dead'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'blocked'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                EmpRawFilData.filter(
-                                  (datObj) => datObj?.Status == 'junk'
-                                ).length
-                              }
-                            </td>
-                          </>
-                        )}
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            EmpRawFilData.filter((datObj) =>
-                              [
-                                'blocked',
-                                'dead',
-                                'notinterested',
-                                'junk',
-                              ].includes(datObj?.Status)
-                            ).length
-                          }
-                        </td>
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            EmpRawFilData.filter(
-                              (datObj) => datObj?.Status == ''
-                            ).length
-                          }
-                        </td>
-                      </tr>
+                      {viewEmp1?.value == 'allemployees' && (
+                        <tr className="border-b bg-gray-800 boder-gray-900">
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
+                            Total
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {EmpRawFilData.length}
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              EmpRawFilData.filter((datObj) =>
+                                [
+                                  'new',
+                                  'unassigned',
+                                  'followup',
+                                  'visitfixed',
+                                  'visitdone',
+                                  'negotiation',
+                                ].includes(datObj?.Status)
+                              ).length
+                            }
+                          </td>
+                          {showInproFSource && (
+                            <>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'new'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'followup'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'visitfixed'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'visitdone'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'negotiation'
+                                  ).length
+                                }
+                              </td>
+                            </>
+                          )}
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              EmpRawFilData.filter(
+                                (datObj) => datObj?.Status == 'booked'
+                              ).length
+                            }
+                          </td>
+                          {showArchiFSource && (
+                            <>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) =>
+                                      datObj?.Status == 'notinterested'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'dead'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'blocked'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  EmpRawFilData.filter(
+                                    (datObj) => datObj?.Status == 'junk'
+                                  ).length
+                                }
+                              </td>
+                            </>
+                          )}
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              EmpRawFilData.filter((datObj) =>
+                                [
+                                  'blocked',
+                                  'dead',
+                                  'notinterested',
+                                  'junk',
+                                ].includes(datObj?.Status)
+                              ).length
+                            }
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              EmpRawFilData.filter(
+                                (datObj) => datObj?.Status == ''
+                              ).length
+                            }
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
+
           <div
             className="flex flex-col  mt-14 drop-shadow-md rounded-lg  px-4"
             style={{ backgroundColor: '#ebfafa' }}
@@ -1450,8 +1812,86 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                           Last 6 Months
                         </span>
                       </button>
+                      <span className="max-h-[42px] mt-[2px] ml-3">
+                        <label className="bg-green   pl-   flex flex-row cursor-pointer">
+                          {!isOpened && (
+                            <span
+                              className={`flex ml-1 mt-[6px] items-center h-6 px-3 text-xs ${
+                                sourceDateRange === startDate?.getTime()
+                                  ? 'font-semibold text-pink-800 bg-pink-200 '
+                                  : 'text-green-800 bg-green-200 '
+                              } rounded-full`}
+                              onClick={() => {
+                                setIsOpened(true)
+                              }}
+                            >
+                              <CalendarIcon
+                                className="h-3 w-3 mr-1"
+                                aria-hidden="true"
+                              />
+                              {startDate == null ? 'Custom' : ''}
+                              {/* {sourceDateRange} -- {startDate?.getTime()} */}
+                              {startDate != null
+                                ? prettyDate(startDate?.getTime() + 21600000)
+                                : ''}
+                              {endDate != null ? '-' : ''}
+                              {endDate != null
+                                ? prettyDate(endDate?.getTime() + 21600000)
+                                : ''}
+                            </span>
+                          )}
+                          {
+                            <span
+                              className="inline"
+                              style={{
+                                visibility: isOpened ? 'visible' : 'hidden',
+                              }}
+                            >
+                              <DatePicker
+                                className={`z-10 pl- py-1 px-3 mt-[7px] inline text-xs text-[#0091ae] placeholder-green-800 cursor-pointer  max-w-fit   ${
+                                  sourceDateRange === startDate?.getTime()
+                                    ? 'font-semibold text-pink-800 bg-pink-200 '
+                                    : 'text-green-800 bg-green-200 '
+                                } rounded-full`}
+                                onCalendarClose={() => setIsOpened(false)}
+                                placeholderText="&#128467;	 Custom"
+                                onChange={(update) => {
+                                  setDateRange(update)
+
+                                  console.log(
+                                    'was this updated',
+                                    update,
+                                    startDate
+                                  )
+                                }}
+                                selectsRange={true}
+                                startDate={startDate}
+                                endDate={endDate}
+                                isClearable={true}
+                                onClear={() => {
+                                  console.log('am i cleared')
+                                }}
+                                dateFormat="MMM d, yyyy "
+                              />
+                            </span>
+                          }
+                        </label>
+                      </span>
                     </section>
                     <div className=" flex flex-row   ">
+                      <SlimSelectBox
+                        name="project"
+                        label=""
+                        className="input min-w-[164px] "
+                        onChange={(value) => {
+                          selProjs(value)
+                        }}
+                        value={viewProjs?.value}
+                        options={[
+                          ...[{ label: 'All Projects', value: 'allprojects' }],
+                          ...projectList,
+                        ]}
+                      />
                       <span style={{ display: '' }}>
                         <CSVDownloader
                           className="mr-6 h-[20px] w-[20px]"
@@ -1535,7 +1975,7 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {projectListTuned.map((data, i) => {
+                      {projectFilList.map((data, i) => {
                         return (
                           <tr
                             className={` ${
@@ -1602,123 +2042,299 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
                         )
                       })}
 
+                      {viewProjs?.value == 'allprojects' && (
+                        <tr className="border-b bg-gray-800 boder-gray-900">
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
+                            Total
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {leadsFetchedRawData.length}
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              leadsFetchedRawData.filter((datObj) =>
+                                [
+                                  'new',
+                                  'unassigned',
+                                  'followup',
+                                  'visitfixed',
+                                  'visitdone',
+                                  'negotiation',
+                                ].includes(datObj?.Status)
+                              ).length
+                            }
+                          </td>
+                          {showInproFSource && (
+                            <>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'new'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'followup'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'visitfixed'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'visitdone'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'negotiation'
+                                  ).length
+                                }
+                              </td>
+                            </>
+                          )}
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              leadsFetchedRawData.filter(
+                                (datObj) => datObj?.Status == 'booked'
+                              ).length
+                            }
+                          </td>
+                          {showArchiFSource && (
+                            <>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) =>
+                                      datObj?.Status == 'notinterested'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'dead'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'blocked'
+                                  ).length
+                                }
+                              </td>
+                              <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                                {
+                                  leadsFetchedRawData.filter(
+                                    (datObj) => datObj?.Status == 'junk'
+                                  ).length
+                                }
+                              </td>
+                            </>
+                          )}
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              leadsFetchedRawData.filter((datObj) =>
+                                [
+                                  'blocked',
+                                  'dead',
+                                  'notinterested',
+                                  'junk',
+                                ].includes(datObj?.Status)
+                              ).length
+                            }
+                          </td>
+                          <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                            {
+                              leadsFetchedRawData.filter(
+                                (datObj) => datObj?.Status == ''
+                              ).length
+                            }
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="flex flex-col  mt-14 drop-shadow-md rounded-lg  px-4"
+            style={{ backgroundColor: '#ebfafa' }}
+          >
+            <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="overflow-hidden">
+                  <div className=" text-md font-bold leading-none pl-0 mt-4 border-b pb-4 mb-4 ">
+                    {`Employee vs Tasks `}
+                  </div>
+
+                  <section className="flex flex-row justify-between mt-[18px]">
+                    <section></section>
+                    <div className=" flex   ">
+                      {/* <button
+                        onClick={() => {
+                          triggerWhatsAppTasksCountAlert()
+                        }}
+                      >
+                        <span
+                          className={`flex ml-2 mr-4  items-center h-6 px-3 text-xs
+                            text-green-800 bg-green-200
+                          rounded-full`}
+                        >
+                          <CalendarIcon
+                            className="h-3 w-3 mr-1"
+                            aria-hidden="true"
+                          />
+                          Alert Tasks Counts
+                        </span>
+                      </button> */}
+                      {/* <SlimSelectBox
+                        name="project"
+                        label=""
+                        className="input min-w-[164px] "
+                        onChange={(value) => {
+                          setSelProjectEmp(value)
+                        }}
+                        value={selProjectEmpIs?.value}
+                        options={[
+                          ...[{ label: 'All Projects', value: 'allprojects' }],
+                          ...projectList,
+                        ]}
+                      /> */}
+                      {/* <span style={{ display: '' }}>
+                        <CSVDownloader
+                          className="mr-6 h-[20px] w-[20px]"
+                          downloadRows={EmpDownloadRows}
+                          style={{ height: '20px', width: '20px' }}
+                        />
+                      </span> */}
+                    </div>
+                  </section>
+                  <table className="min-w-full text-center mt-6">
+                    <thead className="border-b">
+                      <tr>
+                        {[
+                          { label: 'Name', id: 'label' },
+                          { label: 'Total', id: 'total' },
+                          { label: 'Today', id: '1' },
+                          { label: '1-7 days', id: '7' },
+                          { label: '8-20 days', id: '20' },
+                          { label: '21-30', id: '30' },
+                          { label: '31-40', id: '40' },
+                          { label: '41-50', id: '50' },
+                          { label: '50+', id: 'oldest' },
+                        ].map((d, i) => (
+                          <th
+                            key={i}
+                            scope="col"
+                            className={`text-sm font-medium text-gray-900 px-6 py-4 ${
+                              ['Name'].includes(d.label) ? 'text-left' : ''
+                            }`}
+                            onClick={() => {
+                              if (['inprogress', 'archieve'].includes(d.id))
+                                showColumnsSourceFun(d.id)
+                            }}
+                          >
+                            {d.label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {empTaskListTuned?.map((data, i) => {
+                        return (
+                          <tr
+                            className={`  ${
+                              i % 2 === 0
+                                ? 'bg-white border-blue-200'
+                                : 'bg-gray-100'
+                            }`}
+                            key={i}
+                          >
+                            <td className="text-sm text-gray-900 font-medium px-6 py-2 whitespace-nowrap text-left">
+                              {data?.label}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.Total?.length || 0}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.now?.length || 0}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.sevenDays?.length || 0}
+                            </td>
+
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.twentyDays?.length || 0}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.thirtyDays?.length || 0}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.fourtyDays?.length || 0}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.fiftyDays?.length || 0}
+                            </td>
+                            <td className="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+                              {data?.fiftyDaysMore?.length || 0}
+                            </td>
+                          </tr>
+                        )
+                      })}
+
                       <tr className="border-b bg-gray-800 boder-gray-900">
                         <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap text-left">
                           Total
                         </td>
                         <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {leadsFetchedRawData.length}
+                          {/* {Object.keys(empTaskListTuned.Total).length
+                            empTaskListTuned.reduce((a, b) => {
+                              return a.Total + b.Total
+                            }).length
+                          } */}
+                          {/* {empTaskListTuned.reduce(
+                            (previousValue, currentValue) =>
+                              previousValue.Total + currentValue.Total,
+                            0
+                          )} */}
+                          {empTaskListTunedTotal?.TotalSum}
                         </td>
                         <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            leadsFetchedRawData.filter((datObj) =>
-                              [
-                                'new',
-                                'unassigned',
-                                'followup',
-                                'visitfixed',
-                                'visitdone',
-                                'negotiation',
-                              ].includes(datObj?.Status)
-                            ).length
-                          }
-                        </td>
-                        {showInproFSource && (
-                          <>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'new'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'followup'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'visitfixed'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'visitdone'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'negotiation'
-                                ).length
-                              }
-                            </td>
-                          </>
-                        )}
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            leadsFetchedRawData.filter(
-                              (datObj) => datObj?.Status == 'booked'
-                            ).length
-                          }
-                        </td>
-                        {showArchiFSource && (
-                          <>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'notinterested'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'dead'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'blocked'
-                                ).length
-                              }
-                            </td>
-                            <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                              {
-                                leadsFetchedRawData.filter(
-                                  (datObj) => datObj?.Status == 'junk'
-                                ).length
-                              }
-                            </td>
-                          </>
-                        )}
-                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            leadsFetchedRawData.filter((datObj) =>
-                              [
-                                'blocked',
-                                'dead',
-                                'notinterested',
-                                'junk',
-                              ].includes(datObj?.Status)
-                            ).length
-                          }
+                          {empTaskListTunedTotal?.now}
                         </td>
                         <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
-                          {
-                            leadsFetchedRawData.filter(
-                              (datObj) => datObj?.Status == ''
-                            ).length
-                          }
+                          {empTaskListTunedTotal?.Sum7}
+                        </td>
+
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                          {empTaskListTunedTotal?.Sum20}
+                        </td>
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                          {empTaskListTunedTotal?.Sum30}
+                        </td>
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                          {empTaskListTunedTotal?.Sum40}
+                        </td>
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                          {empTaskListTunedTotal?.Sum50}
+                        </td>
+                        <td className="text-sm text-white font-medium px-6 py-2 whitespace-nowrap">
+                          {empTaskListTunedTotal?.Sum50M}
                         </td>
                       </tr>
                     </tbody>

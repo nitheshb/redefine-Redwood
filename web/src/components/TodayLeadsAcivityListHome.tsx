@@ -194,10 +194,7 @@ const TodayLeadsActivityListHomeView = ({
             })
             //  get the task details from docid
             if (projects.length > 0) {
-              console.log(
-                'my values are ',
-                projects.filter((data) => data != 'remove')
-              )
+             
               projects.filter((data) => data != undefined)
               Promise.all(projects).then(function (results) {
                 console.log(

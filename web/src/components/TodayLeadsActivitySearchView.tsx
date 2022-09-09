@@ -47,15 +47,6 @@ import {
   steamUsersListByRole,
 } from 'src/context/dbQueryFirebase'
 
-
-
-
-
-
-
-
-
-
 const headCells = [
   {
     id: 'Date',
@@ -338,6 +329,8 @@ export default function TodayLeadsActivitySearchView({
   const [leadByViewLayout, setLeadByViewLayout] = React.useState(false)
   const [projectList, setprojectList] = useState([])
   const [usersList, setusersList] = useState([])
+  const [sortType, setSortType] = useState('Latest')
+
   const [selProjectIs, setSelProject] = useState({
     label: 'All Projects',
     value: 'allprojects',
@@ -549,9 +542,33 @@ export default function TodayLeadsActivitySearchView({
       })
     })
     // this is for list view
+    if (sortType === 'Latest') {
+      streamedTodo.sort((a, b) => {
+        return b.schTime - a.schTime
+      })
+    } else {
+      streamedTodo.sort((a, b) => {
+        return a.schTime - b.schTime
+      })
+    }
     setSchFetCleanData(streamedTodo)
     console.log('my value is 1', searchKey, z, streamedTodo)
   }
+
+  React.useEffect(() => {
+    if (sortType === 'Latest') {
+      schFetCleanData.sort((a, b) => {
+        return a.schTime - b.schTime
+      })
+      setSchFetCleanData(schFetCleanData)
+    } else {
+      console.log('inside oldest', sortType)
+      schFetCleanData.sort((a, b) => {
+        return b.schTime - a.schTime
+      })
+      setSchFetCleanData(schFetCleanData)
+    }
+  }, [sortType])
   React.useEffect(() => {
     if (todaySch) {
       const z = todaySch?.filter((item) => {
@@ -670,6 +687,9 @@ export default function TodayLeadsActivitySearchView({
     setisImportLeadsOpen(true)
     setSelUserProfile(data)
   }
+  const handleSortDrop = (e) => {
+    setSortType(e.target.value)
+  }
 
   const openingTaskAddWindow = () => {
     setisImportLeadsOpen1(true)
@@ -716,11 +736,13 @@ export default function TodayLeadsActivitySearchView({
 
               {/* { listings.map(listing => <JobCard listing={listing} key={listing.id} filtering={filterListings} />) } */}
               <h2 className="text-sm text-gray-700 ">
-                You've got tasks on {'  '}
+                You've got {'  '}
                 <span className="inline-flex text-md leading-5 font-semibold rounded-full  text-green-800">
-                  {schFetData.length}
+                  {/* {schFetData.length} */}
+                  {schFetCleanData.length}
                 </span>{' '}
-                leads{' '}
+                tasks
+                {/* leads{' '} */}
                 {/* {taskType === 'Today1'
                   ? 'with schedules for Today'
                   : 'with coming up schedules in the next days'}{' '} */}
@@ -823,10 +845,10 @@ export default function TodayLeadsActivitySearchView({
                   <select
                     aria-label="select"
                     className="focus:text-indigo-600 focus:outline-none bg-transparent ml-1"
+                    onChange={(e) => handleSortDrop(e)}
                   >
                     <option className="text-sm text-indigo-800">Latest</option>
                     <option className="text-sm text-indigo-800">Oldest</option>
-                    <option className="text-sm text-indigo-800">Latest</option>
                   </select>
                 </div>
               </section>

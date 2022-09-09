@@ -9,6 +9,8 @@ import Select from 'react-select'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import NumberFormat from 'react-number-format'
+import DatePicker from 'react-datepicker'
+import { setHours, setMinutes } from 'date-fns'
 
 import { TextField } from 'src/util/formFields/TextField'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
@@ -32,12 +34,14 @@ import { sourceList } from 'src/constants/projects'
 import { USER_ROLES } from 'src/constants/userRoles'
 
 const AddLeadForm = ({ title, dialogOpen }) => {
+  const d = new window.Date()
   const { user } = useAuth()
   const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [projectList, setprojectList] = useState([])
   const [closeWindowMode, setCloseWindowMode] = useState(false)
+  const [startDate, setStartDate] = useState(d)
 
   useEffect(() => {
     const unsubscribe = steamUsersListByRole(
@@ -187,8 +191,9 @@ const AddLeadForm = ({ title, dialogOpen }) => {
       `${orgId}_leads`,
       mobileNo
     )
+    // Timestamp.now().toMillis()
     const leadData = {
-      Date: Timestamp.now().toMillis(),
+      Date: startDate.getTime(),
       Email: email,
       Mobile: mobileNo,
       Name: name,
@@ -372,9 +377,6 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                           type="text"
                         />
                       </div>
-                    </div>
-                    {/* 2 */}
-                    <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-">
                       <div className="mb-3 space-y-2 w-full text-xs">
                         {/* <TextField
                           label="Mobile No*"
@@ -403,8 +405,34 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                           options={sourceList}
                         />
                       </div>
+                    </div>
+                    {/* 2 */}
+                    <div className="md:flex flex-row md:space-x-4 w-full text-xs mt-">
+
                       <div className="mb-3 space-y-2 w-full text-xs">
                         <TextField label="Email" name="email" type="text" />
+                      </div>
+                      <div className="mb-3 space-y-2 w-full text-xs">
+                        <span className="inline">
+                          <label className="label font-regular text-sm block mb-1">
+                            Enquiry Date
+                          </label>
+                          <DatePicker
+                            className=" pl- px- h-10 rounded-md   min-w-[151px] inline  text-[#0091ae]   w-full min-w-full flex bg-grey-lighter text-grey-darker border border-[#cccccc] px-4"
+                            selected={startDate}
+                            onChange={(date) => {
+
+                              formik.setFieldValue('enquiryDat', date.getTime())
+                              setStartDate(date)}}
+                            timeFormat="HH:mm"
+                            injectTimes={[
+                              setHours(setMinutes(d, 1), 0),
+                              setHours(setMinutes(d, 5), 12),
+                              setHours(setMinutes(d, 59), 23),
+                            ]}
+                            dateFormat="MMMM d, yyyy"
+                          />
+                        </span>
                       </div>
                     </div>
                     <div className="mt-8">
