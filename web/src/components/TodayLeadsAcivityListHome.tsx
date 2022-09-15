@@ -99,6 +99,7 @@ const TodayLeadsActivityListHomeView = ({
                 x.leadUser = await y1
                 return x
               } else {
+                setSchLoading(false)
                 return 'remove'
               }
             })
@@ -120,6 +121,7 @@ const TodayLeadsActivityListHomeView = ({
                 setSchLoading(false)
               })
             } else {
+              setSchLoading(false)
               console.log('my values are 1 ', projects)
             }
           },
@@ -158,6 +160,8 @@ const TodayLeadsActivityListHomeView = ({
                 x.leadUser = await y1
                 return x
               } else {
+                setSchLoading(false)
+
                 return
                 // return 'remove'
               }
@@ -176,6 +180,7 @@ const TodayLeadsActivityListHomeView = ({
                 setSchLoading(false)
               })
             } else {
+              setSchLoading(false)
               console.log('my values are 1 ', projects)
             }
           },

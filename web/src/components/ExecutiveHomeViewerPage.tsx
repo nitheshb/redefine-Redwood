@@ -91,7 +91,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     'RNR',
     'booked',
   ]
-  const archieveFields = ['Dead', 'RNR', 'blocked', 'notinterested']
+  const archieveFields = ['Dead', 'RNR', 'blocked', 'notinterested', 'junk']
   useEffect(() => {
     getLeadsDataFun()
   }, [])
