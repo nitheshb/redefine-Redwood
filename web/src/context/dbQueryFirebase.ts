@@ -695,7 +695,7 @@ export const addLead = async (orgId, data, by, msg) => {
     )
 
     await sendWhatAppTextSms1(
-      '9849000525',
+      '7760959579',
       `Greetings from MAA Homes, I am ${name}
       I’m pleased to let you know that I will be the point of contact throughout the journey of buying your dream home
       I look forward to seeing you soon
