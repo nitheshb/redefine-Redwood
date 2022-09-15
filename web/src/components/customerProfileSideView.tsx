@@ -96,6 +96,7 @@ import LeadTaskDisplayHead from './Comp_CustomerProfileSideView/LeadTaskDisplayH
 import LeadTaskFooter from './Comp_CustomerProfileSideView/LeadTaskFooter'
 import { USER_ROLES } from 'src/constants/userRoles'
 import { currentStatusDispFun } from 'src/util/leadStatusDispFun'
+import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
 
 // interface iToastInfo {
 //   open: boolean
@@ -579,8 +580,9 @@ export default function CustomerProfileSideView({
           }   `
         )
       } else if (newStatus === 'booked') {
+        setLeadStatus('booked')
         await setTakTitle('Share the Details with CRM team')
-        await fAddSchedule()
+        // await fAddSchedule()
       } else {
         setTakTitle(' ')
       }
@@ -759,22 +761,14 @@ export default function CustomerProfileSideView({
 
     const x = schStsA
 
-    console.log(
-      'new one ',
-      tempLeadStatus,
-      startDate,
-      startDate.getTime(),
-      schStsA,
-      x,
-      data.schTime
-    )
-
     x.push('pending')
     setschStsA(x)
     // addSchedulerLog(orgId,id, data)
     //  get assignedTo Led
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, assignedTo)
+    const { name } = assignedTo
+
     if (streamCurrentStatus != tempLeadStatus) {
       updateLeadStatus(
         orgId,
@@ -784,6 +778,25 @@ export default function CustomerProfileSideView({
         user?.email,
         enqueueSnackbar
       )
+      console.log('tempLeadStatus', streamCurrentStatus,tempLeadStatus)
+      if (tempLeadStatus === 'visitfixed') {
+        sendWhatAppTextSms1(
+          '9849000525',
+          `Greetings From MAA Homes !!\n
+        As per our conversation,  I am happy to welcome you to our project ${Project} and looking forward to seeing what we can accomplish together, I will be on hand to offer you a tour of our villa project.\n
+        Your visit is confirmed on ${prettyDateTime(
+          startDate.getTime()
+        )} \n\nWarm Regards \n${assignerName}\nMaa Homes`
+        )
+      } else if (tempLeadStatus === 'visitdone') {
+        sendWhatAppTextSms1(
+          '9849000525',
+          `Greetings From MAA Homes !!\n
+          It was great to meet you at our project today, you’re one step closer to your dream home.
+          Please let me know when we can meet for further discussion and action.
+         \n\nWarm Regards \n${assignerName}\nMaa Homes`
+        )
+      }
     }
     await setTakTitle('')
     await setAddSch(false)
