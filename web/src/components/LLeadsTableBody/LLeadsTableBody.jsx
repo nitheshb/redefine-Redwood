@@ -33,7 +33,6 @@ import CSVDownloader from '../../util/csvDownload'
 import { timeConv, prettyDate } from '../../util/dateConverter'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 
-
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
 
 import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone'
@@ -63,7 +62,7 @@ import LogSkelton from '../shimmerLoaders/logSkelton'
 // }
 
 function descendingComparator(a, b, orderBy) {
-  console.log('what is the order 1 ',b[orderBy] )
+  console.log('what is the order 1 ', b[orderBy])
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -74,10 +73,9 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
- return order === 'desc'
-  ? (a, b) => descendingComparator(a, b, orderBy)
-  : (a, b) => -descendingComparator(a, b, orderBy)
-
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
 // This method is created for cross-browser compatibility, if you don't
@@ -177,11 +175,11 @@ function EnhancedTableHead(props) {
             maxHeight: '10px',
             height: '10px',
             lineHeight: '10px',
-            maxWidth:'52px',
-            minWidth:'25px',
+            maxWidth: '52px',
+            minWidth: '25px',
             paddingLeft: '14px',
             paddingRight: '29px',
-            marginRight: '10px'
+            marginRight: '10px',
           }}
         >
           {/* <Checkbox
@@ -193,7 +191,7 @@ function EnhancedTableHead(props) {
               'aria-label': 'select all desserts',
             }}
           /> */}
-          <TableSortLabel >S.No</TableSortLabel>
+          <TableSortLabel>S.No</TableSortLabel>
         </TableCell>
         {headCells.map((headCell) => (
           <>
@@ -209,10 +207,12 @@ function EnhancedTableHead(props) {
                 maxHeight: '10px',
                 lineHeight: '7px',
                 display:
-                headCell.id != 'Assigned' ? '': ( (viewUnitStatusA.includes('Assigned To')) &&
-                 ( headCell.id === 'Assigned'))
+                  headCell.id != 'Assigned'
                     ? ''
-                    : 'none'
+                    : viewUnitStatusA.includes('Assigned To') &&
+                      headCell.id === 'Assigned'
+                    ? ''
+                    : 'none',
               }}
             >
               <TableSortLabel
@@ -266,73 +266,67 @@ const EnhancedTableToolbar = (props) => {
     setViewUnitStatusA,
     startDate,
     endDate,
-    setDateRange
+    setDateRange,
   } = props
   const d = new window.Date()
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
   const [downloadFormatRows, setDownloadFormatRows] = React.useState([])
   const [cutOffDate, setCutOffDate] = React.useState(d.getTime() + 60000)
 
-  const [isOpened, setIsOpened] = React.useState(false);
-
+  const [isOpened, setIsOpened] = React.useState(false)
 
   React.useEffect(() => {
     setRowsAfterSearchKey(rows)
   }, [rows])
+  // React.useEffect(() => {
+  //  console.log('calendar state', isOpened, startDate?.getTime())
+  //  if(startDate !== null && endDate !=null){
+  //   console.log('inside you1')
+  //   let rowsR = rows.filter((item) => {
+  //    return item.Date >=startDate.getTime() && item.Date <=endDate.getTime()
+  //   })
+  //   setRowsAfterSearchKey(rowsR)
+  //  }else if(startDate !==null) {
+  //   console.log('inside you')
+  //   let rowsR = rows.filter((item) => {
+  //     console.log('inside you wjat os tjo filter', item.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name)
+  //     return item.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000
+  //    })
+  //    console.log('inside you wjat os tjo filter', rowsR.length)
+  //    setRowsAfterSearchKey(rowsR)
+  //    console.log('inside you wjat os tjo filter 1', rowsAfterSearchKey)
+  //  }
+  // }, [startDate,endDate ])
+
   React.useEffect(() => {
-   console.log('calendar state', isOpened, startDate?.getTime())
-   if(startDate !== null && endDate !=null){
-    console.log('inside you1')
-    let rowsR = rows.filter((item) => {
-     return item.Date >=startDate.getTime() && item.Date <=endDate.getTime()
+    let downRows = []
+    rowsAfterSearchKey.map((data) => {
+      let row = {}
+      let remark
+      if (data?.Remarks) {
+        remark =
+          data?.Remarks?.charAt(0) == '-'
+            ? data?.Remarks.substring(1)
+            : data?.Remarks
+      } else {
+        remark = data?.Remarks
+      }
+      row.Date = prettyDate(data?.Date).toLocaleString()
+      row.Name = data?.Name
+      row.CountryCode = data['Country Code']
+      row.Mobile = data?.Mobile
+      row.Email = data?.Email
+      row.AssignedTo = data?.assignedToObj?.name
+      row.Source = data?.Source
+      row.Status = data?.Status
+      row.Project = data?.Project
+      row.Remarks = remark
+
+      downRows.push(row)
     })
-    setRowsAfterSearchKey(rowsR)
-   }else if(startDate !==null) {
-    console.log('inside you')
-    let rowsR = rows.filter((item) => {
-      console.log('inside you wjat os tjo filter', item.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name)
-      return item.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000
-     })
-     console.log('inside you wjat os tjo filter', rowsR.length)
-     setRowsAfterSearchKey(rowsR)
-     console.log('inside you wjat os tjo filter 1', rowsAfterSearchKey)
-   }
-  }, [startDate,endDate ])
-
-
-
-
-
-  React.useEffect(() => {
-let downRows =[]
-rowsAfterSearchKey.map((data)=> {
-  let row = {
-  }
-  let remark;
-if(data?.Remarks){
-  remark=  data?.Remarks?.charAt(0) == "-" ? data?.Remarks.substring(1) : data?.Remarks
-}else {
-  remark = data?.Remarks
-}
-  row.Date = prettyDate(data?.Date).toLocaleString();
-  row.Name = data?.Name;
-  row.CountryCode = data['Country Code']
-  row.Mobile = data?.Mobile
-  row.Email = data?.Email
-  row.AssignedTo = data?.assignedToObj?.name
-  row.Source = data?.Source
-  row.Status = data?.Status
-  row.Project = data?.Project
-  row.Remarks = remark
-
-  downRows.push(row)
-})
-
 
     setDownloadFormatRows(downRows)
   }, [rowsAfterSearchKey])
-
-
 
   const searchKeyField = (e) => {
     // console.log('searched values is ', e.target.value)
@@ -361,60 +355,50 @@ if(data?.Remarks){
   }
   return (
     <section className="flex flex-row justify-between pb pt-1 px-3 ">
-    <span className="flex flex-row">
-      <span className="relative  p- border rounded h-7">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-3 w-3 absolute left-0 ml-1 mt-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      <span className="flex flex-row">
+        <span className="relative  p- border rounded h-7">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-3 w-3 absolute left-0 ml-1 mt-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            placeholder={`Search...${selStatus}`}
+            onChange={searchKeyField}
+            className="ml-6 bg-transparent text-xs focus:border-transparent focus:ring-0 focus-visible:border-transparent focus-visible:ring-0 focus:outline-none"
           />
-        </svg>
-        <input
-          type="text"
-          placeholder={`Search...${selStatus}`}
-          onChange={searchKeyField}
-          className="ml-6 bg-transparent text-xs focus:border-transparent focus:ring-0 focus-visible:border-transparent focus-visible:ring-0 focus:outline-none"
-        />
-      </span>
-      <span className="max-h-[42px] mt-[2px] ml-3">
-                {/* <span className="text-xs font-bodyLato text-[#516f90] cursor-none">
-                  Set Due Date
-                </span> */}
-                <label className="bg-green   pl-   flex flex-row cursor-pointer">
-                  <CalendarMonthTwoToneIcon className="mr-1" />
-                  <span className="inline">
-                    <DatePicker
-                      className="z-10 pl- py-1  inline text-xs text-[#0091ae] bg-white cursor-pointer min-w-[170px]"
-                      // selected={cutOffDate}
-                      // onChange={(date) => setCutOffDate(date)}
-                      // calendarContainer={MyContainer(setIsOpened)}
-                      onCalendarOpen={()=>setIsOpened(true)}
-                      onCalendarClose={()=>setIsOpened(false)}
-                      onChange={(update)=> setDateRange(update)}
-                      selectsRange={true}
-                      startDate={startDate}
-      endDate={endDate}
+        </span>
+        {/* <span className="max-h-[42px] mt-[2px] ml-3">
 
-  isClearable={true}
+          <label className="bg-green   pl-   flex flex-row cursor-pointer">
+            <CalendarMonthTwoToneIcon className="mr-1" />
+            <span className="inline">
+              <DatePicker
+                className="z-10 pl- py-1  inline text-xs text-[#0091ae] bg-white cursor-pointer min-w-[170px]"
 
-                      // injectTimes={[
-                      //   setHours(setMinutes(d, 1), 0),
-                      //   setHours(setMinutes(d, 5), 12),
-                      //   setHours(setMinutes(d, 59), 23),
-                      // ]}
-                      dateFormat="MMM d, yyyy "
-                    />
-                  </span>
-                </label>
-              </span>
+                onCalendarOpen={() => setIsOpened(true)}
+                onCalendarClose={() => setIsOpened(false)}
+                onChange={(update) => setDateRange(update)}
+                selectsRange={true}
+                startDate={startDate}
+                endDate={endDate}
+                isClearable={true}
+
+                dateFormat="MMM d, yyyy "
+              />
+            </span>
+          </label>
+        </span> */}
       </span>
 
       {/* <span className="inline mt-[4px] pl-2">
@@ -455,14 +439,14 @@ if(data?.Remarks){
         </Typography>
       )} */}
       <span style={{ display: 'flex' }}>
-      <section className="pt-1">
-        <DropCompUnitStatus
-          type={'show'}
-          id={'id'}
-          setStatusFun={{}}
-          viewUnitStatusA={viewUnitStatusA}
-          pickCustomViewer={pickCustomViewer}
-        />
+        <section className="pt-1">
+          <DropCompUnitStatus
+            type={'show'}
+            id={'id'}
+            setStatusFun={{}}
+            viewUnitStatusA={viewUnitStatusA}
+            pickCustomViewer={pickCustomViewer}
+          />
         </section>
         {/* <Tooltip title={`Download ${rowsAfterSearchKey.length} Rows`}>
 
@@ -473,7 +457,6 @@ if(data?.Remarks){
             />
           </IconButton>
         </Tooltip> */}
-
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
@@ -539,8 +522,8 @@ export default function LLeadsTableBody({
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [rows, setRows] = React.useState([])
   const [searchKey, setSearchKey] = React.useState('')
-  const [dateRange, setDateRange] = React.useState([null, null]);
-  const [startDate, endDate] = dateRange;
+  const [dateRange, setDateRange] = React.useState([null, null])
+  const [startDate, endDate] = dateRange
 
   React.useEffect(() => {
     console.log('send values is', rowsParent, selStatus)
@@ -570,59 +553,76 @@ export default function LLeadsTableBody({
     console.log('search on is', searchKey)
     filterSearchString(rows)
   }, [searchKey])
-  React.useEffect(() => {
-    console.log('search on is', searchKey)
-    // filterByDate(rows)
-
-  }, [startDate, endDate])
 
   const filterStuff = async (parent) => {
-
-      let x =selStatus === 'all' ? parent.filter((item) =>
-      [
-        'new',
-        'followup',
-        'visitfixed',
-        'visitdone',
-        'visitcancel',
-        'negotiation',
-      ].includes(
-        item.Status.toLowerCase()
-      )
-    ) : selStatus === 'archieve_all' ? parent.filter((item) =>
-      ['notinterested', 'blocked', 'junk', 'dead'].includes(
-        item.Status.toLowerCase()
-      )
-    ):  await parent.filter((item) => (item.Status.toLowerCase() === selStatus.toLowerCase()))
+    let x =
+      selStatus === 'all'
+        ? parent.filter((item) =>
+            [
+              'new',
+              'followup',
+              'visitfixed',
+              'visitdone',
+              'visitcancel',
+              'negotiation',
+            ].includes(item.Status.toLowerCase())
+          )
+        : selStatus === 'archieve_all'
+        ? parent.filter((item) =>
+            ['notinterested', 'blocked', 'junk', 'dead'].includes(
+              item.Status.toLowerCase()
+            )
+          )
+        : await parent.filter(
+            (item) => item.Status.toLowerCase() === selStatus.toLowerCase()
+          )
 
     await setRows(x)
     await console.log('xo', x, parent, selStatus)
   }
-  const filterByDate = ()=>{
-    rows.filter((item)=>{
-      {/* console.log('inside xxxx ==>', item?.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name) */}
-      if(startDate !== null && endDate !=null){
-console.log('inside you1', startDate, endDate, item)
-let x=  rows.filter((item) => {
-return item?.Date >=startDate?.getTime() && item?.Date <=endDate?.getTime()
-})
-setRows(x)
+  const filterByDate = () => {
+    rows.filter((item) => {
+      {
+        /* console.log('inside xxxx ==>', item?.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name) */
+      }
+      if (startDate !== null && endDate != null) {
+        console.log('inside you1', startDate, endDate, item)
+        let x = rows.filter((item) => {
+          return (
+            item?.Date >= startDate?.getTime() &&
+            item?.Date <= endDate?.getTime()
+          )
+        })
+        setRows(x)
+      } else if (startDate !== null) {
+        console.log('inside you1 x')
+        console.log(
+          'iinside you1 x',
+          item?.Date >= startDate?.getTime() &&
+            item?.Date <= startDate?.getTime() + 86400000,
+          startDate?.getTime() + 86399999,
+          startDate?.getTime(),
+          item.Name
+        )
 
-}else if(startDate !==null) {
-console.log('inside you1 x')
-console.log('iinside you1 x', item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
-
-let x =  rows.filter((item) => {
-console.log('inside you wjat os tjo filter', item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
-return item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000
-})
-setRows(x)
-
-
-
-} else{
-return item
-}
+        let x = rows.filter((item) => {
+          console.log(
+            'inside you wjat os tjo filter',
+            item?.Date >= startDate?.getTime() &&
+              item?.Date <= startDate?.getTime() + 86400000,
+            startDate?.getTime() + 86399999,
+            startDate?.getTime(),
+            item.Name
+          )
+          return (
+            item?.Date >= startDate?.getTime() &&
+            item?.Date <= startDate?.getTime() + 86400000
+          )
+        })
+        setRows(x)
+      } else {
+        return item
+      }
     })
   }
   const filterSearchString = async (parent) => {
@@ -677,8 +677,6 @@ return item
     setSelected(newSelected)
   }
 
-
-
   const isSelected = (name) => selected.indexOf(name) !== -1
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -695,13 +693,11 @@ return item
   ])
   React.useEffect(() => {
     if (user) {
-      const {role } = user
+      const { role } = user
 
-        if (role[0] === 'sales-manager') {
-          setViewUnitStatusA(['Phone No','Assigned To'])
-        }
-
-
+      if (role[0] === 'sales-manager') {
+        setViewUnitStatusA(['Phone No', 'Assigned To'])
+      }
     }
   }, [user])
   const pickCustomViewer = (item) => {
@@ -795,32 +791,10 @@ id: "1" */}
                   ) {
                     return item
                   }
-                }).
-              filter((item)=>{
-                  {/* console.log('inside xxxx ==>', item?.Date>= startDate.getTime() && item.Date <= startDate.getTime()+ 86400000,startDate.getTime()+ 86399999,startDate.getTime(),   item.Name) */}
-                  if(startDate !== null && endDate !=null){
-    console.log('inside you1', startDate, endDate, item)
-
-     return item?.Date >=startDate?.getTime() && item?.Date <=endDate?.getTime()+ 86399999
-
-
-   }else if(startDate !==null) {
-    console.log('inside you1 x')
-    console.log('iinside you1 x', item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
-
-
-      console.log('inside you wjat os tjo filter',item?.Date,  item?.Date>= startDate?.getTime() && item?.Date <= startDate?.getTime()+ 86400000,startDate?.getTime()+ 86399999,startDate?.getTime(),   item.Name)
-      return item?.Date>= startDate?.getTime()+ 19070000 && item?.Date <= startDate?.getTime()+ 86399999
-
-
-
-
-   } else{
-      return item
-     }
                 })
-               // .slice()
-              .sort(getComparator(order, orderBy))
+
+                // .slice()
+                .sort(getComparator(order, orderBy))
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.Name)
                   const labelId = `enhanced-table-checkbox-${index}`
@@ -832,7 +806,7 @@ id: "1" */}
                       tabIndex={-1}
                       key={index}
                       selected={isItemSelected}
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                     >
                       <TableCell
                         align="center"
@@ -858,63 +832,64 @@ id: "1" */}
                       <TableCell align="left">
                         <section>
                           <div>
-
                             <div
-                className="relative flex flex-col  group"
-                // style={{ alignItems: 'end' }}
-              >
-                <div
-                  className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex"
-                  // style={{  width: '300px' }}
-                  style={{  'z-index': '9' }}
-                >
-                  <span
-                    className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
-                    style={{
-                      color: 'black',
-                      background: '#e2c062',
-                      maxWidth: '300px',
-                    }}
-                  >
-                    <div className="italic flex flex-col">
-                    <div className="font-bodyLato">
-                              <HighlighterStyle
-                                searchKey={searchKey}
-                                source={row.Name.toString()}
-                              />
-                            </div>
-                            <div className="font-bodyLato">
-                                <HighlighterStyle
-                                  searchKey={searchKey}
-                                  source={row.Email.toString()}
-                                />
-                             </div>
-                             <div>
+                              className="relative flex flex-col  group"
+                              // style={{ alignItems: 'end' }}
+                            >
+                              <div
+                                className="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex"
+                                // style={{  width: '300px' }}
+                                style={{ 'z-index': '9' }}
+                              >
+                                <span
+                                  className="rounded italian relative mr-2 z-100000 p-2 text-xs leading-none text-white whitespace-no-wrap bg-black shadow-lg"
+                                  style={{
+                                    color: 'black',
+                                    background: '#e2c062',
+                                    maxWidth: '300px',
+                                  }}
+                                >
+                                  <div className="italic flex flex-col">
+                                    <div className="font-bodyLato">
+                                      <HighlighterStyle
+                                        searchKey={searchKey}
+                                        source={row.Name.toString()}
+                                      />
+                                    </div>
+                                    <div className="font-bodyLato">
+                                      <HighlighterStyle
+                                        searchKey={searchKey}
+                                        source={row.Email.toString()}
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="font-bodyLato">
+                                        <HighlighterStyle
+                                          searchKey={searchKey}
+                                          source={row.Mobile.toString().replace(
+                                            /(\d{3})(\d{3})(\d{4})/,
+                                            '$1-$2-$3'
+                                          )}
+                                        />
+                                      </span>
+                                    </div>
+                                  </div>
+                                </span>
+                                <div
+                                  className="w-3 h-3  -mt-2 rotate-45 bg-black"
+                                  style={{
+                                    background: '#e2c062',
+                                    marginRight: '12px',
+                                  }}
+                                ></div>
+                              </div>
                               <span className="font-bodyLato">
                                 <HighlighterStyle
                                   searchKey={searchKey}
-                                  source={row.Mobile.toString().replace(
-                                    /(\d{3})(\d{3})(\d{4})/,
-                                    '$1-$2-$3'
-                                  )}
+                                  source={row.Name.toString()}
                                 />
                               </span>
                             </div>
-
-                    </div>
-                  </span>
-                  <div
-                    className="w-3 h-3  -mt-2 rotate-45 bg-black"
-                    style={{ background: '#e2c062', marginRight: '12px' }}
-                  ></div>
-                </div>
-                <span className="font-bodyLato">
-                              <HighlighterStyle
-                                searchKey={searchKey}
-                                source={row.Name.toString()}
-                              />
-                            </span>
-              </div>
                           </div>
                           {viewUnitStatusA.includes('Email Id') && (
                             <div>
@@ -960,24 +935,24 @@ id: "1" */}
                       )}
 
                       <TableCell align="middle">
-
                         <span className="px-2 uppercase inline-flex text-[11px] text-black-900  ">
                           {row?.Source?.toString() || 'NA'}
-                      </span>
+                        </span>
                       </TableCell>
 
-
                       <TableCell align="left">
-
                         <span className="px-2 uppercase inline-flex text-[10px] leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        <HighlighterStyle
+                          <HighlighterStyle
                             searchKey={searchKey}
                             source={row.Status.toString()}
                           />
-                      </span>
+                        </span>
                       </TableCell>
 
-                      <TableCell align="left" style={{maxWidth: "150px", textOverflow: "ellipsis"}}>
+                      <TableCell
+                        align="left"
+                        style={{ maxWidth: '150px', textOverflow: 'ellipsis' }}
+                      >
                         {' '}
                         <span className="font-bodyLato">{row.Remarks}</span>
                       </TableCell>
@@ -1000,5 +975,3 @@ id: "1" */}
     </Section>
   )
 }
-
-

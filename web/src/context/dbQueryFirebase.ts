@@ -292,12 +292,14 @@ export const getUnits = (orgId, snapshot, data, error) => {
   const itemsQuery = query(
     collection(db, `${orgId}_units`),
     where('pId', '==', pId),
-    where('blockId', '==', blockId)
+    where('blockId', '==', blockId),
+    orderBy('unit_no', 'asc')
   )
 
   console.log('hello ', status, itemsQuery, data)
   return onSnapshot(itemsQuery, snapshot, error)
 }
+
 export const getCustomerDocs = async (orgId, uid: string, snapshot, error) => {
   try {
     const getAllProjectByIdQuery = await query(
@@ -507,11 +509,11 @@ export const getProjectByUid = async (orgId, uid: string, snapshot, error) => {
 }
 
 export const getPhasesByProject = async (uid: string, snapshot, error) => {
+  console.log('project details are', uid)
   const getAllPhasesQuery = await query(
-    collection(db, 'phases'),
+    collection(db, `${'spark'}_phases`),
     where('projectId', '==', uid),
-    orderBy('created', 'asc'),
-    limit(20)
+    orderBy('created', 'asc')
   )
   return onSnapshot(getAllPhasesQuery, snapshot, error)
 }
@@ -717,21 +719,21 @@ export const addUnit = async (orgId, data, by, msg) => {
   addUnitComputedValues(
     `${orgId}_projects`,
     pId,
-    builtup_area * rate_per_sqft,
+    builtup_area * rate_per_sqft || 0,
     builtup_area,
     1
   )
   addUnitComputedValues(
     'phases',
     phaseId,
-    builtup_area * rate_per_sqft,
+    builtup_area * rate_per_sqft || 0,
     builtup_area,
     1
   )
   addUnitComputedValues(
     'blocks',
     blockId,
-    builtup_area * rate_per_sqft,
+    builtup_area * rate_per_sqft || 0,
     builtup_area,
     1
   )
@@ -850,10 +852,21 @@ export const createProject = async (
 ) => {
   try {
     const uid = uuidv4()
+    const uid1 = uuidv4()
     const updated = {
       ...element,
       uid,
+      status: 'ongoing',
       created: Timestamp.now().toMillis(),
+    }
+    const phasePayload = {
+      created: Timestamp.now().toMillis(),
+      editMode: true,
+      phaseName: 'Phase-1',
+      projectId: uid,
+      uid: uid1,
+      availableCount: 0,
+      projectType: element?.projectType,
     }
     const {
       builderBankDocId,
@@ -864,6 +877,16 @@ export const createProject = async (
     } = element
     const ref = doc(db, `${orgId}_projects`, uid)
     await setDoc(ref, updated, { merge: true })
+    const ref1 = doc(db, `${orgId}_phases`, uid1)
+    await setDoc(ref1, phasePayload, { merge: true })
+
+    // add phase-0
+    // created
+    // editMode
+    // phaseName
+    // projectId
+    // uid
+    // phaseArea
     await updateBankEntry(
       orgId,
       builderBankDocId,
@@ -1199,6 +1222,7 @@ export const updateAccessRoles = async (
   }
 }
 export const addPhaseAdditionalCharges = async (
+  orgId,
   uid,
   chargePayload,
   enqueueSnackbar
@@ -1209,7 +1233,7 @@ export const addPhaseAdditionalCharges = async (
   usersUpdate[uuxid] = chargePayload
   chargePayload.myId = uuxid
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       additonalChargesObj: arrayUnion(chargePayload),
     })
     enqueueSnackbar('Charges added successfully', {
@@ -1223,12 +1247,13 @@ export const addPhaseAdditionalCharges = async (
   }
 }
 export const updatePhaseAdditionalCharges = async (
+  orgId,
   uid,
   chargePayloadA,
   enqueueSnackbar
 ) => {
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       additonalChargesObj: chargePayloadA,
     })
 
@@ -1243,6 +1268,7 @@ export const updatePhaseAdditionalCharges = async (
   }
 }
 export const addPhasePaymentScheduleCharges = async (
+  orgId,
   uid,
   chargePayload,
   enqueueSnackbar
@@ -1253,7 +1279,7 @@ export const addPhasePaymentScheduleCharges = async (
   usersUpdate[uuxid] = chargePayload
   chargePayload.myId = uuxid
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       paymentScheduleObj: arrayUnion(chargePayload),
     })
     enqueueSnackbar('Charges added successfully', {
@@ -1267,12 +1293,13 @@ export const addPhasePaymentScheduleCharges = async (
   }
 }
 export const updatePaymentScheduleCharges = async (
+  orgId,
   uid,
   chargePayloadA,
   enqueueSnackbar
 ) => {
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       paymentScheduleObj: chargePayloadA,
     })
 

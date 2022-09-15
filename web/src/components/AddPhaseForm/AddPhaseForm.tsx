@@ -47,6 +47,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     const updatedData = {
       ...data,
       projectId: uid,
+
       editMode: true,
       ...getDates(data),
     }

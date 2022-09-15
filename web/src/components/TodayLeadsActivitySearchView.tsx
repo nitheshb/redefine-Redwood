@@ -46,6 +46,7 @@ import {
   getAllProjects,
   steamUsersListByRole,
 } from 'src/context/dbQueryFirebase'
+import LogSkelton from './shimmerLoaders/logSkelton'
 
 const headCells = [
   {
@@ -305,6 +306,7 @@ export default function TodayLeadsActivitySearchView({
   selStatus,
   rowsParent,
   todaySch,
+  schLoading,
   taskType,
   searchKey,
   setSearchKey,
@@ -422,22 +424,6 @@ export default function TodayLeadsActivitySearchView({
     console.log('max check it my value is ', todaySch)
     const streamedTodo = []
     let y = []
-    // if (searchKey.includes('pending') || searchKey.includes('upcoming')) {
-    //   y = todaySch
-    //     ?.filter((item) => {
-    //       console.log('yo you', item?.staA, searchKey)
-    //       return item?.staA.some((r) => searchKey.includes(r))
-    //     })
-    //     .filter((d) => {
-    //       console.log('macho', d)
-    //       return d['schTime'] < torrowDate
-    //     })
-    // } else {
-    //   y = todaySch?.filter((item) => {
-    //     console.log('yo you', item?.staA, searchKey)
-    //     return item?.staA.some((r) => searchKey.includes(r))
-    //   })
-    // }
 
     //  updaing the lookup array to look for pending status when ever user selects upcoming as there is no sta
 
@@ -458,47 +444,15 @@ export default function TodayLeadsActivitySearchView({
       } else if (selLeadsOf?.value === 'teamtasks') {
         return item?.staA.some((r) => TaskStatusReq.includes(r))
       } else {
-        // console.log(
-        //   'sel lead is ',
-        //   selLeadsOf?.label,
-        //   selLeadsOf?.value,
-        //   item?.assignedTo,
-        //   item?.assignedTo === selLeadsOf?.value,
-        //   (
-        //     item?.staA.some((r) => TaskStatusReq.includes(r)) &&
-        //     item?.assignedTo === selLeadsOf?.value
-        //   )
-        // )
         return (
           item?.staA.some((r) => TaskStatusReq.includes(r)) &&
           item?.assignedTo === selLeadsOf?.value
         )
       }
     })
-    console.log(
-      'ami cahnged',
-      selProjectIs?.label,
-      y.length,
-      y,
-      searchKey,
-      'alias',
-      TaskStatusReq
-    )
+
     await setSchFetData(y)
     const z = todaySch.map((data1) => {
-      // data1['staDA']
-      //   .filter((d) => {
-      //     console.log(
-      //       'macho 2 ',
-      //       d,
-      //       torrowDate,
-      //       d > torrowDate,
-      //       d == 16589196420002
-      //     )
-      //     // return d < torrowDate
-      //     return 1 === 1
-      //   })
-
       data1['staDA'].map((data2) => {
         const y = data1[data2]
 
@@ -739,7 +693,15 @@ export default function TodayLeadsActivitySearchView({
                 You've got {'  '}
                 <span className="inline-flex text-md leading-5 font-semibold rounded-full  text-green-800">
                   {/* {schFetData.length} */}
-                  {schFetCleanData.length}
+                  {/* {schFetCleanData.length} */}
+
+                  {
+                    schFetCleanData?.filter(
+                      (d) =>
+                        searchKey.includes(d['sts']) ||
+                        searchKey.includes('upcoming')
+                    ).length
+                  }
                 </span>{' '}
                 tasks
                 {/* leads{' '} */}
@@ -796,7 +758,7 @@ export default function TodayLeadsActivitySearchView({
                     />
                   </div>
                 )}
-                <span className="inline-flex p-1 border bg-gray-200 rounded-md">
+                {/* <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                   <button
                     className={`px-2  rounded ${
                       leadByViewLayout ? 'bg-white shadow' : ''
@@ -839,7 +801,7 @@ export default function TodayLeadsActivitySearchView({
                       />
                     </svg>
                   </button>
-                </span>
+                </span> */}
                 <div className="ml-2 py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded max-h-[35px]">
                   <p>Sort By:</p>
                   <select
@@ -855,25 +817,29 @@ export default function TodayLeadsActivitySearchView({
             </div>
           </div>
 
-          {!todaySch && (
-            <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
-              <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
-                <img
-                  className="w-[180px] h-[180px] inline"
-                  alt=""
-                  src="../note-widget.svg"
-                />
-              </div>
-              <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
-                <Loader /> Loading
-              </h3>
-              <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                <span className="text-blue-600"> Add New Lead</span>
-              </time>
-            </div>
-          )}
+          {
+            schLoading &&
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((data, i) => (
+                <LogSkelton key={i} />
+              ))
+            // <div className="py-8 px-8 mt-10 flex flex-col items-center bg-red-100 rounded">
+            //   <div className="font-md font-medium text-xs mb-4 text-gray-800 items-center">
+            //     <img
+            //       className="w-[180px] h-[180px] inline"
+            //       alt=""
+            //       src="../note-widget.svg"
+            //     />
+            //   </div>
+            //   <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+            //     <Loader /> Loading
+            //   </h3>
+            //   <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+            //     <span className="text-blue-600"> Add New Lead</span>
+            //   </time>
+            // </div>
+          }
           {/* searchKey, setSearchKey */}
-          {!leadByViewLayout && todaySch && (
+          {!schLoading && !leadByViewLayout && todaySch && (
             <TodoListView
               taskListA={schFetCleanData}
               setisImportLeadsOpen={setisImportLeadsOpen}
@@ -1095,54 +1061,9 @@ export default function TodayLeadsActivitySearchView({
                           </div>
                           <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
                             <div className="flex flex-row  w-full ">
-                              {/* <div className="flex flex-col">
-                        <svg
-                          className="ml-4 mt-10 mr-6 text-center"
-                          width="32px"
-                          height="32px"
-                          viewBox="0 0 32 32"
-                          version="1.1"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g
-                            id="HELO"
-                            stroke="none"
-                            strokeWidth="1"
-                            fill="none"
-                            fillRule="evenodd"
-                          >
-                            <g
-                              transform="translate(-1012.000000, -1924.000000)"
-                              fill="#3F3BFF"
-                              fillRule="nonzero"
-                              id="Feature-section"
-                            >
-                              <g transform="translate(100.000000, 1579.000000)">
-                                <path
-                                  d="M941,345 C942.597681,345 943.903661,346.24892 943.994907,347.823727 L944,348 L944,366 C944,367.597681 942.75108,368.903661 941.176273,368.994907 L941,369 L936,369 L936,374 C936,375.597681 934.75108,376.903661 933.176273,376.994907 L933,377 L915,377 C913.402319,377 912.096339,375.75108 912.005093,374.176273 L912,374 L912,356 C912,354.402319 913.24892,353.096339 914.823727,353.005093 L915,353 L920,353 L920,348 C920,346.402319 921.24892,345.096339 922.823727,345.005093 L923,345 L941,345 Z M933,355 L915,355 C914.487164,355 914.064493,355.38604 914.006728,355.883379 L914,356 L914,374 C914,374.512836 914.38604,374.935507 914.883379,374.993272 L915,375 L933,375 C933.512836,375 933.935507,374.61396 933.993272,374.116621 L934,374 L934,356 C934,355.487164 933.61396,355.064493 933.116621,355.006728 L933,355 Z M930,369 C930.552285,369 931,369.447715 931,370 C931,370.512836 930.61396,370.935507 930.116621,370.993272 L930,371 L918,371 C917.447715,371 917,370.552285 917,370 C917,369.487164 917.38604,369.064493 917.883379,369.006728 L918,369 L930,369 Z M941,347 L923,347 C922.487164,347 922.064493,347.38604 922.006728,347.883379 L922,348 L922,351 C922,352.104569 922.895431,353 924,353 L933,353 L933,353 C934.597681,353 935.903661,354.24892 935.994907,355.823727 L936,356 L936,365 C936,366.104569 936.895431,367 938,367 L941,367 L941,367 C941.512836,367 941.935507,366.61396 941.993272,366.116621 L942,366 L942,348 C942,347.487164 941.61396,347.064493 941.116621,347.006728 L941,347 Z M930,364 C930.552285,364 931,364.447715 931,365 C931,365.512836 930.61396,365.935507 930.116621,365.993272 L930,366 L918,366 C917.447715,366 917,365.552285 917,365 C917,364.487164 917.38604,364.064493 917.883379,364.006728 L918,364 L930,364 Z M930,359 C930.552285,359 931,359.447715 931,360 C931,360.512836 930.61396,360.935507 930.116621,360.993272 L930,361 L918,361 C917.447715,361 917,360.552285 917,360 C917,359.487164 917.38604,359.064493 917.883379,359.006728 L918,359 L930,359 Z"
-                                  id="Shape"
-                                ></path>
-                              </g>
-                            </g>
-                          </g>
-                        </svg>
 
-                      </div> */}
                               <div className="flex flex-col   w-full  ">
-                                {/* {staDA
-                                  ?.filter(
-                                    (d) => {
-                                      // dat[d]['sts'] == 'pending' &&
 
-                                      return searchKey.includes(dat[d]['sts'])
-                                    }
-                                    // &&
-                                    // taskType === 'Today1Team'
-                                    //   ? dat[d]['schTime'] < torrowDate
-                                    //   : taskType === 'Today1'
-                                    //   ? dat[d]['schTime'] < torrowDate
-                                    //   : dat[d]['schTime'] > torrowDate
-                                  ) */}
                                 {filterScheduleArry(staDA, dat).map(
                                   (ts, inx) => {
                                     return (
@@ -1215,18 +1136,7 @@ export default function TodayLeadsActivitySearchView({
                             </div>
                           </div>
 
-                          {/* <div className="flex items-center justify-between py-2">
-                    <small className="text-gray-400">{leadUser?.Date}</small>
-                    {console.log('staA is ', staA)}
-                    {staA && (
-                      <small className="">
-                        {staA?.filter((data) => data === 'pending').length} Task
-                        Pendings out of {staA?.length}
 
-                      </small>
-                    )}
-                    <small className="text-gray-400">{leadUser?.Project}</small>
-                  </div> */}
                         </div>
                       </>
                     )

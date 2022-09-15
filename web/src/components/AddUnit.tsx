@@ -15,7 +15,6 @@ import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import Loader from './Loader/Loader'
 import { PhoneNoField } from 'src/util/formFields/phNoField'
 import {
-
   addUnit,
   checkIfUnitAlreadyExists,
   getAllProjects,
@@ -95,12 +94,14 @@ const AddUnit = ({
   }, [])
 
   useEffect(() => {
-    BlockFeed.map((user) => {
-      user.label = user.blockName
-      user.value = user.blockName
-    })
-    console.log('fetched users list is', phaseFeed)
-    setblockList(BlockFeed)
+    if (BlockFeed) {
+      BlockFeed?.map((user) => {
+        user.label = user.blockName
+        user.value = user.blockName
+      })
+      console.log('fetched users list is', phaseFeed)
+      setblockList(BlockFeed)
+    }
   }, [])
 
   const aquaticCreatures = [

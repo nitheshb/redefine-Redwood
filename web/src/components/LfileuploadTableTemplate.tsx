@@ -30,6 +30,7 @@ import { ConnectingAirportsOutlined } from '@mui/icons-material'
 import { addLead, addUnit, getLedsData1 } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { prettyDate } from 'src/util/dateConverter'
+import { Timestamp } from '@firebase/firestore'
 
 // function createData(
 //   Date,
@@ -207,9 +208,12 @@ const EnhancedTableToolbar = (props) => {
   } = props
 
   const [rowsAfterSearchKey, setRowsAfterSearchKey] = React.useState(rows)
-  const [unitUploadMessage, setUnitUploadMessage] = React.useState('')
+  const [unitUploadMessage, setUnitUploadMessage] = React.useState(
+    sourceTab === 'validR' ? true : false
+  )
 
   const [uploadedLeadsCount, setUploadedLeadsCount] = React.useState(0)
+  const [uploadedUnitsCount, setUploadedUnitsCount] = React.useState(0)
   const [uploadIcon, setUploadIcon] = React.useState(
     sourceTab === 'validR' ? true : false
   )
@@ -263,18 +267,26 @@ const EnhancedTableToolbar = (props) => {
     console.log('mappedArry', mappedArry)
   }
   const addUnitsToDB = async (records, pId) => {
-    setUnitUploadMessage('Uploading')
+    setUnitUploadMessage(false)
     // upload successfully
     const mappedArry = await Promise.all(
-      records.map(async (data) => {
+      records.map(async (data, index) => {
         const newData = data
         newData['intype'] = 'bulk'
         newData['pId'] = pId
-        newData['blockId'] = myBlock?.uid
+        newData['blockId'] = myBlock?.uid || 0
+        newData['status'] = data?.status || 'available'
         newData['by'] = 'bulk'
-        // newData['Status'] = 'available'
-        console.log('am inside addLeadstoDB', newData)
+        newData['rate_per_sqft'] = data?.price || 4000
+        newData['construct_price'] = data?.construct_price || 0
+        newData['builtup_area'] = data?.builtup_area || 4000
+        newData['ct'] = Timestamp.now().toMillis() + 10800000
+        delete newData['']
+        console.log('am inside addUnitstoDB', newData)
+        setUploadedUnitsCount(index + 1)
+
         return await addUnit(orgId, newData, user?.email, 'Unit Created by csv')
+
         console.log('am inside addLeadstoDB')
       })
     )
@@ -348,9 +360,15 @@ const EnhancedTableToolbar = (props) => {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-      ) : sourceTab != 'all' && title === 'Import Units' ? (
+      ) : sourceTab != 'all' &&
+        ['Import Units', 'Import Project Units'].includes(title) ? (
         <span style={{ display: 'flex' }}>
-          {unitUploadMessage != '' && (
+          {sourceTab === 'validR' && !unitUploadMessage && (
+            <span className="ml-3">
+              Uploaded {uploadedLeadsCount} of {rows.length}
+            </span>
+          )}
+          {unitUploadMessage && (
             <IconButton
               aria-label="done"
               onClick={() => addUnitsToDB(rowsAfterSearchKey, pId)}
@@ -439,7 +457,82 @@ export default function LfileuploadTableTemplate({
   const [searchKey, setSearchKey] = React.useState('')
 
   React.useEffect(() => {
-    if (title === 'Import Units') {
+    if (title === 'Import Project Units') {
+      columns = [
+        { id: 'unit_no', label: 'unit_no', minWidth: 80 },
+        // { id: 'floor', label: 'floor', minWidth: 100 },
+        {
+          id: 'status',
+          label: 'status',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+          id: 'facing',
+          label: 'facing',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+          id: 'east',
+          label: 'east',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'west',
+          label: 'west',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'north',
+          label: 'north',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'south',
+          label: 'South',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'super_built_up_area',
+          label: 'super_built_up_area',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'price',
+          label: 'price',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'construct_price',
+          label: 'construct_price',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+        {
+          id: 'carpet_area_uom',
+          label: 'carpet_area_uom',
+          minWidth: 10,
+          align: 'left',
+          format: (value) => value.toFixed(2),
+        },
+      ]
+    } else if (title === 'Import Units') {
       columns = [
         { id: 'unit_no', label: 'unit_no', minWidth: 80 },
         { id: 'floor', label: 'floor', minWidth: 100 },

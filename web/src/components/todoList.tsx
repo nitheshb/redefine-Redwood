@@ -39,15 +39,6 @@ const TodoListView = ({
   const [tableData, setTableData] = useState([])
   const [tabHeadFieldsA, settabHeadFieldsA] = useState([])
   // const [leadsFetchedData, setLeadsFetchedData] = useState([])
-  const [openModal, setOpenModal] = useState(false)
-
-  const handleChange = (_, newValue) => {
-    console.log('newvalue is ', newValue)
-    setValue(newValue)
-  }
-  useEffect(() => {
-    console.log('todoList is', searchKey, taskListA)
-  }, [taskListA])
 
   useEffect(() => {
     // axios
@@ -228,8 +219,8 @@ const TodoListView = ({
                         onClick={() => {
                           console.log('macho 1', dat?.leadUser, dat)
                           const y = dat.leadUser
-                          y.id = dat?.id
-
+                          y.id = dat?.uid
+                          console.log('macho 1', y)
                           selUserProfileF('User Profile', y)
                         }}
                       >

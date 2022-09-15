@@ -146,7 +146,9 @@ const Floordetails = ({
       widthClass: 'max-w-2xl',
     })
   }
-
+  useEffect(() => {
+    getUnitsFun()
+  }, [])
   useEffect(() => {
     setReportFeed(unitStatsData)
     getUnitsFun()
@@ -155,18 +157,6 @@ const Floordetails = ({
   useEffect(() => {
     setFilteredUnits(unitsFeed)
   }, [unitsFeed])
-
-  const data01 = [
-    { name: 'Group A', value: 400, fill: '#0088FE' },
-    { name: 'Group B', value: 300, fill: '#00C49F' },
-    { name: 'Group C', value: 300, fill: '#FFBB28' },
-    { name: 'Group D', value: 200, fill: '#FF8042' },
-  ]
-  const dataFeex = [
-    { name: 'On Time', value: Number(70), mode: 'total' },
-    { name: 'Delayed', value: Number(30), mode: 'total' },
-  ]
-  const COLORS = ['#008000', '#fa833c']
 
   const valueFeedData = [
     {
@@ -426,9 +416,9 @@ const Floordetails = ({
         y.sort((a, b) => a.unit_no - b.unit_no)
         setUnitsFeed(y)
       },
-      { pId: pId, blockId: selBlock?.uid || '', type: 'today' },
-      () => {
-        console.log('error')
+      { pId: pId, blockId: selBlock?.uid || 0, type: 'today' },
+      (error) => {
+        console.log('error', error)
       }
     )
     await console.log('what are we', todoData)
@@ -746,95 +736,144 @@ const Floordetails = ({
                 </section>
               </section>
             </section>
-            <ul className="">
-              {selBlock?.floorA?.map((floorDat, i) => {
-                return (
-                  <li className="py-4" key={i}>
-                    <section>
-                      <section className="px-8 bg-red-100 w-[130px] rounded-r-2xl">
-                        Fl-{floorDat}
+            {['Apartments'].includes(projectDetails?.projectType?.name) && (
+              <ul className="">
+                {selBlock?.floorA?.map((floorDat, i) => {
+                  return (
+                    <li className="py-4" key={i}>
+                      <section>
+                        <section className="px-8 bg-red-100 w-[130px] rounded-r-2xl">
+                          Fl-{floorDat}
+                        </section>
+                        <div className=" px-8 mt-6">
+                          {filteredUnits
+                            ?.filter((da) => da?.floor == i)
+                            .map((data, index) => {
+                              return unitShrink ? (
+                                <div
+                                  className="p-2 mb-1  mx-1 inline-block"
+                                  key={index}
+                                  onClick={() => handleDetailView_Close(data)}
+                                >
+                                  <UnitsSmallViewCard
+                                    kind={data}
+                                    feedData={unitFeedData}
+                                    bg="#CCFBF1"
+                                    setShowCostSheetWindow={
+                                      setShowCostSheetWindow
+                                    }
+                                    setSelUnitDetails={setSelUnitDetails}
+                                    setSelMode={setSelMode}
+                                  />
+                                </div>
+                              ) : (
+                                <div
+                                  className="p-2 mb-1  mx-1 inline-block cursor-pointer"
+                                  key={index}
+                                  onClick={() => handleDetailView_Close(data)}
+                                >
+                                  <UnitsStatsCard
+                                    kind={data}
+                                    feedData={unitFeedData}
+                                    bg="#fef7f7"
+                                  />
+                                </div>
+                              )
+                            })}
+                        </div>
                       </section>
-                      <div className=" px-8 mt-6">
-                        {filteredUnits
-                          ?.filter((da) => da?.floor == i)
-                          .map((data, index) => {
-                            return unitShrink ? (
-                              <div
-                                className="p-2 mb-1  mx-1 inline-block"
-                                key={index}
-                                onClick={() => handleDetailView_Close(data)}
-                              >
-                                <UnitsSmallViewCard
-                                  kind={data}
-                                  feedData={unitFeedData}
-                                  bg="#CCFBF1"
-                                  setShowCostSheetWindow={
-                                    setShowCostSheetWindow
-                                  }
-                                  setSelUnitDetails={setSelUnitDetails}
-                                  setSelMode={setSelMode}
-                                />
-                              </div>
-                            ) : (
-                              <div
-                                className="p-2 mb-1  mx-1 inline-block cursor-pointer"
-                                key={index}
-                                onClick={() => handleDetailView_Close(data)}
-                              >
-                                <UnitsStatsCard
-                                  kind={data}
-                                  feedData={unitFeedData}
-                                  bg="#fef7f7"
-                                />
-                              </div>
-                            )
-                          })}
-                      </div>
-                    </section>
-                  </li>
-                )
-              })}
-            </ul>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+            {!['Apartments'].includes(projectDetails?.projectType?.name) && (
+              <ul className="">
+                <li className="py-4">
+                  <section>
+                    {/* <section className="px-8 bg-red-100 w-[130px] rounded-r-2xl">
+                      Fl-{floorDat}
+                    </section> */}
+                    <div className=" px-8 mt-6">
+                      {filteredUnits
+                        // ?.filter((da) => da?.floor == i)
+                        .map((data, index) => {
+                          return unitShrink ? (
+                            <div
+                              className="p-2 mb-1  mx-1 inline-block"
+                              key={index}
+                              onClick={() => handleDetailView_Close(data)}
+                            >
+                              <UnitsSmallViewCard
+                                kind={data}
+                                feedData={unitFeedData}
+                                bg="#CCFBF1"
+                                setShowCostSheetWindow={setShowCostSheetWindow}
+                                setSelUnitDetails={setSelUnitDetails}
+                                setSelMode={setSelMode}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="p-2 mb-1  mx-1 inline-block cursor-pointer"
+                              key={index}
+                              onClick={() => handleDetailView_Close(data)}
+                            >
+                              <UnitsStatsCard
+                                kind={data}
+                                feedData={unitFeedData}
+                                bg="#fef7f7"
+                              />
+                            </div>
+                          )
+                        })}
+                    </div>
+                  </section>
+                </li>
+              </ul>
+            )}
             {/* 1 */}
             {source === 'projectManagement' && (
               <div className=" z-10 flex flex-row mt-[50px]">
-                <div
-                  className=" cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
-                  // style={{ backgroundColor: '#fef7f7' }}
-                  onClick={() => {
-                    // setSliderInfo({
-                    //   open: true,
-                    //   title: 'Add Unit',
-                    //   sliderData: {
-                    //     phase: {},
-                    //     block: {},
-                    //   },
-                    //   widthClass: 'max-w-2xl',
-                    // })
-                    const { uid, floorA } = selBlock
-                    updateBlock_AddFloor(
-                      uid,
-                      floorA?.length || 0,
-                      enqueueSnackbar
-                    )
-                    console.log('chiru is', selBlock)
-                  }}
-                >
-                  <div className="flex flex-col items-center justify-between">
-                    <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
-                    <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
-                      Add Floor
-                    </h3>
-                    {/* <IconButton onClick={handleClick}>
+                {['Apartments'].includes(projectDetails?.projectType?.name) && (
+                  <div
+                    className=" cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
+                    // style={{ backgroundColor: '#fef7f7' }}
+                    onClick={() => {
+                      // setSliderInfo({
+                      //   open: true,
+                      //   title: 'Add Unit',
+                      //   sliderData: {
+                      //     phase: {},
+                      //     block: {},
+                      //   },
+                      //   widthClass: 'max-w-2xl',
+                      // })
+                      const { uid, floorA } = selBlock
+                      updateBlock_AddFloor(
+                        uid,
+                        floorA?.length || 0,
+                        enqueueSnackbar
+                      )
+                      console.log('chiru is', selBlock)
+                    }}
+                  >
+                    <div className="flex flex-col items-center justify-between">
+                      <PlusIcon className="h-3 w-3 mr-1" aria-hidden="true" />
+                      <h3 className="m-0 mt-1 text-sm font-semibold  leading-tight tracking-tight text-black border-0 border-gray-200 sm:text-1xl md:text-1xl ">
+                        Add Floor
+                      </h3>
+                      {/* <IconButton onClick={handleClick}>
           <MoreVert sx={{ fontSize: '1rem' }} />
         </IconButton> */}
+                    </div>
+                    <div className="flex flex-row justify-between px-2">
+                      <span className="flex flex-row items-center justify-between mr-2">
+                        <span className="text-sm font-"></span>
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-row justify-between px-2">
-                    <span className="flex flex-row items-center justify-between mr-2">
-                      <span className="text-sm font-"></span>
-                    </span>
-                  </div>
-                </div>
+                )}
                 <div
                   className=" cursor-pointer z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
                   // style={{ backgroundColor: '#fef7f7' }}
@@ -871,12 +910,16 @@ const Floordetails = ({
                   onClick={() => {
                     setSliderInfo({
                       open: true,
-                      title: 'Import Units',
+                      title: ['Apartments'].includes(
+                        projectDetails?.projectType?.name
+                      )
+                        ? 'Import Units'
+                        : 'Import Project Units',
                       sliderData: {
                         phase: {},
                         block: {},
                       },
-                      widthClass: 'max-w-2xl',
+                      widthClass: 'max-w-6xl',
                     })
                   }}
                 >

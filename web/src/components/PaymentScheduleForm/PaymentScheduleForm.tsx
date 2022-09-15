@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker'
 import { format, parse, isDate } from 'date-fns'
 import { useSnackbar } from 'notistack'
 import Select from 'react-select'
-
+import { useAuth } from 'src/context/firebase-auth-context'
 // import { Edit, DeleteOutline } from '@material-ui/icons'
 import { MaterialCRUDTable } from 'src/components/MaterialCRUDTable'
 import {
@@ -19,6 +19,9 @@ import {
 import { paymentScheduleA } from 'src/constants/projects'
 
 const PaymentScheduleForm = ({ title, data, source }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [tableData, setTableData] = useState([])
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
@@ -228,7 +231,7 @@ const PaymentScheduleForm = ({ title, data, source }) => {
         return e
       })
       console.log('check this stuff it', c)
-      await updatePaymentScheduleCharges(uid, c, enqueueSnackbar)
+      await updatePaymentScheduleCharges(orgId,uid, c, enqueueSnackbar)
     } else {
       setErrorMessages(errorList)
       setIserror(true)
@@ -240,7 +243,7 @@ const PaymentScheduleForm = ({ title, data, source }) => {
     const { uid } = data?.phase || {}
     const c = tableData.filter((e) => e.myId != oldData.myId)
     console.log('check this stuff', c)
-    await updatePaymentScheduleCharges(uid, c, enqueueSnackbar)
+    await updatePaymentScheduleCharges(orgId,uid, c, enqueueSnackbar)
   }
 
   //function for adding a new row to the table
@@ -255,7 +258,7 @@ const PaymentScheduleForm = ({ title, data, source }) => {
         dueDate: format(newData.dueDate, 'dd/MM/yyyy'),
       }
       // await createPayment(update, enqueueSnackbar)
-      await addPhasePaymentScheduleCharges(uid, update, enqueueSnackbar)
+      await addPhasePaymentScheduleCharges(orgId,uid, update, enqueueSnackbar)
     } else {
       setErrorMessages(errorList)
       setIserror(true)

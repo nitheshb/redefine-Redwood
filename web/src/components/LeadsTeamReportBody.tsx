@@ -547,12 +547,12 @@ const LeadsTeamReportBody = ({ project, onSliderOpen = () => {}, isEdit }) => {
   }
   const triggerWhatsAppTasksCountAlert = async () => {
     empTaskListTuned.map((empData, i) => {
-      const { label, offPh, now, sevenDays } = empData
+      const { label, offPh, now, sevenDays, Total } = empData
       sendWhatAppTextSms1(
         offPh,
       `Good Morning..! ${label} 🏆
       Here is your Today's task overview  \n
-      Due Tasks   -${sevenDays?.length || 0}
+      Due Tasks   -${(Total?.length || 0) - (now?.length || 0)}
       Today Tasks -  ${now?.length || 0}\n \n
       For details- www.redefineerp.in
       `

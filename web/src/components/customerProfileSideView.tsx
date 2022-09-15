@@ -95,6 +95,7 @@ import AddLeadTaskComment from './Comp_CustomerProfileSideView/AddLeadTaskCommen
 import LeadTaskDisplayHead from './Comp_CustomerProfileSideView/LeadTaskDisplayHead'
 import LeadTaskFooter from './Comp_CustomerProfileSideView/LeadTaskFooter'
 import { USER_ROLES } from 'src/constants/userRoles'
+import { currentStatusDispFun } from 'src/util/leadStatusDispFun'
 
 // interface iToastInfo {
 //   open: boolean
@@ -145,10 +146,12 @@ const notInterestOptions = [
 const junktOptions = [
   // { label: 'Select Reason', value: '' },
   { label: 'Phone no invalid', value: 'phone_no_invalid' },
+
   {
     label: 'Fake Customer',
     value: 'fake_customer',
   },
+  { label: 'RNR from Long Time', value: 'long_time_rnr' },
 
   // { label: 'Follow Up', value: 'followup' },
   // { label: 'RNR', value: 'rnr' },
@@ -1058,39 +1061,6 @@ export default function CustomerProfileSideView({
     return tex
   }
 
-  const currentStatusDispFun = (dat) => {
-    switch (dat) {
-      case 'unassigned':
-        return 'Un Assigned'
-        break
-      case 'new':
-        return 'New'
-        break
-      case 'followup':
-        return 'Follow Up'
-        break
-      case 'notinterested':
-        return 'Not Interested'
-        break
-      case 'visitfixed':
-        return 'Visit Fixed'
-        break
-      case 'visitdone':
-        return 'Visit Done'
-        break
-      case 'junk':
-        return 'Junk'
-        break
-      case 'booked':
-        return 'Booked'
-        break
-
-      default:
-        return dat
-        break
-    }
-  }
-
   const fAddNotes = async () => {
     //  make it as notInterested if source is from NotInterestedd Page
     console.log(
@@ -1428,12 +1398,7 @@ export default function CustomerProfileSideView({
                       </div>
                     )}
                     {user?.role?.includes(USER_ROLES.CP_AGENT) && (
-
-                        <span className="text-left text-sm">
-                          {' '}
-                          {assignerName}
-                        </span>
-
+                      <span className="text-left text-sm"> {assignerName}</span>
                     )}
                   </section>
                   <section>

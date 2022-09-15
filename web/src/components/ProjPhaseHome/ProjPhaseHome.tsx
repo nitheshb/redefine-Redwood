@@ -23,6 +23,7 @@ import CostBreakUpSheet from '../costBreakUpSheet'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 import AssigedToDropComp from '../assignedToDropComp'
 import PaymentLeadAccess from '../PaymentScheduleForm/ProjectLeadAccess'
+import Floordetails from '../Floordetails/Floordetails'
 
 const ProjPhaseHome = ({
   projectDetails,
@@ -83,6 +84,7 @@ const ProjPhaseHome = ({
       setMyProjectDetails(projectDetails)
       projId = projectDetails?.uid
     }
+    console.log('projectDetails', projectDetails)
   }, [projectDetails])
 
   const getPhases = async (projectDetails) => {
@@ -467,7 +469,36 @@ const ProjPhaseHome = ({
                         </>
                       )}
                       {phaseViewFeature === 'Blocks' &&
-                        (blocks[phase.uid]?.length ? (
+                        (selPhaseObj?.projectType?.name == 'Plots' ? (
+                          <Floordetails
+                            pId={projectDetails?.uid}
+                            projectDetails={projectDetails}
+                            phaseFeed={phases}
+                            selBlock={{
+                              totalValue: 0,
+                              soldValue: 0,
+                              availValue: 0,
+                              bookValue: 0,
+                              blockValue: 0,
+                              holdValue: 0,
+                              totalArea: 0,
+                              soldArea: 0,
+                              availArea: 0,
+                              bookArea: 0,
+                              blockArea: 0,
+                              holdArea: 0,
+                              totalUnitCount: 0,
+                              soldUnitCount: 0,
+                              availableCount: 0,
+                              bookUnitCount: 0,
+                              blockUnitCount: 0,
+                            }}
+                            source={source}
+                            setShowCostSheetWindow={setShowCostSheetWindow}
+                            setSelUnitDetails={setSelUnitDetails}
+                            setSelMode={setSelMode}
+                          />
+                        ) : blocks[phase.uid]?.length ? (
                           <Blockdetails
                             blocks={blocks[phase.uid]}
                             blockPayload={blocks}
@@ -489,7 +520,7 @@ const ProjPhaseHome = ({
                               alt=""
                               src="/l1.png"
                             ></img>
-                            Blocks are not created yet
+                            Blocks are not created yet{' '}
                             {source === 'projectManagement' && (
                               <button
                                 onClick={() => {
@@ -569,7 +600,7 @@ const ProjPhaseHome = ({
                       {phaseViewFeature === 'Lead Access' && (
                         <PaymentLeadAccess
                           title={'Leads Access'}
-                          data={{ phase: phase, project: projectDetails}}
+                          data={{ phase: phase, project: projectDetails }}
                           source={source}
                         />
                       )}

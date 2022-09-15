@@ -10,6 +10,9 @@ import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import SiderForm from './SiderForm/SiderForm'
 import CardItem from './leadsCard'
+import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
+import DatePicker from 'react-datepicker'
+
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
@@ -25,6 +28,8 @@ import {
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
 import { useSnackbar } from 'notistack'
+import { CalendarIcon, EyeIcon } from '@heroicons/react/outline'
+import { prettyDate } from 'src/util/dateConverter'
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
@@ -52,6 +57,9 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   // const [showForm, setShowForm] = useState(false)
   // const [selectedBoard, setSelectedBoard] = useState(0)
   const [fetchedUsersList, setfetchedUsersList] = useState([])
+  const [isOpened, setIsOpened] = React.useState(false)
+  const [dateRange, setDateRange] = React.useState([null, null])
+  const [startDate, endDate] = dateRange
 
   const [usersList, setusersList] = useState([])
   const [openUserProfile, setopenUserProfile] = useState(false)
@@ -169,7 +177,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   const [getStatus, setGetStatus] = useState([])
   useEffect(() => {
     filter_Leads_Projects_Users_Fun()
-  }, [selProjectIs, selLeadsOf])
+  }, [selProjectIs, selLeadsOf, startDate, endDate])
 
   useEffect(() => {
     console.log('am refreshed ')
@@ -331,15 +339,77 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     const x = leadsFetchedRawData
     console.log('raw max is ==>  ', x.length)
     if (selProjectIs?.value != 'allprojects') {
-      const z = x.filter((d1) => d1.Project === selProjectIs?.value)
+      const z = x
+        .filter((d1) => d1.Project === selProjectIs?.value)
+        .filter((item) => {
+          if (startDate !== null && endDate != null) {
+            return (
+              item?.Date >= startDate?.getTime() &&
+              item?.Date <= endDate?.getTime() + 86399999
+            )
+          } else if (startDate !== null) {
+            return (
+              item?.Date >= startDate?.getTime() + 19070000 &&
+              item?.Date <= startDate?.getTime() + 86399999
+            )
+          } else {
+            return item
+          }
+        })
       let y = z
       if (selLeadsOf?.value == 'myleads') {
-        y = z.filter((d1) => d1?.assingedTo === user.uid)
-      } else if (selLeadsOf?.value == 'teamleads') {
         y = z
+          .filter((d1) => d1?.assingedTo === user.uid)
+          .filter((item) => {
+            if (startDate !== null && endDate != null) {
+              return (
+                item?.Date >= startDate?.getTime() &&
+                item?.Date <= endDate?.getTime() + 86399999
+              )
+            } else if (startDate !== null) {
+              return (
+                item?.Date >= startDate?.getTime() + 19070000 &&
+                item?.Date <= startDate?.getTime() + 86399999
+              )
+            } else {
+              return item
+            }
+          })
+      } else if (selLeadsOf?.value == 'teamleads') {
+        y = z.filter((item) => {
+          if (startDate !== null && endDate != null) {
+            return (
+              item?.Date >= startDate?.getTime() &&
+              item?.Date <= endDate?.getTime() + 86399999
+            )
+          } else if (startDate !== null) {
+            return (
+              item?.Date >= startDate?.getTime() + 19070000 &&
+              item?.Date <= startDate?.getTime() + 86399999
+            )
+          } else {
+            return item
+          }
+        })
       } else {
         console.log('seleUser details are', selLeadsOf?.value)
-        y = z.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+        y = z
+          .filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+          .filter((item) => {
+            if (startDate !== null && endDate != null) {
+              return (
+                item?.Date >= startDate?.getTime() &&
+                item?.Date <= endDate?.getTime() + 86399999
+              )
+            } else if (startDate !== null) {
+              return (
+                item?.Date >= startDate?.getTime() + 19070000 &&
+                item?.Date <= startDate?.getTime() + 86399999
+              )
+            } else {
+              return item
+            }
+          })
       }
       setFetchLeadsLoader(false)
       console.log('my Array data is delayer follow', y.length)
@@ -347,12 +417,58 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     } else {
       let y = x
       if (selLeadsOf?.value == 'myleads') {
-        y = x.filter((d1) => d1?.assingedTo === user.uid)
-      } else if (selLeadsOf?.value == 'teamleads') {
         y = x
+          .filter((d1) => d1?.assingedTo === user.uid)
+          .filter((item) => {
+            if (startDate !== null && endDate != null) {
+              return (
+                item?.Date >= startDate?.getTime() &&
+                item?.Date <= endDate?.getTime() + 86399999
+              )
+            } else if (startDate !== null) {
+              return (
+                item?.Date >= startDate?.getTime() + 19070000 &&
+                item?.Date <= startDate?.getTime() + 86399999
+              )
+            } else {
+              return item
+            }
+          })
+      } else if (selLeadsOf?.value == 'teamleads') {
+        y = x.filter((item) => {
+          if (startDate !== null && endDate != null) {
+            return (
+              item?.Date >= startDate?.getTime() &&
+              item?.Date <= endDate?.getTime() + 86399999
+            )
+          } else if (startDate !== null) {
+            return (
+              item?.Date >= startDate?.getTime() + 19070000 &&
+              item?.Date <= startDate?.getTime() + 86399999
+            )
+          } else {
+            return item
+          }
+        })
       } else {
         console.log('seleUser details are', selLeadsOf?.value)
-        y = x.filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+        y = x
+          .filter((d1) => d1?.assignedTo === selLeadsOf?.value)
+          .filter((item) => {
+            if (startDate !== null && endDate != null) {
+              return (
+                item?.Date >= startDate?.getTime() &&
+                item?.Date <= endDate?.getTime() + 86399999
+              )
+            } else if (startDate !== null) {
+              return (
+                item?.Date >= startDate?.getTime() + 19070000 &&
+                item?.Date <= startDate?.getTime() + 86399999
+              )
+            } else {
+              return item
+            }
+          })
       }
       console.log('my Array data is delayer follow 1 ', y.length)
       setLeadsFetchedData(y)
@@ -488,6 +604,39 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                     />
                   </div>
                 )}
+                <span className="max-h-[42px] mt-[2px] ml-3">
+                  {/* <span className="text-xs font-bodyLato text-[#516f90] cursor-none">
+                  Set Due Date
+                </span> */}
+                  {/* {border-radius: 4px;
+    border-color: hsl(0, 0%, 80%);
+    min-height: 31px;} */}
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label className="bg-green   pl-   flex flex-row cursor-pointer">
+                    <CalendarMonthTwoToneIcon className="mr-1 mt-[2px]" />
+                    <span className="inline">
+                      <DatePicker
+                        className="z-10 pl- py-1 rounded-[4px] min-h-[30px] inline text-xs text-[#0091ae] bg-white cursor-pointer min-w-[170px]"
+                        // selected={cutOffDate}
+                        // onChange={(date) => setCutOffDate(date)}
+                        // calendarContainer={MyContainer(setIsOpened)}
+                        onCalendarOpen={() => setIsOpened(true)}
+                        onCalendarClose={() => setIsOpened(false)}
+                        onChange={(update) => setDateRange(update)}
+                        selectsRange={true}
+                        startDate={startDate}
+                        endDate={endDate}
+                        isClearable={true}
+                        // injectTimes={[
+                        //   setHours(setMinutes(d, 1), 0),
+                        //   setHours(setMinutes(d, 5), 12),
+                        //   setHours(setMinutes(d, 59), 23),
+                        // ]}
+                        dateFormat="MMM d, yyyy "
+                      />
+                    </span>
+                  </label>
+                </span>
                 {/* {leadsTyper == 'inProgress' && (
                   <span className="inline-flex p-1 border bg-gray-200 rounded-md">
                     <button
@@ -537,13 +686,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                 <>
                   <button
                     onClick={() => fSetLeadsType('Add Lead')}
-                    className={`flex items-center ml-5 pl-2 pr-4 py-1 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
+                    className={`flex items-center ml-5 pl-2 pr-4  max-h-[30px] mt-[2px] text-sm font-medium text-white bg-gray-800 rounded-[4px] hover:bg-gray-700  `}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
+                      className="h-4 w-4"
                       fill="none"
-                      viewBox="0 0 24 24"
+                      viewBox="0 0 22 22"
                       stroke="currentColor"
                     >
                       <path
@@ -559,13 +708,13 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                   {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
                     <button
                       onClick={() => fSetLeadsType('Import Leads')}
-                      className={`flex items-center ml-5 pl-2 pr-4 py-1 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700  `}
+                      className={`flex items-center ml-5 pl-2 pr-4 py-1 max-h-[30px] mt-[2px]  text-sm font-medium text-white bg-gray-800 rounded-[4px] hover:bg-gray-700  `}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
+                        className="h-4 w-4"
                         fill="none"
-                        viewBox="0 0 24 24"
+                        viewBox="0 0 22 22"
                         stroke="currentColor"
                       >
                         <path
