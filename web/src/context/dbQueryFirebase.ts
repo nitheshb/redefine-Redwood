@@ -601,9 +601,9 @@ export const addLead = async (orgId, data, by, msg) => {
   ])
   if (Project) {
     await sendWhatAppTextSms1(
-      9849000525,
+      '7760959579',
       `Warm Greetings!
-      Thanks for your interest in {{Project Name}},
+      Thanks for your interest in ${Project},
       It was a pleasure to receive an inquiry request on our project ${Project}. In response to your inquiry, our team will contact you shortly.
       Take a brisk glimpse about the project
 

@@ -781,7 +781,7 @@ export default function CustomerProfileSideView({
       console.log('tempLeadStatus', streamCurrentStatus,tempLeadStatus)
       if (tempLeadStatus === 'visitfixed') {
         sendWhatAppTextSms1(
-          '9849000525',
+          '7760959579',
           `Greetings From MAA Homes !!\n
         As per our conversation,  I am happy to welcome you to our project ${Project} and looking forward to seeing what we can accomplish together, I will be on hand to offer you a tour of our villa project.\n
         Your visit is confirmed on ${prettyDateTime(
@@ -790,7 +790,7 @@ export default function CustomerProfileSideView({
         )
       } else if (tempLeadStatus === 'visitdone') {
         sendWhatAppTextSms1(
-          '9849000525',
+          '7760959579',
           `Greetings From MAA Homes !!\n
           It was great to meet you at our project today, you’re one step closer to your dream home.
           Please let me know when we can meet for further discussion and action.
