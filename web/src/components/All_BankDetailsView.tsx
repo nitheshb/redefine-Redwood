@@ -2,19 +2,19 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import { useEffect, useState } from 'react'
+
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/outline'
 import { useSnackbar } from 'notistack'
-import { useEffect, useState } from 'react'
-import { Document, Page, pdfjs } from 'react-pdf'
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 import {
   deleteBankAccount,
   steamBankDetailsList,
   steamVirtualAccountsList,
 } from 'src/context/dbQueryFirebase'
-import SiderForm from './SiderForm/SiderForm'
 import { useAuth } from 'src/context/firebase-auth-context'
+
+import SiderForm from './SiderForm/SiderForm'
 const AllBankDetailsView = ({ title, pId, data }) => {
   const { user } = useAuth()
   const { orgId } = user

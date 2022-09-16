@@ -1,20 +1,27 @@
-import { Link, routes } from '@redwoodjs/router'
 import { useState } from 'react'
+
+import { Button } from '@material-ui/core'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+
+import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
+
 import ExecutiveHomeViewerPage from 'src/components/ExecutiveHomeViewerPage'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
+import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
+import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 import HeadSideBar from 'src/components/HeadSideBar/HeadSideBar'
-import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
-import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
-import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
 import LeadsManagementHome from 'src/components/LeadsManagement'
 import LeadsTeamReportBody from 'src/components/LeadsTeamReportBody'
 import MyAttedanceHomeBody from 'src/components/myAttedanceHomeBody'
-import MyPayHomeBody from 'src/components/myPayHomeBody'
 import MyLeadsReportHome from 'src/components/myLeadsReportHome'
+import MyPayHomeBody from 'src/components/myPayHomeBody'
+import MyDocument from 'src/components/pdfPrint'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
-import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
-import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
+import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
+import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
+
+import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 
 const LeadsManagerPage = () => {
   const [showSideBar, setShowSideBar] = useState(true)
@@ -140,6 +147,21 @@ const LeadsManagerPage = () => {
                   isEdit={false}
                 />
               )}
+              <div className=" mb-4 flex flex-row justify-center items-center ">
+                <div suppressHydrationWarning={true}>
+                  {process.browser && (
+                    <PDFDownloadLink document={<MyDocument />} fileName="myPdf">
+                      {({ loading }) =>
+                        loading ? (
+                          <button>loading..</button>
+                        ) : (
+                          <button>Download</button>
+                        )
+                      }
+                    </PDFDownloadLink>
+                  )}
+                </div>
+              </div>
             </div>
             {/* <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-screen  px-300  py-300"> */}
             {/* {viewable === 'Today' && <ExecutiveHomeViewerPage />} */}
