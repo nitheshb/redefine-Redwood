@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import {useState} from "react"
 import { UserGroupIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 
 const HeadSideBar = (props) => {
+const [isOpen,setIsOpen] = useState(false)
   const { pgName } = props
   const { user } = useAuth()
 
