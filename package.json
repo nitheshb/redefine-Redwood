@@ -46,6 +46,9 @@
     "@mui/x-date-pickers": "^5.0.0-beta.7",
     "@nivo/bar": "^0.79.1",
     "@nivo/pie": "^0.79.1",
+    "@progress/kendo-drawing": "^1.2.0",
+    "@progress/kendo-licensing": "^1.0.1",
+    "@progress/kendo-react-pdf": "^5.7.0",
     "@react-pdf/renderer": "^2.3.0",
     "@reduxjs/toolkit": "^1.7.2",
     "@redwoodjs/auth": "^2.2.4",
@@ -109,7 +112,6 @@
     "react-image-lightbox": "^5.1.4",
     "react-number-format": "^4.9.1",
     "react-papaparse": "^4.0.2",
-
     "react-redux": "^7.2.6",
     "react-select": "^5.2.2",
     "react-select-search": "^3.0.9",
