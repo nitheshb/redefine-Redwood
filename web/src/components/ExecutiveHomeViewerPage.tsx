@@ -604,7 +604,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                     />
                   </div>
                 )}
-                <span className="max-h-[42px] mt-[2px] ml-3">
+                <span className="max-h-[42px] mt-[2px] ml-3 bg-white pl-[2px] rounded-[2px] ">
                   {/* <span className="text-xs font-bodyLato text-[#516f90] cursor-none">
                   Set Due Date
                 </span> */}
@@ -612,11 +612,11 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     border-color: hsl(0, 0%, 80%);
     min-height: 31px;} */}
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label className="bg-green   pl-   flex flex-row cursor-pointer">
+                  <label className="bg-green   pl-[2px]   flex flex-row cursor-pointer">
                     <CalendarMonthTwoToneIcon className="mr-1 mt-[2px]" />
                     <span className="inline">
                       <DatePicker
-                        className="z-10 pl- py-1 rounded-[4px] min-h-[30px] inline text-xs text-[#0091ae] bg-white cursor-pointer min-w-[170px]"
+                        className="z-10 pl- py-1 rounded-[4px] min-h-[30px] inline text-xs text-[#0091ae] bg-white cursor-pointer min-w-[170px] border-l-[#cccccc]"
                         // selected={cutOffDate}
                         // onChange={(date) => setCutOffDate(date)}
                         // calendarContainer={MyContainer(setIsOpened)}

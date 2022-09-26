@@ -361,9 +361,9 @@ const CostBreakUpSheet = ({
                 <p className="text-md font-extrabold tracking-tight uppercase font-body">
                   Unit Details
                 </p>
-                <section className="border p-4 mt-4 px-8 rounded border-[#e5e7eb] bg-[#e3f7ff]">
-                  <div className="flex w-full mt-4">
-                    <div className="ml-1 grid grid-cols-7 gap-12">
+                <section className="   rounded border-[#e5e7eb] ">
+                  <div className="flex w-full ">
+                    <div className="ml-1 ">
                       {/* <div className="text-sm font-light text-slate-500">
                       <p className="text-sm font-normal text-slate-700">
                         Invoice Detail:
@@ -379,133 +379,115 @@ const CostBreakUpSheet = ({
                       </p>
                     </div> */}
 
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mr-2 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px] font-normal text-gray-500 mb-[1px]">
                           Unit Number
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal ml-[1px]">
                           {selUnitDetails?.unit_no}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block  bg-[#F5F8FA] mx-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Block
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal ">
                           {selUnitDetails?.Block || 'NA'}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mx-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px]font-normal text-gray-500">
                           Unit Area
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal ">
                           {selUnitDetails?.super_built_up_area || 'NA'}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mx-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Facing
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.facing || 'NA'}
                         </p>
                       </div>
 
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mx-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Carpet Area
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.carpet_area || 'NA'}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mx-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Bed Rooms
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.bed_rooms || 'NA'}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mx-1 p-2 rounded-md min-w-[100px] mt-3">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Premium
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.premium || 'NA'}
                         </p>
                       </div>
-                    </div>
-                  </div>
-                  <div className="flex w-full mt-8">
-                    <div className="ml-1 grid grid-cols-7 gap-12">
-                      {/* <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Invoice Detail:
-                      </p>
-                      <p>Unwrapped</p>
-                      <p>Fake Street 123</p>
-                      <p>San Javier</p>
-                      <p
-                        onClick={() => setShowCostSheetWindow(false)}
-                        className="text-blue-500 cursor-pointer"
-                      >
-                        Close
-                      </p>
-                    </div> */}
-
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mr-2 p-2 rounded-md min-w-[100px] mt-3">
+                        <p className="text-[12px] font-normal text-gray-500 mb-[1px]">
                           Unit Dim
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal ml-[1px]">
                           {selUnitDetails?.super_built_up_area}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block  bg-[#F5F8FA] mr-1 p-2 rounded-md min-w-[100px] mt-3">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Floor
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal ">
                           {selUnitDetails?.floor || 'NA'}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mr-1 p-2 rounded-md min-w-[100px] mt-3">
+                        <p className="text-[12px]  mb-[1px]font-normal text-gray-500">
                           Built Up Area
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal ">
                           {selUnitDetails?.builtup_area}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mr-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Rate Per Sqft
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.rate_per_sqft || 'NA'}
                         </p>
                       </div>
 
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mr-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Car Parking
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.carparking || 'NA'}
                         </p>
                       </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
+                      <div className="text-sm font-light text-slate-500 inline-block bg-[#F5F8FA] mr-1 p-2 rounded-md min-w-[100px]">
+                        <p className="text-[12px]  mb-[1px] font-normal text-gray-500">
                           Bath Rooms
                         </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
+                        <p className="text-[#3F6363] text-[11px] font-semibold leading-normal">
                           {selUnitDetails?.bath_rooms || 'NA'}
                         </p>
                       </div>
                     </div>
                   </div>
+
                 </section>
               </div>
               <div className="p-5 mt-8">

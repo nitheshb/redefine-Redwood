@@ -27,7 +27,7 @@ const UnitsSmallViewCard = ({ kind, feedData, bg,  setSelUnitDetails,
 
   useEffect(()=>{
     if(kind.status==="available"){
-      setBgColor("#e8a190")
+      setBgColor("#E1F0EF")
     }else if(kind.status==="booked"){
       setBgColor("#CCFBF1")
     }else if(kind.status==="blocked"){

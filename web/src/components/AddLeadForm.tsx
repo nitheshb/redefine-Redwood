@@ -721,13 +721,38 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                                           </div>
                                           <div className="font-semibold text-sm text-slate-900 tracking-wide overflow-ellipsis">
                                             {/* projectList */}
-                                            <AssigedToDropComp
-                                              assignerName={Project}
-                                              id={id}
-                                              align="right"
-                                              // setAssigner={setNewProject}
-                                              usersList={projectList}
-                                            />
+
+                                            {!user?.role?.includes(
+                                              USER_ROLES.CP_AGENT
+                                            ) &&
+                                              [
+                                                'junk',
+                                                'notinterested',
+                                                'dead',
+                                              ].includes(Status) && (
+                                                <AssigedToDropComp
+                                                  assignerName={Project}
+                                                  id={id}
+                                                  align="right"
+                                                  // setAssigner={setNewProject}
+                                                  usersList={projectList}
+                                                />
+                                              )}
+                                            {!user?.role?.includes(
+                                              USER_ROLES.CP_AGENT
+                                            ) &&
+                                              ![
+                                                'junk',
+                                                'notinterested',
+                                                'dead',
+                                              ].includes(Status) && (
+                                                <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] pt-[2px] rounded ">
+                                                  {Project}{' '}
+                                                  {/* {leadDetailsObj?.Status != tempLeadStatus
+  ? `--> ${' '}${tempLeadStatus}`
+  : ''} */}
+                                                </div>
+                                              )}
                                           </div>
                                         </section>
 
@@ -737,24 +762,45 @@ const AddLeadForm = ({ title, dialogOpen }) => {
                                           </div>
                                           {!user?.role?.includes(
                                             USER_ROLES.CP_AGENT
-                                          ) && (
-                                            <div>
-                                              <AssigedToDropComp
-                                                assignerName={
-                                                  assignedToObj?.label
-                                                }
-                                                id={id}
-                                                // setAssigner={setAssigner}
-                                                usersList={usersList}
-                                                align={undefined}
-                                              />
-                                            </div>
-                                          )}
+                                          ) &&
+                                            [
+                                              'junk',
+                                              'notinterested',
+                                              'dead',
+                                            ].includes(Status) && (
+                                              <div>
+                                                <AssigedToDropComp
+                                                  assignerName={
+                                                    assignedToObj?.label
+                                                  }
+                                                  id={id}
+                                                  // setAssigner={setAssigner}
+                                                  usersList={usersList}
+                                                  align={undefined}
+                                                />
+                                              </div>
+                                            )}
+                                          {!user?.role?.includes(
+                                            USER_ROLES.CP_AGENT
+                                          ) &&
+                                            ![
+                                              'junk',
+                                              'notinterested',
+                                              'dead',
+                                            ].includes(Status) && (
+                                              <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] pt-[2px] rounded ">
+                                                {assignedToObj?.label}{' '}
+                                                {/* {leadDetailsObj?.Status != tempLeadStatus
+  ? `--> ${' '}${tempLeadStatus}`
+  : ''} */}
+                                              </div>
+                                            )}
                                           {user?.role?.includes(
                                             USER_ROLES.CP_AGENT
                                           ) && (
                                             <span className="text-left text-sm">
                                               {' '}
+                                              {assignedToObj?.label}
                                               {/* {assignerName} */}
                                             </span>
                                           )}

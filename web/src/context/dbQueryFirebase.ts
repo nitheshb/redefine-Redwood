@@ -511,9 +511,8 @@ export const getProjectByUid = async (orgId, uid: string, snapshot, error) => {
 export const getPhasesByProject = async (uid: string, snapshot, error) => {
   console.log('project details are', uid)
   const getAllPhasesQuery = await query(
-    collection(db, `${'spark'}_phases`),
-    where('projectId', '==', uid),
-    orderBy('created', 'asc')
+    collection(db, `${'maahomes'}_phases`),
+    where('projectId', '==', uid)
   )
   return onSnapshot(getAllPhasesQuery, snapshot, error)
 }
@@ -1025,7 +1024,7 @@ export const createPhase = async (element, enqueueSnackbar, resetForm) => {
       uid,
       created: Timestamp.now().toMillis(),
     }
-    const ref = doc(db, 'phases', uid)
+    const ref = doc(db, 'maahomes_phases', uid)
     await setDoc(ref, updated, { merge: true })
     enqueueSnackbar('Phase added successfully', {
       variant: 'success',

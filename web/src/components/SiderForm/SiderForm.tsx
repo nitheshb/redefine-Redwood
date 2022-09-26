@@ -18,6 +18,7 @@ import ProjPhaseHome from '../ProjPhaseHome/ProjPhaseHome'
 import InventoryViewSideForm from '../DialogFormBody/InventoryViewSideView'
 import CrmUnitSideView from '../crmUnitSideView'
 import AddTaskForm from '../AddTaskForm'
+import ViewUnitDetails from '../ViewUnitDetails'
 
 const SiderForm = ({
   open,
@@ -137,6 +138,17 @@ const SiderForm = ({
                   ))}
                 {title === 'Add Unit' && (
                   <AddUnit
+                    title={title}
+                    phaseFeed={phaseFeed}
+                    BlockFeed={BlockFeed}
+                    dialogOpen={setOpen}
+                    projectDetails={projectDetails}
+                    phaseDetails={phaseDetails}
+                    blockDetails={blockDetails}
+                  />
+                )}
+                {title === 'View Unit' && (
+                  <ViewUnitDetails
                     title={title}
                     phaseFeed={phaseFeed}
                     BlockFeed={BlockFeed}

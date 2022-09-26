@@ -789,20 +789,31 @@ const Floordetails = ({
             )}
             {!['Apartments'].includes(projectDetails?.projectType?.name) && (
               <ul className="">
-                <li className="py-4">
+                <li className="py-2">
                   <section>
                     {/* <section className="px-8 bg-red-100 w-[130px] rounded-r-2xl">
                       Fl-{floorDat}
                     </section> */}
-                    <div className=" px-8 mt-6">
+                    <div className=" px-4 mt-">
                       {filteredUnits
                         // ?.filter((da) => da?.floor == i)
                         .map((data, index) => {
                           return unitShrink ? (
                             <div
-                              className="p-2 mb-1  mx-1 inline-block"
+                              className=" mb-1  mx-1 inline-block"
                               key={index}
-                              onClick={() => handleDetailView_Close(data)}
+                              // onClick={() => handleDetailView_Close(data)}
+                              onClick={() => {
+                                setSliderInfo({
+                                  open: true,
+                                  title: 'View Unit',
+                                  sliderData: {
+                                    phase: {},
+                                    block: {},
+                                  },
+                                  widthClass: 'max-w-2xl',
+                                })
+                              }}
                             >
                               <UnitsSmallViewCard
                                 kind={data}
@@ -834,7 +845,7 @@ const Floordetails = ({
             )}
             {/* 1 */}
             {source === 'projectManagement' && (
-              <div className=" z-10 flex flex-row mt-[50px]">
+              <div className=" z-10 flex flex-row my-[30px]">
                 {['Apartments'].includes(projectDetails?.projectType?.name) && (
                   <div
                     className=" cursor-pointer  z-10 flex flex-col  max-w-md p-2 my-0 mx-3 rounded-sm inline-block min-h-[50px]  min-w-[100px] border border-dotted border-black"
