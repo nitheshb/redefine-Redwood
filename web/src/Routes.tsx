@@ -3,9 +3,12 @@
 // prepended onto the component name.
 
 import { Router, Route, Redirect } from '@redwoodjs/router'
-import { useAuth } from 'src/context/firebase-auth-context'
+
 import { USER_ROLES } from 'src/constants/userRoles'
+import { useAuth } from 'src/context/firebase-auth-context'
+
 import FinanceHomePagePage from './pages/FinanceHomePagePage/FinanceHomePagePage'
+import Profile from './pages/Profile/Profile'
 
 const defaultRoutes = () => {
   return (
@@ -116,7 +119,7 @@ const Routes = () => {
       <Route path="/crm-home" page={CrmHomePage} name="crmHome" />
       <Route path="/finance-home-page" page={FinanceHomePagePage} name="financeHomePage" />
       {UpdatedRoutes}
-
+      <Route path="/profile" page={Profile} name="profile" />
       <Route path="/admin/login" page={LoginPage} name="login" />
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/" page={LoginPage} name="login" />

@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Box, Menu, MenuItem, Typography } from '@mui/material'
 import { useDispatch } from 'react-redux'
+
+import { Link, routes } from '@redwoodjs/router'
+
 import { useAuth } from 'src/context/firebase-auth-context'
 import { logout as logoutAction } from 'src/state/actions/user'
-
 const HeadNavBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -154,7 +156,9 @@ const HeadNavBar = () => {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Link to={routes.profile()}>Profile</Link>
+          </MenuItem>
           <MenuItem onClick={handleClose}>My account</MenuItem>
           <MenuItem onClick={() => handleClose('Logout')}>Logout</MenuItem>
         </Menu>
