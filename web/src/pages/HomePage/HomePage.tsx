@@ -1,20 +1,27 @@
 import { useState, useEffect } from 'react'
-import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
-import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
-import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
-import SiderForm from '../../components/SiderForm/SiderForm'
-import ProjectsMHomeBody from '../../components/ProjectsMHomeBody/ProjectsMHomeBody'
-import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
-import { MetaTags } from '@redwoodjs/web'
-import { getAllProjects } from 'src/context/dbQueryFirebase'
+
 // import { ResponsiveBar } from '@nivo/bar'
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+
 import { Link, routes } from '@redwoodjs/router'
+import { MetaTags } from '@redwoodjs/web'
+
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
+import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
+import { getAllProjects } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 
+import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
+import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
+import HeadSideBar from '../../components/HeadSideBar/HeadSideBar'
+import ProjectsMHomeBody from '../../components/ProjectsMHomeBody/ProjectsMHomeBody'
+import SiderForm from '../../components/SiderForm/SiderForm'
+
 const HomePage = () => {
+  const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
   const { orgId } = user || {}
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
@@ -334,6 +341,10 @@ const HomePage = () => {
     getProjects()
   }, [])
 
+  const toggleOpen = () => {
+    setIsOpen(!isOpen)
+  }
+
   return (
     <>
       <div className="flex w-screen h-screen text-gray-700">
@@ -341,13 +352,22 @@ const HomePage = () => {
           <HeadNavBar />
           <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             <HeadSideBar pgName={'home'} />
-            <HeadSideBarDetailView
-              pgName={'leadsManager'}
-              sourceLink={'projectsScreen'}
-              showSideView1={undefined}
-              setViewable={setViewable}
-              viewable={viewable}
-            />
+            <div className="flex items-start flex-row">
+              {' '}
+              <div className={`${isOpen == true ? 'visible ' : 'hidden'}`}>
+                <HeadSideBarDetailView
+                  pgName={'leadsManager'}
+                  sourceLink={'projectsScreen'}
+                  showSideView1={undefined}
+                  setViewable={setViewable}
+                  viewable={viewable}
+                />
+              </div>
+              <button className=" z-30 -mx-6 mt-4 " onClick={toggleOpen}>
+                {isOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+              </button>
+            </div>
+
             <div className="flex-grow mx-6  mt-10 items-center overflow-y-auto  h-[98%]  px-300  pt-300">
               {viewable != 'inProgress' &&
                 viewable != 'Projects Lead Report' &&
@@ -405,7 +425,7 @@ const HomePage = () => {
               {viewable === 'Projects Lead Report' && (
                 <>
                   <div className="">
-                    <div className="flex items-center justify-between py-2  ">
+                    <div className="  flex items-center justify-between py-2  ">
                       <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0">
                         Projects
                       </span>
