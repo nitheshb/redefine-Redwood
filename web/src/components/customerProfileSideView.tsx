@@ -792,6 +792,17 @@ export default function CustomerProfileSideView({
         sendWhatAppTextSms1(
           '7760959579',
           `Greetings From MAA Homes !!\n
+          
+          It was great meeting you at our project today, you’re one step closer to your dream home,
+          Please let me know when we can meet for further discussions and actions.
+
+         \n\nWarm Regards \n${assignerName}\nMaa Homes`
+        )
+      }
+      else if (tempLeadStatus === 'booking') {
+        sendWhatAppTextSms1(
+          '7760959579',
+          `Greetings From MAA Homes !!\n
           It was great to meet you at our project today, you’re one step closer to your dream home.
           Please let me know when we can meet for further discussion and action.
          \n\nWarm Regards \n${assignerName}\nMaa Homes`

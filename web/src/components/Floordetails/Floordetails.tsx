@@ -46,6 +46,7 @@ const Floordetails = ({
   setSelUnitDetails,
   setShowCostSheetWindow,
   setSelMode,
+  leadDetailsObj,
 }) => {
   const {
     totalValue,
@@ -233,8 +234,10 @@ const Floordetails = ({
     },
   ]
   const handleDetailView_Close = async (kind) => {
+    console.log('inside close it ')
     setShowCostSheetWindow(true)
     setSelUnitDetails(kind)
+    console.log('inside close it ')
   }
   const makeFilterFun = async (id, value) => {
     // unitsFeed, setUnitsFeed
@@ -804,14 +807,16 @@ const Floordetails = ({
                               key={index}
                               // onClick={() => handleDetailView_Close(data)}
                               onClick={() => {
+                                console.log('check is ', leadDetailsObj)
                                 setSliderInfo({
                                   open: true,
                                   title: 'View Unit',
                                   sliderData: {
-                                    phase: {},
-                                    block: {},
+                                    unitDetail: data,
+                                    phaseDetail: phaseFeed,
+                                    leadDetailsObj: leadDetailsObj,
                                   },
-                                  widthClass: 'max-w-2xl',
+                                  widthClass: 'max-w-4xl',
                                 })
                               }}
                             >

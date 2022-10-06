@@ -38,9 +38,11 @@ const SiderForm = ({
   unitViewerrr,
   unitsViewMode,
   setUnitsViewMode,
+  leadDetailsObj
 }) => {
   // dont write too many here
   //  this is for customerProfileSideView
+
 
   return (
     <Transition.Root show={open || false} as={Fragment}>
@@ -150,12 +152,14 @@ const SiderForm = ({
                 {title === 'View Unit' && (
                   <ViewUnitDetails
                     title={title}
+                    data={data}
                     phaseFeed={phaseFeed}
                     BlockFeed={BlockFeed}
                     dialogOpen={setOpen}
                     projectDetails={projectDetails}
                     phaseDetails={phaseDetails}
                     blockDetails={blockDetails}
+                    leadDetailsObj={data?.leadDetailsObj}
                   />
                 )}
 

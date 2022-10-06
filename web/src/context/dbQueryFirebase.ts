@@ -508,10 +508,15 @@ export const getProjectByUid = async (orgId, uid: string, snapshot, error) => {
   }
 }
 
-export const getPhasesByProject = async (uid: string, snapshot, error) => {
+export const getPhasesByProject = async (
+  orgId,
+  uid: string,
+  snapshot,
+  error
+) => {
   console.log('project details are', uid)
   const getAllPhasesQuery = await query(
-    collection(db, `${'maahomes'}_phases`),
+    collection(db, `${orgId}_phases`),
     where('projectId', '==', uid)
   )
   return onSnapshot(getAllPhasesQuery, snapshot, error)
@@ -602,84 +607,9 @@ export const addLead = async (orgId, data, by, msg) => {
     await sendWhatAppTextSms1(
       '7760959579',
       `Warm Greetings!
+
       Thanks for your interest in ${Project},
-      It was a pleasure to receive an inquiry request on our project ${Project}. In response to your inquiry, our team will contact you shortly.
-      Take a brisk glimpse about the project
-
-      Ie: "DON’T JUST BUY A VILLA, ADOPT A SMARTER LIFESTYLE"
-
-      * Why Ecostone Villas ?? **
-
-      ✅Activated for Accessibility – Easy Access to Major IT Hubs, Hospitals, International School and Industrial Area.
-
-      ✅Activated for Space – 50% Open Space of Parks
-
-      ✅Activated for Convenience  -  Smart automation-enabled villas,
-
-      ✅Activated for leisure  -  Premium Development and Amenities, Underground Cabling, Grand Entrance Arch, RoofTop Restaurant, 25000 Sqft Fully Loaded Clubhouse.
-
-      ✅Activated for Reliability –  BMRDA Approved, RERA Approved layout, Approved by All leading Banks
-
-      💥Book Now and Save Upto 6 lakhs - launch price : 1.35 Cr, Pre launch Offer : 1.29 Cr💥
-
-      * Villa Details : *
-
-      Type A Villa,
-      Plot Dimension : 9 M X 12 M
-      BuiltUp Area from 2195
-      All Inclusive Price : 1.35 CR,  Pre launch Offer : 1.29 CR
-
-      Type B Villa,
-      Plot Dimension : 9 M X 15 M
-      BuiltUp Area from 2666
-      All Inclusive Price : 1.68 CR,  Pre launch Offer : 1.60 CR
-
-      AMENITIES:
-      🔸 Cricket Pitch,
-      🔸 Beach Volleyball court
-      🔸 Basketball court
-      🔸 Party Hall
-      🔸 Fully Equipped Gym
-      🔸 Open Top Restaurant
-      🔸 Swimming Pool
-      🔸 Indoor and Outdoor Badminton Court
-      🔸 Jogging Track
-      🔸 Outdoor gym and more...
-
-      NEARBY HOSPITALS:
-      🏥 Narayana Hrudayalaya: 2.1 km
-      🏥 Athreya Hospital: 2.2km
-      🏥 Mazumdar Shaw Medical Centre: 3.9 km and more...
-
-      NEARBY SCHOOLS:
-      🏫 Triumph World School : 0.1km
-      🏫 Manipal Int School: 4km
-      🏫 Lorven Public school: 2.2km and more...
-
-      NEARBY COLLEGES:
-      🏫 Tapasya PU college: 2.8km
-      🏫 Narayana PU College: 1.6km
-      🏫 Lorven College of Science: 3.0km and more...
-
-      NEARBY INDUSTRIAL AREAS:
-      📍 Electronic City Phase 1 and Phase 2 : 9.5 Km
-      📍 BIOCON Research Ltd : 9 Km
-      📍 Bommasandra Industrial Area: 7.8km
-      📍 Jigani Industrial Area: 13km
-      📍 Hosur Industrial Area: 14km
-
-      Location:
-      Map: https://goo.gl/maps/63CcbYarrGA2sWUs7
-
-      💥Booking amount Rs. 2,00,000💥
-
-      💥💥Pre-launch offer available for a limited time!💥💥
-      *For more details
-      please follow the link
-      https://maahomes.in/properties/Subha-Builders/subha-ecostone
-      www.subhaecostone.com
-      or
-      Phone : 8884 469 469
+      It's a pleasure to be a part of your housing journey. Our team will be in touch with you in a brief period. In the meanwhile, this would help you get to know the project a little more.
 
 
       Warm Regards
@@ -696,8 +626,12 @@ export const addLead = async (orgId, data, by, msg) => {
     await sendWhatAppTextSms1(
       '7760959579',
       `Greetings from MAA Homes, I am ${name}
-      I’m pleased to let you know that I will be the point of contact throughout the journey of buying your dream home
-      I look forward to seeing you soon
+      
+      This is ${name} from Maa Homes,
+
+        Regarding your interest in ${Project}, I’m pleased to be your point of contact throughout this journey. I would like to understand your requirements & do let me know if you have any doubts about ${Project}.
+        Looking forward to a fruitful relationship.
+
 
       Warm Regards
       ${name}
@@ -1019,12 +953,13 @@ export const createProject = async (
 export const createPhase = async (element, enqueueSnackbar, resetForm) => {
   try {
     const uid = uuidv4()
+    const { orgId } = element
     const updated = {
       ...element,
       uid,
       created: Timestamp.now().toMillis(),
     }
-    const ref = doc(db, 'maahomes_phases', uid)
+    const ref = doc(db, `${orgId}_phases`, uid)
     await setDoc(ref, updated, { merge: true })
     enqueueSnackbar('Phase added successfully', {
       variant: 'success',
@@ -1694,7 +1629,7 @@ export const updateUnitAsBooked = async (
   resetForm
 ) => {
   try {
-    console.log('data is cost sheet', leadDocId, data)
+    console.log('data is cost sheet', leadDocId, data, unitId)
 
     await updateDoc(doc(db, `${orgId}_units`, unitId), {
       ...data,

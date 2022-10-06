@@ -24,6 +24,7 @@ import DropCompUnitStatus from '../dropDownUnitStatus'
 import AssigedToDropComp from '../assignedToDropComp'
 import PaymentLeadAccess from '../PaymentScheduleForm/ProjectLeadAccess'
 import Floordetails from '../Floordetails/Floordetails'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const ProjPhaseHome = ({
   projectDetails,
@@ -31,6 +32,9 @@ const ProjPhaseHome = ({
   unitDetails,
   leadDetailsObj,
 }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [myProjectDetails, setMyProjectDetails] = useState({ uid: '' })
   const [leadDetailsObj1, setLeadDetailsObj1] = useState({})
   // phases
@@ -73,7 +77,7 @@ const ProjPhaseHome = ({
   let projId
 
   useEffect(() => {
-    console.log('new customer object', leadDetailsObj)
+    console.log('new customer object selecton is', leadDetailsObj)
     setLeadDetailsObj1(leadDetailsObj)
   }, [leadDetailsObj])
 
@@ -92,6 +96,7 @@ const ProjPhaseHome = ({
 
     try {
       const unsubscribe = getPhasesByProject(
+        orgId,
         uid || projectDetails?.uid,
         (querySnapshot) => {
           const phases = querySnapshot.docs.map((docSnapshot) =>
@@ -228,7 +233,7 @@ const ProjPhaseHome = ({
               {showCostSheetWindow && (
                 <CostBreakUpSheet
                   selMode={selMode}
-                  title="Cost Break Up Sheet"
+                  title="Cost Break Up Sheetx"
                   leadDetailsObj1={leadDetailsObj1}
                   selPhaseObj={selPhaseObj}
                   unitDetails={unitDetails}
@@ -497,6 +502,7 @@ const ProjPhaseHome = ({
                             setShowCostSheetWindow={setShowCostSheetWindow}
                             setSelUnitDetails={setSelUnitDetails}
                             setSelMode={setSelMode}
+                            leadDetailsObj={leadDetailsObj1}
                           />
                         ) : blocks[phase.uid]?.length ? (
                           <Blockdetails
@@ -510,6 +516,7 @@ const ProjPhaseHome = ({
                             setShowCostSheetWindow={setShowCostSheetWindow}
                             setSelUnitDetails={setSelUnitDetails}
                             setSelMode={setSelMode}
+                            leadDetailsObj={leadDetailsObj}
                           />
                         ) : !blocks[phase.uid] ? (
                           <DummyBodyLayout />

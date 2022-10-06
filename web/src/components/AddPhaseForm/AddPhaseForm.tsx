@@ -19,8 +19,13 @@ import { unitsCancellation } from 'src/constants/projects'
 import { AreaConverter } from 'src/components/AreaConverter'
 
 import { createPhase, updatePhase } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
+
 
 const AddPhaseForm = ({ title, dialogOpen, phase }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [loading, setLoading] = useState(false)
   const [openAreaFields, setOpenAreaFields] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
@@ -47,7 +52,7 @@ const AddPhaseForm = ({ title, dialogOpen, phase }) => {
     const updatedData = {
       ...data,
       projectId: uid,
-
+      orgId: orgId,
       editMode: true,
       ...getDates(data),
     }

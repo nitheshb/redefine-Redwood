@@ -9,7 +9,6 @@ import { Document, Page, pdfjs } from 'react-pdf'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
-import Floordetails from 'src/components/Floordetails/Floordetails'
 import { deleteAsset, getPlanDiagramByPhase } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 import SiderForm from './SiderForm/SiderForm'

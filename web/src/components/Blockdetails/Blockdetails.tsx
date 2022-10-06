@@ -17,6 +17,7 @@ const Blockdetails = ({
   setSelUnitDetails,
   setShowCostSheetWindow,
   setSelMode,
+  leadDetailsObj,
 }) => {
   console.log('piddd is ', pId, blocks, phaseFeed)
   const [selBlock, setSelBlock] = useState({})
@@ -158,6 +159,7 @@ BlockFeed */}
         setShowCostSheetWindow={setShowCostSheetWindow}
         setSelUnitDetails={setSelUnitDetails}
         setSelMode={setSelMode}
+        leadDetailsObj={leadDetailsObj}
       />
     </div>
   )
