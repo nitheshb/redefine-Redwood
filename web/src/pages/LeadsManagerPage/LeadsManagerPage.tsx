@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
 import { Button } from '@material-ui/core'
+import ClearIcon from '@mui/icons-material/Clear'
+import MenuIcon from '@mui/icons-material/Menu'
 import { PDFExport } from '@progress/kendo-react-pdf'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -9,7 +11,6 @@ import { MetaTags } from '@redwoodjs/web'
 import ExecutiveHomeViewerPage from 'src/components/ExecutiveHomeViewerPage'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
 import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
-import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 import HeadSideBar from 'src/components/HeadSideBar/HeadSideBar'
 import LeadsManagementHome from 'src/components/LeadsManagement'
 import LeadsTeamReportBody from 'src/components/LeadsTeamReportBody'
@@ -24,7 +25,8 @@ import logo from '../../../public/logo.png'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 
 const LeadsManagerPage = () => {
-  const [showSideBar, setShowSideBar] = useState(true)
+  const [showSideBar, setShowSideBar] = useState(false)
+  const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
   const [viewable, setViewable] = useState('Today1')
   const pdfExportComponent = React.useRef(null)
 
@@ -45,18 +47,44 @@ const LeadsManagerPage = () => {
         /> */}
 
         <div className="flex flex-col flex-grow">
+          <HeadNavBar />
           <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             {showSideBar && <HeadSideBar pgName={'leadsManager'} />}
-            <HeadSideBarDetailView2
-              pgName={'leadsManager'}
-              sourceLink={'leadsScreen'}
-              showSideBar={showSideBar}
-              showSideView1={showSideView1}
-              setViewable={setViewable}
-              viewable={viewable}
-            />
+            <div className="relative">
+              {showDetailedSideBar ? (
+                <button
+                  className="absolute ml-4"
+                  onClick={() => {
+                    setDetailedShowSideBar(!showDetailedSideBar)
+                  }}
+                >
+                  <ClearIcon />
+                </button>
+              ) : (
+                <button
+                  className="absolute ml-2"
+                  onClick={() => {
+                    setDetailedShowSideBar(!showDetailedSideBar)
+                  }}
+                >
+                  <MenuIcon />
+                </button>
+              )}
+              {showDetailedSideBar ? (
+                <HeadSideBarDetailView2
+                  pgName={'leadsManager'}
+                  sourceLink={'leadsScreen'}
+                  showSideBar={showSideBar}
+                  showSideView1={showSideView1}
+                  setViewable={setViewable}
+                  viewable={viewable}
+                />
+              ) : (
+                ''
+              )}
+            </div>
+
             <div className="flex-grow  items-center overflow-y-auto  px-300  py-300">
-              <HeadNavBar2 />
               {viewable === 'inProgress' && (
                 <ExecutiveHomeViewerPage leadsTyper={'inProgress'} />
               )}
