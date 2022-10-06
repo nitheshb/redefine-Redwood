@@ -1061,9 +1061,7 @@ export default function TodayLeadsActivitySearchView({
                           </div>
                           <div className="flex flex-grow flex-row items-center justify-between p-4 mt-4">
                             <div className="flex flex-row  w-full ">
-
                               <div className="flex flex-col   w-full  ">
-
                                 {filterScheduleArry(staDA, dat).map(
                                   (ts, inx) => {
                                     return (
@@ -1135,8 +1133,6 @@ export default function TodayLeadsActivitySearchView({
                               </div>
                             </div>
                           </div>
-
-
                         </div>
                       </>
                     )

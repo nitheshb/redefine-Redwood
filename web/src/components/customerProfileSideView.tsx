@@ -778,7 +778,7 @@ export default function CustomerProfileSideView({
         user?.email,
         enqueueSnackbar
       )
-      console.log('tempLeadStatus', streamCurrentStatus,tempLeadStatus)
+      console.log('tempLeadStatus', streamCurrentStatus, tempLeadStatus)
       if (tempLeadStatus === 'visitfixed') {
         sendWhatAppTextSms1(
           '7760959579',
@@ -792,14 +792,13 @@ export default function CustomerProfileSideView({
         sendWhatAppTextSms1(
           '7760959579',
           `Greetings From MAA Homes !!\n
-          
+
           It was great meeting you at our project today, you’re one step closer to your dream home,
           Please let me know when we can meet for further discussions and actions.
 
          \n\nWarm Regards \n${assignerName}\nMaa Homes`
         )
-      }
-      else if (tempLeadStatus === 'booking') {
+      } else if (tempLeadStatus === 'booking') {
         sendWhatAppTextSms1(
           '7760959579',
           `Greetings From MAA Homes !!\n
@@ -911,7 +910,7 @@ export default function CustomerProfileSideView({
     data.comments = [
       {
         c: addCommentTitle,
-        t: Timestamp.now().toMillis() + 21600000,
+        t: Timestamp.now().toMillis(),
       },
       ...(data?.comments || []),
     ]
@@ -2913,34 +2912,6 @@ export default function CustomerProfileSideView({
                                   setShowVisitFeedBackStatusFun
                                 }
                               />
-                              {/* comments display part */}
-                              {data?.comments?.map((commentObj, k) => {
-                                return (
-                                  <li
-                                    key={k}
-                                    className={`ml-6 text-[13px] text-[#7E92A2] tracking-wide ${
-                                      data?.comments?.length - 1 === k
-                                        ? 'mb-1'
-                                        : ''
-                                    }`}
-                                  >
-                                    <svg
-                                      viewBox="0 0 12 12"
-                                      className="notes_icon inline w-2 h-2 mr-1"
-                                      aria-label="2 comments"
-                                    >
-                                      <g fill="none" fillRule="evenodd">
-                                        <path
-                                          fill="currentColor"
-                                          fillRule="nonzero"
-                                          d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
-                                        ></path>
-                                      </g>
-                                    </svg>{' '}
-                                    {commentObj?.c}
-                                  </li>
-                                )
-                              })}
                               {/* add comment + close & Add New Task section */}
                               {addTaskCommentObj?.ct === data?.ct && (
                                 // <input
@@ -2971,6 +2942,43 @@ export default function CustomerProfileSideView({
                                   d={d}
                                 />
                               )}
+                              {/* comments display part */}
+                              {data?.comments?.map((commentObj, k) => {
+                                return (
+                                  <li
+                                    key={k}
+                                    className={`ml-6 text-[13px] text-[#7E92A2] tracking-wide ${
+                                      data?.comments?.length - 1 === k
+                                        ? 'mb-1'
+                                        : ''
+                                    }`}
+                                  >
+                                    <section className="flex flex-row justify-between">
+                                      <span>
+                                        {' '}
+                                        <svg
+                                          viewBox="0 0 12 12"
+                                          className="notes_icon inline w-2 h-2 mr-1"
+                                          aria-label="2 comments"
+                                        >
+                                          <g fill="none" fillRule="evenodd">
+                                            <path
+                                              fill="currentColor"
+                                              fillRule="nonzero"
+                                              d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
+                                            ></path>
+                                          </g>
+                                        </svg>{' '}
+                                        {commentObj?.c}
+                                      </span>
+                                      <span>
+                                        {' '}
+                                        {prettyDateTime(commentObj?.t)}
+                                      </span>
+                                    </section>
+                                  </li>
+                                )
+                              })}
                               {/* not interested and visit done stuff */}
                               {(showNotInterested || showVisitFeedBackStatus) &&
                                 selSchGrpO?.ct === data?.ct && (
