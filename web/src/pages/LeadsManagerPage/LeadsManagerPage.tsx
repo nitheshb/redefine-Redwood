@@ -30,6 +30,7 @@ import logo from '../../../public/logo.png'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 
 const LeadsManagerPage = () => {
+  const { user } = useAuth()
   const [showSideBar, setShowSideBar] = useState(false)
   const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
   const [viewable, setViewable] = useState('Today1')
