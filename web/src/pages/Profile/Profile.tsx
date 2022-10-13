@@ -7,7 +7,7 @@ import Account from 'src/components/profile/account'
 import CheckBox from 'src/components/profile/checkBox'
 import PersonalDetails from 'src/components/profile/personalDetails'
 
-import bg from '../../../public/group7.png'
+import bg from '../../../public/Group7.png'
 const Profile = () => {
   return (
     <div>
