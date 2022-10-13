@@ -1,17 +1,27 @@
+<<<<<<< Updated upstream
 
 import { useState, useEffect } from 'react'
+=======
+import { useState } from 'react'
+import { useEffect } from 'react'
+
+>>>>>>> Stashed changes
 import { Button } from '@material-ui/core'
 import ClearIcon from '@mui/icons-material/Clear'
 import MenuIcon from '@mui/icons-material/Menu'
 import { PDFExport } from '@progress/kendo-react-pdf'
 
 import { Link, routes } from '@redwoodjs/router'
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import { MetaTags } from '@redwoodjs/web'
 
 import ExecutiveHomeViewerPage from 'src/components/ExecutiveHomeViewerPage'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
 import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
+import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 import HeadSideBar from 'src/components/HeadSideBar/HeadSideBar'
 import LeadsManagementHome from 'src/components/LeadsManagement'
 import LeadsTeamReportBody from 'src/components/LeadsTeamReportBody'
@@ -19,21 +29,34 @@ import MyAttedanceHomeBody from 'src/components/myAttedanceHomeBody'
 import MyLeadsReportHome from 'src/components/myLeadsReportHome'
 import MyPayHomeBody from 'src/components/myPayHomeBody'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
+<<<<<<< Updated upstream
 import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 import { useAuth } from 'src/context/firebase-auth-context'
 import { USER_ROLES } from 'src/constants/userRoles'
 
+=======
+>>>>>>> Stashed changes
 import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
 import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
+import { USER_ROLES } from 'src/constants/userRoles'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 import logo from '../../../public/logo.png'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 
 const LeadsManagerPage = () => {
   const { user } = useAuth()
+<<<<<<< Updated upstream
   const [showSideBar, setShowSideBar] = useState(false)
   const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
   const [viewable, setViewable] = useState('Today1')
+=======
+  const [showSideBar, setShowSideBar] = useState(true)
+  const [viewable, setViewable] = useState('')
+
+  const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
+
+>>>>>>> Stashed changes
   const pdfExportComponent = React.useRef(null)
 
   const showSideView1 = () => {

@@ -10,11 +10,11 @@ import { MetaTags } from '@redwoodjs/web'
 
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
+import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
+import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
 import { getAllProjects } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
-import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
-import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 
 import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
@@ -381,6 +381,7 @@ const HomePage = () => {
                   <>
                     <div className="">
                       <div className="flex items-center justify-between py-2 pb-8 ">
+<<<<<<< Updated upstream
                         <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0 font-Playfair">
                           Projects {viewable}
                         </span>
@@ -404,6 +405,8 @@ const HomePage = () => {
                           setViewable={setViewable}
                           viewable={viewable}
                         />
+=======
+>>>>>>> Stashed changes
                         <div className="w-full flex-grow  my- border-t  items-center overflow-y-auto bg-blue h-[98%]  py-300 ">
                           <HeadNavBar2 />
                           <div className="px-3">

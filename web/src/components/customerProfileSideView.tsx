@@ -3,8 +3,17 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment, useEffect, useState } from 'react'
+
 import '../styles/myStyles.css'
 import { Menu } from '@headlessui/react'
+import { Listbox, Transition } from '@headlessui/react'
+import {
+  ArrowRightIcon,
+  PhoneIcon,
+  DeviceMobileIcon,
+  MailIcon,
+} from '@heroicons/react/outline'
+import CalendarIcon from '@heroicons/react/outline/CalendarIcon'
 import {
   BadgeCheckIcon,
   CheckIcon,
@@ -15,25 +24,16 @@ import {
   ViewGridIcon,
   XIcon,
 } from '@heroicons/react/solid'
-import { v4 as uuidv4 } from 'uuid'
-import {
-  ArrowRightIcon,
-  PhoneIcon,
-  DeviceMobileIcon,
-  MailIcon,
-} from '@heroicons/react/outline'
-import { CustomSelect } from 'src/util/formFields/selectBoxField'
-import SortComp from './sortComp'
-import { ErrorMessage, Form, Formik } from 'formik'
-import * as Yup from 'yup'
-
-import { Listbox, Transition } from '@headlessui/react'
 import { SelectorIcon, DownloadIcon } from '@heroicons/react/solid'
-import { useAuth } from 'src/context/firebase-auth-context'
+import ClockIcon from '@heroicons/react/solid/ClockIcon'
+import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import { storage } from 'src/context/firebaseConfig'
+import { ErrorMessage, Form, Formik } from 'formik'
+import DatePicker from 'react-datepicker'
+import { useDropzone } from 'react-dropzone'
 import toast from 'react-hot-toast'
-import LogSkelton from './shimmerLoaders/logSkelton'
+import { v4 as uuidv4 } from 'uuid'
+import * as Yup from 'yup'
 
 import {
   addLeadScheduler,
@@ -59,10 +59,8 @@ import {
   editAddTaskCommentDB,
   rescheduleTaskDB,
 } from 'src/context/dbQueryFirebase'
-import { useDropzone } from 'react-dropzone'
-import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
-import ClockIcon from '@heroicons/react/solid/ClockIcon'
-import CalendarIcon from '@heroicons/react/outline/CalendarIcon'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { storage } from 'src/context/firebaseConfig'
 import {
   getDifferenceInDays,
   getDifferenceInHours,
@@ -71,29 +69,37 @@ import {
   prettyDateTime,
   timeConv,
 } from 'src/util/dateConverter'
+import { CustomSelect } from 'src/util/formFields/selectBoxField'
 
-import DatePicker from 'react-datepicker'
+import LogSkelton from './shimmerLoaders/logSkelton'
+import SortComp from './sortComp'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import { setHours, setMinutes } from 'date-fns'
 import { Timestamp } from 'firebase/firestore'
+
 import StatusDropComp from './statusDropComp'
 import AssigedToDropComp from './assignedToDropComp'
 import Loader from './Loader/Loader'
+
 import {
   ArrowBackRounded,
   DriveEtaOutlined,
   VerticalAlignBottom,
 } from '@mui/icons-material'
+
 import ProjPhaseHome from './ProjPhaseHome/ProjPhaseHome'
 import AddBookingForm from './bookingForm'
+
 import { useSnackbar } from 'notistack'
 import { async } from '@firebase/util'
+
 import SelectDropDownComp from './comps/dropDownhead'
 import EditLeadTask from './Comp_CustomerProfileSideView/EditLeadTask'
 import AddLeadTaskComment from './Comp_CustomerProfileSideView/AddLeadTaskComment'
 import LeadTaskDisplayHead from './Comp_CustomerProfileSideView/LeadTaskDisplayHead'
 import LeadTaskFooter from './Comp_CustomerProfileSideView/LeadTaskFooter'
+
 import { USER_ROLES } from 'src/constants/userRoles'
 import { currentStatusDispFun } from 'src/util/leadStatusDispFun'
 import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
@@ -1729,7 +1735,14 @@ export default function CustomerProfileSideView({
                       })}
                     </ul>
                   </div>
-
+                  {selFeature == 'email' && (
+                    <div className="w-[90%]   rounded-sm bg-blue-500">
+                      <h1 className="text-medium border-b-2 border-b-slate-400 ">
+                        Compose Mail
+                      </h1>
+                      <input className=" focus:outline-0 focus:border-0 " />
+                    </div>
+                  )}
                   {selFeature === 'notes' && (
                     <div className="flex flex-col justify-between border pt-6">
                       {leadNotesFetchedData.length === 0 && !addNote && (
@@ -1747,7 +1760,7 @@ export default function CustomerProfileSideView({
                           <button onClick={() => selFun()}>
                             <time className="block mb-2 text-sm font-normal leading-none text-gray-400 ">
                               Better always attach a string
-                              <span className="text-blue-600"> Add Notes</span>
+                              <span className="text-blue-600"> Add</span>
                             </time>
                           </button>
                         </div>
