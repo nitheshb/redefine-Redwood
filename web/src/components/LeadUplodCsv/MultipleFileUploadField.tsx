@@ -208,7 +208,7 @@ export function MultipleFileUploadField({
             orgId,
             url,
             'nithe.nithesh@gmail.com',
-            fixeName || file.name,
+            fileName || file.name,
             pId,
             uid,
             type,
@@ -236,18 +236,20 @@ export function MultipleFileUploadField({
         const records = input.data
         // await setfileRecords((existing) => [...existing, ...input.data])
         // set All records
-        if (title == 'Import Units') {
+        if (['Import Units', 'Import Project Units'].includes(title)) {
+          console.log('import stuff is ', records)
           const clean1 = records.filter((row) => row['unit_no'] != '')
 
           // set duplicate & valid records
           // check in db if record exists with matched phone Number & email
           const serialData = await Promise.all(
             clean1.map(async (dRow) => {
+              console.log('input date is ', dRow)
               const foundLength = await checkIfUnitAlreadyExists(
                 `${orgId}_units`,
                 pId,
-                myPhase?.uid,
-                myBlock?.uid,
+                myPhase?.uid || '',
+                myBlock?.uid || '',
                 dRow['unit_no']
               )
               dRow['mode'] = await makeMode(foundLength)

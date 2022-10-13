@@ -77,7 +77,18 @@ const AddPaymentDetailsForm = ({
       enqueueSnackbar
     )
 
-    // 2)Create new record in Customer Table
+    // 2)Create('')
+    console.log('submit doc is ', orgId, uid, {
+      leadId: id,
+      ...customerDetailsObj,
+      secondaryCustomerDetailsObj,
+      assets: arrayUnion(uid),
+      [`${uid}_cs`]: leadDetailsObj2[`${uid}_cs`],
+      [`${uid}_ps`]: phase?.paymentScheduleObj || {},
+      [`${uid}_unitDetails`]: selUnitDetails || {},
+
+      //paymentScheduleObj
+    })
     const x2 = await createBookedCustomer(
       orgId,
       uid,
@@ -96,20 +107,19 @@ const AddPaymentDetailsForm = ({
       enqueueSnackbar
     )
 
-    return
     // 3)Update unit record with customer record and mark it as booked
 
     // customerDetailsObj
     const otherData = leadDetailsObj2[`${uid}_others`]
     const unitUpdate = {
       leadId: id,
-      Status: 'booked',
+      status: 'booked',
       customerDetailsObj,
       secondaryCustomerDetailsObj: secondaryCustomerDetailsObj || {},
       ...otherData,
     }
     unitUpdate[`cs`] = leadDetailsObj2[`${uid}_cs`]
-
+    console.log('unit space is ', uid)
     updateUnitAsBooked(
       orgId,
       uid,
@@ -122,7 +132,15 @@ const AddPaymentDetailsForm = ({
 
     // 4)update lead status to book
     // updateLeadStatus(leadDocId, newStatus)
-    // updateLeadStatus(orgId, id, 'booked', enqueueSnackbar)
+
+    updateLeadStatus(
+      orgId,
+      id,
+      leadDetailsObj2?.Status,
+      'booked',
+      'nitheshreddy.email@gmail.com',
+      enqueueSnackbar
+    )
 
     const updatedData = {
       ...data,

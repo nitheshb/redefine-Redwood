@@ -27,7 +27,7 @@ export default function LeadTaskDisplayHead({
         <label className="inline-flex items-center">
           {data?.sts != 'completed' && (
             <span
-              className="px-[2px] py-[2px]  rounded-full border border-2 cursor-pointer text-[#cdcdcd]"
+              className="px-[2px] py-[2px]  rounded-full border border-2 cursor-pointer text-[#cdcdcd] hover:text-green-800 hover:border-green-700 hover:bg-green-100"
               // onClick={() => doneFun(data)}
               onClick={() => closeTaskFun(data)}
             >

@@ -54,39 +54,9 @@ export default function AddLeadTaskComment({
   const hoverEffectTaskFun = (id) => {
     setHoverTasId(id)
   }
-  const styleO = {
-    normal: {
-      width: '100%',
-      height: '24px',
-      borderWidth: '3px 10px 3px 3px',
-      boxSizing: 'border-box',
-      borderStyle: 'solid',
-      verticalAlign: 'middle',
-      cursor: 'pointer',
-      textOverflow: 'ellipsis',
-      transition: 'all 250ms ease',
-      position: 'relative',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
 
-      borderImage:
-        'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216px%22%20height%3D%2232px%22%20viewBox%3D%220%200%2016%2032%22%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%3E%3Cdefs%3E%3Cpath%20d%3D%22M0%2C2.99610022%20C0%2C1.34139976%201.3355407%2C0%202.99805158%2C0%20L6.90478569%2C0%20C8.56056385%2C0%2010.3661199%2C1.25756457%2010.9371378%2C2.80757311%20L16%2C16.5505376%20L11.0069874%2C29.2022189%20C10.3971821%2C30.7473907%208.56729657%2C32%206.90478569%2C32%20L2.99805158%2C32%20C1.34227341%2C32%200%2C30.6657405%200%2C29.0038998%20L0%2C2.99610022%20Z%22%20id%3D%22Bg%22/%3E%3C/defs%3E%3Cg%20id%3D%22Bar%22%20stroke%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cmask%20fill%3D%22white%22%20id%3D%22mask%22%3E%3Cuse%20xlink%3Ahref%3D%22%23Bg%22/%3E%3C/mask%3E%3Cuse%20fill%3D%22%23d3d7dc%22%20xlink%3Ahref%3D%22%23Bg%22/%3E%3Cpolygon%20id%3D%22Ln%22%20fill%3D%22%2347E4C2%22%20mask%3D%22url%28%23mask%29%22%20points%3D%220%2030%2016%2030%2016%2032%200%2032%22/%3E%3C/g%3E%3C/svg%3E") 3 10 3 3 fill / 1 / 0 repeat',
-
-      color: 'rgb(51, 51, 51)',
-      dataBaseColor: '#2fc6f6',
-    },
-    completed: {
-      borderImage:
-        'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216px%22%20height%3D%2232px%22%20viewBox%3D%220%200%2016%2032%22%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%3E%3Cdefs%3E%3Cpath%20d%3D%22M0%2C2.99610022%20C0%2C1.34139976%201.3355407%2C0%202.99805158%2C0%20L6.90478569%2C0%20C8.56056385%2C0%2010.3661199%2C1.25756457%2010.9371378%2C2.80757311%20L16%2C16.5505376%20L11.0069874%2C29.2022189%20C10.3971821%2C30.7473907%208.56729657%2C32%206.90478569%2C32%20L2.99805158%2C32%20C1.34227341%2C32%200%2C30.6657405%200%2C29.0038998%20L0%2C2.99610022%20Z%22%20id%3D%22Bg%22/%3E%3C/defs%3E%3Cg%20id%3D%22Bar%22%20stroke%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cmask%20fill%3D%22white%22%20id%3D%22mask%22%3E%3Cuse%20xlink%3Ahref%3D%22%23Bg%22/%3E%3C/mask%3E%3Cuse%20fill%3D%22%237BD500%22%20xlink%3Ahref%3D%22%23Bg%22/%3E%3Cpolygon%20id%3D%22Ln%22%20fill%3D%22%237BD500%22%20mask%3D%22url%28%23mask%29%22%20points%3D%220%2030%2016%2030%2016%2032%200%2032%22/%3E%3C/g%3E%3C/svg%3E") 3 10 3 3 fill / 1 / 0 repeat',
-    },
-
-    hover: {
-      borderImage:
-        'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216px%22%20height%3D%2232px%22%20viewBox%3D%220%200%2016%2032%22%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%3E%3Cdefs%3E%3Cpath%20d%3D%22M0%2C2.99610022%20C0%2C1.34139976%201.3355407%2C0%202.99805158%2C0%20L6.90478569%2C0%20C8.56056385%2C0%2010.3661199%2C1.25756457%2010.9371378%2C2.80757311%20L16%2C16.5505376%20L11.0069874%2C29.2022189%20C10.3971821%2C30.7473907%208.56729657%2C32%206.90478569%2C32%20L2.99805158%2C32%20C1.34227341%2C32%200%2C30.6657405%200%2C29.0038998%20L0%2C2.99610022%20Z%22%20id%3D%22Bg%22/%3E%3C/defs%3E%3Cg%20id%3D%22Bar%22%20stroke%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cmask%20fill%3D%22white%22%20id%3D%22mask%22%3E%3Cuse%20xlink%3Ahref%3D%22%23Bg%22/%3E%3C/mask%3E%3Cuse%20fill%3D%22%2347E4C2%22%20xlink%3Ahref%3D%22%23Bg%22/%3E%3Cpolygon%20id%3D%22Ln%22%20fill%3D%22%2347E4C2%22%20mask%3D%22url%28%23mask%29%22%20points%3D%220%2030%2016%2030%2016%2032%200%2032%22/%3E%3C/g%3E%3C/svg%3E") 3 10 3 3 fill / 1 / 0 repeat',
-    },
-  }
   return (
-    <div className=" form outline-none   py-2 mx-2  max-h-[72px] min-h-[72px]">
+    <div className=" form outline-none   py-2 mx-4  max-h-[72px] min-h-[72px] mb-4">
       {/* <section className="">
         <div className="flex flex-row  border-b mb-4 px-4 ">
           <div className=" mb-3 flex justify-between">
@@ -96,7 +66,211 @@ export default function AddLeadTaskComment({
       </section> */}
       <div className="flex flex-row justify-between px-4">
         <section className="w-full flex flex-col">
-          <section className="w-full flex flex-row min-h-[36px]">
+
+
+          {(addCommentTitle === '' && !clicked && !addCommentPlusTask) && (
+            <section className="flex flex-row mt-2">
+              {/* <span className="text-xs font-Playfair  text-[#5c6575] font-bold mr-2">
+                {' '}
+                Template:
+              </span> */}
+              {[
+                {
+                  type: 'reschedule',
+                  label: 'RNR',
+                  desc: 'RNR',
+                },
+                {
+                  type: 'reschedule',
+                  label: 'Busy',
+                  desc: 'Call again as customer is busy now.',
+                },
+                {
+                  type: 'reschedule',
+                  label: 'SwitchedOff',
+                  desc: 'Phone Switched Off',
+                },
+                {
+                  type: 'reschedule',
+                  label: 'Reschedule',
+                  desc: 'Rescheduling:',
+                },
+
+                {
+                  type: 'textHelp',
+                  label: 'ProjectDetails',
+                  desc: 'Asked for Project details like broucher e.t.c',
+                },
+                {
+                  type: 'textHelp',
+                  label: 'Quotation',
+                  desc: 'Share Quotation',
+                },
+
+                // {
+                //   type: 'notinterested',
+
+                //   label: 'Not Interested',
+                //   desc: 'Not Interested',
+                // },
+                // {
+                //   type: 'visitdone',
+                //   label: 'Visit Done',
+                //   desc: 'Visit Done',
+                // },
+              ].map(
+                (dataObj, i) =>
+                  (dataObj?.type === 'reschedule' ||
+                    dataObj?.type === 'textHelp' ||
+                    dataObj?.type === 'notinterested' ||
+                    (data?.stsType === 'visitfixed' &&
+                      dataObj?.type === 'visitdone')) && (
+                    <>
+                      <span
+                        className={`text-xs font-Playfair italic cursor-pointer   mr-4 text-[#5c6575] hover:border-b h-[16px] ${
+                          addCommentTitle === dataObj?.desc ? 'border-b' : ''
+                        } `}
+                        onClick={() => {
+                          setClicked(true)
+                          setHover(false)
+                          setSelType(dataObj?.type)
+                          setAddCommentTitle(dataObj?.desc)
+                        }}
+                        onMouseEnter={() => {
+                          // if (clicked) {
+                          //   setClicked(false)
+                          // }
+                          // setAddCommentTitle(dataObj?.desc)
+
+                          // setHover(true)
+                        }}
+                        onMouseLeave={() => {
+                          // if (!clicked) {
+                          //   setAddCommentTitle('')
+                          // }
+
+                          // setHover(false)
+                        }}
+                      >
+                        {' '}
+                        {dataObj?.label}
+                      </span>
+                      {/* {!['visitdone', 'notinterested'].includes(dataObj?.type) && (
+                  <span className="">
+                    <span
+                      key={i}
+                      className={`cursor-pointer   mr-2  px-3 py-1  text-xs
+`}
+                      onClick={() => {
+
+                        setAddCommentTitle(dataObj?.desc)
+
+                      }}
+                    >
+                      {dataObj?.label}
+                    </span>
+                  </span>
+                )} */}
+                    </>
+                  )
+              )}
+            </section>
+          )}
+           {(clicked && selType === 'reschedule' && !addCommentPlusTask) && (
+            <section className="flex flex-row ">
+              <span className="text-xs font-Playfair  text-[#5c6575] font-bold mt-2">
+                {' '}
+                Reschedule to:
+
+              </span>
+              <span className="inline mt-[4px] pl-2">
+                    <DatePicker
+                      className=" pl- px- min-w-[151px] inline text-xs text-[#0091ae] bg-white cursor-pointer"
+                      selected={addCommentTime}
+                      onChange={(date) =>{ setAddCommentTime(date.getTime())}}
+                      showTimeSelect
+                      timeFormat="HH:mm"
+                      injectTimes={[
+                        setHours(setMinutes(d, 1), 0),
+                        setHours(setMinutes(d, 5), 12),
+                        setHours(setMinutes(d, 59), 23),
+                      ]}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                    />
+                  </span>
+
+              {[
+                {
+                  type: 'time',
+                  label: '+30min',
+                  value: (30*60000)
+                },
+                {
+                  type: 'time',
+                  label: '+45min',
+                  value: (45*60000)
+                },
+                {
+                  type: 'time',
+                  label: '+1hr',
+                  value: (60*60000)
+                },
+
+                {
+                  type: 'time',
+                  label: '+2hr',
+                  value: (120*60000)
+                },
+                {
+                  type: 'time',
+                  label: '+3hr',
+                  value: (180*60000)
+                },
+                {
+                  type: 'time',
+                  label: '+1day',
+                  value: (60*24*60000)
+                },
+                {
+                  type: 'time',
+                  label: '+2day',
+                  value: (60*24*2*60000)
+                },
+                {
+                  type: 'time',
+                  label: '+5day',
+                  value: (60*24*5*60000)
+                },
+              ].map(
+                (dataObj, i) =>
+                  (
+                    <>
+                      <span
+                        className={`text-xs font-Playfair italic cursor-pointer   ml-2 mt-2 text-[#5c6575] hover:border-b h-[16px] ${
+                          addCommentTitle === dataObj?.label ? 'border-b' : ''
+                        } `}
+                        onClick={() => {
+                          // setClicked(true)
+                          // setHover(false)
+                          // setAddCommentTitle(dataObj?.label)
+                          setAddCommentTime(d.getTime() + dataObj.value)
+                        }}
+                        onMouseEnter={() => {
+
+                        }}
+                        onMouseLeave={() => {
+
+                        }}
+                      >
+                        {' '}
+                        {dataObj?.label}
+                      </span>
+
+                    </>
+                  ))}
+            </section>
+          )}
+            <section className="w-full flex flex-row min-h-[36px]">
             {/* <div className="text-xs font-bodyLato text-[#516f90]">
             <span className="text-red-800">{closeTask && 'Task Closing'}</span>{' '}
             Comment
@@ -171,188 +345,6 @@ export default function AddLeadTaskComment({
             </span>
           </button>}
           </section>
-
-          {(addCommentTitle === '' && !clicked && !addCommentPlusTask) && (
-            <section className="flex flex-row mt-2">
-              <span className="text-xs font-Playfair  text-[#9CA3AF] font-bold">
-                {' '}
-                Template:
-              </span>
-              {[
-                {
-                  type: 'reschedule',
-                  label: 'RNR',
-                  desc: 'RNR',
-                },
-                {
-                  type: 'reschedule',
-                  label: 'Busy',
-                  desc: 'Call again as customer is busy now.',
-                },
-                {
-                  type: 'reschedule',
-                  label: 'SwitchedOff',
-                  desc: 'Phone Switched Off',
-                },
-
-                {
-                  type: 'textHelp',
-                  label: 'ProjectDetails',
-                  desc: 'Asked for Project details like broucher e.t.c',
-                },
-                {
-                  type: 'textHelp',
-                  label: 'Quotation',
-                  desc: 'Share Quotation',
-                },
-                // {
-                //   type: 'notinterested',
-
-                //   label: 'Not Interested',
-                //   desc: 'Not Interested',
-                // },
-                // {
-                //   type: 'visitdone',
-                //   label: 'Visit Done',
-                //   desc: 'Visit Done',
-                // },
-              ].map(
-                (dataObj, i) =>
-                  (dataObj?.type === 'reschedule' ||
-                    dataObj?.type === 'textHelp' ||
-                    dataObj?.type === 'notinterested' ||
-                    (data?.stsType === 'visitfixed' &&
-                      dataObj?.type === 'visitdone')) && (
-                    <>
-                      <span
-                        className={`text-xs font-Playfair italic cursor-pointer   ml-2 text-[#9CA3AF] hover:border-b h-[16px] ${
-                          addCommentTitle === dataObj?.desc ? 'border-b' : ''
-                        } `}
-                        onClick={() => {
-                          setClicked(true)
-                          setHover(false)
-                          setSelType(dataObj?.type)
-                          setAddCommentTitle(dataObj?.desc)
-                        }}
-                        onMouseEnter={() => {
-                          // if (clicked) {
-                          //   setClicked(false)
-                          // }
-                          // setAddCommentTitle(dataObj?.desc)
-
-                          // setHover(true)
-                        }}
-                        onMouseLeave={() => {
-                          // if (!clicked) {
-                          //   setAddCommentTitle('')
-                          // }
-
-                          // setHover(false)
-                        }}
-                      >
-                        {' '}
-                        {dataObj?.label}
-                      </span>
-                      {/* {!['visitdone', 'notinterested'].includes(dataObj?.type) && (
-                  <span className="">
-                    <span
-                      key={i}
-                      className={`cursor-pointer   mr-2  px-3 py-1  text-xs
-`}
-                      onClick={() => {
-
-                        setAddCommentTitle(dataObj?.desc)
-
-                      }}
-                    >
-                      {dataObj?.label}
-                    </span>
-                  </span>
-                )} */}
-                    </>
-                  )
-              )}
-            </section>
-          )}
-           {(clicked && selType === 'reschedule' && !addCommentPlusTask) && (
-            <section className="flex flex-row ">
-              <span className="text-xs font-Playfair  text-[#9CA3AF] font-bold mt-2">
-                {' '}
-                Reschedule to:
-
-              </span>
-              <span className="inline mt-[4px] pl-2">
-                    <DatePicker
-                      className=" pl- px- min-w-[151px] inline text-xs text-[#0091ae] bg-white cursor-pointer"
-                      selected={addCommentTime}
-                      onChange={(date) =>{ setAddCommentTime(date.getTime())}}
-                      showTimeSelect
-                      timeFormat="HH:mm"
-                      injectTimes={[
-                        setHours(setMinutes(d, 1), 0),
-                        setHours(setMinutes(d, 5), 12),
-                        setHours(setMinutes(d, 59), 23),
-                      ]}
-                      dateFormat="MMMM d, yyyy h:mm aa"
-                    />
-                  </span>
-
-              {[
-                {
-                  type: 'time',
-                  label: '+30min',
-                  value: (30*60000)
-                },
-                {
-                  type: 'time',
-                  label: '+45min',
-                  value: (45*60000)
-                },
-                {
-                  type: 'time',
-                  label: '+1hr',
-                  value: (60*60000)
-                },
-
-                {
-                  type: 'time',
-                  label: '+2hr',
-                  value: (120*60000)
-                },
-                {
-                  type: 'time',
-                  label: '+3hr',
-                  value: (180*60000)
-                },
-              ].map(
-                (dataObj, i) =>
-                  (
-                    <>
-                      <span
-                        className={`text-xs font-Playfair italic cursor-pointer   ml-2 mt-2 text-[#9CA3AF] hover:border-b h-[16px] ${
-                          addCommentTitle === dataObj?.label ? 'border-b' : ''
-                        } `}
-                        onClick={() => {
-                          // setClicked(true)
-                          // setHover(false)
-                          // setAddCommentTitle(dataObj?.label)
-                          setAddCommentTime(d.getTime() + dataObj.value)
-                        }}
-                        onMouseEnter={() => {
-
-                        }}
-                        onMouseLeave={() => {
-
-                        }}
-                      >
-                        {' '}
-                        {dataObj?.label}
-                      </span>
-
-                    </>
-                  ))}
-            </section>
-          )}
         </section>
 
       </div>

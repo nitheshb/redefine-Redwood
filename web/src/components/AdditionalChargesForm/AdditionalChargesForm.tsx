@@ -12,6 +12,7 @@ import {
   addPhaseAdditionalCharges,
   updatePhaseAdditionalCharges,
 } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
 import {
   costSheetAdditionalChargesA,
   gstValesA,
@@ -19,6 +20,9 @@ import {
 } from 'src/constants/projects'
 
 const AdditionalChargesForm = ({ title, data, source }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [tableData, setTableData] = useState([])
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
@@ -248,7 +252,7 @@ const AdditionalChargesForm = ({ title, data, source }) => {
       return e
     })
     console.log('check this stuff', tableData, c)
-    await updatePhaseAdditionalCharges(uid, c, enqueueSnackbar)
+    await updatePhaseAdditionalCharges(orgId,uid, c, enqueueSnackbar)
   }
 
   //function for deleting a row
@@ -256,7 +260,7 @@ const AdditionalChargesForm = ({ title, data, source }) => {
     const { uid } = data?.phase || {}
     const c = tableData.filter((e) => e.myId != oldData.myId)
     console.log('check this stuff', c)
-    await updatePhaseAdditionalCharges(uid, c, enqueueSnackbar)
+    await updatePhaseAdditionalCharges(orgId,uid, c, enqueueSnackbar)
     // await deleteAdditionalCharge(oldData?.uid, enqueueSnackbar)
   }
 
@@ -275,7 +279,12 @@ const AdditionalChargesForm = ({ title, data, source }) => {
         ...newData,
       }
       // await createAdditonalCharges(additonalChargesObj, enqueueSnackbar)
-      await addPhaseAdditionalCharges(uid, additonalChargesObj, enqueueSnackbar)
+      await addPhaseAdditionalCharges(
+        orgId,
+        uid,
+        additonalChargesObj,
+        enqueueSnackbar
+      )
     } else {
       setErrorMessages(errorList)
       setIserror(true)

@@ -139,7 +139,10 @@ const PaymentScheduleSheet = ({
     const { additonalChargesObj, paymentScheduleObj } = phase
     console.log('unit details', selUnitDetails)
     const { uid } = selUnitDetails
-    const y = leadDetailsObj2[`${uid}_cs`]?.newSqftPrice || ''
+    const y =
+      leadDetailsObj2?.Status === 'booked'
+        ? leadDetailsObj2[`${uid}_cs`]?.newSqftPrice
+        : ''
 
     const x = [
       // {

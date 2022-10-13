@@ -46,14 +46,19 @@ export function prettyDateTime(d) {
     'Dec',
   ]
 
+  const dat =
+    date.getUTCDate() < 10 ? `0${date.getUTCDate()} ` : date.getUTCDate()
+  const hr =
+    date.getUTCHours() < 10 ? `0${date.getUTCHours()} ` : date.getUTCHours()
+
   return (
     months[date.getUTCMonth()] +
     ' ' +
-    date.getUTCDate() +
+    dat +
     ', ' +
     date.getUTCFullYear() +
     '   ' +
-    date.getUTCHours() +
+    hr +
     ':' +
     String(date.getMinutes()).padStart(2, '0')
   )

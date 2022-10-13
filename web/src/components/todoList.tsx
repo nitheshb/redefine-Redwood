@@ -39,15 +39,6 @@ const TodoListView = ({
   const [tableData, setTableData] = useState([])
   const [tabHeadFieldsA, settabHeadFieldsA] = useState([])
   // const [leadsFetchedData, setLeadsFetchedData] = useState([])
-  const [openModal, setOpenModal] = useState(false)
-
-  const handleChange = (_, newValue) => {
-    console.log('newvalue is ', newValue)
-    setValue(newValue)
-  }
-  useEffect(() => {
-    console.log('todoList is', searchKey, taskListA)
-  }, [taskListA])
 
   useEffect(() => {
     // axios
@@ -228,20 +219,21 @@ const TodoListView = ({
                         onClick={() => {
                           console.log('macho 1', dat?.leadUser, dat)
                           const y = dat.leadUser
-                          y.id = dat?.id
-
+                          y.id = dat?.uid
+                          console.log('macho 1', y)
                           selUserProfileF('User Profile', y)
                         }}
                       >
                         <td>
                           <div className="ml-5">
-                            <div className="bg-gray-200 rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative">
-                              <input
+                            <div className="rounded-sm h-5 w-5 flex flex-shrink-0 justify-center items-center relative">
+                              {/* <input
                                 placeholder="checkbox"
                                 type="checkbox"
                                 className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full"
-                              />
-                              <div className="check-icon hidden bg-indigo-700 text-white rounded-sm">
+                              /> */}
+                              {i + 1}
+                              {/* <div className="check-icon hidden bg-indigo-700 text-white rounded-sm">
                                 <svg
                                   className="icon icon-tabler icon-tabler-check"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -257,12 +249,12 @@ const TodoListView = ({
                                   <path stroke="none" d="M0 0h24v24H0z"></path>
                                   <path d="M5 12l5 5l10 -10"></path>
                                 </svg>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </td>
                         <td className=" max-w-[300px]">
-                          <div className="flex items-center pl-5">
+                          <div className="flex items-center ">
                             <div className="flex flex-col">
                               <p className="text-base max-w-[350px] overflow-ellipsis overflow-hidden font-semibold leading-none text-blue-800 mr-2 mt-2">
                                 {dat?.notes}

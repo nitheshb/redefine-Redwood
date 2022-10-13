@@ -8,7 +8,6 @@ import { PlusCircleIcon, TrashIcon } from '@heroicons/react/outline'
 import { documentId } from 'firebase/firestore'
 
 import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
-import Floordetails from 'src/components/Floordetails/Floordetails'
 import { deleteAsset, getPlanDiagramByPhase } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
 
