@@ -37,7 +37,16 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
   const [deptIs, setdeptIs] = useState('')
   const [isdeptEmpty, setisdeptEmpty] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { name, email, department, uid } = empData
+  const {
+    empId,
+    offPh,
+    perPh,
+    name,
+    email,
+    department,
+    uid,
+    roles: rolees,
+  } = empData
   console.log('empData is ', empData)
 
   useEffect(() => {
@@ -45,6 +54,16 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
       seteditMode(true)
     }
   }, [])
+  useEffect(() => {
+    const { department, roles } = empData
+    const x = {}
+
+    if (department) {
+      x['value'] = department[0]
+      changed(x)
+      // seteditMode(true)
+    }
+  }, [empData])
 
   // const cityList = [
   //   { label: 'Bangalore,KA', value: 'Bangalore,KA' },
@@ -63,19 +82,17 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
 
   const changed = async (data) => {
     console.log('i was changed', data, data)
-
     setdeptIs(data.value)
     if (data.value != '') {
       setisdeptEmpty(false)
     }
-
     const filRoles = ROLES_LIST.filter((item) => item.dept === data.value)
     setroles(filRoles)
   }
   const onSubmit = async (data) => {
     console.log('check fo this ', data)
     setLoading(true)
-    const { empId, email, orgName, myRole, deptVal, name, offPh, perPh } = data
+    const { empId, email, myRole, deptVal, name, offPh, perPh } = data
 
     if (editMode) {
       updateUserRole(
@@ -106,7 +123,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         message: `Role is updated Successfully`,
       })
     } else {
-      const data = JSON.stringify({
+      const data = {
         empId: empId,
         email: email,
         name: name,
@@ -119,12 +136,15 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
         orgStatus: 'active',
         offPh: offPh,
         perPh: perPh,
-      })
+      }
+
+      //       Invalid Arguments {\"empId\":\"102\",\"uid\":\"71wQrhV54oeWxn5Ha9E8pm93XID3\",\"email\":\"nitheshreddy.email@gmail.com\",\"offPh\":\"\",\"perPh\":\"\",\"userStatus\":\"active\",\"orgStatus\":\"active\",\"orgId\":\"spark\",\"department\":[\"admin\"],\"roles\":[\"admin\"],\"name\":\"nitheshreddy\"}"
+      // payload: "{\"code\":\"invalid-argument\",\"name\":\"FirebaseError\"}"
 
       const config = {
         method: 'post',
 
-        url: 'https://testredefine.azurewebsites.net/api/Redefine_addUser?code=5OdECsAJBhxoCpmv9tk6hR8bbbgIVJc1O2ZONQtLTuImAzFuGaxqhw==',
+        url: 'https://asia-south1-redefine-erp.cloudfunctions.net/erpAddUser',
         headers: {
           'Content-Type': 'text/plain',
         },
@@ -235,7 +255,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
     <div className="h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll">
       <div className="px-4 sm:px-6">
         <Dialog.Title className=" font-semibold text-lg mr-auto ml-3">
-          {title}
+          {editMode ? 'Edit Employee Details' : 'Create Employee'}
         </Dialog.Title>
       </div>
       {formMessage.message && (
@@ -252,11 +272,11 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
           initialValues={{
             name: name,
             email: email,
-            deptVal: department,
-            myRole: '',
-            empId: 10,
-            perPh: '',
-            offPh: '',
+            deptVal: department != undefined ? department[0] : '',
+            myRole: rolees != undefined ? rolees[0] : '',
+            empId: empId,
+            perPh: perPh,
+            offPh: offPh,
           }}
           validationSchema={validate}
           onSubmit={(values) => {
@@ -295,6 +315,10 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                   name="offPh"
                   label="Official Phone Number*"
                   className="input"
+                  value={formik.values.offPh}
+                  onChange={(value) => {
+                    formik.setFieldValue('offPh', value.value)
+                  }}
                 />
                 {/* <TextField
                   label="Personal Phone Number*"
@@ -306,6 +330,10 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                   name="perPh"
                   label="Personal Phone Number*"
                   className="input"
+                  value={formik.values.perPh}
+                  onChange={(value) => {
+                    formik.setFieldValue('perPh', value.value)
+                  }}
                 />
 
                 <CustomSelect
@@ -380,7 +408,7 @@ const SUserSignupBody = ({ title, dialogOpen, empData }) => {
                     disabled={loading}
                   >
                     {loading && <Loader />}
-                    Add Employee
+                    {editMode ? 'Edit Employee' : 'Add Employee'}
                   </button>
                 </div>
               </Form>

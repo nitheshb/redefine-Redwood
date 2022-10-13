@@ -94,6 +94,9 @@ import EditLeadTask from './Comp_CustomerProfileSideView/EditLeadTask'
 import AddLeadTaskComment from './Comp_CustomerProfileSideView/AddLeadTaskComment'
 import LeadTaskDisplayHead from './Comp_CustomerProfileSideView/LeadTaskDisplayHead'
 import LeadTaskFooter from './Comp_CustomerProfileSideView/LeadTaskFooter'
+import { USER_ROLES } from 'src/constants/userRoles'
+import { currentStatusDispFun } from 'src/util/leadStatusDispFun'
+import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
 
 // interface iToastInfo {
 //   open: boolean
@@ -144,10 +147,12 @@ const notInterestOptions = [
 const junktOptions = [
   // { label: 'Select Reason', value: '' },
   { label: 'Phone no invalid', value: 'phone_no_invalid' },
+
   {
     label: 'Fake Customer',
     value: 'fake_customer',
   },
+  { label: 'RNR from Long Time', value: 'long_time_rnr' },
 
   // { label: 'Follow Up', value: 'followup' },
   // { label: 'RNR', value: 'rnr' },
@@ -575,8 +580,9 @@ export default function CustomerProfileSideView({
           }   `
         )
       } else if (newStatus === 'booked') {
+        setLeadStatus('booked')
         await setTakTitle('Share the Details with CRM team')
-        await fAddSchedule()
+        // await fAddSchedule()
       } else {
         setTakTitle(' ')
       }
@@ -755,22 +761,14 @@ export default function CustomerProfileSideView({
 
     const x = schStsA
 
-    console.log(
-      'new one ',
-      tempLeadStatus,
-      startDate,
-      startDate.getTime(),
-      schStsA,
-      x,
-      data.schTime
-    )
-
     x.push('pending')
     setschStsA(x)
     // addSchedulerLog(orgId,id, data)
     //  get assignedTo Led
     console.log('new one ', schStsA)
     await addLeadScheduler(orgId, id, data, schStsA, assignedTo)
+    const { name } = assignedTo
+
     if (streamCurrentStatus != tempLeadStatus) {
       updateLeadStatus(
         orgId,
@@ -780,6 +778,35 @@ export default function CustomerProfileSideView({
         user?.email,
         enqueueSnackbar
       )
+      console.log('tempLeadStatus', streamCurrentStatus, tempLeadStatus)
+      if (tempLeadStatus === 'visitfixed') {
+        sendWhatAppTextSms1(
+          '7760959579',
+          `Greetings From MAA Homes !!\n
+        As per our conversation,  I am happy to welcome you to our project ${Project} and looking forward to seeing what we can accomplish together, I will be on hand to offer you a tour of our villa project.\n
+        Your visit is confirmed on ${prettyDateTime(
+          startDate.getTime()
+        )} \n\nWarm Regards \n${assignerName}\nMaa Homes`
+        )
+      } else if (tempLeadStatus === 'visitdone') {
+        sendWhatAppTextSms1(
+          '7760959579',
+          `Greetings From MAA Homes !!\n
+
+          It was great meeting you at our project today, you’re one step closer to your dream home,
+          Please let me know when we can meet for further discussions and actions.
+
+         \n\nWarm Regards \n${assignerName}\nMaa Homes`
+        )
+      } else if (tempLeadStatus === 'booking') {
+        sendWhatAppTextSms1(
+          '7760959579',
+          `Greetings From MAA Homes !!\n
+          It was great to meet you at our project today, you’re one step closer to your dream home.
+          Please let me know when we can meet for further discussion and action.
+         \n\nWarm Regards \n${assignerName}\nMaa Homes`
+        )
+      }
     }
     await setTakTitle('')
     await setAddSch(false)
@@ -883,7 +910,7 @@ export default function CustomerProfileSideView({
     data.comments = [
       {
         c: addCommentTitle,
-        t: Timestamp.now().toMillis() + 21600000,
+        t: Timestamp.now().toMillis(),
       },
       ...(data?.comments || []),
     ]
@@ -1382,22 +1409,27 @@ export default function CustomerProfileSideView({
                     <div className="font-md text-xs text-gray-500 mb-[px] tracking-wide mr-4">
                       Assigned To {}
                     </div>
-                    <div>
-                      <AssigedToDropComp
-                        assignerName={assignerName}
-                        id={id}
-                        setAssigner={setAssigner}
-                        usersList={usersList}
-                        align={undefined}
-                      />
-                    </div>
+                    {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                      <div>
+                        <AssigedToDropComp
+                          assignerName={assignerName}
+                          id={id}
+                          setAssigner={setAssigner}
+                          usersList={usersList}
+                          align={undefined}
+                        />
+                      </div>
+                    )}
+                    {user?.role?.includes(USER_ROLES.CP_AGENT) && (
+                      <span className="text-left text-sm"> {assignerName}</span>
+                    )}
                   </section>
                   <section>
                     <div className="font-md text-xs text-gray-500 mb-[0px] tracking-wide mr-4">
                       Current Status {}
                     </div>
-                    <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] py-[px] rounded ">
-                      {leadDetailsObj?.Status}{' '}
+                    <div className="font-semibold text-[#053219] text-sm  mt- px-[3px] pt-[2px] rounded ">
+                      {currentStatusDispFun(leadDetailsObj?.Status)}{' '}
                       {/* {leadDetailsObj?.Status != tempLeadStatus
                         ? `--> ${' '}${tempLeadStatus}`
                         : ''} */}
@@ -1421,7 +1453,9 @@ export default function CustomerProfileSideView({
                     <span className="font-thin   font-bodyLato text-[9px]  py-[6px]">
                       Updated On :
                       <span className="text-[#867777] ck ml-2">
-                        {prettyDateTime(stsUpT) || 'NA'}
+                        {stsUpT === undefined
+                          ? 'NA'
+                          : prettyDateTime(stsUpT) || 'NA'}
                       </span>
                     </span>
                   </section>
@@ -1475,17 +1509,13 @@ export default function CustomerProfileSideView({
                   style={{ background: '#e2c062', marginRight: '12px' }}
                 ></div>
               </div>
-              <span className="font-bodyLato text-[#867777] text-xs">
+              <span className="font-bodyLato text-[#867777] text-xs mt-2">
                 {/* <HighlighterStyle
                             searchKey={searchKey}
                             source={row.Source.toString()}
                           /> */}
 
-                <img
-                  className="w-[18px] h-[18px] inline"
-                  alt={Source?.toString() || 'NA'}
-                  src={`../${Source?.toString()}.svg`}
-                />
+                {Source?.toString() || 'NA'}
               </span>
             </div>
           </div>
@@ -2349,7 +2379,7 @@ export default function CustomerProfileSideView({
                     <div className="font-md font-medium text-xs  ml-2 text-gray-800 flex flex-row justify-between mr-4 py-2">
                       {/* <section> Schedule</section> */}
                       <section className="flex flex-row py-1">
-                        <div
+                        {/* <div
                           className="text-blue-600  mr-4  cursor-pointer"
                           onClick={() => setAddSch(true)}
                         >
@@ -2368,7 +2398,7 @@ export default function CustomerProfileSideView({
                             />
                           </svg>{' '}
                           <div className="inline boder-b ">Add Task</div>
-                        </div>
+                        </div> */}
 
                         {/* <SortComp
                           selFilterVal={selFilterVal}
@@ -2882,34 +2912,6 @@ export default function CustomerProfileSideView({
                                   setShowVisitFeedBackStatusFun
                                 }
                               />
-                              {/* comments display part */}
-                              {data?.comments?.map((commentObj, k) => {
-                                return (
-                                  <li
-                                    key={k}
-                                    className={`ml-6 text-[13px] text-[#7E92A2] tracking-wide ${
-                                      data?.comments?.length - 1 === k
-                                        ? 'mb-1'
-                                        : ''
-                                    }`}
-                                  >
-                                    <svg
-                                      viewBox="0 0 12 12"
-                                      className="notes_icon inline w-2 h-2 mr-1"
-                                      aria-label="2 comments"
-                                    >
-                                      <g fill="none" fillRule="evenodd">
-                                        <path
-                                          fill="currentColor"
-                                          fillRule="nonzero"
-                                          d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
-                                        ></path>
-                                      </g>
-                                    </svg>{' '}
-                                    {commentObj?.c}
-                                  </li>
-                                )
-                              })}
                               {/* add comment + close & Add New Task section */}
                               {addTaskCommentObj?.ct === data?.ct && (
                                 // <input
@@ -2940,6 +2942,43 @@ export default function CustomerProfileSideView({
                                   d={d}
                                 />
                               )}
+                              {/* comments display part */}
+                              {data?.comments?.map((commentObj, k) => {
+                                return (
+                                  <li
+                                    key={k}
+                                    className={`ml-6 text-[13px] text-[#7E92A2] tracking-wide ${
+                                      data?.comments?.length - 1 === k
+                                        ? 'mb-1'
+                                        : ''
+                                    }`}
+                                  >
+                                    <section className="flex flex-row justify-between">
+                                      <span>
+                                        {' '}
+                                        <svg
+                                          viewBox="0 0 12 12"
+                                          className="notes_icon inline w-2 h-2 mr-1"
+                                          aria-label="2 comments"
+                                        >
+                                          <g fill="none" fillRule="evenodd">
+                                            <path
+                                              fill="currentColor"
+                                              fillRule="nonzero"
+                                              d="M9.5 1A1.5 1.5 0 0 1 11 2.5v5A1.5 1.5 0 0 1 9.5 9H7.249L5.28 10.97A.75.75 0 0 1 4 10.44V9H2.5A1.5 1.5 0 0 1 1 7.5v-5A1.5 1.5 0 0 1 2.5 1h7zm0 1h-7a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5H5v1.836L6.835 8H9.5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z"
+                                            ></path>
+                                          </g>
+                                        </svg>{' '}
+                                        {commentObj?.c}
+                                      </span>
+                                      <span>
+                                        {' '}
+                                        {prettyDateTime(commentObj?.t)}
+                                      </span>
+                                    </section>
+                                  </li>
+                                )
+                              })}
                               {/* not interested and visit done stuff */}
                               {(showNotInterested || showVisitFeedBackStatus) &&
                                 selSchGrpO?.ct === data?.ct && (

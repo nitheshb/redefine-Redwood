@@ -26,30 +26,6 @@ const rowsCounter = (parent, searchKey) => {
     }
   })
 }
-const Wrapper = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  flexWrap: 'wrap',
-  padding: '0 1.5rem',
-  paddingTop: '1rem',
-}))
-const IconWrapper = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.light,
-  width: 40,
-  height: 40,
-  borderRadius: '5px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginRight: '0.5rem',
-}))
-const TabListWrapper = styled(TabList)(({ theme }) => ({
-  [theme.breakpoints.down(700)]: {
-    order: 3,
-    marginTop: 1,
-  },
-}))
 
 const TodayLeadsActivityListHomeView = ({
   setisImportLeadsOpen,
@@ -65,8 +41,9 @@ const TodayLeadsActivityListHomeView = ({
   const [tableData, setTableData] = useState([])
   const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [openModal, setOpenModal] = useState(false)
-  const [todaySchL, setTodaySchL] = useState()
+  const [todaySchL, setTodaySchL] = useState([])
   const [searchKey, setSearchKey] = useState(['pending'])
+  const [schLoading, setSchLoading] = useState(true)
 
   const handleChange = (_, newValue) => {
     console.log('newvalue is ', newValue)
@@ -101,6 +78,7 @@ const TodayLeadsActivityListHomeView = ({
 
       console.log('what is thes ==> ', taskType)
       if (taskType === 'Today1Team' || taskType === 'UpcomingTeam') {
+        setSchLoading(true)
         console.log('torw date', torrowDate)
         const todoData = await getTodayTodoLeadsData(
           orgId,
@@ -112,15 +90,6 @@ const TodayLeadsActivityListHomeView = ({
             const projects = querySnapshot.docs.map(async (docSnapshot) => {
               const x = docSnapshot.data()
               const { staDA } = x
-
-              // if (taskType === 'Today1Team') {
-              //   y = searchKey.includes('upcoming')
-              //     ? staDA.filter((da) => x[da]['schTime'] > torrowDate)
-              //     : staDA.filter((da) => x[da]['schTime'] < torrowDate)
-              //   console.log('upcoming test ', searchKey, y, torrowDate)
-              // } else {
-              //   y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
-              // }
               y = staDA
               if (y.length > 0) {
                 x.uid = docSnapshot.id
@@ -130,6 +99,7 @@ const TodayLeadsActivityListHomeView = ({
                 x.leadUser = await y1
                 return x
               } else {
+                setSchLoading(false)
                 return 'remove'
               }
             })
@@ -148,8 +118,10 @@ const TodayLeadsActivityListHomeView = ({
                 )
                 results.filter((data) => data != 'remove')
                 setTodaySchL(results.filter((data) => data != 'remove'))
+                setSchLoading(false)
               })
             } else {
+              setSchLoading(false)
               console.log('my values are 1 ', projects)
             }
           },
@@ -161,6 +133,7 @@ const TodayLeadsActivityListHomeView = ({
         await console.log('what are we', todoData)
       } else {
         console.log('git values is 1', taskType)
+        setSchLoading(true)
         const todoData = await getTodayTodoLeadsDataByUser(
           orgId,
           (querySnapshot) => {
@@ -171,16 +144,14 @@ const TodayLeadsActivityListHomeView = ({
             const projects = querySnapshot.docs.map(async (docSnapshot) => {
               const x = docSnapshot.data()
               const { staDA } = x
+              y = staDA
+              // if (taskType === 'Today1') {
 
-              if (taskType === 'Today1') {
-                // y = searchKey.includes('upcoming')
-                //   ? staDA.filter((da) => x[da]['schTime'] > torrowDate)
-                //   : staDA.filter((da) => x[da]['schTime'] < torrowDate)
-                console.log('git values is ', staDA)
-                y = staDA
-              } else {
-                y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
-              }
+              //   console.log('git values is ', staDA)
+              //   y = staDA
+              // } else {
+              //   y = staDA.filter((da) => x[da]['schTime'] > torrowDate)
+              // }
               if (y.length > 0) {
                 x.uid = docSnapshot.id
                 // eslint-disable-next-line prefer-const
@@ -189,25 +160,27 @@ const TodayLeadsActivityListHomeView = ({
                 x.leadUser = await y1
                 return x
               } else {
-                return 'remove'
+                setSchLoading(false)
+
+                return
+                // return 'remove'
               }
             })
             //  get the task details from docid
             if (projects.length > 0) {
-              console.log(
-                'my values are ',
-                projects.filter((data) => data != 'remove')
-              )
-              projects.filter((data) => data != undefined)
+              // projects.filter((data) => data != undefined)
               Promise.all(projects).then(function (results) {
                 console.log(
                   'my values are ',
                   results.filter((data) => data != 'remove')
                 )
                 results.filter((data) => data != 'remove')
+
                 setTodaySchL(results.filter((data) => data != 'remove'))
+                setSchLoading(false)
               })
             } else {
+              setSchLoading(false)
               console.log('my values are 1 ', projects)
             }
           },
@@ -243,6 +216,7 @@ const TodayLeadsActivityListHomeView = ({
       handleDelete={handleDelete}
       selStatus={value}
       todaySch={todaySchL}
+      schLoading={schLoading}
       rowsParent={leadsFetchedData}
       selUserProfileF={selUserProfileF}
       taskType={taskType}

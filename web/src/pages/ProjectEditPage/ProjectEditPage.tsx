@@ -87,8 +87,7 @@ const ProjectEditPage = () => {
                 />
                 <ProjPhaseHome
                   projectDetails={project}
-                  source="projectManagement"
-                />
+                  source="projectManagement"             />
               </>
             ) : (
               <DummyBodyLayout />

@@ -143,6 +143,19 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
+export const getMyLeadsByDate = async (orgId, data) => {
+  const { cutoffDate, uid, isCp } = data
+  const colName = isCp ? `${orgId}_leads_cp` : `${orgId}_leads`
+  const itemsQuery = query(
+    collection(db, colName),
+    where('assignedTo', '==', uid),
+    where('Date', '>=', cutoffDate)
+  )
+  const citySnapshot = await getDocs(itemsQuery)
+  // await citySnapshot.docs.map((doc) => doc.data())
+  console.log('my Array data is delayer 1', citySnapshot)
+  return await citySnapshot.docs.map((doc) => doc.data())
+}
 export const getLeadsByDate = async (orgId, data) => {
   const { cutoffDate } = data
   const itemsQuery = query(
@@ -233,7 +246,6 @@ export const getTodayTodoLeadsDataByUser = (orgId, snapshot, data, error) => {
     where('assignedTo', '==', uid)
   )
 
-  console.log('hello ', status, itemsQuery, uid)
   return onSnapshot(itemsQuery, snapshot, error)
 }
 export const getLeadbyId1 = async (orgId, uid) => {
@@ -280,12 +292,14 @@ export const getUnits = (orgId, snapshot, data, error) => {
   const itemsQuery = query(
     collection(db, `${orgId}_units`),
     where('pId', '==', pId),
-    where('blockId', '==', blockId)
+    where('blockId', '==', blockId),
+    orderBy('unit_no', 'asc')
   )
 
   console.log('hello ', status, itemsQuery, data)
   return onSnapshot(itemsQuery, snapshot, error)
 }
+
 export const getCustomerDocs = async (orgId, uid: string, snapshot, error) => {
   try {
     const getAllProjectByIdQuery = await query(
@@ -335,17 +349,31 @@ export const checkIfLeadAlreadyExists = async (cName, matchVal) => {
   // db.collection('')
   console.log('matchVal', matchVal)
   const q = await query(collection(db, cName), where('Mobile', '==', matchVal))
+  const parentDocs = []
+  const cpDocs = []
 
   const querySnapshot = await getDocs(q)
   await console.log('foundLength @@', querySnapshot.docs.length)
   // return await querySnapshot.docs.length
-  const parentDocs = []
+
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     console.log('dc', doc.id, ' => ', doc.data())
     parentDocs.push(doc.data())
   })
 
+  const q1 = await query(
+    collection(db, `${cName}_cp`),
+    where('Mobile', '==', matchVal)
+  )
+
+  const querySnapshot1 = await getDocs(q1)
+
+  querySnapshot1.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log('dc', doc.id, ' => ', doc.data())
+    parentDocs.push(doc.data())
+  })
   return parentDocs
 
   // await console.log('length is ', q.length)
@@ -480,12 +508,16 @@ export const getProjectByUid = async (orgId, uid: string, snapshot, error) => {
   }
 }
 
-export const getPhasesByProject = async (uid: string, snapshot, error) => {
+export const getPhasesByProject = async (
+  orgId,
+  uid: string,
+  snapshot,
+  error
+) => {
+  console.log('project details are', uid)
   const getAllPhasesQuery = await query(
-    collection(db, 'phases'),
-    where('projectId', '==', uid),
-    orderBy('created', 'asc'),
-    limit(20)
+    collection(db, `${orgId}_phases`),
+    where('projectId', '==', uid)
   )
   return onSnapshot(getAllPhasesQuery, snapshot, error)
 }
@@ -560,7 +592,7 @@ export const createUser = async (data: any) => {
 export const addLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads`), data)
   await console.log('add Lead value is ', x, x.id, data)
-  const { intype, Name, Mobile, assignedTo, assignedToObj } = data
+  const { intype, Name, Mobile, assignedTo, Project, assignedToObj } = data
   const { data3, errorx } = await supabase.from(`${orgId}_lead_logs`).insert([
     {
       type: 'l_ctd',
@@ -571,11 +603,39 @@ export const addLead = async (orgId, data, by, msg) => {
       payload: {},
     },
   ])
+  if (Project) {
+    await sendWhatAppTextSms1(
+      '7760959579',
+      `Warm Greetings!
+
+      Thanks for your interest in ${Project},
+      It's a pleasure to be a part of your housing journey. Our team will be in touch with you in a brief period. In the meanwhile, this would help you get to know the project a little more.
+
+
+      Warm Regards
+      Maa Homes.`
+    )
+  }
   if (assignedTo) {
-    const { offPh } = assignedToObj
+    const { offPh, name } = assignedToObj
     await sendWhatAppTextSms1(
       offPh,
-      `⚡ A new lead- ${Name} Assigned to you. 📱${Mobile}`
+      `⚡ A new lead- ${Name} Assigned to you @${Project || ''}. 📱${Mobile}`
+    )
+
+    await sendWhatAppTextSms1(
+      '7760959579',
+      `Greetings from MAA Homes, I am ${name}
+      
+      This is ${name} from Maa Homes,
+
+        Regarding your interest in ${Project}, I’m pleased to be your point of contact throughout this journey. I would like to understand your requirements & do let me know if you have any doubts about ${Project}.
+        Looking forward to a fruitful relationship.
+
+
+      Warm Regards
+      ${name}
+      Maa Homes`
     )
   }
   await console.log('what is this supbase', data3, errorx)
@@ -605,6 +665,57 @@ export const addLead = async (orgId, data, by, msg) => {
   x1.push('pending')
 
   await addLeadScheduler(orgId, x.id, data1, x1, data.assignedTo)
+  return
+}
+// This function is used to add leads for cp
+export const addCpLead = async (orgId, data, by, msg) => {
+  const x = await addDoc(collection(db, `${orgId}_leads_cp`), data)
+  await console.log('add Lead value is ', x, x.id, data)
+  const { intype, Name, Mobile, assignedTo, Project, assignedToObj } = data
+  const { data3, errorx } = await supabase.from(`${orgId}_lead_logs`).insert([
+    {
+      type: 'l_ctd',
+      subtype: intype,
+      T: Timestamp.now().toMillis(),
+      Luid: x?.id || '',
+      by,
+      payload: {},
+    },
+  ])
+  if (assignedTo) {
+    const { offPh } = assignedToObj
+    await sendWhatAppTextSms1(
+      offPh,
+      `⚡ A new lead- ${Name} Assigned to you @${Project}. 📱${Mobile}`
+    )
+  }
+  await console.log('what is this supbase', data3, errorx)
+  // await addLeadLog(orgId, x.id, {
+  //   s: 's',
+  //   type: 'status',
+  //   subtype: 'added',
+  //   T: Timestamp.now().toMillis(),
+  //   txt: msg,
+  //   by,
+  // })
+
+  // add task to scheduler to Intro call in 3 hrs
+
+  // const data1 = {
+  //   by: by,
+  //   type: 'schedule',
+  //   pri: 'priority 1',
+  //   notes: 'Get into Introduction Call with customer',
+  //   sts: 'pending',
+  //   schTime: Timestamp.now().toMillis() + 10800000, // 3 hrs
+  //   ct: Timestamp.now().toMillis(),
+  // }
+
+  // const x1 = []
+
+  // x1.push('pending')
+
+  // await addLeadScheduler(orgId, x.id, data1, x1, data.assignedTo)
   return
 }
 
@@ -640,21 +751,21 @@ export const addUnit = async (orgId, data, by, msg) => {
   addUnitComputedValues(
     `${orgId}_projects`,
     pId,
-    builtup_area * rate_per_sqft,
+    builtup_area * rate_per_sqft || 0,
     builtup_area,
     1
   )
   addUnitComputedValues(
     'phases',
     phaseId,
-    builtup_area * rate_per_sqft,
+    builtup_area * rate_per_sqft || 0,
     builtup_area,
     1
   )
   addUnitComputedValues(
     'blocks',
     blockId,
-    builtup_area * rate_per_sqft,
+    builtup_area * rate_per_sqft || 0,
     builtup_area,
     1
   )
@@ -773,10 +884,21 @@ export const createProject = async (
 ) => {
   try {
     const uid = uuidv4()
+    const uid1 = uuidv4()
     const updated = {
       ...element,
       uid,
+      status: 'ongoing',
       created: Timestamp.now().toMillis(),
+    }
+    const phasePayload = {
+      created: Timestamp.now().toMillis(),
+      editMode: true,
+      phaseName: 'Phase-1',
+      projectId: uid,
+      uid: uid1,
+      availableCount: 0,
+      projectType: element?.projectType,
     }
     const {
       builderBankDocId,
@@ -787,6 +909,16 @@ export const createProject = async (
     } = element
     const ref = doc(db, `${orgId}_projects`, uid)
     await setDoc(ref, updated, { merge: true })
+    const ref1 = doc(db, `${orgId}_phases`, uid1)
+    await setDoc(ref1, phasePayload, { merge: true })
+
+    // add phase-0
+    // created
+    // editMode
+    // phaseName
+    // projectId
+    // uid
+    // phaseArea
     await updateBankEntry(
       orgId,
       builderBankDocId,
@@ -821,12 +953,13 @@ export const createProject = async (
 export const createPhase = async (element, enqueueSnackbar, resetForm) => {
   try {
     const uid = uuidv4()
+    const { orgId } = element
     const updated = {
       ...element,
       uid,
       created: Timestamp.now().toMillis(),
     }
-    const ref = doc(db, 'phases', uid)
+    const ref = doc(db, `${orgId}_phases`, uid)
     await setDoc(ref, updated, { merge: true })
     enqueueSnackbar('Phase added successfully', {
       variant: 'success',
@@ -1048,13 +1181,13 @@ export const updateUserRole = async (
   by
 ) => {
   await updateDoc(doc(db, 'users', uid), {
-    empId: empId,
+    empId: empId || 101,
     orgName: orgName,
     orgId: orgId,
     department: [dept],
     roles: [role],
-    offPh,
-    perPh,
+    offPh: offPh || '',
+    perPh: perPh || '',
   })
   return await addUserLog(orgId, {
     s: 's',
@@ -1122,6 +1255,7 @@ export const updateAccessRoles = async (
   }
 }
 export const addPhaseAdditionalCharges = async (
+  orgId,
   uid,
   chargePayload,
   enqueueSnackbar
@@ -1132,7 +1266,7 @@ export const addPhaseAdditionalCharges = async (
   usersUpdate[uuxid] = chargePayload
   chargePayload.myId = uuxid
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       additonalChargesObj: arrayUnion(chargePayload),
     })
     enqueueSnackbar('Charges added successfully', {
@@ -1146,12 +1280,13 @@ export const addPhaseAdditionalCharges = async (
   }
 }
 export const updatePhaseAdditionalCharges = async (
+  orgId,
   uid,
   chargePayloadA,
   enqueueSnackbar
 ) => {
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       additonalChargesObj: chargePayloadA,
     })
 
@@ -1166,6 +1301,7 @@ export const updatePhaseAdditionalCharges = async (
   }
 }
 export const addPhasePaymentScheduleCharges = async (
+  orgId,
   uid,
   chargePayload,
   enqueueSnackbar
@@ -1176,7 +1312,7 @@ export const addPhasePaymentScheduleCharges = async (
   usersUpdate[uuxid] = chargePayload
   chargePayload.myId = uuxid
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       paymentScheduleObj: arrayUnion(chargePayload),
     })
     enqueueSnackbar('Charges added successfully', {
@@ -1190,12 +1326,13 @@ export const addPhasePaymentScheduleCharges = async (
   }
 }
 export const updatePaymentScheduleCharges = async (
+  orgId,
   uid,
   chargePayloadA,
   enqueueSnackbar
 ) => {
   try {
-    await updateDoc(doc(db, 'phases', uid), {
+    await updateDoc(doc(db, `${orgId}_phases`, uid), {
       paymentScheduleObj: chargePayloadA,
     })
 
@@ -1492,7 +1629,7 @@ export const updateUnitAsBooked = async (
   resetForm
 ) => {
   try {
-    console.log('data is cost sheet', leadDocId, data)
+    console.log('data is cost sheet', leadDocId, data, unitId)
 
     await updateDoc(doc(db, `${orgId}_units`, unitId), {
       ...data,

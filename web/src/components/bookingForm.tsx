@@ -242,7 +242,6 @@ const AddBookingForm = ({
     }
   }
 
- 
   const { uid } = selUnitDetails
   const initialState = {
     customerName1:
@@ -289,9 +288,21 @@ const AddBookingForm = ({
     industry: leadDetailsObj2?.industry || '',
     designation: leadDetailsObj2?.designation || '',
     annualIncome: leadDetailsObj2?.annualIncome || '',
-    leadSource: leadDetailsObj2[`${uid}_otherInfo`]?.leadSource,
-    sourceOfPay: leadDetailsObj2[`${uid}_otherInfo`]?.sourceOfPay,
-    purpose: leadDetailsObj2[`${uid}_otherInfo`]?.purpose || '',
+    leadSource:
+      leadDetailsObj2?.Status === 'booked'
+        ? leadDetailsObj2[`${uid}_otherInfo`]?.leadSource
+        : '',
+    sourceOfPay:
+      leadDetailsObj2?.Status === 'booked'
+        ? leadDetailsObj2[`${uid}_otherInfo`]?.sourceOfPay
+        : '',
+    purpose:
+      leadDetailsObj2?.Status === 'booked'
+        ? leadDetailsObj2[`${uid}_otherInfo`]?.purpose
+        : '',
+    // leadSource: "",
+    // sourceOfPay: "",
+    // purpose: "",
     bookingSource: leadDetailsObj2?.bookingSource || '',
     bookedBy:
       leadDetailsObj2?.bookedBy || leadDetailsObj2?.assignedToObj?.label || '',
@@ -418,7 +429,7 @@ const AddBookingForm = ({
 
     // setLoading(true)
     // addCustomer(
-      // orgId,
+    // orgId,
     //   updatedData,
     //   'nithe.nithesh@gmail.com',
     //   enqueueSnackbar,
@@ -465,30 +476,6 @@ const AddBookingForm = ({
                                 >
                                   Receipt Download
                                 </button> */}
-                                <div className="flex-auto flex flex-row-reverse">
-                                  <button
-                                    className="h-[30px] text-base hover:scale-110 focus:outline-none flex justify-center px-2  rounded font-bold cursor-pointer
-                        hover:bg-teal-200
-                        bg-teal-100
-                        text-teal-700
-                        border duration-200 ease-in-out
-                        border-teal-100 transition"
-                                    type="button"
-                                  >
-                                    {'>'}
-                                  </button>
-                                  <button
-                                    className=" mx-2 h-[30px] text-base hover:scale-110 focus:outline-none flex justify-center px-2  rounded font-bold cursor-pointer
-        hover:bg-teal-200
-        bg-teal-100
-        text-teal-700
-        border duration-200 ease-in-out
-        border-teal-100 transition"
-                                    type="button"
-                                  >
-                                    {'<'}{' '}
-                                  </button>
-                                </div>
                               </div>
                             </div>
                             <div className="flex-auto px-4 lg:px-4 py-10 pt-0 mt-4">
@@ -519,7 +506,6 @@ const AddBookingForm = ({
                                             />
                                           </div>
                                         </div>
-
 
                                         <div className="w-full lg:w-12/12">
                                           <div className="relative w-full mb-3 mt-2">

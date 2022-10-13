@@ -89,7 +89,7 @@ const UsersAdminPage = () => {
             <SUserSignup
               open={isOpen}
               setOpen={handleOnClose}
-              title="Create User"
+              title="User"
               empData={empData}
             />
           </div>

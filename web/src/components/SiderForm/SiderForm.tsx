@@ -18,6 +18,7 @@ import ProjPhaseHome from '../ProjPhaseHome/ProjPhaseHome'
 import InventoryViewSideForm from '../DialogFormBody/InventoryViewSideView'
 import CrmUnitSideView from '../crmUnitSideView'
 import AddTaskForm from '../AddTaskForm'
+import ViewUnitDetails from '../ViewUnitDetails'
 
 const SiderForm = ({
   open,
@@ -37,9 +38,11 @@ const SiderForm = ({
   unitViewerrr,
   unitsViewMode,
   setUnitsViewMode,
+  leadDetailsObj
 }) => {
   // dont write too many here
   //  this is for customerProfileSideView
+
 
   return (
     <Transition.Root show={open || false} as={Fragment}>
@@ -125,15 +128,16 @@ const SiderForm = ({
                     data={data}
                   />
                 )}
-                {title === 'Import Units' && (
-                  <LeadsDropHomes
-                    title={title}
-                    dialogOpen={setOpen}
-                    pId={pId}
-                    myPhase={phaseDetails}
-                    myBlock={myBlock}
-                  />
-                )}
+                {title === 'Import Units' ||
+                  (title === 'Import Project Units' && (
+                    <LeadsDropHomes
+                      title={title}
+                      dialogOpen={setOpen}
+                      pId={pId}
+                      myPhase={phaseDetails}
+                      myBlock={myBlock}
+                    />
+                  ))}
                 {title === 'Add Unit' && (
                   <AddUnit
                     title={title}
@@ -143,6 +147,19 @@ const SiderForm = ({
                     projectDetails={projectDetails}
                     phaseDetails={phaseDetails}
                     blockDetails={blockDetails}
+                  />
+                )}
+                {title === 'View Unit' && (
+                  <ViewUnitDetails
+                    title={title}
+                    data={data}
+                    phaseFeed={phaseFeed}
+                    BlockFeed={BlockFeed}
+                    dialogOpen={setOpen}
+                    projectDetails={projectDetails}
+                    phaseDetails={phaseDetails}
+                    blockDetails={blockDetails}
+                    leadDetailsObj={data?.leadDetailsObj}
                   />
                 )}
 

@@ -13,7 +13,6 @@ import {
   createPaymentSheduleComp,
   updatePayment,
   deletePayment,
-  addPhasePaymentScheduleCharges,
   updatePaymentScheduleCharges,
   steamUsersListByRole,
   updateUserAccessProject,

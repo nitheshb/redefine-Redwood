@@ -23,6 +23,8 @@ import CostBreakUpSheet from '../costBreakUpSheet'
 import DropCompUnitStatus from '../dropDownUnitStatus'
 import AssigedToDropComp from '../assignedToDropComp'
 import PaymentLeadAccess from '../PaymentScheduleForm/ProjectLeadAccess'
+import Floordetails from '../Floordetails/Floordetails'
+import { useAuth } from 'src/context/firebase-auth-context'
 
 const ProjPhaseHome = ({
   projectDetails,
@@ -30,6 +32,9 @@ const ProjPhaseHome = ({
   unitDetails,
   leadDetailsObj,
 }) => {
+  const { user } = useAuth()
+
+  const { orgId } = user
   const [myProjectDetails, setMyProjectDetails] = useState({ uid: '' })
   const [leadDetailsObj1, setLeadDetailsObj1] = useState({})
   // phases
@@ -72,7 +77,7 @@ const ProjPhaseHome = ({
   let projId
 
   useEffect(() => {
-    console.log('new customer object', leadDetailsObj)
+    console.log('new customer object selecton is', leadDetailsObj)
     setLeadDetailsObj1(leadDetailsObj)
   }, [leadDetailsObj])
 
@@ -83,6 +88,7 @@ const ProjPhaseHome = ({
       setMyProjectDetails(projectDetails)
       projId = projectDetails?.uid
     }
+    console.log('projectDetails', projectDetails)
   }, [projectDetails])
 
   const getPhases = async (projectDetails) => {
@@ -90,6 +96,7 @@ const ProjPhaseHome = ({
 
     try {
       const unsubscribe = getPhasesByProject(
+        orgId,
         uid || projectDetails?.uid,
         (querySnapshot) => {
           const phases = querySnapshot.docs.map((docSnapshot) =>
@@ -226,7 +233,7 @@ const ProjPhaseHome = ({
               {showCostSheetWindow && (
                 <CostBreakUpSheet
                   selMode={selMode}
-                  title="Cost Break Up Sheet"
+                  title="Cost Break Up Sheetx"
                   leadDetailsObj1={leadDetailsObj1}
                   selPhaseObj={selPhaseObj}
                   unitDetails={unitDetails}
@@ -467,7 +474,37 @@ const ProjPhaseHome = ({
                         </>
                       )}
                       {phaseViewFeature === 'Blocks' &&
-                        (blocks[phase.uid]?.length ? (
+                        (selPhaseObj?.projectType?.name == 'Plots' ? (
+                          <Floordetails
+                            pId={projectDetails?.uid}
+                            projectDetails={projectDetails}
+                            phaseFeed={phases}
+                            selBlock={{
+                              totalValue: 0,
+                              soldValue: 0,
+                              availValue: 0,
+                              bookValue: 0,
+                              blockValue: 0,
+                              holdValue: 0,
+                              totalArea: 0,
+                              soldArea: 0,
+                              availArea: 0,
+                              bookArea: 0,
+                              blockArea: 0,
+                              holdArea: 0,
+                              totalUnitCount: 0,
+                              soldUnitCount: 0,
+                              availableCount: 0,
+                              bookUnitCount: 0,
+                              blockUnitCount: 0,
+                            }}
+                            source={source}
+                            setShowCostSheetWindow={setShowCostSheetWindow}
+                            setSelUnitDetails={setSelUnitDetails}
+                            setSelMode={setSelMode}
+                            leadDetailsObj={leadDetailsObj1}
+                          />
+                        ) : blocks[phase.uid]?.length ? (
                           <Blockdetails
                             blocks={blocks[phase.uid]}
                             blockPayload={blocks}
@@ -479,6 +516,7 @@ const ProjPhaseHome = ({
                             setShowCostSheetWindow={setShowCostSheetWindow}
                             setSelUnitDetails={setSelUnitDetails}
                             setSelMode={setSelMode}
+                            leadDetailsObj={leadDetailsObj}
                           />
                         ) : !blocks[phase.uid] ? (
                           <DummyBodyLayout />
@@ -489,7 +527,7 @@ const ProjPhaseHome = ({
                               alt=""
                               src="/l1.png"
                             ></img>
-                            Blocks are not created yet
+                            Blocks are not created yet{' '}
                             {source === 'projectManagement' && (
                               <button
                                 onClick={() => {
@@ -569,7 +607,7 @@ const ProjPhaseHome = ({
                       {phaseViewFeature === 'Lead Access' && (
                         <PaymentLeadAccess
                           title={'Leads Access'}
-                          data={{ phase: phase, project: projectDetails}}
+                          data={{ phase: phase, project: projectDetails }}
                           source={source}
                         />
                       )}

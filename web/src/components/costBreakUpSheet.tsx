@@ -67,7 +67,7 @@ const CostBreakUpSheet = ({
   const [soldPrice, setSoldPrice] = useState(0)
 
   useEffect(() => {
-    console.log('new customer object', leadDetailsObj1)
+    console.log('new customer object x', title, leadDetailsObj1)
     if (leadDetailsObj1) {
       console.log('it exists')
     } else {
@@ -333,182 +333,11 @@ const CostBreakUpSheet = ({
   }
   return (
     <>
-      <section className="py-20  bg-black">
-        <div className="max-w-5xl w-5xl mx-auto right-0 text-white flex flex-row justify-between">
-          <span></span>
-          <span onClick={() => setShowCostSheetWindow(false)}>Close</span>
-        </div>
-        <div className="max-w-5xl mx-auto py-16  px-10 bg-white">
+      <section className="  bg-black">
+        <div className="max-w-5xl mx-auto py-  bg-white">
           <article className="overflow-hidden">
             <div className="bg-[white] rounded-b-md">
-              <div className="p-9 ">
-                <div className=" text-slate-700 flex flex-row ">
-                  <img
-                    alt=""
-                    className="object-cover h-12"
-                    src="https://pbs.twimg.com/profile_images/1513243060834123776/dL8-d7zI_400x400.png"
-                  />
-                  <div className="">
-                    <p className="text-xl font-extrabold tracking-tight uppercase font-body">
-                      {projectDetails?.projectName}
-                    </p>
-                    {projectDetails?.address}-{projectDetails?.state}-
-                    {projectDetails?.pincode}
-                  </div>
-                </div>
-              </div>
-              <div className="px-9">
-                <p className="text-md font-extrabold tracking-tight uppercase font-body">
-                  Unit Details
-                </p>
-                <section className="border p-4 mt-4 px-8 rounded border-[#e5e7eb] bg-[#e3f7ff]">
-                  <div className="flex w-full mt-4">
-                    <div className="ml-1 grid grid-cols-7 gap-12">
-                      {/* <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Invoice Detail:
-                      </p>
-                      <p>Unwrapped</p>
-                      <p>Fake Street 123</p>
-                      <p>San Javier</p>
-                      <p
-                        onClick={() => setShowCostSheetWindow(false)}
-                        className="text-blue-500 cursor-pointer"
-                      >
-                        Close
-                      </p>
-                    </div> */}
-
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Unit Number
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.unit_no}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Block
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.Block || 'NA'}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Unit Area
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.super_built_up_area || 'NA'}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Facing
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.facing || 'NA'}
-                        </p>
-                      </div>
-
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Carpet Area
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.carpet_area || 'NA'}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Bed Rooms
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.bed_rooms || 'NA'}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="text-sm font-normal text-gray-500">
-                          Premium
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.premium || 'NA'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex w-full mt-8">
-                    <div className="ml-1 grid grid-cols-7 gap-12">
-                      {/* <div className="text-sm font-light text-slate-500">
-                      <p className="text-sm font-normal text-slate-700">
-                        Invoice Detail:
-                      </p>
-                      <p>Unwrapped</p>
-                      <p>Fake Street 123</p>
-                      <p>San Javier</p>
-                      <p
-                        onClick={() => setShowCostSheetWindow(false)}
-                        className="text-blue-500 cursor-pointer"
-                      >
-                        Close
-                      </p>
-                    </div> */}
-
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
-                          Unit Dim
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.super_built_up_area}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
-                          Floor
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.floor || 'NA'}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
-                          Built Up Area
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.builtup_area}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
-                          Rate Per Sqft
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.rate_per_sqft || 'NA'}
-                        </p>
-                      </div>
-
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
-                          Car Parking
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.carparking || 'NA'}
-                        </p>
-                      </div>
-                      <div className="text-sm font-light text-slate-500">
-                        <p className="mt-2 text-sm font-normal text-gray-500">
-                          Bath Rooms
-                        </p>
-                        <p className="text-gray-800 text-[16px] font-semibold leading-normal">
-                          {selUnitDetails?.bath_rooms || 'NA'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              </div>
-              <div className="p-5 mt-8">
+              <div className="p-5 mt-">
                 <div className="mx-4 p-4">
                   <div className="flex items-center">
                     <div
@@ -554,6 +383,48 @@ const CostBreakUpSheet = ({
                     <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-teal-600"></div>
                     <div
                       className={`flex items-center  relative ${
+                        ['payment_sch'].includes(onStep)
+                          ? 'text-white'
+                          : 'text-teal-600'
+                      }`}
+                      onClick={() => moveStep('payment_sch')}
+                    >
+                      <div
+                        className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 ${
+                          ['payment_sch'].includes(onStep)
+                            ? 'bg-teal-600 border-teal-600'
+                            : 'border-teal-600'
+                        } `}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="100%"
+                          height="100%"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="feather feather-mail "
+                        >
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                          <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                      </div>
+                      <div
+                        className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
+                          ['payment_sch'].includes(onStep)
+                            ? 'text-teal-600'
+                            : 'text-gray-500'
+                        }`}
+                      >
+                        Payment Schedule
+                      </div>
+                    </div>
+                    <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
+                    <div
+                      className={`flex items-center  relative ${
                         ['customerDetails'].includes(onStep)
                           ? 'text-white'
                           : 'text-teal-600'
@@ -593,48 +464,6 @@ const CostBreakUpSheet = ({
                         }`}
                       >
                         Customer details
-                      </div>
-                    </div>
-                    <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
-                    <div
-                      className={`flex items-center  relative ${
-                        ['payment_sch'].includes(onStep)
-                          ? 'text-white'
-                          : 'text-teal-600'
-                      }`}
-                      onClick={() => moveStep('payment_sch')}
-                    >
-                      <div
-                        className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 ${
-                          ['payment_sch'].includes(onStep)
-                            ? 'bg-teal-600 border-teal-600'
-                            : 'border-teal-600'
-                        } `}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100%"
-                          height="100%"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="feather feather-mail "
-                        >
-                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                          <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                      </div>
-                      <div
-                        className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
-                          ['payment_sch'].includes(onStep)
-                            ? 'text-teal-600'
-                            : 'text-gray-500'
-                        }`}
-                      >
-                        Payment Schedule
                       </div>
                     </div>
                     <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
@@ -731,18 +560,6 @@ const CostBreakUpSheet = ({
                     <p className="text-md font-extrabold tracking-tight uppercase font-body pb-4">
                       COST SHEET
                     </p>
-                    <div className="flex-auto flex flex-row-reverse">
-                      <button
-                        className="h-[30px] text-base hover:scale-110 focus:outline-none flex justify-center px-2  rounded font-bold cursor-pointer
-                        hover:bg-teal-200
-                        bg-teal-100
-                        text-teal-700
-                        border duration-200 ease-in-out
-                        border-teal-100 transition"
-                      >
-                        {'>'}
-                      </button>
-                    </div>
                   </section>
                   <div className="flex flex-col mx-0 bg-[#F8FAFC] ">
                     <div className="px-9 py-10">
@@ -1003,14 +820,23 @@ const CostBreakUpSheet = ({
                                 <button
                                   onClick={() => downloadPdf()}
                                   type="button"
-                                  className="mb-4 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100"
+                                  className="mb-4 md:mb-0 hover:scale-110 focus:outline-none bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-sm hover:shadow-lg hover:bg-gray-100         hover:bg-teal-200
+                                  bg-teal-100
+                                  text-teal-700
+                                  border duration-200 ease-in-out
+                                  border-teal-600 transition"
                                 >
                                   {' '}
                                   Download{' '}
                                 </button>
 
                                 <button
-                                  className="mb-2 md:mb-0 bg-green-400 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-sm hover:shadow-lg hover:bg-green-500"
+                                  className="mb-2 md:mb-0  hover:scale-110 focus:outline-none              hover:bg-teal-600
+                                  bg-teal-600
+                                  text-teal-100
+                                  border duration-200 ease-in-out
+                                  border-teal-600 transition
+                                   px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-sm hover:shadow-lg hover:bg-green-500"
                                   type="submit"
                                   disabled={loading}
                                   // onClick={() => submitFormFun(formik)}
@@ -1084,54 +910,20 @@ const CostBreakUpSheet = ({
                 </div>
             </div>
         </div> */}
-                <div className="flex p-2 mt-4">
-                  <button
-                    className="text-base hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer
-        hover:bg-gray-200
-        bg-gray-100
-        text-gray-700
-        border duration-200 ease-in-out
-        border-gray-600 transition"
-                  >
-                    Previous
-                  </button>
-                  <div className="flex-auto flex flex-row-reverse">
-                    <button
-                      className="text-base  ml-2  hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer
-        hover:bg-teal-600
-        bg-teal-600
-        text-teal-100
-        border duration-200 ease-in-out
-        border-teal-600 transition"
-                    >
-                      Next
-                    </button>
-                    <button
-                      className="text-base hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer
-        hover:bg-teal-200
-        bg-teal-100
-        text-teal-700
-        border duration-200 ease-in-out
-        border-teal-600 transition"
-                    >
-                      Skip
-                    </button>
-                  </div>
-                </div>
               </div>
-              <div className="mt-48 p-9">
-                <div className="border-t pt-9 border-slate-200">
+              <div className=" p-9 pt-0">
+                <div className="border-t pt-2 border-slate-200">
                   <div className="text-sm font-light text-slate-700">
                     <p>
                       {selMode} Payment terms are 14 days. Please be aware that
                       according to the Late Payment of Unwrapped Debts Act 0000,
-                      freelancers are entitled to claim a 00.00 late fee upon
+                      Company are entitled to claim a 00.00 late fee upon
                       non-payment of debts after this time, at which point a new
                       invoice will be submitted with the addition of this fee.
                       If payment of the revised invoice is not received within a
                       further 14 days, additional interest will be charged to
                       the overdue account and a statutory rate of 8% plus Bank
-                      of England base of 0.5%, totalling 8.5%. Parties cannot
+                      of India base of 0.5%, totalling 8.5%. Parties cannot
                       contract out of the Act’s provisions.
                     </p>
                   </div>
