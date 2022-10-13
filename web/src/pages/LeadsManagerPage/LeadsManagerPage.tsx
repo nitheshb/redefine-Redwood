@@ -1,15 +1,11 @@
 
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import { Button } from '@material-ui/core'
 import ClearIcon from '@mui/icons-material/Clear'
 import MenuIcon from '@mui/icons-material/Menu'
 import { PDFExport } from '@progress/kendo-react-pdf'
 
 import { Link, routes } from '@redwoodjs/router'
-
-import { Link, routes } from '@redwoodjs/router'
-import { useState, useEffect } from 'react'
 
 import { MetaTags } from '@redwoodjs/web'
 
@@ -23,6 +19,9 @@ import MyAttedanceHomeBody from 'src/components/myAttedanceHomeBody'
 import MyLeadsReportHome from 'src/components/myLeadsReportHome'
 import MyPayHomeBody from 'src/components/myPayHomeBody'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
+import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { USER_ROLES } from 'src/constants/userRoles'
 
 import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
 import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
@@ -35,17 +34,6 @@ const LeadsManagerPage = () => {
   const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
   const [viewable, setViewable] = useState('Today1')
   const pdfExportComponent = React.useRef(null)
-
-import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
-import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
-import { useAuth } from 'src/context/firebase-auth-context'
-import { USER_ROLES } from 'src/constants/userRoles'
-
-const LeadsManagerPage = () => {
-  const { user } = useAuth()
-  const [showSideBar, setShowSideBar] = useState(true)
-  const [viewable, setViewable] = useState('')
-
 
   const showSideView1 = () => {
     setShowSideBar(!showSideBar)
@@ -453,4 +441,3 @@ const LeadsManagerPage = () => {
 }
 
 export default LeadsManagerPage
-//

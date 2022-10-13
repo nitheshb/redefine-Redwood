@@ -12,7 +12,6 @@ import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 
 // import { XIcon } from '@heroicons/react/outline'
 
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import SiderForm from './SiderForm/SiderForm'
 import CardItem from './leadsCard'
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
@@ -31,17 +30,10 @@ import {
   steamUsersListByRole,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
-import { useAuth } from 'src/context/firebase-auth-context'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
 
 
-import CardItem from './leadsCard'
-import SiderForm from './SiderForm/SiderForm'
-
-import { useSnackbar } from 'notistack'
-import { CalendarIcon, EyeIcon } from '@heroicons/react/outline'
-import { prettyDate } from 'src/util/dateConverter'
 
 
 // import CustomerProfileSideView from './customerProfileSideView'
