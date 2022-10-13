@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState, useCallback } from 'react'
-import { useAuth } from 'src/context/firebase-auth-context'
+
 import {
   Form,
   Label,
@@ -11,7 +11,9 @@ import {
   FieldError,
   Submit,
 } from '@redwoodjs/forms'
+
 import Loader from 'src/components/Loader/Loader'
+import { useAuth } from 'src/context/firebase-auth-context'
 import { navigateBasedOnUser } from 'src/util/userflow'
 interface UserInfo {
   email: string
@@ -249,6 +251,15 @@ const LoginPage = () => {
                   {loader && <Loader texColor="text-white" />}
                   {passwordResetMode ? 'Send Password Reset Email' : 'Log in'}
                 </Submit>
+                <div className="my-[4%] md:hidden lg:hidden">
+                  <h1 className="text-center text-blue-900 font-semibold text-[1.5rem] ">
+                    Control Bussiness
+                  </h1>
+                  <p className="text-center  text-gray-500 font-semibold text-sm ">
+                    Redefine Erp is the most comprehensive field service & asset
+                    managament platform with combining flexibility.
+                  </p>
+                </div>
               </Form>
               {/*
               <div className="pt-4 ">

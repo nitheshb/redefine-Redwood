@@ -4,8 +4,8 @@
 // import { getAuth } from 'firebase/auth'
 import { Provider as ReduxProvider } from 'react-redux'
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
-import { LocalizationProvider } from '@mui/lab'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 // import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 import AuthProvider from 'src/context/firebase-auth-context'

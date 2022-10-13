@@ -7,10 +7,10 @@ import ProjectsMHomeBody from '../ProjectsMHomeBody/ProjectsMHomeBody'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
 import { MetaTags } from '@redwoodjs/web'
 import { getAllProjects } from 'src/context/dbQueryFirebase'
-import { ResponsiveBar } from '@nivo/bar'
+// import { ResponsiveBar } from '@nivo/bar'
 import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import { Link, routes } from '@redwoodjs/router'
-import { ResponsivePie } from '@nivo/pie'
+// import { ResponsivePie } from '@nivo/pie'
 import { useAuth } from 'src/context/firebase-auth-context'
 
 const PieChartProject = ({ reportPayload }) => {

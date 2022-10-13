@@ -54,8 +54,8 @@ import {
   prettyDateTime,
   timeConv,
 } from 'src/util/dateConverter'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DateTimePicker } from '@mui/lab'
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
 import { TextField } from '@mui/material'
