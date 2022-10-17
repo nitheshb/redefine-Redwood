@@ -5,29 +5,19 @@ import { Fragment, useState, useEffect } from 'react'
 
 import { CalendarIcon, EyeIcon } from '@heroicons/react/outline'
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
-import { useSnackbar } from 'notistack'
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { useFormik } from 'formik'
 
 // import { XIcon } from '@heroicons/react/outline'
 
+// import { XIcon } from '@heroicons/react/outline'
+
+import { useSnackbar } from 'notistack'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import DatePicker from 'react-datepicker'
 
 import { MetaTags } from '@redwoodjs/web'
 
 import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
-<<<<<<< Updated upstream
-
-// import { XIcon } from '@heroicons/react/outline'
-
-import SiderForm from './SiderForm/SiderForm'
-import CardItem from './leadsCard'
-import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
-import DatePicker from 'react-datepicker'
-
-import { useAuth } from 'src/context/firebase-auth-context'
-
-=======
->>>>>>> Stashed changes
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
   getAllProjects,
@@ -39,13 +29,6 @@ import {
   steamUsersListByRole,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
-<<<<<<< Updated upstream
-import { CustomSelect } from 'src/util/formFields/selectBoxField'
-import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
-
-
-
-=======
 import { useAuth } from 'src/context/firebase-auth-context'
 import { prettyDate } from 'src/util/dateConverter'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
@@ -53,7 +36,6 @@ import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
 
 import CardItem from './leadsCard'
 import SiderForm from './SiderForm/SiderForm'
->>>>>>> Stashed changes
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'

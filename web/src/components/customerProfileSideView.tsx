@@ -4,6 +4,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment, useEffect, useState } from 'react'
 
+import EmailForm from './customerProfileView/emailForm'
+
 import '../styles/myStyles.css'
 import { Menu } from '@headlessui/react'
 import { Listbox, Transition } from '@headlessui/react'
@@ -27,8 +29,9 @@ import {
 import { SelectorIcon, DownloadIcon } from '@heroicons/react/solid'
 import ClockIcon from '@heroicons/react/solid/ClockIcon'
 import PlusCircleIcon from '@heroicons/react/solid/PlusCircleIcon'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import { ErrorMessage, Form, Formik } from 'formik'
+import { ErrorMessage, Form, Formik, useFormik } from 'formik'
 import DatePicker from 'react-datepicker'
 import { useDropzone } from 'react-dropzone'
 import toast from 'react-hot-toast'
@@ -192,6 +195,7 @@ export default function CustomerProfileSideView({
   const { orgId } = user
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
+  const [uploadFile, setUploadFile] = useState()
 
   // const [leadStatus, setLeadStatus] = useState([])
   const [selFeature, setFeature] = useState('appointments')
@@ -248,6 +252,20 @@ export default function CustomerProfileSideView({
   const [selProjectIs, setSelProjectIs] = useState({
     projectName: '',
     uid: '',
+  })
+  // email formik
+  const emailFormik = useFormik({
+    initialValues: {
+      fromEmail: '',
+      toEmail: '',
+      subject: '',
+      message: '',
+      attachFile: '',
+    },
+
+    onSubmit: (values) => {
+      console.log(values)
+    },
   })
 
   const [leadDetailsObj, setLeadDetailsObj] = useState({})
@@ -1735,14 +1753,7 @@ export default function CustomerProfileSideView({
                       })}
                     </ul>
                   </div>
-                  {selFeature == 'email' && (
-                    <div className="w-[90%]   rounded-sm bg-blue-500">
-                      <h1 className="text-medium border-b-2 border-b-slate-400 ">
-                        Compose Mail
-                      </h1>
-                      <input className=" focus:outline-0 focus:border-0 " />
-                    </div>
-                  )}
+                  {selFeature == 'email' && <EmailForm />}
                   {selFeature === 'notes' && (
                     <div className="flex flex-col justify-between border pt-6">
                       {leadNotesFetchedData.length === 0 && !addNote && (
