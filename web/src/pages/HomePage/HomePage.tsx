@@ -352,7 +352,7 @@ const HomePage = () => {
       <div className="flex w-screen h-screen text-gray-700">
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
-          <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+          <div className="flex overflow-y-hidden flex-row overflow-auto h-[100vh]  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             <HeadSideBar pgName={'home'} />
 
             <div className="flex items-start flex-row">
@@ -381,8 +381,7 @@ const HomePage = () => {
                   <>
                     <div className="">
                       <div className="flex items-center justify-between py-2 pb-8 ">
-                        <div className="w-full flex-grow  my- border-t  items-center overflow-y-auto bg-blue h-[98%]  py-300 ">
-                          <HeadNavBar2 />
+                        <div className="w-full flex-grow   items-center overflow-y-auto bg-blue h-[98%]  py-300 ">
                           <div className="px-3">
                             {viewable != 'inProgress' &&
                               viewable != 'Projects Lead Report' &&

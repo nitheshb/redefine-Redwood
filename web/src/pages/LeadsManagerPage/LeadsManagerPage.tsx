@@ -65,37 +65,46 @@ const LeadsManagerPage = () => {
 
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
-          <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
-            <HeadSideBar pgName={'leadsManager'} />
-            <div className="flex items-start flex-row">
-              <div
-                className={`${
-                  showDetailedSideBar == true ? 'visible' : 'hidden'
-                }`}
-              >
-                <div>
-                  <HeadSideBarDetailView
-                    pgName={'leadsManager'}
-                    sourceLink={'leadsScreen'}
-                    showSideBar={showSideBar}
-                    showSideView1={showSideView1}
-                    setViewable={setViewable}
-                    viewable={viewable}
-                  />
+          {}
+          <div className="flex flex-row overflow-auto gap-2 h-[100vh]  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+            <div
+              className={`${
+                showDetailedSideBar
+                  ? 'flex flex-row overflow-auto w-[20vw]   text-gray-700 '
+                  : 'flex flex-row overflow-auto   text-gray-700 '
+              }`}
+            >
+              <HeadSideBar pgName={'leadsManager'} />
+              <div className="flex items-start flex-row">
+                <div
+                  className={`${
+                    showDetailedSideBar == true ? 'visible' : 'hidden'
+                  }`}
+                >
+                  <div>
+                    <HeadSideBarDetailView
+                      pgName={'leadsManager'}
+                      sourceLink={'leadsScreen'}
+                      showSideBar={showSideBar}
+                      showSideView1={showSideView1}
+                      setViewable={setViewable}
+                      viewable={viewable}
+                    />
+                  </div>
                 </div>
+                <button
+                  className=" z-30  -mx-6 mt-4 "
+                  onClick={() => {
+                    setDetailedShowSideBar(!showDetailedSideBar)
+                  }}
+                >
+                  {showDetailedSideBar ? (
+                    <ArrowBackIosIcon />
+                  ) : (
+                    <ArrowForwardIosIcon />
+                  )}
+                </button>
               </div>
-              <button
-                className=" z-30 -mx-6 mt-4 "
-                onClick={() => {
-                  setDetailedShowSideBar(!showDetailedSideBar)
-                }}
-              >
-                {showDetailedSideBar ? (
-                  <ArrowBackIosIcon />
-                ) : (
-                  <ArrowForwardIosIcon />
-                )}
-              </button>
             </div>
 
             <div className="flex-grow  items-center overflow-y-auto  px-300  py-300">
