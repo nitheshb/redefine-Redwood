@@ -5,6 +5,7 @@
 import { Fragment, useEffect, useState } from 'react'
 
 import EmailForm from './customerProfileView/emailForm'
+import Confetti from './shared/confetti'
 
 import '../styles/myStyles.css'
 import { Menu } from '@headlessui/react'
@@ -1753,7 +1754,11 @@ export default function CustomerProfileSideView({
                       })}
                     </ul>
                   </div>
-                  {selFeature == 'email' && <EmailForm />}
+                  {selFeature == 'email' && (
+                    <>
+                      <EmailForm />
+                    </>
+                  )}
                   {selFeature === 'notes' && (
                     <div className="flex flex-col justify-between border pt-6">
                       {leadNotesFetchedData.length === 0 && !addNote && (
@@ -1774,6 +1779,7 @@ export default function CustomerProfileSideView({
                               <span className="text-blue-600"> Add</span>
                             </time>
                           </button>
+                          <Confetti />
                         </div>
                       )}
                       {addNote && (
