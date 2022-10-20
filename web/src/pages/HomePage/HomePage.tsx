@@ -10,11 +10,11 @@ import { MetaTags } from '@redwoodjs/web'
 
 import AllBankDetailsView from 'src/components/All_BankDetailsView'
 import HeadSideBarDetailView from 'src/components/HeadDetailSideBar'
+import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
+import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 import ProjectsUnitInventory from 'src/components/projectUnitsInventory'
 import { getAllProjects } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
-import HeadSideBarDetailView2 from 'src/components/HeadDetailSideBar2'
-import HeadNavBar2 from 'src/components/HeadNavBar/HeadNavBar2'
 
 import DummyBodyLayout from '../../components/DummyBodyLayout/DummyBodyLayout'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
@@ -351,7 +351,7 @@ const HomePage = () => {
     <>
       <div className="flex w-screen h-screen text-gray-700">
         <div className="flex flex-col flex-grow">
-          {/* <HeadNavBar /> */}
+          <HeadNavBar />
           <div className="flex flex-row overflow-auto  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             <HeadSideBar pgName={'home'} />
 
@@ -381,29 +381,6 @@ const HomePage = () => {
                   <>
                     <div className="">
                       <div className="flex items-center justify-between py-2 pb-8 ">
-                        <span className="relative z-10 flex items-center w-auto text-2xl font-bold leading-none pl-0 font-Playfair">
-                          Projects {viewable}
-                        </span>
-                        <button
-                          onClick={() => setIsNewProjectOpen(true)}
-                          className="flex items-center justify-center h-10 px-4  bg-gray-200 ml-auto text-sm font-medium rounded hover:bg-gray-300"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          />
-                        </button>
-
-                        <HeadSideBarDetailView2
-                          pgName={'leadsManager'}
-                          sourceLink={'projectsScreen'}
-                          showSideView1={undefined}
-                          setViewable={setViewable}
-                          viewable={viewable}
-                        />
                         <div className="w-full flex-grow  my- border-t  items-center overflow-y-auto bg-blue h-[98%]  py-300 ">
                           <HeadNavBar2 />
                           <div className="px-3">
