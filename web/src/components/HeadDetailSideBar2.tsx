@@ -76,7 +76,7 @@ const HeadSideBarDetailView2 = ({
             </svg>
             <span className="ml-" style={{ marginLeft: '-11px' }}>
               {' '}
-              Redefine Erp.
+              Redefine Erp1.
             </span>
           </span>
           <ul className=" pt-4">

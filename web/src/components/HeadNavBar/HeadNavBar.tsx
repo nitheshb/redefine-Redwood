@@ -1,4 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
+
+import { useState } from 'react'
+
 import { Box, Menu, MenuItem, Typography } from '@mui/material'
 import { useDispatch } from 'react-redux'
 
@@ -6,14 +11,23 @@ import { Link, routes } from '@redwoodjs/router'
 
 import { useAuth } from 'src/context/firebase-auth-context'
 import { logout as logoutAction } from 'src/state/actions/user'
+
+import LeftSiderForm from '../SiderForm/LeftSiderForm'
+import SiderForm from '../SiderForm/SiderForm'
+
 const HeadNavBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const { user, logout } = useAuth()
   const dispatch = useDispatch()
+  const [openMenu, setOpenMenu] = useState(false)
+  const handleMenuClose = () => {
+    setOpenMenu(false)
+  }
   const handleClose = async (menuItem) => {
     setAnchorEl(null)
     if (menuItem === 'Logout') {
@@ -27,8 +41,28 @@ const HeadNavBar = () => {
       <div className="flex items-center flex-shrink-0 h-16 px-2  pl-0 bg-white bg-opacity-75 ">
         {/* <h1 className="text-lg font-medium">redefine.</h1> */}
         <span
-          style={{ marginLeft: '-25px' }}
-          className="relative z-10 flex items-center text-2xl font-extrabold leading-none text-[#141446] select-none pl-0"
+          className="pl-4 border-r flex flex-row h-16 items-center hover:bg-[#e6ebee] cursor-pointer"
+          onClick={() => setOpenMenu(true)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5 mt-[3px]"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+          </svg>
+          <span className="mr-4 ml-1">Menu</span>
+        </span>
+        <span
+          style={{ marginLeft: '-20px' }}
+          className="relative z-10 flex items-center text-xl font-extrabold leading-none text-[#141446] select-none pl-0"
         >
           {/* <svg
             className="w-8 h-8 to-indigo-600 "
@@ -47,8 +81,8 @@ const HeadNavBar = () => {
           </svg> */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="88"
-            height="32"
+            width="68"
+            height="26"
             viewBox="0 0 1 28"
             fill="none"
             className="injected-svg"
@@ -162,6 +196,12 @@ const HeadNavBar = () => {
           <MenuItem onClick={handleClose}>My account</MenuItem>
           <MenuItem onClick={() => handleClose('Logout')}>Logout</MenuItem>
         </Menu>
+        <LeftSiderForm
+          open={openMenu}
+          setOpen={handleMenuClose}
+          title="Create Project"
+          data={{}}
+        />
       </div>
     </div>
   )
