@@ -77,9 +77,7 @@ const LeadsManagerPage = () => {
               <HeadSideBar pgName={'leadsManager'} />
               <div className="flex items-start flex-row">
                 <div
-                  className={`${
-                    showDetailedSideBar == true ? 'visible' : 'hidden'
-                  }`}
+
                 >
                   <div>
                     <HeadSideBarDetailView
@@ -92,18 +90,7 @@ const LeadsManagerPage = () => {
                     />
                   </div>
                 </div>
-                <button
-                  className=" z-30  -mx-6 mt-4 "
-                  onClick={() => {
-                    setDetailedShowSideBar(!showDetailedSideBar)
-                  }}
-                >
-                  {showDetailedSideBar ? (
-                    <ArrowBackIosIcon />
-                  ) : (
-                    <ArrowForwardIosIcon />
-                  )}
-                </button>
+
               </div>
             </div>
 
