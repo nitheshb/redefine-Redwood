@@ -1,15 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { spawnSync } from 'child_process'
-
-import { useEffect, useState } from 'react'
-
 import { checkActionCode } from '@firebase/auth'
 import { UserGroupIcon } from '@heroicons/react/outline'
-
 import { Link, routes } from '@redwoodjs/router'
-
+import { spawnSync } from 'child_process'
+import { useEffect, useState } from 'react'
 import { useAuth } from 'src/context/firebase-auth-context'
 const HeadSideBarDetailView = ({
   pgName,
@@ -41,7 +37,7 @@ const HeadSideBarDetailView = ({
   }, [user])
 
   return (
-    <div className="flex flex-col items-left w-16 min-w-[226px] h-[91vh] bg-white bg-opacity-75 bg-[#f0f3ff] ">
+    <div className="flex flex-col items-left w-16 min-w-[226px]   bg-white bg-opacity-75 bg-[#f0f3ff] ">
       <div className="bg-[#f0f3ff] overflow-auto">
         <div className="pl-4 mr-6 border-l h-screen ">
           <ul className="mt-6 pt-4">
