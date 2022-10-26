@@ -1,11 +1,15 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { spawnSync } from 'child_process'
+
+import { useEffect, useState } from 'react'
+
 import { checkActionCode } from '@firebase/auth'
 import { UserGroupIcon } from '@heroicons/react/outline'
+
 import { Link, routes } from '@redwoodjs/router'
-import { spawnSync } from 'child_process'
-import { useEffect, useState } from 'react'
+
 import { USER_ROLES } from 'src/constants/userRoles'
 import { useAuth } from 'src/context/firebase-auth-context'
 const HeadSideBarDetailView2 = ({
@@ -33,7 +37,7 @@ const HeadSideBarDetailView2 = ({
   }, [user])
 
   return (
-    <div className="flex flex-col items-left w-16 min-w-[226px]   bg-white bg-opacity-75 bg-[#f0f3ff] ">
+    <div className="flex flex-col items-left w-16 min-w-[226px]    bg-opacity-75 bg-[#f0f3ff] ">
       <div className="bg-[#f0f3ff] overflow-auto">
         <div className="pl-4 mr-6 mt-[13px] border-l h-screen">
           <span

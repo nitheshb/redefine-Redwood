@@ -32,7 +32,7 @@ import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
 const LeadsManagerPage = () => {
   const { user } = useAuth()
 
-  const [showSideBar, setShowSideBar] = useState(false)
+  const [showSideBar, setShowSideBar] = useState(true)
   const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
   const [viewable, setViewable] = useState('Today1')
 
@@ -66,14 +66,9 @@ const LeadsManagerPage = () => {
         <div className="flex flex-col flex-grow">
           <HeadNavBar />
           {}
-          <div className="flex flex-row overflow-auto gap-2 h-[100vh]  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
-            <div
-              className={`${
-                showDetailedSideBar
-                  ? 'flex flex-row overflow-auto w-[20vw]   text-gray-700 '
-                  : 'flex flex-row overflow-auto   text-gray-700 '
-              }`}
-            >
+          <div className="flex flex-row overflow-auto gap-4 h-[100vh]  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+            <div className="flex flex-row">
+              {' '}
               <HeadSideBar pgName={'leadsManager'} />
               <div className="flex items-start flex-row">
                 <div
@@ -81,7 +76,7 @@ const LeadsManagerPage = () => {
                     showDetailedSideBar == true ? 'visible' : 'hidden'
                   }`}
                 >
-                  <div>
+                  <div className="h-100vh">
                     <HeadSideBarDetailView
                       pgName={'leadsManager'}
                       sourceLink={'leadsScreen'}
