@@ -274,6 +274,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
               ? ['booked']
               : archieveFields,
           projAccessA: projAccessA,
+          isCp: user?.role?.includes(USER_ROLES.CP_AGENT),
         },
         (error) => setLeadsFetchedData([])
       )
@@ -295,6 +296,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           //  await setLeadsFetchedData(usersListA)
         },
         {
+          isCp: user?.role?.includes(USER_ROLES.CP_AGENT),
           uid: uid,
           status:
             leadsTyper === 'inProgress'
