@@ -916,10 +916,10 @@ export default function CustomerProfileSideView({
     // updateSchLog(orgId, id, data.ct, 'completed', schStsA)
   }
   const editTaskFun = (data) => {
-    console.log('clicked schedule is', data)
+    console.log('clicked schedule is', data, startDate, addCommentTime)
 
     const inx = schStsMA.indexOf(data.ct)
-    data.schTime = startDate.getTime()
+    data.schTime = startDate
     data.notes = takTitle
     const x = schStsA
     x[inx] = 'pending'
