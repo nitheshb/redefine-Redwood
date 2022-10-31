@@ -1,19 +1,23 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 // import { Link, routes } from '@redwoodjs/router'
-import { MetaTags } from '@redwoodjs/web'
-
 import { Fragment, useState, useEffect } from 'react'
-import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
+
+import { CalendarIcon, EyeIcon } from '@heroicons/react/outline'
+import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
+import { useFormik } from 'formik'
 
 // import { XIcon } from '@heroicons/react/outline'
+
+// import { XIcon } from '@heroicons/react/outline'
+
+import { useSnackbar } from 'notistack'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
-import SiderForm from './SiderForm/SiderForm'
-import CardItem from './leadsCard'
-import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone'
 import DatePicker from 'react-datepicker'
 
-import { useAuth } from 'src/context/firebase-auth-context'
+import { MetaTags } from '@redwoodjs/web'
+
+import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
   getAllProjects,
@@ -25,11 +29,13 @@ import {
   steamUsersListByRole,
   updateLeadStatus,
 } from 'src/context/dbQueryFirebase'
+import { useAuth } from 'src/context/firebase-auth-context'
+import { prettyDate } from 'src/util/dateConverter'
 import { CustomSelect } from 'src/util/formFields/selectBoxField'
 import { SlimSelectBox } from 'src/util/formFields/slimSelectBoxField'
-import { useSnackbar } from 'notistack'
-import { CalendarIcon, EyeIcon } from '@heroicons/react/outline'
-import { prettyDate } from 'src/util/dateConverter'
+
+import CardItem from './leadsCard'
+import SiderForm from './SiderForm/SiderForm'
 
 // import CustomerProfileSideView from './customerProfileSideView'
 // import CardItem from '../../components/leadsCard'
@@ -268,6 +274,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
               ? ['booked']
               : archieveFields,
           projAccessA: projAccessA,
+          isCp: user?.role?.includes(USER_ROLES.CP_AGENT),
         },
         (error) => setLeadsFetchedData([])
       )
@@ -289,6 +296,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           //  await setLeadsFetchedData(usersListA)
         },
         {
+          isCp: user?.role?.includes(USER_ROLES.CP_AGENT),
           uid: uid,
           status:
             leadsTyper === 'inProgress'
@@ -555,12 +563,11 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             className="
             px-3 py-6"
           >
-            <div className="flex items-center justify-between py-1 pb-5 ">
-              <div>
-                <h2 className="text-xl font-semibold text-black leading-light font-Playfair">
-                  Leads Management
-                </h2>
-              </div>
+            <div className="flex items-center flex-row flex-wrap justify-between py-1 pb-5 ">
+              <h2 className="text-xl font-semibold text-black leading-light font-Playfair">
+                Leads Management
+              </h2>
+
               <div className="flex">
                 <div className=" flex flex-col mr-5  w-40">
                   <SlimSelectBox

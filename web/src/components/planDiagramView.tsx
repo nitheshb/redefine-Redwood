@@ -2,15 +2,15 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import { useEffect, useState } from 'react'
+
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/outline'
 import { documentId } from 'firebase/firestore'
-import { useEffect, useState } from 'react'
-import { Document, Page, pdfjs } from 'react-pdf'
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 import BlockStatsCards from 'src/components/BlockStatsCards/BlockStatsCards'
 import { deleteAsset, getPlanDiagramByPhase } from 'src/context/dbQueryFirebase'
 import { useAuth } from 'src/context/firebase-auth-context'
+
 import SiderForm from './SiderForm/SiderForm'
 const PlanDiagramView = ({
   title,

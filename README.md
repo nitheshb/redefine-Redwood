@@ -12,7 +12,7 @@
 
 ### Setup
 
-We use Yarn as our package manager. To get the dependencies installed, just do this in the root directory:
+We use Yarn1 as our package manager. To get the dependencies installed, just do this in the root directory:
 
 ```terminal
 yarn install
