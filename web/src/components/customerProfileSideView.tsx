@@ -232,7 +232,7 @@ export default function CustomerProfileSideView({
   const [value, setValue] = useState(d)
 
   // const [startDate, setStartDate] = useState(d)
-  const [startDate, setStartDate] = useState(d)
+  const [startDate, setStartDate] = useState(d.getTime() + 60000)
 
   const [selected, setSelected] = useState(people[0])
   const [taskDetails, setTaskDetails] = useState('')
@@ -1030,8 +1030,17 @@ export default function CustomerProfileSideView({
     if (data?.stsType === 'visitfixed') {
       setShowVisitFeedBackStatusFun(data, 'visitdone')
     } else {
-      setAddTaskCommentObj(data)
-      setCloseTask(true)
+      if (leadSchFetchedData?.filter((d) => d?.sts === 'pending').length != 1) {
+        setAddTaskCommentObj(data)
+        setCloseTask(true)
+      } else {
+        enqueueSnackbar(
+          `Oops..! You can close this task by changing Lead status`,
+          {
+            variant: 'error',
+          }
+        )
+      }
     }
   }
   const addFeedbackFun = async (data) => {
