@@ -83,8 +83,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     value: 'allprojects',
   })
   const [selLeadsOf, setSelLeadsOf] = useState({
-    label: 'Team Leads',
-    value: 'teamleads',
+    label: 'My Leads',
+    value: 'myleads',
   })
 
   const statusFields = [
