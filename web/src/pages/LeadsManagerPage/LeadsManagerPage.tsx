@@ -609,128 +609,529 @@ const LeadsManagerPage = () => {
                           <h1 className=" text-[12px] px-2 text-white bg-slate-400 w-40">
                             Billed to
                           </h1>
-                          <h1 className="text-[12px] ">Nithesh</h1>
-                          <h1 className="text-[12px] ">123, Demo Street</h1>
-                          <h1 className="text-[12px] ">City, Orrisa,Country</h1>
-                          <h1 className="text-[12px] ">603202</h1>
-                          <h1 className="text-[12px] ">+91 70793493455</h1>
-                        </div>
-                        <div>
-                          <h1 className=" text-[12px] px-2 text-white bg-slate-400 w-40">
-                            Ship To
+                          <h1 className=" font-bodyLato  text-[10px] ">
+                            Mohammed Amanulla Shariff
                           </h1>
-                          <h1 className="text-[12px] ">Nithesh</h1>
-                          <h1 className="text-[12px] ">123, Demo Street</h1>
-                          <h1 className="text-[12px] ">City, Orrisa,Country</h1>
-                          <h1 className="text-[12px] ">603202</h1>
-                          <h1 className="text-[12px] ">+91 70793493455</h1>
+                          <h1 className=" font-bodyLato text-[10px] ">
+                            xxxxxx@gmail.com
+                          </h1>
+                          <h1 className=" font-bodyLato text-[10px]  ">
+                            No:3, flat no 201,charve jasmine apprts,
+                          </h1>
+                          <h1 className="font-bodyLato text-[10px]">
+                            neonard lane,richmond town
+                          </h1>
+                          <h1 className="font-bodyLato text-[10px]">603202</h1>
+                          <h1 className="font-bodyLato text-[10px] ">
+                            +91 9141614332
+                          </h1>
                         </div>
+                        {/* unit details  */}
+                        <div>
+                          <h1 className=" text-[12px] px-2 text-white bg-slate-400 w-60">
+                            Unit Details
+                          </h1>
+                          <table className="w-60">
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Unit No.
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                093
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Projects
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Pebble Creek
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Type/Face
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Regular/South-East
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Undivided Share
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                N/A
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Area
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                2400 Sq.Ft
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Floor Rise
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs.0.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Flat Premium
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs.0.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Rate/Sft
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs.1,400.00/sft (Rs.1,400/sft)
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Status
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Sale Agreement
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Status Date
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                14-feb-2014
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                retained
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                No
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                        {/* end  */}
                       </div>
+                      {/* customer information  */}
                       <div>
-                        <table className="w-full">
+                        <h1 className="w-full text-white text-[12px]  text-center font-semibold bg-slate-400 ">
+                          Cost Information
+                        </h1>
+                        <table className=" font-bodyLato w-full">
                           <tr className="bg-slate-400">
-                            <th className="w-[40%] text-[12px] text-left text-white font-semibold">
-                              Description
+                            <th className="w-[20%] text-[10px] text-left px-2  text-white font-semibold">
+                              Title
                             </th>
-                            <th className="w-[20%] text-[12px] text-left text-white font-semibold">
-                              Unit cost
+                            <th className=" text-right w-[20%] text-[10px] px-2 text-white font-semibold">
+                              Cost
                             </th>
-                            <th className="w-[20%] text-[12px] text-left text-white font-semibold">
-                              QTY/HR Rate
+                            <th className=" text-right w-[10%] text-[10px] px-2 text-white font-semibold">
+                              Type
                             </th>
-                            <th className="w-[20%] text-[12px] text-left text-white font-semibold">
-                              Amount
+                            <th className=" text-right w-[10%] text-[10px] px-2 text-white font-semibold">
+                              Tax
+                            </th>
+                            <th className=" text-right w-[20%] text-[10px] px-2 text-white font-semibold">
+                              Total Tax
+                            </th>
+                            <th className=" text-right w-[20%] text-[10px] px-2 text-white font-semibold">
+                              Totals
                             </th>
                           </tr>
                           <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                            <td className="text-left px-2 text-[10px]">
+                              Basic Cost
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 33,60,000.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]"></td>
+                            <td className="text-right px-2 text-[10px]"></td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 0.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 33,60,000.000
+                            </td>
                           </tr>
                           <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                            <td className="text-left px-2 text-[10px]">
+                              Basic Price
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 33,60,000.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              ST+VAT
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              0.00%
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 0.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 33,60,000.000
+                            </td>
                           </tr>
                           <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                            <td className="text-left px-2 text-[10px]">
+                              Car Park
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 0
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              ST+VAT
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              0.00%
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 0.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 0
+                            </td>
                           </tr>
                           <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                            <td className="text-left px-2 text-[10px]">
+                              Other Charges
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 1,68,000.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]"></td>
+                            <td className="text-right px-2 text-[10px]"></td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 20,765.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 1,88,765.00
+                            </td>
                           </tr>
                           <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                            <td className="text-left px-2 text-[10px]">
+                              Plot Maintenance
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 1,08,000.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">ST</td>
+                            <td className="text-right px-2 text-[10px]">
+                              12.36%
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 13,348.80
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 1,21,348.80
+                            </td>
                           </tr>
                           <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                            <td className="text-left px-2 text-[10px]">
+                              Plot ClubHouse
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 60,000.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              ST+VAT
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              12.36%
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 7,416.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 67,416.00
+                            </td>
                           </tr>
-                          <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                          </tr>
-                          <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                          </tr>
-                          <tr className=" bg-slate-300 ">
-                            <td className="text-left text-[12px]">House</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
-                            <td className="text-left text-[12px]">1</td>
-                            <td className="text-left text-[12px]">Rs 240000</td>
+                          <tr className=" bg-slate-400 px-2 ">
+                            <td className="text-left px-2 text-[10px]">
+                              Total
+                            </td>
+                            <td className="text-right text-[10px]">
+                              Rs 35,28,000.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]"></td>
+                            <td className="text-right px-2 text-[10px]"></td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 20,765.00
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Rs 35,48,765.00
+                            </td>
                           </tr>
                         </table>
                       </div>
-                      <div className="w-full my-4 flex flex-row justify-between ">
-                        <div className="w-[60%]">
-                          <h1 className=" bg-slate-400 px-4 text-[12px] font-semibold text-white ">
-                            Special notes and instructions
-                          </h1>
-                          <textarea className=" bg-slate-300 h-20 w-full " />
-                        </div>
+                      {/* end */}
+                      {/* 2 rows  */}
+                      <div className=" my-10 flex flex-row justify-between">
+                        {' '}
                         <div>
-                          <table className="w3-table">
-                            <tr>
-                              <td className="text-[12px]">Subtotal:</td>
-                              <td className=" text-[12px] ">Rs 480000</td>
+                          <h1 className=" text-center text-[12px] px-2 text-white bg-slate-400 w-60">
+                            Payment Summary
+                          </h1>
+                          <table className="w-60">
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Flat Cost
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs.33,60,000.00
+                              </td>
                             </tr>
-                            <tr>
-                              <td className="text-[12px]">Discount:</td>
-                              <td className=" text-[12px] ">5%</td>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Car Parking
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 0.00
+                              </td>
                             </tr>
-                            <tr>
-                              <td className="text-[12px]">Tax rate:</td>
-                              <td className=" text-[12px] ">10%</td>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Other Charges
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 1,68,000.00
+                              </td>
                             </tr>
-                            <tr>
-                              <td className="text-[12px]">Tax:</td>
-                              <td className=" text-[12px] ">45000</td>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Alteration
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 0.00
+                              </td>
                             </tr>
-                            <tr>
-                              <td className="text-[12px]">Total:</td>
-                              <td className=" text-[12px]">Rs 460000</td>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Total Cost
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 35,28,000.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Total tax
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 20,765.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Grand Total
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 35,48,765.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Total Paid
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 20,08,000.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Add./Ded.
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 0.00
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Balance
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                14-feb-2014
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                retained
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Rs. 15,40,765.00
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                        {/* next table  */}
+                        <div>
+                          <h1 className=" text-center text-[12px] px-2 text-white bg-slate-400 w-60">
+                            Other Info/Additional Info
+                          </h1>
+                          <table className="w-60">
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Enquiry No.
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                14065
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Enquiry Date
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                10-Jan-2014
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Application No.
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                815
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Application Date
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                25-Jan-2014
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Executive
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Prem
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Contact No.
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                N/A
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Executive Email
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                prem@exceldwellings.com
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Manager
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Prem
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Report Date
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                30-May-2014
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Balance
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                14-feb-2014
+                              </td>
+                            </tr>
+                            <tr className=" bg-slate-300 ">
+                              <th className=" w-[40%] bg-slate-400 text-left text-[10px]">
+                                Generated By
+                              </th>
+                              <td className="  w-[60%] text-right text-[10px]">
+                                Suman
+                              </td>
                             </tr>
                           </table>
                         </div>
                       </div>
-                      <h1 className=" text-[18px] text-slate-600 ">
+                      {/* Payment Schedule*/}
+                      <div>
+                        <h1 className="w-full text-white text-[12px]  text-center font-semibold bg-slate-400 ">
+                          Payment History
+                        </h1>
+                        <table className=" font-bodyLato w-full">
+                          <tr className="bg-slate-400">
+                            <th className="w-[10%] text-[10px] text-left px-2  text-white font-semibold">
+                              Date Paid
+                            </th>
+                            <th className=" text-right w-[20%] text-[10px] px-2 text-white font-semibold">
+                              Payment Particulars
+                            </th>
+                            <th className=" text-right w-[20%] text-[10px] px-2 text-white font-semibold">
+                              Amount Paid
+                            </th>
+                          </tr>
+                          <tr className=" bg-slate-300 ">
+                            <td className="text-left px-2 text-[10px]">
+                              25-Jan-2014
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Cash{' '}
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              2,00,000.00
+                            </td>
+                          </tr>
+                          <tr className=" bg-slate-300 ">
+                            <td className="text-left px-2 text-[10px]">
+                              14-Feb-2014
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Cheque , 576601 , SYNDICATE BANK , bangalore
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              8,08,000.00
+                            </td>
+                          </tr>
+                          <tr className=" bg-slate-300 ">
+                            <td className="text-left px-2 text-[10px]">
+                              23-Apr-2014
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              Cash
+                            </td>
+                            <td className="text-right px-2 text-[10px]">
+                              10,00,000.00
+                            </td>
+                          </tr>
+
+                          <h1 className="w-full text-white text-[12px]  text-center font-semibold bg-slate-400 ">
+                            Total Rs.20,08,000.00
+                          </h1>
+                        </table>
+                      </div>
+
+                      <h1 className=" mt-10 mb-2 text-[18px] text-slate-600 ">
                         Thankyou for your business
                       </h1>
                       <p className="text-[8px]">
