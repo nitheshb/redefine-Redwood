@@ -83,8 +83,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     value: 'allprojects',
   })
   const [selLeadsOf, setSelLeadsOf] = useState({
-    label: 'My Leads',
-    value: 'myleads',
+    label: 'Team Leads',
+    value: 'teamleads',
   })
 
   const statusFields = [
@@ -184,6 +184,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
   useEffect(() => {
     filter_Leads_Projects_Users_Fun()
   }, [selProjectIs, selLeadsOf, startDate, endDate])
+
 
   useEffect(() => {
     console.log('am refreshed ')
