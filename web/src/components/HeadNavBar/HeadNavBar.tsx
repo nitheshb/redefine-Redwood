@@ -15,7 +15,11 @@ import { logout as logoutAction } from 'src/state/actions/user'
 import LeftSiderForm from '../SiderForm/LeftSiderForm'
 import SiderForm from '../SiderForm/SiderForm'
 
-const HeadNavBar = () => {
+const HeadNavBar = ({ pgName,
+  sourceLink,
+  showSideView1,
+  setViewable,
+  viewable}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -201,6 +205,11 @@ const HeadNavBar = () => {
           setOpen={handleMenuClose}
           title="Create Project"
           data={{}}
+          pgName={pgName}
+          sourceLink={sourceLink}
+          setViewable={setViewable}
+          viewable={viewable}
+
         />
       </div>
     </div>

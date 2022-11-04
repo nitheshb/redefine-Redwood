@@ -1,9 +1,11 @@
 import { pid } from 'process'
 
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
+
+import { Link, routes } from '@redwoodjs/router'
 
 import AddBankDetailsForm from '../addBankDetailsForm'
 import AddBlockForm from '../AddBlockForm/AddBlockForm'
@@ -22,10 +24,16 @@ import PaymentScheduleForm from '../PaymentScheduleForm/PaymentScheduleForm'
 import ProjPhaseHome from '../ProjPhaseHome/ProjPhaseHome'
 import TransactionUpdateSideView from '../transactionUpdateSideView'
 import ViewUnitDetails from '../ViewUnitDetails'
+import { useAuth } from 'src/context/firebase-auth-context'
+import HeadSideBarDetailView2 from '../HeadDetailSideBar2'
 
 const LeftSiderForm = ({
   open,
   setOpen,
+  pgName,
+  sourceLink,
+  setViewable,
+  viewable,
   title,
   customerDetails = {},
   data = {},
@@ -45,8 +53,72 @@ const LeftSiderForm = ({
 }) => {
   // dont write too many here
   //  this is for customerProfileSideView
-
+  const { user } = useAuth()
+  // const { access } = user
+  // const access = user?.access
+  console.log('user i youy===>>>>>>>.', user)
+  const [access, setUserAccess] = useState([])
+  useEffect(() => {
+    if (user) {
+      const { access, role } = user
+      if (access === undefined) {
+        if (role[0] === 'sales-manager') {
+        }
+      }
+      setUserAccess(access || [])
+    }
+  }, [user])
   return (
+    //   <Transition show={open} as={Fragment}>
+    //   <Dialog
+    //     unmount={false}
+    //     onClose={() => setOpen(false)}
+    //     className="fixed z-30 inset-0 overflow-y-auto"
+    //   >
+    //     <div className="flex w-3/4 h-screen">
+    //       <Transition.Child
+    //         as={Fragment}
+    //         enter="transition-opacity ease-in duration-300"
+    //         enterFrom="opacity-0"
+    //         enterTo="opacity-30"
+    //         entered="opacity-30"
+    //         leave="transition-opacity ease-out duration-300"
+    //         leaveFrom="opacity-30"
+    //         leaveTo="opacity-0"
+    //       >
+    //         <Dialog.Overlay className="z-40 fixed inset-0 bg-black" />
+    //       </Transition.Child>
+
+    //       <Transition.Child
+    //         as={Fragment}
+    //         enter="transition ease-in-out duration-300 transform"
+    //         enterFrom="-translate-x-full"
+    //         enterTo="translate-x-0"
+    //         leave="transition ease-in-out duration-300 transform"
+    //         leaveFrom="translate-x-0"
+    //         leaveTo="-translate-x-full"
+    //       >
+    //         <div
+    //           className={`flex flex-col justify-between bg-[#F0F3FF] z-50
+    //                       w-full max-w-sm p-6 overflow-hidden text-left
+    //                       align-middle shadow-xl rounded-r-2xl`}>
+    //             <div>
+    //               <Dialog.Title
+    //                 className="font-bold text-2xl md:text-4xl text-blue-500"
+    //               >
+    //                 {title}
+    //               </Dialog.Title>
+    //               <Dialog.Description>{"description"}</Dialog.Description>
+    //               {"children"}
+    //             </div>
+    //             <div className="self-center mt-10">
+    //               {/* <Button onClick={() => setOpen(!isOpen)}>Close</Button> */}
+    //             </div>
+    //         </div>
+    //       </Transition.Child>
+    //     </div>
+    //   </Dialog>
+    // </Transition>
     <Transition.Root show={open || false} as={Fragment}>
       <Dialog
         as="div"
@@ -57,34 +129,31 @@ const LeftSiderForm = ({
         <div className="absolute inset-0 overflow-hidden">
           <Transition.Child
             as={Fragment}
-            enter="ease-in-out duration-500"
-            enterFrom="opacity-100"
-            enterTo="opacity-0"
-            leave="ease-in-out duration-500"
-            leaveFrom="opacity-100"
+            enter="transition-opacity ease-in duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-30"
+            entered="opacity-30"
+            leave="transition-opacity ease-out duration-300"
+            leaveFrom="opacity-30"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            <Dialog.Overlay className="absolute inset-0 bg-[#F0F3FF] bg-opacity-75 transition-opacity" />
           </Transition.Child>
-          <div className="fixed inset-x-0 left-0 pl-10 max-w-full flex">
+          <div className="fixed inset-x-0 left-0 pr-10 w-3/4 h-screen flex">
             <Transition.Child
               as={Fragment}
-              enter="transform transition ease-in-out duration-500 sm:duration-700"
-              enterFrom="translate-x-full"
+              enter="transition ease-in-out duration-300 transform"
+              enterFrom="-translate-x-full"
               enterTo="translate-x-0"
-              leave="transform transition ease-in-out duration-500 sm:duration-700"
+              leave="transition ease-in-out duration-300 transform"
               leaveFrom="translate-x-0"
-              leaveTo="translate-x-full"
+              leaveTo="-translate-x-full"
             >
               <div
-                className={`relative w-screen ${
-                  title === 'Add Lead' ||
-                  title === 'Create Project' ||
-                  title === 'Edit Project'
-                    ? 'max-w-2xl'
-                    : widthClass
+                className={`relative 
+
                 }
-                 ${unitsViewMode ? 'max-w-7xl' : widthClass}`}
+              `}
               >
                 <Transition.Child
                   as={Fragment}
@@ -95,7 +164,7 @@ const LeftSiderForm = ({
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <div className="absolute top-0 left-0 -ml-8 pt-4 pr-2 flex sm:-ml-10 sm:pr-4">
+                  <div className="absolute top-0   right-0 -mr-8 pt-4 pl-2 flex sm:-mr-10 sm:pl-4">
                     <button
                       type="button"
                       className="rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
@@ -106,181 +175,13 @@ const LeftSiderForm = ({
                     </button>
                   </div>
                 </Transition.Child>
-                {title === 'Add Task' && (
-                  <AddTaskForm title={title} dialogOpen={setOpen} />
-                )}
-                {(title === 'Create Project' || title === 'Edit Project') && (
-                  <DialogFormBody
-                    title={title}
-                    dialogOpen={setOpen}
-                    project={data}
-                  />
-                )}
-                {(title === 'Add Phase' || title === 'Edit Phase') && (
-                  <AddPhaseForm
-                    title={title}
-                    dialogOpen={setOpen}
-                    phase={data}
-                  />
-                )}
-                {(title === 'Add Block' || title === 'Edit Block') && (
-                  <AddBlockForm
-                    title={title}
-                    dialogOpen={setOpen}
-                    data={data}
-                  />
-                )}
-                {title === 'Import Units' ||
-                  (title === 'Import Project Units' && (
-                    <LeadsDropHomes
-                      title={title}
-                      dialogOpen={setOpen}
-                      pId={pId}
-                      myPhase={phaseDetails}
-                      myBlock={myBlock}
-                    />
-                  ))}
-                {title === 'Add Unit' && (
-                  <AddUnit
-                    title={title}
-                    phaseFeed={phaseFeed}
-                    BlockFeed={BlockFeed}
-                    dialogOpen={setOpen}
-                    projectDetails={projectDetails}
-                    phaseDetails={phaseDetails}
-                    blockDetails={blockDetails}
-                  />
-                )}
-                {title === 'View Unit' && (
-                  <ViewUnitDetails
-                    title={title}
-                    data={data}
-                    phaseFeed={phaseFeed}
-                    BlockFeed={BlockFeed}
-                    dialogOpen={setOpen}
-                    projectDetails={projectDetails}
-                    phaseDetails={phaseDetails}
-                    blockDetails={blockDetails}
-                    leadDetailsObj={data?.leadDetailsObj}
-                  />
-                )}
-
-                {title === 'Import Leads' && (
-                  <LeadsDropHomes
-                    title={title}
-                    dialogOpen={setOpen}
-                    pId={pId}
-                    myPhase={undefined}
-                    myBlock={undefined}
-                  />
-                )}
-                {title === 'Add Lead' && (
-                  <AddLeadForm title={title} dialogOpen={setOpen} />
-                )}
-                {title === 'User Profile' && (
-                  <CustomerProfileSideView
-                    openUserProfile={false}
-                    customerDetails={customerDetails}
-                    unitViewerrr={unitViewerrr}
-                    unitsViewMode={unitsViewMode}
-                    setUnitsViewMode={setUnitsViewMode}
-                  />
-                )}
-                {title === 'Project Inventory' && (
-                  <InventoryViewSideForm
-                    title={title}
-                    projectDetails={projectDetails}
-                  />
-                  // <ProjPhaseHome
-                  //   projectDetails={projectDetails}
-                  //   leadDetailsObj={undefined}
-                  //   source={undefined}
-                  //   unitDetails={undefined}
-                  // />
-                )}
-                {title === 'Additional Charges' && (
-                  <AdditionalChargesForm
-                    title={title}
-                    data={data}
-                    source={undefined}
-                  />
-                )}
-                {title === 'Payment Schedule' && (
-                  <PaymentScheduleForm
-                    title={title}
-                    data={data}
-                    source={undefined}
-                  />
-                )}
-                {title === 'More Details' && (
-                  <MoreDetailsPhaseForm
-                    title={title}
-                    dialogOpen={setOpen}
-                    data={data}
-                  />
-                )}
-                {title === 'Plan Diagram' && (
-                  <LeadsDropHomes
-                    title={title}
-                    dialogOpen={setOpen}
-                    pId={pId}
-                    source={'planDiagram'}
-                    myPhase={phaseDetails}
-                    myBlock={myBlock}
-                  />
-                )}
-                {title === 'Brouchers' && (
-                  <LeadsDropHomes
-                    title={title}
-                    dialogOpen={setOpen}
-                    pId={pId}
-                    source={'Brouchers'}
-                    myPhase={phaseDetails}
-                    myBlock={myBlock}
-                  />
-                )}
-                {title === 'Approvals' && (
-                  <LeadsDropHomes
-                    title={title}
-                    dialogOpen={setOpen}
-                    pId={pId}
-                    source={'Approvals'}
-                    myPhase={phaseDetails}
-                    myBlock={myBlock}
-                  />
-                )}
-                {title === 'Bank Accounts' && (
-                  <AddBankDetailsForm
-                    title={title}
-                    dialogOpen={setOpen}
-                    phase={data}
-                  />
-                )}
-                {title === 'Virtual Accounts' && (
-                  <AddBankDetailsForm
-                    title={title}
-                    dialogOpen={setOpen}
-                    phase={data}
-                  />
-                )}
-                {title === 'Transaction' && (
-                  <TransactionUpdateSideView
-                    openUserProfile={false}
-                    customerDetails={customerDetails}
-                    unitViewerrr={unitViewerrr}
-                    unitsViewMode={unitsViewMode}
-                    setUnitsViewMode={setUnitsViewMode}
-                  />
-                )}
-                {title === 'CrmUnitSideView' && (
-                  <CrmUnitSideView
-                    openUserProfile={false}
-                    customerDetails={customerDetails}
-                    unitViewerrr={unitViewerrr}
-                    unitsViewMode={unitsViewMode}
-                    setUnitsViewMode={setUnitsViewMode}
-                  />
-                )}
+                <HeadSideBarDetailView2
+              pgName={pgName}
+              sourceLink={sourceLink}
+              showSideView1={undefined}
+              setViewable={setViewable}
+              viewable={viewable}
+            />
               </div>
             </Transition.Child>
           </div>

@@ -351,7 +351,12 @@ const HomePage = () => {
     <>
       <div className="flex w-screen h-screen text-gray-700">
         <div className="flex flex-col flex-grow">
-          <HeadNavBar />
+          <HeadNavBar
+            pgName={'leadsManager'}
+            sourceLink={'projectsScreen'}
+            setViewable={setViewable}
+            viewable={viewable}
+          />
           <div className="flex overflow-y-hidden flex-row overflow-auto h-[100vh]  text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
             <HeadSideBar pgName={'home'} />
 
@@ -366,8 +371,18 @@ const HomePage = () => {
                   viewable={viewable}
                 />
               </div>
-              <button className=" z-30 -mx-6 mt-4 " onClick={toggleOpen}>
-                {isOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+              <button
+                className=" z-30 mt-4 bg-grey-300 rounded-full p-1 "
+                onClick={toggleOpen}
+              >
+                {isOpen ? (
+                  <ArrowBackIosIcon
+                    className="text-sm"
+                    style={{ fontSize: '16px' }}
+                  />
+                ) : (
+                  <ArrowForwardIosIcon style={{ fontSize: '16px' }} />
+                )}
               </button>
             </div>
 
