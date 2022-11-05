@@ -33,7 +33,7 @@ const LeadsManagerPage = () => {
   const { user } = useAuth()
 
   const [showSideBar, setShowSideBar] = useState(false)
-  const [showDetailedSideBar, setDetailedShowSideBar] = useState(false)
+  const [showDetailedSideBar, setDetailedShowSideBar] = useState(true)
   const [viewable, setViewable] = useState('Today1')
 
   const pdfExportComponent = React.useRef(null)
