@@ -140,10 +140,10 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   const { status, projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
-    // where('Status', 'in', status)
+     where('Status', 'in', status)
     //  orderBy('Date')
   )
-  // console.log('loading check 0', onSnapshot(itemsQuery, snapshot, error))
+  console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
