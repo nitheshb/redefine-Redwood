@@ -601,10 +601,10 @@ export const deleteLeadSupabase = async (payload) => {
   await console.log('error as ', error)
 }
 export const addLeadSupabase = async (payload) => {
-  const { data, error } = await supabase
-    .from('maahomes_leads')
-    .insert([payload])
-  await console.log('error as ', error)
+  // const { data, error } = await supabase
+  //   .from('maahomes_leads')
+  //   .insert([payload])
+  // await console.log('error as ', error)
 }
 export const addLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads`), data)

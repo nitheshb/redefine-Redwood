@@ -197,8 +197,8 @@ const LLeadsTableView = ({
             { lab: 'New', val: 'new' },
             { lab: 'Follow Up', val: 'followup' },
             { lab: 'Visit Fixed', val: 'visitfixed' },
-            { lab: 'Visit Done', val: 'visitdone' },
-            { lab: 'Visit Cancel', val: 'visitcancel' },
+            // { lab: 'Visit Done', val: 'visitdone' },
+            // { lab: 'Visit Cancel', val: 'visitcancel' },
             { lab: 'Negotiation', val: 'negotiation' },
             // { lab: 'Reassign', val: 'reassign' },
             // { lab: 'RNR', val: 'RNR' },
@@ -374,15 +374,15 @@ const LLeadsTableView = ({
               </ul>
             </div>
             {/*  Data Table */}
-            {/* <LLeadsTableBody
+            <LLeadsTableBody
               data={filterTable}
               fetchLeadsLoader={fetchLeadsLoader}
               handleDelete={handleDelete}
               selStatus={value}
-              rowsParent={leadsFetchedData}
+              rowsParent={statusSepA[0]}
               selUserProfileF={selUserProfileF}
               newArray={statusSepA[0]?.[value]}
-            /> */}
+            />
           </Grid>
         </Grid>
       </Card>

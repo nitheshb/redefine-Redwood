@@ -66,7 +66,7 @@ import LogSkelton from '../shimmerLoaders/logSkelton'
 // }
 
 function descendingComparator(a, b, orderBy) {
-  console.log('what is the order 1 ', b[orderBy])
+  console.log('what is the order 1 ', b,  b[orderBy])
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -560,7 +560,13 @@ export default function LLeadsTableBody({
   }, [searchKey])
 
   const filterStuff = async (parent) => {
-    let x =
+console.log('filter value stuff' , parent)
+    let x =  selStatus === 'all'
+    ? parent['all'] :  selStatus === 'archieve_all' ? parent['archieve_all'] : parent[selStatus]
+
+    await setRows(x)
+    console.log('filter value stuff' , parent, x)
+    let x1 =
       selStatus === 'all'
         ? parent.filter((item) =>
             [
@@ -583,6 +589,7 @@ export default function LLeadsTableBody({
           )
 
     await setRows(x)
+    console.log('filter value stuff' , parent, x)
     await console.log('xo', x, parent, selStatus)
   }
   const filterByDate = () => {
@@ -774,11 +781,14 @@ id: "1" */}
               {/* item.Assignedto.toLowerCase().includes(
                     searchKey.toLowerCase()
                   ) || */}
-              {rows
+              {
+
+                rows
                 .filter((item) => {
                   if (searchKey == '' || !searchKey) {
                     return item
-                  } else if (
+                  }
+                   else if (
                     item.Email.toLowerCase().includes(
                       searchKey.toLowerCase()
                     ) ||
@@ -786,13 +796,9 @@ id: "1" */}
                       searchKey.toLowerCase()
                     ) ||
                     item.Name.toLowerCase().includes(searchKey.toLowerCase()) ||
-                    item.Project.toLowerCase().includes(
-                      searchKey.toLowerCase()
-                    ) ||
                     item.Source.toLowerCase().includes(
                       searchKey.toLowerCase()
-                    ) ||
-                    item.Status.toLowerCase().includes(searchKey.toLowerCase())
+                    )
                   ) {
                     return item
                   }
