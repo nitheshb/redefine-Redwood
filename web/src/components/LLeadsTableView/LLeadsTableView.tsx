@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react'
+
 import { TabList } from '@mui/lab'
 import { Box as Section, Card, Grid, styled } from '@mui/material'
-import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next' // styled components
+
 import uniqueId from '../../util/generatedId'
+import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
 
 const tableData2 = [
   {
@@ -123,7 +125,7 @@ const rowsCounter = (parent, searchKey) => {
         )
       )
     : parent.filter(
-        (item) => item.Status.toLowerCase() === searchKey.toLowerCase()
+        (item) => item?.Status?.toLowerCase() === searchKey.toLowerCase()
       )
 }
 const Wrapper = styled(Section)(() => ({
@@ -164,6 +166,9 @@ const LLeadsTableView = ({
   const [value, setValue] = useState('all')
   const [tableData, setTableData] = useState([])
   const [tabHeadFieldsA, settabHeadFieldsA] = useState([])
+
+  const [statusSepA, setStatusSepA] = useState([])
+
   // const [leadsFetchedData, setLeadsFetchedData] = useState([])
   const [openModal, setOpenModal] = useState(false)
 
@@ -236,12 +241,82 @@ const LLeadsTableView = ({
     { lab: 'Blocked', val: 'blocked' },
     { lab: 'Junk', val: 'junk' },
   ]
-  const financeTab = [
-    { lab: 'All', val: 'all' },
-    { lab: 'In Review', val: 'inReview' },
-    { lab: 'Cleared', val: 'cleared' },
-    { lab: 'Uncleared', val: 'uncleared' },
-  ]
+  useEffect(() => {
+    // split data as per
+    const leadsHeadA =
+      leadsTyper === 'inProgress'
+        ? [
+            { lab: 'In Progress', val: 'all' },
+            { lab: 'New', val: 'new' },
+            { lab: 'Follow Up', val: 'followup' },
+            { lab: 'Visit Fixed', val: 'visitfixed' },
+            { lab: 'Visit Done', val: 'visitdone' },
+            { lab: 'Visit Cancel', val: 'visitcancel' },
+            { lab: 'Negotiation', val: 'negotiation' },
+            // { lab: 'Reassign', val: 'reassign' },
+            // { lab: 'RNR', val: 'RNR' },
+            { lab: 'Un Assigned', val: 'unassigned' },
+            // { lab: 'Booked', val: 'booked' },
+            // { lab: 'Not Interested', val: 'notinterested' },
+            // { lab: 'Dead', val: 'dead' },
+          ]
+        : leadsTyper === 'archieveLeads'
+        ? archieveTab
+        : [
+            { lab: 'Booked', val: 'booked' },
+            // { lab: 'Not Interested', val: 'notinterested' },
+            // { lab: 'Dead', val: 'dead' },
+          ]
+    const y = {}
+
+    const z1 = []
+    const whole = {
+      new: [],
+      followup: [],
+      all: [],
+      visitfixed: [],
+      visitdone: [],
+      vistcancel: [],
+      negotiation: [],
+      unassigned: [],
+      others: [],
+    }
+
+    const z2 = leadsFetchedData.map((fil) => {
+      whole.all.push(fil)
+      switch (fil?.Status?.toLowerCase()) {
+        case 'new':
+          return whole.new.push(fil)
+        case 'followup':
+          return whole.followup.push(fil)
+        case 'visitfixed':
+          return whole.visitfixed.push(fil)
+        case 'visitdone':
+          return whole.visitdone.push(fil)
+        case 'vistcancel':
+          return whole.vistcancel.push(fil)
+        case 'negotiation':
+          return whole.negotiation.push(fil)
+        case 'unassigned':
+          return whole.unassigned.push(fil)
+        default:
+          return whole.others.push(fil)
+      }
+
+      // return z1[fil?.Status?.toLowerCase()].push(fil)
+    })
+    console.log('filter stroke z2', z2, z1, whole)
+    const z = leadsHeadA.map((fil) => {
+      console.log('filter stroke 0', fil)
+      const k = rowsCounter(leadsFetchedData, fil.val)
+      y[fil.val] = k
+      return { [fil.val]: k }
+      // leadsFetchedData
+      // {new: [{}, {}], followup:[{}, {}]}
+    })
+    setStatusSepA([whole])
+    console.log('filter stroke', z, y)
+  }, [leadsFetchedData, tabHeadFieldsA])
   return (
     <Section pb={4}>
       <Card
@@ -283,7 +358,8 @@ const LLeadsTableView = ({
                           {`${d.lab} `}
                         </span>
                         <span className="bg-gray-100 text-black px-2 py-1 rounded-full ml-[4px]  ">
-                          {rowsCounter(leadsFetchedData, d.val).length}
+                          {/* {rowsCounter(leadsFetchedData, d.val).length} */}
+                          {statusSepA[0][d.val]?.length || 0}
                         </span>
                         {/*
                         <div className="px-2 mt-1 text-[9px] text-black  rounded-full">
@@ -298,14 +374,15 @@ const LLeadsTableView = ({
               </ul>
             </div>
             {/*  Data Table */}
-            <LLeadsTableBody
+            {/* <LLeadsTableBody
               data={filterTable}
               fetchLeadsLoader={fetchLeadsLoader}
               handleDelete={handleDelete}
               selStatus={value}
               rowsParent={leadsFetchedData}
               selUserProfileF={selUserProfileF}
-            />
+              newArray={statusSepA[0]?.[value]}
+            /> */}
           </Grid>
         </Grid>
       </Card>

@@ -140,10 +140,10 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   const { status, projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
-    where('Status', 'in', status),
-    orderBy('Date', 'desc')
+    // where('Status', 'in', status)
+    //  orderBy('Date')
   )
-  console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
+  // console.log('loading check 0', onSnapshot(itemsQuery, snapshot, error))
   return onSnapshot(itemsQuery, snapshot, error)
 }
 
@@ -459,7 +459,6 @@ export const getAllRoleAccess = async (orgId) => {
   const records = []
   const getAllRolesQueryById = await query(
     collection(db, `${orgId}_roles_access`)
-
   )
   const querySnapshot = await getDocs(getAllRolesQueryById)
   querySnapshot.forEach((doc) => {
@@ -594,7 +593,19 @@ export const createUser = async (data: any) => {
     console.log('error in db', error)
   }
 }
+export const deleteLeadSupabase = async (payload) => {
 
+  const { data, error } = await supabase
+  .from('maahomes_leads')
+  .delete()
+  await console.log('error as ', error)
+}
+export const addLeadSupabase = async (payload) => {
+  const { data, error } = await supabase
+    .from('maahomes_leads')
+    .insert([payload])
+  await console.log('error as ', error)
+}
 export const addLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads`), data)
   await console.log('add Lead value is ', x, x.id, data)
