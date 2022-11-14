@@ -8,7 +8,6 @@ import { prettyDate } from 'src/util/dateConverter'
 
 import uniqueId from '../../util/generatedId'
 import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
-import LLeadsTableBodyNew from '../LLeadsTableBody/LLeadsTableBodyNew'
 
 const tableData2 = [
   {
