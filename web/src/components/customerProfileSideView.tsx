@@ -407,7 +407,7 @@ export default function CustomerProfileSideView({
     setAssignerName(customerDetails?.assignedToObj?.label)
     setSelProjectIs({ projectName: Project, uid: ProjectId })
     setStatusTimeLineA(
-      [...statusTimeLineA, ...(customerDetails?.coveredA || [])] || ['new']
+      [...statusTimeLineA, ...(customerDetails?.coveredA?.a || [])] || ['new']
     )
 
     // setLeadStatus(Status)
@@ -635,33 +635,33 @@ export default function CustomerProfileSideView({
     console.log('stream logs', steamLeadLogs)
     await setLeadsFetchedActivityData(steamLeadLogs)
 
-    // const unsubscribe = steamLeadActivityLog(
-    //   orgId,
-    //   (doc) => {
-    //     console.log('my total fetched list is yo yo ', doc.data())
-    //     const usersList = doc.data()
-    //     const usersListA = []
+    const unsubscribe = steamLeadActivityLog(
+      orgId,
+      (doc) => {
+        console.log('my total fetched list is yo yo ', doc.data())
+        const usersList = doc.data()
+        const usersListA = []
 
-    //     Object.entries(usersList).forEach((entry) => {
-    //       const [key, value] = entry
-    //       usersListA.push(value)
-    //       console.log('my total fetched list is 3', `${key}: ${value}`)
-    //     })
-    //     // for (const key in usersList) {
-    //     //   if (usersList.hasOwnProperty(key)) {
-    //     //     console.log(`${key} : ${usersList[key]}`)
-    //     //     console.log(`my total fetched list is 2 ${usersList[key]}`)
-    //     //   }
-    //     // }
+        Object.entries(usersList).forEach((entry) => {
+          const [key, value] = entry
+          usersListA.push(value)
+          console.log('my total fetched list is 3', `${key}: ${value}`)
+        })
+        // for (const key in usersList) {
+        //   if (usersList.hasOwnProperty(key)) {
+        //     console.log(`${key} : ${usersList[key]}`)
+        //     console.log(`my total fetched list is 2 ${usersList[key]}`)
+        //   }
+        // }
 
-    //     console.log('my total fetched list is', usersListA.length)
-    //     setLeadsFetchedActivityData(usersListA)
-    //   },
-    //   {
-    //     uid: id,
-    //   },
-    //   (error) => setLeadsFetchedActivityData([])
-    // )
+        console.log('my total fetched list is', usersListA.length)
+        setLeadsFetchedActivityData(usersListA)
+      },
+      {
+        uid: id,
+      },
+      (error) => setLeadsFetchedActivityData([])
+    )
 
     //  lead Schedule list
     steamLeadScheduleLog(

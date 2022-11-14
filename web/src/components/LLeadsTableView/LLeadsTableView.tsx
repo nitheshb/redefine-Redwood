@@ -4,8 +4,11 @@ import { TabList } from '@mui/lab'
 import { Box as Section, Card, Grid, styled } from '@mui/material'
 import { useTranslation } from 'react-i18next' // styled components
 
+import { prettyDate } from 'src/util/dateConverter'
+
 import uniqueId from '../../util/generatedId'
 import LLeadsTableBody from '../LLeadsTableBody/LLeadsTableBody'
+import LLeadsTableBodyNew from '../LLeadsTableBody/LLeadsTableBodyNew'
 
 const tableData2 = [
   {
@@ -281,41 +284,90 @@ const LLeadsTableView = ({
       unassigned: [],
       others: [],
     }
+    const bookedArr = {
+      booked: [],
+      all: [],
+      others: [],
+    }
 
-    const z2 = leadsFetchedData.map((fil) => {
-      whole.all.push(fil)
-      switch (fil?.Status?.toLowerCase()) {
-        case 'new':
-          return whole.new.push(fil)
-        case 'followup':
-          return whole.followup.push(fil)
-        case 'visitfixed':
-          return whole.visitfixed.push(fil)
-        case 'visitdone':
-          return whole.visitdone.push(fil)
-        case 'vistcancel':
-          return whole.vistcancel.push(fil)
-        case 'negotiation':
-          return whole.negotiation.push(fil)
-        case 'unassigned':
-          return whole.unassigned.push(fil)
-        default:
-          return whole.others.push(fil)
-      }
+    const archieveArr = {
+      archieve_all: [],
+      all: [],
+      dead: [],
+      notinterested: [],
+      blocked: [],
+      junk: [],
+      others: [],
+    }
 
-      // return z1[fil?.Status?.toLowerCase()].push(fil)
-    })
-    console.log('filter stroke z2', z2, z1, whole)
-    const z = leadsHeadA.map((fil) => {
-      console.log('filter stroke 0', fil)
-      const k = rowsCounter(leadsFetchedData, fil.val)
-      y[fil.val] = k
-      return { [fil.val]: k }
-      // leadsFetchedData
-      // {new: [{}, {}], followup:[{}, {}]}
-    })
-    setStatusSepA([whole])
-    console.log('filter stroke', z, y)
+    if (leadsTyper === 'inProgress') {
+      const z2 = leadsFetchedData
+        .sort((a, b) => b.Date - a.Date)
+        .map((fil) => {
+          whole.all.push(fil)
+          switch (fil?.Status?.toLowerCase()) {
+            case 'new':
+              return whole.new.push(fil)
+            case 'followup':
+              return whole.followup.push(fil)
+            case 'visitfixed':
+              return whole.visitfixed.push(fil)
+            case 'visitdone':
+              return whole.visitdone.push(fil)
+            case 'vistcancel':
+              return whole.vistcancel.push(fil)
+            case 'negotiation':
+              return whole.negotiation.push(fil)
+            case 'unassigned':
+              return whole.unassigned.push(fil)
+            default:
+              return whole.others.push(fil)
+          }
+          // return z1[fil?.Status?.toLowerCase()].push(fil)
+        })
+      console.log('filter stroke z2', z2, z1, whole)
+
+      setStatusSepA([whole])
+    } else if (leadsTyper === 'archieveLeads') {
+      const z2 = leadsFetchedData
+        .sort((a, b) => b.Date - a.Date)
+        .map((fil) => {
+          archieveArr.archieve_all.push(fil)
+          switch (fil?.Status?.toLowerCase()) {
+            case 'dead':
+              return archieveArr.dead.push(fil)
+            case 'notinterested':
+              return archieveArr.notinterested.push(fil)
+            case 'blocked':
+              return archieveArr.blocked.push(fil)
+            case 'junk':
+              return archieveArr.junk.push(fil)
+            default:
+              return archieveArr.others.push(fil)
+          }
+          // return z1[fil?.Status?.toLowerCase()].push(fil)
+        })
+      console.log('filter stroke z2', z2, z1, archieveArr)
+
+      setStatusSepA([archieveArr])
+    } else {
+      const z2 = leadsFetchedData
+        .sort((a, b) => b.Date - a.Date)
+        .map((fil) => {
+          bookedArr.all.push(fil)
+          switch (fil?.Status?.toLowerCase()) {
+            case 'booked':
+              return bookedArr.booked.push(fil)
+            default:
+              return bookedArr.others.push(fil)
+          }
+          // return z1[fil?.Status?.toLowerCase()].push(fil)
+        })
+      console.log('filter stroke z2', z2, z1, bookedArr)
+
+      setStatusSepA([bookedArr])
+    }
+    console.log('filter stroke', y)
   }, [leadsFetchedData, tabHeadFieldsA])
   return (
     <Section pb={4}>
@@ -373,7 +425,20 @@ const LLeadsTableView = ({
                 })}
               </ul>
             </div>
-            {/*  Data Table */}
+
+            {/* {
+              <table>
+                {statusSepA[0]?.[value].map((dat, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{i + 1}</td>
+                      <td>{prettyDate(dat.Date).toLocaleString()}</td>
+                      <td>{dat.Name.toString()}</td>
+                    </tr>
+                  )
+                })}
+              </table>
+            } */}
             <LLeadsTableBody
               data={filterTable}
               fetchLeadsLoader={fetchLeadsLoader}
