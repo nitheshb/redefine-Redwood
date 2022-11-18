@@ -182,6 +182,7 @@ export const sourceListItems = [
     value: 'googleadwords',
     rep: ['googleadwords', 'Google-Ads', 'google adwords'],
   },
+  { label: 'Hoardings', value: 'hoardings', rep: ['hoardings', 'Hoardings'] },
   { label: 'Housing.com', value: 'housingcom', rep: ['housingcom', 'housing'] },
   {
     label: 'Instagram Ad',
