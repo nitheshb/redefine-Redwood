@@ -10,6 +10,7 @@ import { UserGroupIcon } from '@heroicons/react/outline'
 
 import { Link, routes } from '@redwoodjs/router'
 
+import { USER_ROLES } from 'src/constants/userRoles'
 import { useAuth } from 'src/context/firebase-auth-context'
 const HeadSideBarDetailView = ({
   pgName,
@@ -1375,7 +1376,7 @@ const HeadSideBarDetailView = ({
               </ul>
             </li>
 
-            {
+            {!user?.role?.includes(USER_ROLES.CP_AGENT) && (
               <li className="relative">
                 <Link
                   className={
@@ -1566,7 +1567,7 @@ const HeadSideBarDetailView = ({
                   </li>
                 </ul>
               </li>
-            }
+            )}
             {sourceLink === 'leadsScreen' && access.includes('manage_leads') && (
               <li className="relative">
                 <Link
