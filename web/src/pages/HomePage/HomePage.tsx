@@ -5,6 +5,7 @@ import { EyeIcon, PencilIcon } from '@heroicons/react/outline'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
+import { usePageLoadingContext } from '@redwoodjs/router'
 import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
@@ -33,7 +34,7 @@ const HomePage = () => {
   const handleEditProjectClose = () => setIsEditProjectOpen(false)
   const [projects, setProjects] = useState([])
   const [viewable, setViewable] = useState('Home')
-
+  const { loading } = usePageLoadingContext()
   const getProjects = async () => {
     const unsubscribe = getAllProjects(
       orgId,
@@ -349,6 +350,7 @@ const HomePage = () => {
 
   return (
     <>
+      {loading && <div>Loading...</div>}
       <div className="flex w-screen h-screen text-gray-700">
         <div className="flex flex-col flex-grow">
           <HeadNavBar />

@@ -25,6 +25,7 @@ import TodayLeadsHomePage from 'src/components/TodayLeadsHomePage'
 import UserAccessTable from 'src/components/UserAccessTable/UserAccessTable'
 import { USER_ROLES } from 'src/constants/userRoles'
 import { useAuth } from 'src/context/firebase-auth-context'
+import CostBreakUpPdf from 'src/util/costBreakUpPdf'
 
 import logo from '../../../public/logo.png'
 import HeadNavBar from '../../components/HeadNavBar/HeadNavBar'
@@ -76,9 +77,7 @@ const LeadsManagerPage = () => {
             >
               <HeadSideBar pgName={'leadsManager'} />
               <div className="flex items-start flex-row">
-                <div
-
-                >
+                <div>
                   <div>
                     <HeadSideBarDetailView
                       pgName={'leadsManager'}
@@ -90,7 +89,6 @@ const LeadsManagerPage = () => {
                     />
                   </div>
                 </div>
-
               </div>
             </div>
 
@@ -186,7 +184,6 @@ const LeadsManagerPage = () => {
                   isEdit={false}
                 />
               )}
-            
             </div>
             {/* <div className="flex-grow mx-4  my-2 items-center overflow-y-auto  h-screen  px-300  py-300"> */}
             {/* {viewable === 'Today' && <ExecutiveHomeViewerPage />} *SS/}
