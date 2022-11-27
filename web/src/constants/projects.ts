@@ -182,6 +182,7 @@ export const sourceListItems = [
     value: 'googleadwords',
     rep: ['googleadwords', 'Google-Ads', 'google adwords'],
   },
+  { label: 'Hoardings', value: 'hoardings', rep: ['hoardings', 'Hoardings'] },
   { label: 'Housing.com', value: 'housingcom', rep: ['housingcom', 'housing'] },
   {
     label: 'Instagram Ad',
@@ -195,7 +196,9 @@ export const sourceListItems = [
     rep: ['magicbricks', 'magic bricks', 'magic bricks'],
   },
   { label: 'MCube', value: 'mcube', rep: ['mcube', 'Mcube'] },
+  { label: 'News Paper', value: 'newspaper', rep: ['NewsPaper', 'newspaper', 'News Paper', 'news paper'] },
   { label: 'REPP', value: 'repp', rep: ['REPP', 'repp'] },
+  { label: 'SMS', value: 'sms', rep: ['sms', 'Sms', 'SMS'] },
   { label: 'Website', value: 'website', rep: ['website'] },
   { label: '99acres', value: '99acres', rep: ['99acres'] },
   { label: 'others', value: 'others', rep: [] },

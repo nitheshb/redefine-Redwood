@@ -359,7 +359,7 @@ const HomePage = () => {
 
             <div className="flex items-start flex-row">
               {' '}
-              <div className={`${isOpen == true ? 'visible ' : 'hidden'}`}>
+              <div >
                 <HeadSideBarDetailView
                   pgName={'leadsManager'}
                   sourceLink={'projectsScreen'}
@@ -368,9 +368,7 @@ const HomePage = () => {
                   viewable={viewable}
                 />
               </div>
-              <button className=" z-30 -mx-6 mt-4 " onClick={toggleOpen}>
-                {isOpen ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
-              </button>
+
             </div>
 
             <div className="flex-grow mx-6  mt-10 items-center overflow-y-auto  h-[98%]  px-300  pt-300">

@@ -53,7 +53,7 @@ const LeadsManagementHome = () => {
         console.log('fetched details are', usersListA.length)
         setLeadsFetchedData(usersListA)
       },
-      { status: ['unassigned'] },
+      { status: ['unassigned'],isCp: user?.role?.includes(USER_ROLES.CP_AGENT), },
       (error) => setLeadsFetchedData([])
     )
     return unsubscribe

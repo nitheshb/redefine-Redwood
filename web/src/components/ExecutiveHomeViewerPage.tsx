@@ -20,6 +20,8 @@ import { MetaTags } from '@redwoodjs/web'
 import LLeadsTableView from 'src/components/LLeadsTableView/LLeadsTableView'
 import { USER_ROLES } from 'src/constants/userRoles'
 import {
+  addLeadSupabase,
+  deleteLeadSupabase,
   getAllProjects,
   getLeadsByAdminStatus,
   getLeadsByStatus,
@@ -185,6 +187,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     filter_Leads_Projects_Users_Fun()
   }, [selProjectIs, selLeadsOf, startDate, endDate])
 
+
   useEffect(() => {
     console.log('am refreshed ')
     filter_Leads_Projects_Users_Fun()
@@ -194,7 +197,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
     console.log('login role detials', user)
     const { access, uid, orgId } = user
     if (user?.role?.includes(USER_ROLES.ADMIN)) {
-      console.log('am i inside here')
+      console.log('loading check 1')
       const unsubscribe = getLeadsByAdminStatus(
         orgId,
         async (querySnapshot) => {
@@ -203,12 +206,34 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
             x.id = docSnapshot.id
             return x
           })
+          // const usersListA = []
+          // querySnapshot.forEach((doc) => {
+          //   usersListA.push(doc.data())
+          // })
           // setBoardData
-          console.log(
-            'my Array data is delayer ',
-            projAccessA,
-            usersListA.length
-          )
+          console.log('loading check 2', projAccessA, usersListA.length)
+          usersListA.map((data) => {
+            const y = data
+            delete y.Note
+            delete y.AssignedTo
+            delete y.AssignTo
+            delete y.AssignedBy
+            delete y['Country Code']
+            delete y.assignT
+            delete y.CT
+            delete y.visitDoneNotes
+            delete y.VisitDoneNotes
+            delete y.VisitDoneReason
+            delete y.EmpId
+            delete y.CountryCode
+            delete y.from
+            delete y['Followup date']
+            delete y.mode
+            delete y.notInterestedNotes
+            delete y.notInterestedReason
+            y.coveredA = { a: data.coveredA }
+            addLeadSupabase(data)
+          })
           await setLeadsFetchedRawData(usersListA)
           await serealizeData(usersListA)
           // filter_Leads_Projects_Users_Fun()
@@ -226,9 +251,8 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
                   'visitdone',
                   'visitcancel',
                   'negotiation',
-                  'reassign',
-                  'RNR',
-                  // 'booked',
+                  // 'reassign',
+                  // 'RNR',
                 ]
               : leadsTyper === 'booked'
               ? ['booked']
@@ -274,6 +298,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
               ? ['booked']
               : archieveFields,
           projAccessA: projAccessA,
+          isCp: user?.role?.includes(USER_ROLES.CP_AGENT),
         },
         (error) => setLeadsFetchedData([])
       )
@@ -295,6 +320,7 @@ const ExecutiveHomeViewerPage = ({ leadsTyper }) => {
           //  await setLeadsFetchedData(usersListA)
         },
         {
+          isCp: user?.role?.includes(USER_ROLES.CP_AGENT),
           uid: uid,
           status:
             leadsTyper === 'inProgress'

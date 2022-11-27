@@ -232,7 +232,7 @@ export default function CustomerProfileSideView({
   const [value, setValue] = useState(d)
 
   // const [startDate, setStartDate] = useState(d)
-  const [startDate, setStartDate] = useState(d)
+  const [startDate, setStartDate] = useState(d.getTime() + 60000)
 
   const [selected, setSelected] = useState(people[0])
   const [taskDetails, setTaskDetails] = useState('')
@@ -407,7 +407,7 @@ export default function CustomerProfileSideView({
     setAssignerName(customerDetails?.assignedToObj?.label)
     setSelProjectIs({ projectName: Project, uid: ProjectId })
     setStatusTimeLineA(
-      [...statusTimeLineA, ...(customerDetails?.coveredA || [])] || ['new']
+      [...statusTimeLineA, ...(customerDetails?.coveredA?.a || [])] || ['new']
     )
 
     // setLeadStatus(Status)
@@ -635,33 +635,33 @@ export default function CustomerProfileSideView({
     console.log('stream logs', steamLeadLogs)
     await setLeadsFetchedActivityData(steamLeadLogs)
 
-    // const unsubscribe = steamLeadActivityLog(
-    //   orgId,
-    //   (doc) => {
-    //     console.log('my total fetched list is yo yo ', doc.data())
-    //     const usersList = doc.data()
-    //     const usersListA = []
+    const unsubscribe = steamLeadActivityLog(
+      orgId,
+      (doc) => {
+        console.log('my total fetched list is yo yo ', doc.data())
+        const usersList = doc.data()
+        const usersListA = []
 
-    //     Object.entries(usersList).forEach((entry) => {
-    //       const [key, value] = entry
-    //       usersListA.push(value)
-    //       console.log('my total fetched list is 3', `${key}: ${value}`)
-    //     })
-    //     // for (const key in usersList) {
-    //     //   if (usersList.hasOwnProperty(key)) {
-    //     //     console.log(`${key} : ${usersList[key]}`)
-    //     //     console.log(`my total fetched list is 2 ${usersList[key]}`)
-    //     //   }
-    //     // }
+        Object.entries(usersList).forEach((entry) => {
+          const [key, value] = entry
+          usersListA.push(value)
+          console.log('my total fetched list is 3', `${key}: ${value}`)
+        })
+        // for (const key in usersList) {
+        //   if (usersList.hasOwnProperty(key)) {
+        //     console.log(`${key} : ${usersList[key]}`)
+        //     console.log(`my total fetched list is 2 ${usersList[key]}`)
+        //   }
+        // }
 
-    //     console.log('my total fetched list is', usersListA.length)
-    //     setLeadsFetchedActivityData(usersListA)
-    //   },
-    //   {
-    //     uid: id,
-    //   },
-    //   (error) => setLeadsFetchedActivityData([])
-    // )
+        console.log('my total fetched list is', usersListA.length)
+        setLeadsFetchedActivityData(usersListA)
+      },
+      {
+        uid: id,
+      },
+      (error) => setLeadsFetchedActivityData([])
+    )
 
     //  lead Schedule list
     steamLeadScheduleLog(
@@ -916,10 +916,10 @@ export default function CustomerProfileSideView({
     // updateSchLog(orgId, id, data.ct, 'completed', schStsA)
   }
   const editTaskFun = (data) => {
-    console.log('clicked schedule is', data)
+    console.log('clicked schedule is', data, startDate, addCommentTime)
 
     const inx = schStsMA.indexOf(data.ct)
-    data.schTime = startDate.getTime()
+    data.schTime = startDate
     data.notes = takTitle
     const x = schStsA
     x[inx] = 'pending'
@@ -1030,8 +1030,17 @@ export default function CustomerProfileSideView({
     if (data?.stsType === 'visitfixed') {
       setShowVisitFeedBackStatusFun(data, 'visitdone')
     } else {
-      setAddTaskCommentObj(data)
-      setCloseTask(true)
+      if (leadSchFetchedData?.filter((d) => d?.sts === 'pending').length != 1) {
+        setAddTaskCommentObj(data)
+        setCloseTask(true)
+      } else {
+        enqueueSnackbar(
+          `Oops..! You can close this task by changing Lead status`,
+          {
+            variant: 'error',
+          }
+        )
+      }
     }
   }
   const addFeedbackFun = async (data) => {

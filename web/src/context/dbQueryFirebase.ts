@@ -1,5 +1,4 @@
-import { db } from './firebaseConfig'
-import { supabase } from './supabase'
+import { WhereToVote } from '@mui/icons-material'
 import {
   setDoc,
   doc,
@@ -21,8 +20,11 @@ import {
   deleteField,
 } from 'firebase/firestore'
 import { v4 as uuidv4 } from 'uuid'
-import { WhereToVote } from '@mui/icons-material'
+
 import { sendWhatAppTextSms1 } from 'src/util/axiosWhatAppApi'
+
+import { db } from './firebaseConfig'
+import { supabase } from './supabase'
 
 // import { userAccessRoles } from 'src/constants/userAccess'
 
@@ -118,9 +120,10 @@ export const steamLeadById = (orgId, snapshot, data, error) => {
 }
 // stream
 export const getLeadsByStatus = (orgId, snapshot, data, error) => {
-  const { projAccessA } = data
+  const { projAccessA, isCp } = data
+  const colName = isCp ? `${orgId}_leads_cp` : `${orgId}_leads`
   const itemsQuery = query(
-    collection(db, `${orgId}_leads`),
+    collection(db, colName),
     where('ProjectId', 'in', projAccessA)
     // where('Status', 'in', status)
   )
@@ -137,7 +140,8 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   const { status, projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
-    where('Status', 'in', status)
+     where('Status', 'in', status)
+    //  orderBy('Date')
   )
   console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
   return onSnapshot(itemsQuery, snapshot, error)
@@ -146,6 +150,7 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
 export const getMyLeadsByDate = async (orgId, data) => {
   const { cutoffDate, uid, isCp } = data
   const colName = isCp ? `${orgId}_leads_cp` : `${orgId}_leads`
+  console.log('leads table name cp', colName)
   const itemsQuery = query(
     collection(db, colName),
     where('assignedTo', '==', uid),
@@ -197,9 +202,10 @@ export const getCrmUnitsByStatus = (orgId, snapshot, data, error) => {
 // get leads only of a user
 export const getLeadsByStatusUser = (orgId, snapshot, data, error) => {
   console.log('orgId is ', orgId)
-  const { status, uid } = data
+  const { status, uid, isCp } = data
+  const colName = isCp ? `${orgId}_leads_cp` : `${orgId}_leads`
   const itemsQuery = query(
-    collection(db, `${orgId}_leads`),
+    collection(db, colName),
     where('Status', 'in', status),
     where('assignedTo', '==', uid)
   )
@@ -452,8 +458,7 @@ export const getAllRoleAccess = async (orgId) => {
   // })
   const records = []
   const getAllRolesQueryById = await query(
-    collection(db, `${orgId}_roles_access`),
-    orderBy('id', 'desc')
+    collection(db, `${orgId}_roles_access`)
   )
   const querySnapshot = await getDocs(getAllRolesQueryById)
   querySnapshot.forEach((doc) => {
@@ -588,7 +593,19 @@ export const createUser = async (data: any) => {
     console.log('error in db', error)
   }
 }
+export const deleteLeadSupabase = async (payload) => {
 
+  const { data, error } = await supabase
+  .from('maahomes_leads')
+  .delete()
+  await console.log('error as ', error)
+}
+export const addLeadSupabase = async (payload) => {
+  // const { data, error } = await supabase
+  //   .from('maahomes_leads')
+  //   .insert([payload])
+  // await console.log('error as ', error)
+}
 export const addLead = async (orgId, data, by, msg) => {
   const x = await addDoc(collection(db, `${orgId}_leads`), data)
   await console.log('add Lead value is ', x, x.id, data)
@@ -626,7 +643,7 @@ export const addLead = async (orgId, data, by, msg) => {
     await sendWhatAppTextSms1(
       '7760959579',
       `Greetings from MAA Homes, I am ${name}
-      
+
       This is ${name} from Maa Homes,
 
         Regarding your interest in ${Project}, I’m pleased to be your point of contact throughout this journey. I would like to understand your requirements & do let me know if you have any doubts about ${Project}.
