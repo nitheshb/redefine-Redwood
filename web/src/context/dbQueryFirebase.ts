@@ -140,7 +140,7 @@ export const getLeadsByAdminStatus = (orgId, snapshot, data, error) => {
   const { status, projAccessA } = data
   const itemsQuery = query(
     collection(db, `${orgId}_leads`),
-     where('Status', 'in', status)
+    where('Status', 'in', status)
     //  orderBy('Date')
   )
   console.log('hello by Status', onSnapshot(itemsQuery, snapshot, error))
@@ -594,10 +594,7 @@ export const createUser = async (data: any) => {
   }
 }
 export const deleteLeadSupabase = async (payload) => {
-
-  const { data, error } = await supabase
-  .from('maahomes_leads')
-  .delete()
+  const { data, error } = await supabase.from('maahomes_leads').delete()
   await console.log('error as ', error)
 }
 export const addLeadSupabase = async (payload) => {
@@ -1275,6 +1272,7 @@ export const addPhaseAdditionalCharges = async (
   orgId,
   uid,
   chargePayload,
+  type,
   enqueueSnackbar
 ) => {
   const usersUpdate = {}
@@ -1284,7 +1282,7 @@ export const addPhaseAdditionalCharges = async (
   chargePayload.myId = uuxid
   try {
     await updateDoc(doc(db, `${orgId}_phases`, uid), {
-      additonalChargesObj: arrayUnion(chargePayload),
+      [type]: arrayUnion(chargePayload),
     })
     enqueueSnackbar('Charges added successfully', {
       variant: 'success',
@@ -1300,11 +1298,12 @@ export const updatePhaseAdditionalCharges = async (
   orgId,
   uid,
   chargePayloadA,
+  type,
   enqueueSnackbar
 ) => {
   try {
     await updateDoc(doc(db, `${orgId}_phases`, uid), {
-      additonalChargesObj: chargePayloadA,
+      [type]: chargePayloadA,
     })
 
     enqueueSnackbar('Charges added successfully', {
@@ -1321,6 +1320,7 @@ export const addPhasePaymentScheduleCharges = async (
   orgId,
   uid,
   chargePayload,
+  type,
   enqueueSnackbar
 ) => {
   const usersUpdate = {}
@@ -1330,7 +1330,7 @@ export const addPhasePaymentScheduleCharges = async (
   chargePayload.myId = uuxid
   try {
     await updateDoc(doc(db, `${orgId}_phases`, uid), {
-      paymentScheduleObj: arrayUnion(chargePayload),
+      [type]: arrayUnion(chargePayload),
     })
     enqueueSnackbar('Charges added successfully', {
       variant: 'success',
@@ -1346,11 +1346,12 @@ export const updatePaymentScheduleCharges = async (
   orgId,
   uid,
   chargePayloadA,
+  type,
   enqueueSnackbar
 ) => {
   try {
     await updateDoc(doc(db, `${orgId}_phases`, uid), {
-      paymentScheduleObj: chargePayloadA,
+      [type]: chargePayloadA,
     })
 
     enqueueSnackbar('Charges added successfully', {
