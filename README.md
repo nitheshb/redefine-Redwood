@@ -3,7 +3,7 @@
 > **NOTICE:** RedwoodJS is very close to a stable version 1.0. In the last two years,
 > the project has matured significantly and is already used in production by a number
 > of startups. We intend to have a 1.0 release candidate before the end of 2021 and
-> to release a truly production-ready 1.0 in early 2022.
+> to release a truly production-ready 1.0 in early 20221.
 
 ## Getting Started
 - [Tutorial](https://redwoodjs.com/tutorial/welcome-to-redwood): getting started and complete overview guide.
