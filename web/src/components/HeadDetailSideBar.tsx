@@ -358,7 +358,7 @@ const HeadSideBarDetailView = ({
                   onClick={() => setViewable('inProgress')}
                 >
                   <span className="flex items-center ml-">
-                    <span className="text-md font-bold pl-1 ">Finanace</span>
+                    <span className="text-md font-bold pl-1 ">Finance</span>
                   </span>
                   <span className="flex ml-auto items-bottom">
                     <span
