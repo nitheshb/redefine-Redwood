@@ -144,6 +144,7 @@ export default function AuthContextProvider({ children }) {
     })
 
   useEffect(() => {
+    if(onAuthStateChanged){
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
       // Here you should extract the complete user profile to make it available in your entire app.
       // The auth state only provides basic information.
@@ -157,6 +158,7 @@ export default function AuthContextProvider({ children }) {
     return () => {
       unSubscribe()
     }
+  }
   }, [authenticate])
 
   function login(email: string, password: string) {
