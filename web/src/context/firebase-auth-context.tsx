@@ -161,7 +161,7 @@ export default function AuthContextProvider({ children }) {
           unSubscribe()
         }
       } catch (error) {
-      console.log('auth change error', auth)
+      console.log('auth change error', error,auth )
       }
 
   }

@@ -1,5 +1,6 @@
-import { AuthenticationError } from '@redwoodjs/graphql-server'
 import admin from 'firebase-admin'
+
+import { AuthenticationError } from '@redwoodjs/graphql-server'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const adminApp = admin.initializeApp({
@@ -24,8 +25,10 @@ const adminApp = admin.initializeApp({
  */
 export const getCurrentUser = async (
   decoded,
-  { _token, _type },
-  { _event, _context }
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  { token, type },
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  { event, context }
 ) => {
   return decoded
 }
@@ -45,7 +48,7 @@ export const isAuthenticated = (): boolean => {
  *
  * @returns - If the currentUser is authenticated
  *
- * @throws {AuthenticationError} - If the currentUser is not authenticated
+ * @throws {@link AuthenticationError} - If the currentUser is not authenticated
  *
  * @see https://github.com/redwoodjs/redwood/tree/main/packages/auth for examples
  */
