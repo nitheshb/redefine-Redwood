@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState, useRef } from 'react'
 
 import EmailForm from './customerProfileView/emailForm'
 import Confetti from './shared/confetti'
@@ -138,6 +138,9 @@ const attachTypes = [
   // { label: 'Dead', value: 'Dead' },
 ]
 
+//confetti fuction
+
+//
 const notInterestOptions = [
   // { label: 'Select Reason', value: '' },
   { label: 'Budget Issue', value: 'budget_issue' },
@@ -197,6 +200,12 @@ export default function CustomerProfileSideView({
   const [fetchedUsersList, setfetchedUsersList] = useState([])
   const [usersList, setusersList] = useState([])
   const [uploadFile, setUploadFile] = useState()
+
+  //confetti
+
+  const confettiRef = useRef(null)
+
+  //confetti
 
   // const [leadStatus, setLeadStatus] = useState([])
   const [selFeature, setFeature] = useState('appointments')
@@ -310,6 +319,10 @@ export default function CustomerProfileSideView({
   const [streamfrom, setStreamFrom] = useState('')
 
   const [closePrevious, setClosePrevious] = useState(false)
+
+  const handleClick = () => {
+    confettiRef.current.fire()
+  }
 
   useEffect(() => {
     console.log('customer detail sare', customerDetails)
@@ -1779,7 +1792,8 @@ export default function CustomerProfileSideView({
                               <span className="text-blue-600"> Add</span>
                             </time>
                           </button>
-                          <Confetti />
+                          <Confetti ref={confettiRef} />
+                          <button onClick={handleClick}>Fire confetti</button>
                         </div>
                       )}
                       {addNote && (
